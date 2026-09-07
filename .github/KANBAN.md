@@ -1,73 +1,88 @@
 # Nanobô — Kanban
 
-> Kanban baseado no planejamento do projeto. Fluxo: **Backlog → To Do → In Dev → In Review → Done**.
+> Fluxo: **Backlog → To Do → In Dev → In Review → Done**. WIP recomendado: **2 tarefas simultâneas**.
+>
+> As datas de entrega acadêmicas abaixo vêm do planejamento da disciplina. As datas intermediárias são metas internas recomendadas para organizar o desenvolvimento.
 
-## Escopo do MVP
-- 1 fase jogável completa.
-- 3 categorias de agentes: vírus, bactéria e célula própria.
-- Identificação obrigatória antes da ação.
-- Ação ofensiva contra ameaças e proteção/não-agressão contra célula própria.
-- Colisão, dano, vida/resistência, pontuação e penalização.
-- Objetivo, vitória, derrota e feedback educativo.
-- Menu inicial, pausa e telas simples de vitória/derrota.
+## Milestones a criar no GitHub
 
-Fora do MVP: IA avançada, bosses complexos, upgrades, multiplayer, ranking online, salvamento sofisticado, cutscenes extensas e grande variedade de agentes.
+| Milestone | Data | Tipo | Objetivo |
+|---|---|---|---|
+| **M1 — One Sheet / Game Design Base** | 09/09/2026 | Entrega acadêmica | Escopo e conceito consolidados |
+| **M2 — Projeto de Software + Kanban** | 23/09/2026 | Entrega acadêmica | Planejamento técnico e backlog estruturados |
+| **M3 — Proof of Concept** | 07/10/2026 | Entrega acadêmica | Provar os maiores riscos técnicos |
+| **M4 — MVP Funcional** | 04/11/2026 | Entrega acadêmica | Núcleo jogável completo e validável |
+| **M5 — Finalização Técnica** | 25/11/2026 | Meta interna | Estabilização, memória, documentação e release candidate |
+| **M6 — Versão Final + Apresentação** | 02/12/2026 | Entrega acadêmica | Instalador, documentação e apresentação |
 
-## Backlog
-- [ ] #1 [T01] Congelar escopo do MVP — 3 pts — Alta
-- [ ] #2 [T02] Definir conteúdo educacional do MVP — 2 pts — Alta
-- [ ] #3 [T03] Definir mecânica de identificação e decisão — 3 pts — Alta
-- [ ] #4 [T04] Garantir build limpo — 2 pts — Alta
-- [ ] #5 [T05] Organizar estrutura do projeto — 2 pts — Alta
-- [ ] #6 [T06] Estruturar Game Loop — 3 pts — Alta
-- [ ] #7 [T07] Implementar estados do jogo — 5 pts — Alta
-- [ ] #8 [T08] Implementar input — 2 pts — Alta
-- [ ] #9 [T09] Implementar movimentação — 3 pts — Alta
-- [ ] #10 [T10] Implementar colisão — 5 pts — Alta
-- [ ] #11 [T11] Implementar vida/dano — 3 pts — Alta
-- [ ] #12 [T12] Implementar primeiro agente — 3 pts — Alta
-- [ ] #13 [T13] Implementar segundo agente — 5 pts — Alta
-- [ ] #14 [T14] Implementar identificação obrigatória — 5 pts — Alta
-- [ ] #15 [T15] Implementar feedback educativo — 3 pts — Alta
-- [ ] #16 [T16] Fechar primeira fase do MVP — 8 pts — Alta
-- [ ] #17 [T17] Implementar HUD do MVP — 3 pts — Média
-- [ ] #18 [T18] Implementar menu e estados do MVP — 5 pts — Média
-- [ ] #19 [T19] Testar MVP com pessoa externa — 3 pts — Alta
-- [ ] #20 [T20] Consolidar Game Design do MVP — 3 pts — Alta
+> **M5 é uma meta interna**, não uma data de entrega do professor.
 
-## To Do
-_Vazio inicialmente._
+## Organização das Issues
 
-## In Dev
-_WIP máximo recomendado: 2 tarefas, conforme capacidade da equipe._
+### M1 — One Sheet / Game Design Base
+- #1 Escopo do MVP
+- #2 Conteúdo biológico dos agentes
 
-_Vazio inicialmente._
+### M2 — Projeto de Software + Kanban
+- #3 Regras do scanner e decisão
+- #4 Build Debug/Release
+- #5 Estrutura de pastas
+- #6 Game Loop e Delta Time
+- #45 Consolidar arquivos de Kanban
 
-## In Review
-_Vazio inicialmente._
+### M3 — Proof of Concept
+- #7 Estados do jogo
+- #8 Input de teclado
+- #9 Movimentação
+- #10 Colisão
+- #11 Vida/dano
+- #12 Vírus
+- #13 Bactéria
+- #14 Célula própria
+- #15 Scanner
+- #16 Ataque/projétil
+- #17 Defesa
+- #18 Identificação/pontuação/consequências
+- #22 Personagem placeholder
+- #23 Input de mouse
+- #24 Geração dos agentes
+- #25 Variação da ordem dos encontros
+- #26 Destino e conclusão da fase
+- #27 Cenário mínimo do PoC
+- #28 Teste/registro do PoC
 
-## Done
-_Vazio inicialmente._
+### M4 — MVP Funcional
+- #19 HUD
+- #20 Menu/pausa/vitória/Game Over
+- #29 Vitória e reinício
 
-## Ordem recomendada
-1. #1 Escopo do MVP
-2. #2 Conteúdo educacional + #3 Mecânica de identificação/decisão
-3. #20 Consolidar Game Design do MVP
-4. #5 Estrutura técnica + #4 Build limpo
-5. #6 Game Loop + #7 Estados
-6. #8 Input + #9 Movimentação
-7. #10 Colisão + #11 Vida/dano
-8. #12 Primeiro agente + #13 Segundo agente
-9. #14 Identificação obrigatória
-10. #15 Feedback educativo
-11. #16 Primeira fase
-12. #17 HUD + #18 Menu/estados
-13. #19 Teste externo
-14. Corrigir problemas encontrados
-15. Expandir somente depois da estabilidade
+### M5 — Finalização Técnica
+- #30 Spritesheet/animação
+- #31 Efeitos sonoros
+- #32 Música
+- #33 Suporte a múltiplas fases
+- #34 Hi-score persistente
+- #35 Liberação de recursos
+- #36 Validação de memória < 100 MB
+- #37 Testes de regressão
+- #38 Teste com pessoa externa
+- #39 Correção de bugs críticos
+- #40 Documentação técnica final
+- #41 Revisão do One Sheet/GDD
+- #42 Build Release
 
-## Marcos sugeridos
-1. **M1 — Game Design Congelado:** #1, #2, #3, #20
-2. **M2 — Protótipo Jogável:** #4–#15, conforme dependências
-3. **M3 — MVP Fechado:** #16–#18
-4. **M4 — Validação:** #19 + correções
+### M6 — Versão Final + Apresentação
+- #43 Instalador Windows
+- #44 Roteiro/material da apresentação
+- #46 Teste em máquina limpa
+- #47 Ensaio da apresentação
+
+## Regras de escopo
+
+- O **MVP permanece centrado em uma fase**.
+- Múltiplas fases, hi-score, áudio completo e refinamentos entram depois da estabilidade do núcleo.
+- Se o cronograma apertar, simplificar conteúdo pós-MVP antes de comprometer scanner, identificação, combate, vida, vitória/derrota e estabilidade.
+- T21 foi arquivada porque descrevia uma regra de trabalho do assistente, não uma tarefa do produto.
+
+## Critério geral de Done
+Uma Issue só deve ir para **Done** quando o critério de aceite da própria Issue estiver comprovado, o código estiver versionado e a alteração não quebrar funcionalidades já validadas.
