@@ -2,20 +2,32 @@
 
 > Fluxo: **Backlog → To Do → In Dev → In Review → Done**. WIP recomendado: **2 tarefas simultâneas**.
 >
-> As datas de entrega acadêmicas abaixo vêm do planejamento da disciplina. As datas intermediárias são metas internas recomendadas para organizar o desenvolvimento.
+> As datas de entrega acadêmicas abaixo vêm do planejamento da disciplina. As datas intermediárias são metas internas para organizar o desenvolvimento.
 
-## Milestones a criar no GitHub
+## Milestones
 
 | Milestone | Data | Tipo | Objetivo |
 |---|---|---|---|
 | **M1 — Conceito e Escopo do Jogo** | 09/09/2026 | Entrega acadêmica | Fechar conceito, conteúdo mínimo e fronteira do MVP |
-| **M2 — Planejamento e Base Técnica** | 23/09/2026 | Entrega acadêmica | Entregar planejamento do software e deixar a base técnica organizada |
-| **M3 — Prova de Conceito Técnica** | 07/10/2026 | Entrega acadêmica | Demonstrar que os maiores riscos técnicos e o núcleo da mecânica funcionam |
+| **M2 — Planejamento e Base Técnica** | 23/09/2026 | Entrega acadêmica | Entregar Projeto de Software + Kanban e organizar a base técnica |
+| **M3 — Prova de Conceito Técnica** | 07/10/2026 | Entrega acadêmica | Demonstrar os maiores riscos técnicos e o núcleo da mecânica |
 | **M4 — MVP Jogável** | 04/11/2026 | Entrega acadêmica | Ter uma partida completa, jogável, compreensível e validável |
 | **M5 — Polimento, Estabilização e Release Candidate** | 29/11/2026 | Meta interna | Fechar conteúdo final, corrigir problemas, validar memória, documentação e build candidata |
 | **M6 — Entrega Final e Apresentação** | 02/12/2026 | Entrega acadêmica | Entregar instalador, documentação e apresentação final |
 
 > **M5 é uma meta interna**, não uma data de entrega do professor.
+
+## Ordem de desenvolvimento
+
+1. Base técnica: Game Loop, Delta Time e carregamento de recursos.
+2. Estados/cenas e entrada de teclado/mouse.
+3. Movimentação, entidades, geração e colisões.
+4. Scanner, seleção do alvo, pulsos/camadas e identificação única.
+5. Exibição das informações, interpretação e decisão.
+6. Combate, vida, dano, defesa e consequências.
+7. Fluxo completo da Fase 1, pontuação, progressão, vitória e derrota.
+8. HUD, menu, pausa, Game Over e integração das telas.
+9. Segunda fase, áudio, hi-score, polimento, testes, memória e release.
 
 ## Organização das Issues
 
@@ -88,10 +100,28 @@
 ## Regras de escopo
 
 - O **MVP permanece centrado em uma fase**.
-- A entrega final deve ter mais de uma fase; a segunda fase é tratada como objetivo do pós-MVP. Uma terceira fase só entra se houver tempo e estabilidade suficientes.
+- A Fase 1 é o núcleo do MVP e trabalha bactérias e células saudáveis, incluindo Gram-positivas e Gram-negativas.
+- A segunda fase é objetivo pós-MVP e integra a entrega final; seu conteúdo previsto envolve vírus, ciclos lítico/lisogênico e multiplicação limitada.
+- Uma terceira fase só entra se houver tempo e estabilidade suficientes.
 - Hi-score, música, refinamentos visuais e outras melhorias entram depois da estabilidade do núcleo.
 - Se o cronograma apertar, simplificar primeiro conteúdo pós-MVP e polimento antes de comprometer scanner, identificação, combate, vida, vitória/derrota e estabilidade.
 - T21 foi arquivada porque descrevia uma regra de trabalho do assistente, não uma tarefa do produto.
 
+## Dependências críticas
+
+- Scanner depende da base de entidades e geração de agentes.
+- Identificação/decisão depende do scanner e da definição de conteúdo biológico.
+- Combate e consequências dependem de entidades, colisões e regras de gameplay.
+- Fluxo completo da fase depende do núcleo de gameplay estar estável.
+- Menus e estados finais dependem da máquina de estados.
+- Segunda fase depende da estabilidade do MVP.
+- Release e instalador dependem de build Release e testes de regressão.
+
 ## Critério geral de Done
-Uma Issue só deve ir para **Done** quando o critério de aceite da própria Issue estiver comprovado, o código estiver versionado e a alteração não quebrar funcionalidades já validadas.
+
+Uma Issue só deve ir para **Done** quando:
+
+1. o critério de aceite da própria Issue estiver comprovado;
+2. o teste for reproduzível;
+3. o código/documentação estiver versionado;
+4. a alteração não quebrar funcionalidades já validadas.
