@@ -10,26 +10,51 @@ Um nanorrobô explora um ambiente microscópico inspirado no interior do corpo h
 
 ## Sobre o projeto
 
-Nanobô é um projeto de jogo educacional desenvolvido para o Projeto Integrador. A proposta combina exploração, investigação e tomada de decisão com conteúdos do Ensino Médio, buscando transformar o aprendizado em parte da própria experiência de jogo.
+Nanobô é um projeto de jogo educacional desenvolvido para o Projeto Integrador II. A proposta combina exploração, investigação e tomada de decisão com conteúdos do Ensino Médio, fazendo com que o aprendizado participe do gameplay.
 
-O jogador controla o Nanobô, explora o ambiente, coleta e interpreta informações e utiliza essas informações para decidir como agir diante dos organismos encontrados.
+O ciclo central do jogo é:
+
+**Explorar → Escanear → Identificar → Decidir → Agir → Consequência**
+
+O jogador deve interpretar as informações obtidas pelo scanner para decidir como agir, em vez de responder apenas a um quiz separado.
 
 > **Status:** em desenvolvimento.
 
-## Principais elementos
+## Núcleo do jogo
 
 - Exploração de um ambiente microscópico.
-- Scanner para análise de organismos.
-- Interpretação de informações apresentadas durante o jogo.
-- Tomada de decisões e recomendações pelo jogador.
-- Progressão por múltiplas fases.
-- Sistema de pontuação e hi-score.
-- Entrada por teclado e mouse.
-- Animações com spritesheets.
-- Música e efeitos sonoros.
-- Estados de jogo, incluindo menu e Game Over.
+- Scanner com seleção do alvo válido mais próximo e leitura em pulsos/camadas.
+- Identificação única dos agentes encontrados.
+- Interpretação das informações do scanner para orientar a decisão do jogador.
+- Combate, defesa, vida, dano e consequências.
+- Pontuação, bônus por identificação, progressão e hi-score persistente.
+- Progressão por fases.
 
-As funcionalidades podem evoluir durante o desenvolvimento conforme o planejamento, os testes e as necessidades do projeto.
+### Conteúdo planejado
+
+**Fase 1 — bactérias e células saudáveis**
+
+A primeira fase trabalha a diferenciação entre bactérias e células saudáveis, incluindo a abordagem de Gram-positivas e Gram-negativas. A informação obtida no scanner deve ter função prática na escolha da ação do jogador.
+
+**Fase 2 — vírus**
+
+A segunda fase é planejada para a entrega final, após o MVP. O conteúdo envolve os ciclos lítico e lisogênico e uma mecânica de multiplicação limitada. As regras biológicas e de balanceamento que ainda não foram validadas permanecem como pendências.
+
+## Requisitos da disciplina
+
+Os requisitos finais registrados no planejamento do projeto são:
+
+- Menu inicial.
+- Game Over.
+- Múltiplas fases.
+- Entrada por teclado e mouse.
+- Animação por spritesheet.
+- Música e efeitos sonoros.
+- Hi-score persistente.
+- Uso máximo de 100 MB de RAM.
+- Instalador para Windows.
+
+A entrega final deve cumprir esses requisitos. O MVP permanece deliberadamente centrado em uma fase para validar primeiro o núcleo jogável.
 
 ## Tecnologias
 
@@ -66,10 +91,20 @@ Nanobo/
 │   └── planejamento/
 │
 ├── Nanobo.sln             # Solução do Visual Studio
-└── Jogo.vcxproj           # Projeto do Visual Studio
+└── Jogo.vcxproj            # Projeto do Visual Studio
 ```
 
-A estrutura acompanha a evolução do projeto; diretórios e módulos podem ser refinados conforme as funcionalidades forem implementadas.
+## Planejamento acadêmico
+
+| Marco | Data | Natureza |
+| --- | --- | --- |
+| One Sheet Paper | 09/09/2026 | Entrega acadêmica |
+| Projeto de Software + Kanban | 23/09/2026 | Entrega acadêmica |
+| PoC | 07/10/2026 | Entrega acadêmica |
+| MVP | 04/11/2026 | Entrega acadêmica |
+| Entrega final + apresentação | 02/12/2026 | Entrega acadêmica |
+
+Cada etapa corresponde a 20% da avaliação conforme o planejamento acadêmico registrado para o projeto.
 
 ## Documentação
 
@@ -83,9 +118,9 @@ A estrutura acompanha a evolução do projeto; diretórios e módulos podem ser 
 
 ## Desenvolvimento
 
-O projeto está sendo desenvolvido de forma incremental. O planejamento utiliza um fluxo de Kanban e milestones para acompanhar a evolução desde a definição do conceito até a versão final.
+O desenvolvimento é incremental e orientado por riscos. A prioridade é validar o núcleo técnico e educacional antes de investir em conteúdo e polimento.
 
-O código atualmente parte de um protótipo inicial em Allegro 5. As próximas implementações devem priorizar os riscos técnicos e o núcleo jogável antes de funcionalidades secundárias.
+A referência operacional das tarefas é o Kanban do projeto. Os documentos de design registram decisões e regras; Issues representam trabalho executável.
 
 ## Equipe
 
