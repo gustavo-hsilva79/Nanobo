@@ -397,6 +397,33 @@ As seguintes decisões continuam dependentes de validação da dupla/PoC quando 
 
 Não preencher essas lacunas por suposição. Quando necessário, registrar explicitamente como **[PENDÊNCIA]**.
 
+
+## 18. Checklist de entrega do M2 — 23/09/2026
+
+### Documento
+- [x] Escopo validado e MVP delimitado em uma fase.
+- [x] Requisitos funcionais e não funcionais explicitados.
+- [x] Entregáveis, EAP, dependências, estimativas e marcos documentados.
+- [x] Pendências não decididas permanecem explícitas.
+- [x] #177 e #178 incorporadas ao planejamento educacional; #179 tratada como melhoria não bloqueadora por padrão.
+
+### Integração
+- [x] Projeto de Software ↔ Issues: referências por blocos EAP e User Stories.
+- [x] Issues ↔ Milestones: datas e objetivos definidos no planejamento.
+- [x] Milestones ↔ Kanban: organização M1–M6 documentada.
+- [x] Kanban ↔ cronograma: prazos-alvo das Issues e marcos acadêmicos registrados.
+- [x] GDD ↔ Projeto de Software: visão, loop, MVP e conteúdo educacional coerentes.
+
+### Entrega
+- [x] Integrante responsável pelo envio definido: **Gustavo Herick Silva**.
+- [x] Link direto do Kanban documental: https://github.com/gustavo-hsilva79/Nanobo/blob/master/docs/planejamento/kanban.md
+- [ ] Link do GitHub Project: requer acesso à interface do GitHub Project; não é exposto pelo conector GitHub disponível nesta execução.
+- [ ] Documento anexado e envio realizado: dependem do canal de submissão da disciplina e não podem ser executados apenas pelo repositório.
+
+### Limitação da auditoria operacional
+O estado de **Status, Story Points, responsáveis e dependências dentro do GitHub Project** deve ser conferido na própria interface do Project. O conector utilizado nesta revisão permite consultar e alterar Issues e arquivos do repositório, mas não expõe operações do GitHub Projects. Nenhum status, responsável ou Story Point do Project foi inventado para preencher essa lacuna.
+
+
 ---
 
 **Fonte operacional do andamento:** GitHub Project do repositório.
