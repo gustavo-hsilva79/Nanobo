@@ -32,6 +32,11 @@ int main()
         printf("couldn't initialize keyboard\n");
         return 1;
     }
+
+    if (!al_install_mouse()) {
+        printf("couldn't initialize mouse\n");
+        return 1;
+    }
     
     int const deltaTime = 1.0 / FPS;
     ALLEGRO_TIMER* timer = al_create_timer(deltaTime);
