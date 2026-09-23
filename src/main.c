@@ -3,6 +3,10 @@
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
 
+#define FPS 60
+#define WIDTH 640
+#define HEIGHT 480
+
 int main()
 {
     if (!al_init())
@@ -28,8 +32,9 @@ int main()
         printf("couldn't initialize keyboard\n");
         return 1;
     }
-
-    ALLEGRO_TIMER* timer = al_create_timer(1.0 / 30.0);
+    
+    int const deltaTime = 1.0 / FPS;
+    ALLEGRO_TIMER* timer = al_create_timer(deltaTime);
     if (!timer)
     {
         printf("couldn't initialize timer\n");
@@ -43,7 +48,7 @@ int main()
         return 1;
     }
 
-    ALLEGRO_DISPLAY* display = al_create_display(640, 480);
+    ALLEGRO_DISPLAY* display = al_create_display(WIDTH, HEIGHT);
     if (!display)
     {
         printf("couldn't initialize display\n");
@@ -74,6 +79,8 @@ int main()
         {
         case ALLEGRO_EVENT_TIMER:
             // game logic goes here.
+
+
             redraw = true;
             break;
 
