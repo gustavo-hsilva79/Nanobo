@@ -43,8 +43,11 @@
 - #45 Consolidar arquivos de Kanban
 - #54 Carregamento dos recursos
 - #23 Entrada de mouse
+- #177 Objetivos de aprendizagem e critérios educacionais
 
 ### M3 — Prova de Conceito Técnica
+- #178 Feedback visual e educacional das decisões
+- #179 Aprimoramento de movimento (polimento, não bloqueador por padrão)
 - #7 Máquina de estados
 - #8 Input de teclado
 - #9 Movimentação
@@ -104,6 +107,9 @@
 - A segunda fase é objetivo pós-MVP e integra a entrega final; seu conteúdo previsto envolve vírus, ciclos lítico/lisogênico e multiplicação limitada.
 - Uma terceira fase só entra se houver tempo e estabilidade suficientes.
 - Hi-score, música, refinamentos visuais e outras melhorias entram depois da estabilidade do núcleo.
+- #177 é requisito de planejamento educacional e deve permanecer associado ao M2.
+- #178 integra a validação do núcleo educacional da PoC/MVP.
+- #179 é melhoria de game feel e não deve deslocar os riscos críticos da PoC sem decisão explícita da dupla.
 - Se o cronograma apertar, simplificar primeiro conteúdo pós-MVP e polimento antes de comprometer scanner, identificação, combate, vida, vitória/derrota e estabilidade.
 - T21 foi arquivada porque descrevia uma regra de trabalho do assistente, não uma tarefa do produto.
 
