@@ -114,6 +114,7 @@ Cada etapa corresponde a 20% da avaliação conforme o planejamento acadêmico r
 - [Decisões de Game Design](docs/game-design/decisoes.md)
 - [Kanban](docs/planejamento/kanban.md)
 - [Plano de Execução](docs/planejamento/plano-de-execucao.md)
+- [Projeto de Software](docs/planejamento/projeto-de-software.md)
 - [Milestones](docs/planejamento/milestones.md)
 
 ## Desenvolvimento
