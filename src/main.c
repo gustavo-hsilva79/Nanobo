@@ -3,7 +3,6 @@
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
 
-#define FPS 60
 #define WIDTH 640
 #define HEIGHT 480
 
@@ -33,7 +32,9 @@ int main()
         return 1;
     }
     
-    int const deltaTime = 1.0 / FPS;
+    const int FPS = 60;
+    const double deltaTime = 1.0 / FPS;
+
     ALLEGRO_TIMER* timer = al_create_timer(deltaTime);
     if (!timer)
     {
