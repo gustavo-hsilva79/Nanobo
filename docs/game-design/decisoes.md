@@ -28,6 +28,15 @@ A proposta é que o jogador descubra informações, interprete dados do scanner 
 - As informações obtidas devem apoiar a identificação e a decisão do jogador.
 - A relação entre a informação obtida e a escolha do raio/ação deve ser validada durante os testes.
 
+#### Seleção do alvo — regra para implementação
+
+- São candidatos os agentes ativos e escaneáveis cuja distância ao Nanobô seja menor ou igual ao alcance do scanner.
+- A ativação seleciona no máximo um candidato: aquele com a menor distância ao Nanobô.
+- A comparação pode usar distância ao quadrado, sem alterar a regra geométrica.
+- Sem candidatos no alcance, a ativação não inicia uma leitura e não identifica nenhum agente.
+- Em empate exato, vence o agente com o menor identificador estável e único no encontro. A geração desses identificadores será definida junto ao modelo de entidades.
+- A regra seleciona o alvo; revelação de camadas e registro de identificação continuam sendo responsabilidades separadas.
+
 ### Fase 1
 
 A Fase 1 trabalha **bactérias e células saudáveis**, incluindo a diferenciação entre bactérias Gram-positivas e Gram-negativas.
