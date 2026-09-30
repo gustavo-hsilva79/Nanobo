@@ -1,6 +1,14 @@
 #ifndef NANOBO_SCENES_H
 #define NANOBO_SCENES_H
 
-/* Estados e cenas (menu, gameplay, vitória, game over etc.) serão definidos aqui. */
+typedef enum GameScene
+{
+    GAME_SCENE_MENU,
+    GAME_SCENE_GAME,
+    GAME_SCENE_PAUSE,
+    GAME_SCENE_RESULTS,
+    GAME_SCENE_VICTORY,
+    GAME_SCENE_GAME_OVER
+} GameScene;
 
 #endif
