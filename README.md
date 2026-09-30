@@ -112,10 +112,13 @@ Cada etapa corresponde a 20% da avaliação conforme o planejamento acadêmico r
 - [GDD](docs/game-design/gdd.md)
 - [Escopo](docs/game-design/escopo.md)
 - [Decisões de Game Design](docs/game-design/decisoes.md)
+- [Conteúdo biológico e objetivos de aprendizagem](docs/game-design/conteudo-biologico.md)
 - [Kanban](docs/planejamento/kanban.md)
 - [Plano de Execução](docs/planejamento/plano-de-execucao.md)
 - [Projeto de Software](docs/planejamento/projeto-de-software.md)
 - [Milestones](docs/planejamento/milestones.md)
+- [Fluxo de estados](docs/planejamento/fluxo-estados.md)
+- [Catálogo de recursos](assets/catalogo-recursos.md)
 
 ## Desenvolvimento
 

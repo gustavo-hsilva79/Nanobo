@@ -375,10 +375,13 @@ Falhas relevantes devem ser reproduzíveis e registradas em Issues.
 
 - One Sheet: `docs/one-sheet/one-sheet.md`
 - GDD: `docs/game-design/gdd.md`
+- Conteúdo biológico e objetivos de aprendizagem: `docs/game-design/conteudo-biologico.md`
 - Escopo: `docs/game-design/escopo.md`
 - Decisões: `docs/game-design/decisoes.md`
 - Kanban: `docs/planejamento/kanban.md`
 - Milestones: `docs/planejamento/milestones.md`
+- Fluxo de estados: `docs/planejamento/fluxo-estados.md`
+- Catálogo de recursos: `assets/catalogo-recursos.md`
 - Plano de execução: `docs/planejamento/plano-de-execucao.md`
 - Sequência operacional: `docs/planning/sequencia-issues.md`
 
