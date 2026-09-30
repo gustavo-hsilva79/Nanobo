@@ -68,7 +68,7 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros">
-    <Allegro_LibraryType Condition="'$(Configuration)'=='Debug'">DynamicDebug</Allegro_LibraryType>
+    <Allegro_LibraryType Condition="'$(Configuration)'=='Debug'">DynamicRelease</Allegro_LibraryType>
     <Allegro_LibraryType Condition="'$(Configuration)'=='Release'">DynamicRelease</Allegro_LibraryType>
     <Allegro_AddonFont>true</Allegro_AddonFont>
     <Allegro_AddonTTF>true</Allegro_AddonTTF>
