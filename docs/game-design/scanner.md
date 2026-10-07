@@ -110,10 +110,12 @@ O estado de identificação — identificações registradas, contador e camadas
 
 | Regra | Onde |
 |---|---|
-| Seleção do alvo mais próximo | `pick_target()` em `src/main.c` |
+| Seleção do alvo mais próximo | `pick_target()`, chamado por `use_scanner()` com a posição do Nanobô (`player_x`, `player_y`), em `src/main.c` |
 | Pulsos e camadas | `use_scanner()` e `draw_scan_info()` em `src/main.c` |
 | Texto das camadas | `layer_one_text()` e `layer_two_text()` em `src/main.c` |
 | Identificação única | campo `identified` e `identified_count` em `src/main.c` |
 | Reinicialização da partida | `reset_match()` em `src/main.c` |
+
+A posição usada na medição de distância é a do Nanobô, alterada pelo teclado desde a #9 (`update_match()` em `src/main.c`). O roteiro de verificação está em `docs/planejamento/qa-poc.md`.
 
 As regras de conteúdo biológico continuam em `docs/game-design/conteudo-biologico.md`.
