@@ -45,8 +45,22 @@ Agent agents[NUM_AGENTES] =
 int identified_count = 0;
 double match_time = 0;
 
+// movimentacao do nanobo
 float mouse_x = 0;
 float mouse_y = 0;
+
+// onde o nanobo esta na partida
+float player_x = 320;
+float player_y = 260;
+
+// quantos pixels ele anda por segundo
+float player_speed = 200;
+
+// teclas seguradas agora, o update le isso pra mover
+bool key_up = false;
+bool key_down = false;
+bool key_left = false;
+bool key_right = false;
 
 // carrega tudo que o jogo precisa antes do loop por frame
 bool load_resources()
@@ -142,7 +156,7 @@ int pick_target(float x, float y)
 // um pulso do scanner, revela a proxima camada do alvo
 void use_scanner()
 {
-    int target = pick_target(mouse_x, mouse_y);
+    int target = pick_target(player_x, player_y);
 
     if (target == -1)
     {
@@ -171,6 +185,14 @@ void reset_match()
         agents[i].layers = 0;
         agents[i].identified = false;
     }
+
+    player_x = 320;
+    player_y = 260;
+
+    key_up = false;
+    key_down = false;
+    key_left = false;
+    key_right = false;
 
     identified_count = 0;
     match_time = 0;
@@ -232,12 +254,12 @@ void draw_game()
         al_draw_tinted_bitmap(nanobo, tint, agents[i].x - 16, agents[i].y - 16, 0);
     }
 
-    // o nanobo segue o mouse ate a movimentacao propria entrar
-    al_draw_bitmap(nanobo, mouse_x - 16, mouse_y - 16, 0);
+    // o nanobo e desenhado onde o teclado deixou ele
+    al_draw_bitmap(nanobo, player_x - 16, player_y - 16, 0);
 
     al_draw_textf(font, al_map_rgb(255, 255, 255), 10, 10, 0, "identificados: %d/%d", identified_count, NUM_AGENTES);
     al_draw_textf(font, al_map_rgb(255, 255, 255), 10, 26, 0, "tempo: %.1f", match_time);
-    al_draw_text(font, al_map_rgb(130, 130, 130), 10, 42, 0, "space = scanner    esc = pausa");
+    al_draw_text(font, al_map_rgb(130, 130, 130), 10, 42, 0, "setas ou wasd para andar    space = scanner    esc = pausa");
 
     draw_scan_info();
 }
@@ -298,7 +320,23 @@ void handle_key_down(int key)
     }
     else if (scene == GAME_SCENE_GAME)
     {
-        if (key == ALLEGRO_KEY_SPACE)
+        if (key == ALLEGRO_KEY_UP || key == ALLEGRO_KEY_W)
+        {
+            key_up = true;
+        }
+        else if (key == ALLEGRO_KEY_DOWN || key == ALLEGRO_KEY_S)
+        {
+            key_down = true;
+        }
+        else if (key == ALLEGRO_KEY_LEFT || key == ALLEGRO_KEY_A)
+        {
+            key_left = true;
+        }
+        else if (key == ALLEGRO_KEY_RIGHT || key == ALLEGRO_KEY_D)
+        {
+            key_right = true;
+        }
+        else if (key == ALLEGRO_KEY_SPACE)
         {
             use_scanner();
         }
@@ -352,6 +390,37 @@ void handle_key_down(int key)
     }
 }
 
+// soltou a tecla, para de andar naquela direcao
+void handle_key_up(int key)
+{
+    GameScene scene = game_get_scene();
+
+    if (scene != GAME_SCENE_GAME)
+    {
+        return;
+    }
+
+    if (key == ALLEGRO_KEY_UP || key == ALLEGRO_KEY_W)
+    {
+        key_up = false;
+    }
+
+    if (key == ALLEGRO_KEY_DOWN || key == ALLEGRO_KEY_S)
+    {
+        key_down = false;
+    }
+
+    if (key == ALLEGRO_KEY_LEFT || key == ALLEGRO_KEY_A)
+    {
+        key_left = false;
+    }
+
+    if (key == ALLEGRO_KEY_RIGHT || key == ALLEGRO_KEY_D)
+    {
+        key_right = false;
+    }
+}
+
 // clique do mouse, so a interface do menu tem alvo por enquanto
 void handle_mouse_click(float x, float y)
 {
@@ -370,7 +439,50 @@ void handle_mouse_click(float x, float y)
 // a partida so anda no estado GAME
 void update_match(double dt)
 {
+    float step = player_speed * dt;
+
     match_time = match_time + dt;
+
+    if (key_up)
+    {
+        player_y = player_y - step;
+    }
+
+    if (key_down)
+    {
+        player_y = player_y + step;
+    }
+
+    if (key_left)
+    {
+        player_x = player_x - step;
+    }
+
+    if (key_right)
+    {
+        player_x = player_x + step;
+    }
+
+    // o nanobo nao sai da tela
+    if (player_x < 16)
+    {
+        player_x = 16;
+    }
+
+    if (player_x > WIDTH - 16)
+    {
+        player_x = WIDTH - 16;
+    }
+
+    if (player_y < 16)
+    {
+        player_y = 16;
+    }
+
+    if (player_y > HEIGHT - 16)
+    {
+        player_y = HEIGHT - 16;
+    }
 }
 
 int main()
@@ -472,6 +584,10 @@ int main()
 
             case ALLEGRO_EVENT_KEY_DOWN:
                 handle_key_down(event.keyboard.keycode);
+                break;
+
+            case ALLEGRO_EVENT_KEY_UP:
+                handle_key_up(event.keyboard.keycode);
                 break;
 
             case ALLEGRO_EVENT_MOUSE_AXES:
