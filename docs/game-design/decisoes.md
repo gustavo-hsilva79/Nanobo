@@ -37,6 +37,23 @@ A proposta é que o jogador descubra informações, interprete dados do scanner 
 - Em empate exato, vence o agente com o menor identificador estável e único no encontro. A geração desses identificadores será definida junto ao modelo de entidades.
 - A regra seleciona o alvo; revelação de camadas e registro de identificação continuam sendo responsabilidades separadas.
 
+#### Pulsos, camadas e identificação — regra para implementação
+
+- Cada ativação válida revela somente a próxima camada ainda não descoberta do alvo selecionado.
+- No PoC existem 2 camadas por agente, verificáveis; o conteúdo das camadas está em `docs/game-design/scanner.md`.
+- Informação já revelada permanece visível durante o encontro.
+- A identificação de um agente é registrada quando a última camada disponível dele é revelada, e não se repete dentro do mesmo encontro.
+- O scanner não recomenda ação e não atribui pontuação nem bônus.
+
+### Interface
+
+#### Interação de mouse
+
+- A interação de mouse da interface é o clique sobre o botão `INICIAR` na tela de `MENU`, que inicia a partida.
+- A mesma transição continua disponível por `ENTER`; o clique não substitui nenhum comando de gameplay.
+- Nos demais estados, nenhum clique tem ação definida nesta etapa.
+- Detalhes e roteiro de verificação em `docs/planejamento/interacao-mouse.md`.
+
 ### Fase 1
 
 A Fase 1 trabalha **bactérias e células saudáveis**, incluindo a diferenciação entre bactérias Gram-positivas e Gram-negativas.
@@ -55,7 +72,7 @@ O jogo terá pontuação, bônus por identificação e progressão. O hi-score d
 
 ## Pendências
 
-- Regras finais de identificação e recomendação.
+- Cooldown definitivo do scanner e configuração de camadas por agente/fase no MVP.
 - Conteúdo biológico detalhado e validado de cada agente.
 - Relação final entre dados do scanner e escolha do raio/ação.
 - Balanceamento de vida, dano, ataque, defesa, cooldowns e resistência.
