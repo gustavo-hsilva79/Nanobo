@@ -26,7 +26,7 @@ typedef struct
 } GameState;
 
 // Cria uma função para cada cena
-void scane_menu_updade(GameState *state)
+static void scane_menu_updade(GameState *state)
 {
     ALLEGRO_EVENT_QUEUE* queue = al_create_event_queue();
     ALLEGRO_KEYBOARD_STATE key_state;
