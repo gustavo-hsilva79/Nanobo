@@ -2,6 +2,7 @@
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
+#include <allegro5/allegro_image.h>
 
 #define WIDTH 640
 #define HEIGHT 480
@@ -25,6 +26,12 @@ int main()
 		printf("couldn't initialize ttf addon\n");
 		return 1;
 	}
+
+    if (!al_init_image_addon())
+    {
+        printf("couldn't initialize image addon\n");
+        return 1;
+    }
 
     if (!al_install_keyboard())
     {
@@ -67,7 +74,7 @@ int main()
         printf("couldn't initialize font\n");
         return 1;
     }
-    ALLEGRO_BITMAP* nanobo = al_load_bitmap("/assets/sprites/nanobo.png");
+    ALLEGRO_BITMAP* nanobo = al_load_bitmap("assets/sprites/nanobo.png");
     if (!nanobo)
     {
         printf("couldn't load nanobo\n");
@@ -80,8 +87,8 @@ int main()
     al_register_event_source(queue, al_get_timer_event_source(timer));
 
     //ALLEGRO_MOUSE mouse;
-    float mouse_x;
-    float mouse_y;
+    float mouse_x = 0;
+    float mouse_y = 0;
     bool done = false;
     bool redraw = true;
 
@@ -96,8 +103,6 @@ int main()
         {
             case ALLEGRO_EVENT_TIMER:
                 // game logic goes here.
-                al_draw_bitmap(nanobo, mouse_x, mouse_y, 0);
-
                 redraw = true;
                 break;
 
@@ -119,6 +124,8 @@ int main()
         if (redraw && al_is_event_queue_empty(queue))
         {
             al_clear_to_color(al_map_rgb(0, 0, 0));
+
+            al_draw_bitmap(nanobo, mouse_x, mouse_y, 0);
 
             al_flip_display();
             redraw = false;
