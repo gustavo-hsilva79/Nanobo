@@ -89,7 +89,8 @@ A verificação foi visual (captura da área do cliente da janela) e por inspeç
 
 - As condições reais de conclusão de fase e de derrota ainda não existem. Os estados `RESULTS`, `VICTORY` e `GAME OVER` são alcançados por **teclas de teste** (`F` e `G`, e `V` dentro de `RESULTS`), que devem sair quando a #20 ligar as condições de verdade.
 - O passo 4 do roteiro de mouse da #23 (clique repetido) depende de um retorno ao `MENU` que ainda não existe (#20).
-- O Nanobô ainda segue o cursor; a movimentação própria é a #9.
+
+> **Atualização de 07/10/2026 (após a #9):** o Nanobô deixou de seguir o cursor. Os passos deste roteiro que mandavam mover o cursor até um agente passam a ser feitos **movendo o Nanobô com as setas ou `WASD`**, porque é a posição dele que o scanner usa para medir distância. O HUD ganhou a dica `setas ou wasd para andar`. O roteiro da PoC, já nessa forma, está em `docs/planejamento/qa-poc.md`.
 
 ## 7. Falhas encontradas
 

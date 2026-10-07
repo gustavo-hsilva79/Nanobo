@@ -19,6 +19,8 @@ O ciclo central do jogo é:
 O jogador deve interpretar as informações obtidas pelo scanner para decidir como agir, em vez de responder apenas a um quiz separado.
 
 > **Status:** em desenvolvimento.
+>
+> **PoC (M3 — 07/10/2026):** o núcleo de investigação está implementado e jogável — movimentação por teclado, scanner com seleção do alvo válido mais próximo, leitura em duas camadas e identificação única por agente. O roteiro reproduzível e o resultado observado estão em [Registro da PoC](docs/planejamento/qa-poc.md). Combate, vida, dano e agentes ainda não existem: pertencem ao marco interno M3.5.
 
 ## Núcleo do jogo
 
@@ -90,9 +92,11 @@ Nanobo/
 │   ├── game-design/
 │   └── planejamento/
 │
-├── Nanobo.sln             # Solução do Visual Studio
-└── Jogo.vcxproj            # Projeto do Visual Studio
+├── Nanobo.sln              # Solução do Visual Studio
+└── Nanobo.vcxproj          # Projeto do Visual Studio
 ```
+
+> **Atenção:** apenas `src/main.c` e `src/core/game.c` entram na compilação — são os dois únicos `<ClCompile>` de `Nanobo.vcxproj`. Os demais módulos (`gameplay/`, `entities/`, `scenes/`, `systems/`) são a organização planejada e ainda não têm código compilado. Ao acrescentar código, coloque-o em um arquivo que já compila.
 
 ## Planejamento acadêmico
 
@@ -104,7 +108,7 @@ Nanobo/
 | MVP | 04/11/2026 | Entrega acadêmica |
 | Entrega final + apresentação | 02/12/2026 | Entrega acadêmica |
 
-Cada etapa corresponde a 20% da avaliação conforme o planejamento acadêmico registrado para o projeto.
+Cada etapa corresponde a 20% da avaliação conforme o planejamento acadêmico registrado para o projeto. Entre os marcos acadêmicos existem dois marcos internos, **M3.5 — Construção do Core Gameplay** (21/10) e **M5 — Release Candidate** (29/11), que não compõem nota.
 
 ## Documentação
 
@@ -113,11 +117,15 @@ Cada etapa corresponde a 20% da avaliação conforme o planejamento acadêmico r
 - [Escopo](docs/game-design/escopo.md)
 - [Decisões de Game Design](docs/game-design/decisoes.md)
 - [Conteúdo biológico e objetivos de aprendizagem](docs/game-design/conteudo-biologico.md)
+- [Regras do scanner](docs/game-design/scanner.md)
 - [Kanban](docs/planejamento/kanban.md)
 - [Plano de Execução](docs/planejamento/plano-de-execucao.md)
 - [Projeto de Software](docs/planejamento/projeto-de-software.md)
 - [Milestones](docs/planejamento/milestones.md)
 - [Fluxo de estados](docs/planejamento/fluxo-estados.md)
+- [Registro da PoC](docs/planejamento/qa-poc.md)
+- [Validação da máquina de estados](docs/planejamento/qa-maquina-estados.md)
+- [Validação do carregamento de recursos](docs/planejamento/qa-recursos.md)
 - [Catálogo de recursos](assets/catalogo-recursos.md)
 
 ## Desenvolvimento
