@@ -67,6 +67,8 @@ O passo 10 foi confirmado com quatro pulsos consecutivos no agente mais próximo
 
 Os passos 5, 6 e 7 dependem de um teclado físico: nesta revisão a automação disponível injetou teclas que o Allegro não reportou como pressionadas (`handle_key_down` recebeu apenas códigos espúrios), então **a movimentação foi conferida por inspeção do código, não por execução assistida**. O roteiro da seção 3 existe justamente para que a dupla confirme esses passos com o teclado na mão antes da apresentação.
 
+Essa confirmação está aberta na **#181**, com o roteiro dos passos 5 a 7 e o critério de aceite. As capturas usadas como evidência estão anexadas lá.
+
 Os passos 12, 13 e 14 não foram executados nesta revisão. O funcionamento do `ESC`/tempo congelado já havia sido registrado em `qa-maquina-estados.md` §5 (passos 9–10), que continua valendo.
 
 ## 5. Escopo do que **não** foi provado
@@ -89,11 +91,19 @@ O combate foi deliberadamente deixado fora do escopo do M3 porque o cronograma d
 
 ## 6. Limitações e pendências
 
-- A movimentação precisa da confirmação manual da dupla (seção 4).
+- A movimentação precisa da confirmação manual da dupla — aberta na **#181** (seção 4).
 - Não há suíte de testes automatizados no projeto, e nenhuma foi criada nesta revisão.
 - A leitura por camadas não tem cooldown; o valor definitivo segue **[PENDÊNCIA]** em `docs/game-design/scanner.md`.
 - O diâmetro desenhado do sprite (32 px) e o limite de borda usado na movimentação (16 px) são números provisórios.
 
-## 7. Falhas encontradas
+## 7. Como reproduzir a entrega
+
+1. Baixar `Nanobo-poc-m3.zip` na [release `poc-m3`](https://github.com/gustavo-hsilva79/Nanobo/releases/tag/poc-m3) e extrair a pasta inteira.
+2. Abrir `Nanobo.exe`. A pasta `assets/` precisa ficar ao lado do executável.
+3. Seguir o roteiro da seção 3.
+
+O zip contém `Nanobo.exe`, as DLLs do Allegro 5 e `assets/sprites/nanobo.png`. Não é preciso ter Visual Studio instalado para executar.
+
+## 8. Falhas encontradas
 
 Nenhuma falha reproduzível foi encontrada nos itens efetivamente verificados. A ausência de verificação automatizada da movimentação está registrada na seção 4 e não é, por si só, uma falha do produto.
