@@ -9,14 +9,66 @@ Inventário dos recursos necessários à execução atual, para orientar o carre
 | Sprite do Nanobô (32×32) | Personagem do jogador e, com tingimento por `al_draw_tinted_bitmap()`, os três agentes do encontro | `assets/sprites/nanobo.png`; carregado por `load_resources()` em `src/main.c` |
 | Fonte embutida do Allegro | Todo o texto da interface: HUD, painel do scanner, menu, pausa e telas de fim | Criada em memória por `al_create_builtin_font()` em `src/main.c`; não há arquivo de fonte |
 
-> O sprite tingido **não** substitui a arte final dos agentes: cada tipo de agente ainda precisa do seu próprio recurso, definido como **[PENDÊNCIA]** abaixo.
+> O sprite tingido **não** substitui a arte final dos agentes: a arte própria já existe (abaixo), mas ainda não é carregada pelo jogo.
+
+## Arte final criada, ainda não carregada
+
+Estes arquivos existem em `assets/`, mas **nenhum é carregado pelo jogo ainda** — a integração no código é tarefa separada. Cada recurso tem a fonte `.aseprite` editável ao lado do `.png` exportado; o `.png` é o arquivo que o jogo deve carregar.
+
+Todos os sprites usam a mesma paleta, o mesmo tamanho de pixel e a mesma direção de luz (cima-esquerda), para manter a coesão visual.
+
+### Agentes da Fase 1 — 32×32, PNG com transparência
+
+| Arquivo | Agente | Cor | Forma | Pista visual do envelope |
+|---|---|---|---|---|
+| `assets/sprites/bacteria_gram_positiva.png` | Bactéria Gram-positiva | roxo | cacho de cocos esféricos | parede espessa e clara (2 px), sem membrana externa |
+| `assets/sprites/bacteria_gram_negativa.png` | Bactéria Gram-negativa | vermelho | bacilo (bastonete) | membrana externa fina, separada do corpo |
+| `assets/sprites/celula_propria.png` | Célula saudável própria | verde | célula maior e arredondada | núcleo delimitado com nucléolo e mitocôndrias |
+
+As cores seguem a regra da #16, já refletida nos tingimentos atuais de `src/main.c`: **roxo para Gram+** e **vermelho para Gram−**. A célula própria é verde.
+
+A forma e o tamanho também separam os agentes: as bactérias são pequenas e simples (sem organelas), enquanto a célula própria é maior e tem núcleo delimitado — a diferença procarioto/eucarioto.
+
+### Nanobô animado — spritesheet
+
+| Arquivo | Conteúdo |
+|---|---|
+| `assets/sprites/nanobo_spritesheet.png` | Tira horizontal de **256×32**: 8 quadros de 32×32 |
+| `assets/sprites/nanobo_spritesheet.aseprite` | Fonte editável, com as etiquetas de animação |
+
+| Etiqueta | Quadros | Duração | Movimento |
+|---|---|---|---|
+| `idle` | 1–4 | 220 ms cada | flutuação suave, pluma curta |
+| `andar` | 5–8 | 110 ms cada | oscilação rápida, pluma longa e clara |
+
+Cada quadro é um recorte de 32×32 na tira, na ordem dos quadros. Em Allegro, o recorte sai de `al_create_sub_bitmap(tira, quadro * 32, 0, 32, 32)`.
+
+### Fundo do cenário
+
+| Arquivo | Conteúdo |
+|---|---|
+| `assets/backgrounds/fundo_microscopico.png` | Ambiente microscópico, **640×480**, no tamanho exato da tela |
+| `assets/backgrounds/fundo_microscopico.aseprite` | Fonte editável |
+
+O fundo é escuro e de baixo contraste de propósito: os sprites precisam continuar legíveis por cima dele.
+
+### Ícones de interface — 16×16, PNG com transparência
+
+| Arquivo | Uso sugerido |
+|---|---|
+| `assets/sprites/icone_raio_roxo.png` | Raio correspondente à Gram+ (#16) |
+| `assets/sprites/icone_raio_vermelho.png` | Raio correspondente à Gram− (#16) |
+| `assets/sprites/icone_scanner.png` | Lupa, para indicar a ação de escanear |
+| `assets/sprites/icone_coracao.png` | Vida, para o HUD |
+
+> O coração é carmim, um vermelho mais frio que o da Gram−, para não competir com o raio vermelho no HUD.
 
 ## Recursos previstos
 
 | Tipo | Recursos necessários | Local definido | Estado |
 |---|---|---|---|
-| Sprites e animações | Arte final dos agentes (bactéria Gram+, bactéria Gram−, célula própria) e spritesheet animado do Nanobô | `assets/sprites/` | [PENDÊNCIA] Arquivos e especificações ainda não definidos |
-| Cenários | Fundo/ambiente microscópico das fases | `assets/backgrounds/` | [PENDÊNCIA] Arquivos ainda não definidos |
+| Sprites e animações | Arte final dos agentes e spritesheet animado do Nanobô | `assets/sprites/` | Resolvido: ver seções acima |
+| Cenários | Fundo/ambiente microscópico das fases | `assets/backgrounds/` | Resolvido: ver seção acima |
 | Fontes | Tipografia final da interface | `assets/fonts/` | [PENDÊNCIA] Fonte ainda não escolhida; a fonte embutida atual é provisória |
 | Música | Trilha da partida | `assets/audio/music/` | [PENDÊNCIA] Arquivo ainda não definido |
 | Efeitos sonoros | Feedback de ações e eventos | `assets/audio/sfx/` | [PENDÊNCIA] Arquivos ainda não definidos |
@@ -27,6 +79,7 @@ Inventário dos recursos necessários à execução atual, para orientar o carre
 - Carregar apenas recursos que tenham sido adicionados e sejam usados pelo jogo.
 - Centralizar carregamento e liberação conforme #109 e #112.
 - Não tratar diretórios `.gitkeep` como arquivos de recurso.
+- Os arquivos `.aseprite` são fontes de edição, **não** recursos de execução: o carregador deve ler os `.png`.
 - Atualizar este catálogo quando novos arquivos forem escolhidos ou adicionados.
 
 ## Verificação
