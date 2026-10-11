@@ -1,3 +1,4 @@
 #include "gameplay.h"
 
-/* Regras centrais de gameplay serão implementadas após a base técnica. */
+// regras de gameplay ficam nesse arquivo
+// o codigo ainda esta no main.c e vai ser movido aos poucos
