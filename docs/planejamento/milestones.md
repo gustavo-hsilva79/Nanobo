@@ -1,5 +1,9 @@
 # Nanobô — Milestones
 
+> **Referência escrita única dos marcos.** A fonte operacional das datas e do escopo é o **GitHub Milestones** do repositório; a tabela abaixo reproduz o que está lá.
+>
+> Documentos de entrega acadêmica — [projeto-de-software.md](projeto-de-software.md), [one-sheet.md](../one-sheet.md) — foram escritos na data da respectiva entrega e são registro daquele momento, não referência viva. Se um deles divergir daqui, vale esta página e, acima dela, o GitHub.
+
 | Milestone | Data | Tipo | Objetivo |
 |---|---|---|---|
 | **M1 — Conceito e Escopo do Jogo** | 09/09/2026 | Entrega acadêmica | Fechar conceito, conteúdo mínimo e fronteira do MVP |

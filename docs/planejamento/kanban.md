@@ -18,15 +18,7 @@
 
 ## Milestones
 
-| Milestone | Data | Tipo | Objetivo |
-|---|---|---|---|
-| **M1 — Conceito e Escopo do Jogo** | 09/09/2026 | Entrega acadêmica | Fechar conceito, conteúdo mínimo e fronteira do MVP |
-| **M2 — Planejamento e Base Técnica** | 23/09/2026 | Entrega acadêmica | Entregar Projeto de Software + Kanban e organizar a base técnica |
-| **M3 — Prova de Conceito Técnica** | 07/10/2026 | Entrega acadêmica | Provar o núcleo de investigação: scanner, camadas e identificação única |
-| **M3.5 — Construção do Core Gameplay** | 21/10/2026 | Meta interna | Transformar a PoC em núcleo jogável: agentes, colisões, combate e vida |
-| **M4 — MVP Jogável** | 04/11/2026 | Entrega acadêmica | Ter uma partida completa, jogável, compreensível e validável |
-| **M5 — Polimento, Estabilização e Release Candidate** | 29/11/2026 | Meta interna | Fechar conteúdo final, corrigir problemas, validar memória, documentação e build candidata |
-| **M6 — Entrega Final e Apresentação** | 02/12/2026 | Entrega acadêmica | Entregar instalador, documentação e apresentação final |
+A tabela de marcos — data, tipo e objetivo de cada um — fica em **[milestones.md](milestones.md)**, que é a referência escrita única. A fonte operacional continua sendo o **GitHub Milestones** do repositório: `milestones.md` reproduz o que está lá, e aqui não se repete a lista para as duas versões não divergirem.
 
 > **M3.5 e M5 são metas internas**, não datas de entrega do professor.
 >
@@ -47,6 +39,8 @@
 
 ## Organização das Issues
 
+> **Responsáveis:** `[G]` = Gustavo, `[E]` = Eric. A distribuição completa, com Story Points e a justificativa do equilíbrio, está em `docs/planejamento/divisao-issues-dupla.md`.
+
 ### M1 — Conceito e Escopo do Jogo
 - #1 Escopo do MVP *(fechada)*
 - #2 Conteúdo biológico dos agentes *(fechada)*
@@ -64,81 +58,88 @@
 - #177 Objetivos de aprendizagem e critérios educacionais *(fechada)*
 
 ### M3 — Prova de Conceito Técnica
-- #8 Input de teclado *(entregue)*
-- #9 Movimentação *(entregue)*
-- #27 Cenário mínimo do PoC
-- #28 Teste e registro do PoC
-- #120 Validar loop principal e Delta Time
-- #121 Validar movimento e controles
-- #122 Validar agentes e colisões
-- #123 Validar scanner e identificação
-- #124 Validar ataque, projétil e defesa
-- #125 Validar variação de posições e ordem dos agentes
-- #126 Consolidar resultados, limitações e correções necessárias da PoC
+- #8 Input de teclado *(fechada)*
+- #9 Movimentação *(fechada)*
+- #27 Cenário mínimo do PoC *(fechada)*
+- #28 Teste e registro do PoC *(fechada)*
+- #120 Validar loop principal e Delta Time *(fechada)*
+- #121 Validar movimento e controles *(fechada)*
+- #122 Validar agentes e colisões *(fechada)*
+- #123 Validar scanner e identificação *(fechada)*
+- #124 Validar ataque, projétil e defesa *(fechada como não planejada; passou para o M3.5)*
+- #125 Validar variação de posições e ordem dos agentes *(fechada como não planejada; passou para o M3.5)*
+- #126 Consolidar resultados, limitações e correções necessárias da PoC *(fechada)*
+- #181 Confirmar manualmente a movimentação por teclado `[E]`
+
+> O M3 está encerrado: a única issue aberta do marco é a #181. As issues #124 e #125 foram fechadas como não planejadas, e ataque, projétil, defesa e colisões passaram a ser escopo do M3.5.
 
 ### M3.5 — Construção do Core Gameplay
-- #7 Máquina de estados *(infraestrutura entregue; a Issue cobre o restante)*
-- #10 Detecção de contato
-- #11 Vida, dano e invulnerabilidade
-- #13 Bactéria
-- #14 Célula própria
-- #16 Disparo e cooldown do ataque
-- #17 Defesa e cooldown
-- #22 Personagem placeholder
-- #24 Geração dos agentes
-- #25 Variação da ordem dos encontros
-- #49 Colisão do projétil e resistência
-- #62–#64 Seleção do raio, disparo e cooldown
+- #7 Máquina de estados *(infraestrutura entregue; a Issue cobre o restante)* `[E]`
+- #10 Detecção de contato `[G]`
+- #11 Vida, dano e invulnerabilidade `[G]`
+- #13 Bactéria `[G]`
+- #14 Célula própria `[G]`
+- #16 Disparo e cooldown do ataque `[G]` *(agrupadora)*
+- #17 Defesa e cooldown `[G]`
+- #22 Personagem placeholder `[G]`
+- #24 Geração dos agentes `[G]`
+- #25 Variação da ordem dos encontros `[G]`
+- #49 Colisão do projétil e resistência `[G]`
+- #62–#64 Seleção do raio, disparo e cooldown `[G]`
+
+> Neste marco o Eric fica com 3 SP (#7) e o Gustavo, com 32 SP. Para não acumular trabalho no M4, o Eric adianta no M3.5 as telas que não dependem do core gameplay: #7, #50, #51 e #53.
 
 ### M4 — MVP Jogável
-- #18 Identificação, pontuação e consequências
-- #19 HUD
-- #20 Integração do fluxo das telas
-- #26 Destino e conclusão da fase
-- #29 Vitória e reinício da partida
-- #50 Menu inicial
-- #51 Pausa
-- #52 Vitória
-- #53 Game Over
-- #57 Tela de resultados entre fases
-- #58 Tutorial introdutório da Fase 1
-- #66 Pontuação por ameaça neutralizada
-- #67 Bônus de identificação completa
-- #103–#107 Introdução a Gram+/Gram−, demonstração guiada e validação
-- #171–#176 Tela de resultados e preservação da pontuação
-- #178 Feedback visual e educacional das decisões
-- #179 Aprimoramento de movimento (polimento)
+- #18 Identificação, pontuação e consequências `[G]` *(agrupadora)*
+- #19 HUD `[E]`
+- #20 Integração do fluxo das telas `[E]` *(agrupadora)*
+- #26 Destino e conclusão da fase `[G]`
+- #29 Vitória e reinício da partida *(fechada)*
+- #50 Menu inicial `[E]`
+- #51 Pausa `[E]`
+- #52 Vitória `[E]`
+- #53 Game Over `[E]`
+- #57 Tela de resultados entre fases `[E]`
+- #58 Tutorial introdutório da Fase 1 `[G]`
+- #66 Pontuação por ameaça neutralizada `[G]`
+- #67 Bônus de identificação completa `[G]`
+- #68–#76 Transições, reinício da partida e validação do fluxo `[E]`
+- #103–#107 Introdução a Gram+/Gram−, demonstração guiada e validação `[G]`
+- #171–#176 Tela de resultados e preservação da pontuação `[E]`
+- #178 Feedback visual e educacional das decisões `[G]`
+- #179 Aprimoramento de movimento (polimento) `[G]`
 
 ### M5 — Polimento, Estabilização e Release Candidate
-- #30 Spritesheet e animação
-- #31 Efeitos sonoros
-- #32 Música
-- #33 Suporte a múltiplas fases
-- #34 Hi-score persistente
-- #35 Liberação de recursos
-- #36 Validação de memória < 100 MB
-- #37 Testes de regressão
-- #38 Teste com pessoa externa
-- #39 Correção de bugs críticos
-- #40 Documentação técnica final
-- #41 Revisão do One Sheet/GDD
-- #42 Build Release
-- #55 Segunda fase jogável
-- #65 Identificação única na Fase 1
-- #77–#82 Formato, leitura, gravação e validação do hi-score
-- #83–#91 Estados, multiplicação e integração da Fase 2
-- #114–#119 Medição de memória
-- #127–#143 QA, regressão, teste externo e correção de bugs
-- #144–#158 Documentação final e build Release
-- #159–#170 Instalador, teste em máquina limpa e ensaio da apresentação
+- #30 Spritesheet e animação `[G]`
+- #31 Efeitos sonoros `[G]`
+- #32 Música `[G]`
+- #33 Suporte a múltiplas fases `[G]`
+- #34 Hi-score persistente `[G]` *(agrupadora)*
+- #35 Liberação de recursos `[G]`
+- #36 Validação de memória < 100 MB `[G]`
+- #37 Testes de regressão `[E]`
+- #38 Teste com pessoa externa `[G]`
+- #39 Correção de bugs críticos `[E]`
+- #40 Documentação técnica final `[E]`
+- #41 Revisão do One Sheet/GDD `[E]`
+- #42 Build Release `[E]`
+- #55 Segunda fase jogável `[G]` *(agrupadora)*
+- #65 Identificação única na Fase 1 `[G]` *(no GitHub está no M6 — ver nota do M6)*
+- #77–#82 Formato, leitura, gravação e validação do hi-score `[E]`
+- #83–#91 Estados, multiplicação e integração da Fase 2 — `[G]` #83–#90 · `[E]` #91
+- #114–#119 Medição de memória `[G]`
+- #127–#143 QA, regressão, teste externo e correção de bugs — `[G]` #127 e #134–#138 · `[E]` #128–#133 e #139–#143
+- #144–#158 Documentação final e build Release — `[G]` #144–#146 · `[E]` #147–#158
+- #159–#170 Instalador, teste em máquina limpa e ensaio da apresentação — `[E]` #159–#164 · `[G]` #165–#170
 
 ### M6 — Entrega Final e Apresentação
-- #43 Criar e testar instalador para Windows
-- #44 Roteiro e materiais da apresentação
-- #46 Validar produto final em máquina limpa
-- #47 Ensaio completo da apresentação
+- #43 Criar e testar instalador para Windows `[E]`
+- #44 Roteiro e materiais da apresentação `[G]`
+- #46 Validar produto final em máquina limpa `[E]`
+- #47 Ensaio completo da apresentação `[G]`
+- #65 Identificação única na Fase 1 `[G]` *(está neste marco no GitHub, mas é trabalho da Fase 1: deve migrar para o M5)*
 
-> As Issues #43, #44, #46 e #47 continuam no M6 no GitHub mesmo com itens equivalentes no M5. A consolidação dessas duplicidades é decisão da dupla e não foi feita automaticamente.
+> As Issues #43, #44, #46 e #47 continuam no M6 no GitHub mesmo com itens equivalentes no M5. A consolidação dessas duplicidades é decisão da dupla e não foi feita automaticamente. Se as quatro forem fechadas como duplicatas, o equilíbrio se mantém movendo a #165 (1 SP) do Gustavo para o Eric: 159 / 159 SP.
 
 ## Regras de escopo
 

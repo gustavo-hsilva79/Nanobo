@@ -1,6 +1,7 @@
 #ifndef NANOBO_GAMEPLAY_H
 #define NANOBO_GAMEPLAY_H
 
-/* Regras centrais de gameplay serão adicionadas conforme o MVP for implementado. */
+// regras centrais de gameplay ficam declaradas aqui
+// (combate, vida, dano, pontuacao e consequencias)
 
 #endif

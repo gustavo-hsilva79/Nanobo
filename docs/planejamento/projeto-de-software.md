@@ -148,9 +148,10 @@ assets/
 └── data/
 
 docs/
-├── one-sheet/
+├── one-sheet.md
 ├── game-design/
-└── planejamento/
+├── planejamento/
+└── arquivo/
 ```
 
 A estrutura existente do repositório deve ser preservada sempre que possível; novas abstrações só devem ser criadas quando houver necessidade real.
@@ -385,7 +386,7 @@ Falhas relevantes devem ser reproduzíveis e registradas em Issues.
 
 ## 16. Documentos de referência
 
-- One Sheet: `docs/one-sheet/one-sheet.md`
+- One Sheet: `docs/one-sheet.md`
 - GDD: `docs/game-design/gdd.md`
 - Conteúdo biológico e objetivos de aprendizagem: `docs/game-design/conteudo-biologico.md`
 - Escopo: `docs/game-design/escopo.md`
