@@ -1,5 +1,7 @@
 #include "gameplay.h"
 
+#include <stdlib.h>
+
 #include "../entities/entities.h"
 
 // tempo da partida em segundos, so conta dentro do estado GAME
@@ -88,6 +90,36 @@ void use_scanner()
     }
 }
 
+// pontos validos do cenario: dentro da area jogavel e fora do painel do scanner
+static const float pontos_validos[12][2] =
+{
+    {  90, 120 }, { 250, 110 }, { 430, 130 }, { 560, 200 },
+    {  80, 250 }, { 200, 220 }, { 330, 240 }, { 470, 260 },
+    { 110, 340 }, { 260, 340 }, { 400, 330 }, { 550, 350 }
+};
+
+// sorteia um ponto valido e diferente para cada agente da fase
+void place_agents()
+{
+    int usados[12] = { 0 };
+    int i;
+
+    for (i = 0; i < NUM_AGENTES; i++)
+    {
+        int p;
+
+        do
+        {
+            p = rand() % 12;
+        }
+        while (usados[p] == 1);
+
+        usados[p] = 1;
+        agents[i].x = pontos_validos[p][0];
+        agents[i].y = pontos_validos[p][1];
+    }
+}
+
 // comeca partida nova, a identificacao do encontro e zerada
 void reset_match()
 {
@@ -102,6 +134,8 @@ void reset_match()
     player_x = 320;
     player_y = 260;
     player_facing = PLAYER_FACING_DOWN;
+
+    place_agents();
 
     key_up = false;
     key_down = false;

@@ -31,4 +31,7 @@ void use_scanner();
 void reset_match();
 void update_match(double dt, float screen_w, float screen_h);
 
+// sorteia as posicoes dos agentes no comeco de cada partida
+void place_agents();
+
 #endif
