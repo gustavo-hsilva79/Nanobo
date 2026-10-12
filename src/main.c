@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdlib.h>
+#include <time.h>
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
@@ -382,6 +384,9 @@ int main()
     bool redraw = true;
 
     ALLEGRO_EVENT event;
+
+    // semente do sorteio das posicoes, uma vez por execucao
+    srand((unsigned int)time(NULL));
 
     al_start_timer(timer);
     while (1)
