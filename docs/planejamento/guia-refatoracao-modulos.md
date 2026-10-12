@@ -1,7 +1,7 @@
 # Guia: mover código do `main.c` para os módulos
 
 **Para quem é:** o próprio autor do jogo, mexendo no Visual Studio.  
-**Estado:** os passos 1 (entidades) e 2 (gameplay) **já foram feitos**. `entities.c` e `gameplay.c` estão no `<ClCompile>` de `Nanobo.vcxproj` e já contêm o código; no `main.c` sobrou o loop, os recursos, o desenho e a entrada (passo 3).
+**Estado:** os **três passos estão feitos**. `entities.c` e `gameplay.c` estão no `<ClCompile>` de `Nanobo.vcxproj` e já contêm o código, e o passo 3 (auditoria do que sobrou no `main.c`) foi conferido em 12/10/2026 (commit `777b2df`).
 
 ## Regra de ouro
 
@@ -96,7 +96,7 @@ git commit -m "separei os arquivos do codigo e arrumei a documentacao"
 - `update_match` recebe o tamanho da tela (`screen_w`, `screen_h`) porque quem conhece o tamanho da janela é o `main.c`, dono do `WIDTH`/`HEIGHT`. O `gameplay.c` usa os dois só para o Nanobô não sair da tela: no `main.c` a chamada ficou `update_match(deltaTime, WIDTH, HEIGHT);`.
 - as quatro teclas seguradas foram morar junto com o `match_time`, no `gameplay.c`: quem lê é o `update_match`, quem zera é o `reset_match`, e o `main.c` continua escrevendo nelas nos handlers de entrada.
 
-## Passo 3 — conferir o que ficou parado
+## Passo 3 — conferir o que ficou parado (feito)
 
 No `main.c` deve sobrar apenas isto:
 
@@ -107,6 +107,17 @@ No `main.c` deve sobrar apenas isto:
 - o `main()` com o loop, o timer e o `delta_time`.
 
 Se sobrou mais que isso, provavelmente ainda tem código esperando um lugar — e o lugar é `entities.c` ou `gameplay.c`.
+
+**Auditoria de 12/10/2026** — achou quatro sobras, todas corrigidas:
+
+| Sobra | Por que estava errada | Como ficou |
+|---|---|---|
+| `float mouse_x`, `float mouse_y` e o `case ALLEGRO_EVENT_MOUSE_AXES` | Estado escrito a cada evento e **nunca lido**: código morto que só existia para se alimentar | Removidos; o clique continua recebendo as coordenadas direto do evento |
+| `//ALLEGRO_MOUSE mouse;` | Linha comentada, sem função | Removida |
+| `agents[i].x - 16` no `draw_game` | O tamanho do agente é **dado da entidade**, não um literal solto no desenho (e a #10 vai usar o mesmo número na colisão) | `AGENT_RADIUS`, definido no `entities.h` ao lado de `PLAYER_RADIUS` |
+| `320` fixo no `draw_message` | Era metade da largura só por coincidência, enquanto o resto do arquivo usa `WIDTH / 2` | `WIDTH / 2` |
+
+**Ficou de propósito:** as teclas de teste do fluxo (`F`, `G`, `V`), que só saem quando as condições reais de fim de fase existirem (#26/#18), e a linha temporária `direcao: N` do HUD, que sai quando o disparo (#63) existir.
 
 ## Depois de cada passo
 
