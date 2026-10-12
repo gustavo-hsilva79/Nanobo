@@ -7,13 +7,11 @@
 #include <allegro5/allegro_primitives.h>
 
 #include "core/game.h"
+#include "entities/entities.h"
+#include "gameplay/gameplay.h"
 
 #define WIDTH 640
 #define HEIGHT 480
-
-#define NUM_AGENTES 3
-#define SCAN_RANGE 130
-#define MAX_LAYERS 2
 
 #define BUTTON_X 220
 #define BUTTON_Y 300
@@ -24,43 +22,9 @@
 ALLEGRO_FONT* font = NULL;
 ALLEGRO_BITMAP* nanobo = NULL;
 
-// agente do encontro
-typedef struct
-{
-    int id;
-    float x;
-    float y;
-    int kind;      // 0 = gram positiva, 1 = gram negativa, 2 = celula propria
-    int layers;    // camadas que o scanner ja revelou
-    bool identified;
-} Agent;
-
-Agent agents[NUM_AGENTES] =
-{
-    { 1, 140, 130, 0, 0, false },
-    { 2, 490, 150, 1, 0, false },
-    { 3, 320, 280, 2, 0, false }
-};
-
-int identified_count = 0;
-double match_time = 0;
-
-// movimentacao do nanobo
+// variaveis do mouse
 float mouse_x = 0;
 float mouse_y = 0;
-
-// onde o nanobo esta na partida
-float player_x = 320;
-float player_y = 260;
-
-// quantos pixels ele anda por segundo
-float player_speed = 200;
-
-// teclas seguradas agora, o update le isso pra mover
-bool key_up = false;
-bool key_down = false;
-bool key_left = false;
-bool key_right = false;
 
 // carrega tudo que o jogo precisa antes do loop por frame
 bool load_resources()
@@ -98,106 +62,6 @@ void free_resources()
     }
 }
 
-// primeira camada, so diz o que apareceu
-const char* layer_one_text(int kind)
-{
-    if (kind == 2)
-    {
-        return "celula do organismo detectada";
-    }
-
-    return "bacteria detectada";
-}
-
-// segunda camada, o detalhe que o jogador interpreta
-const char* layer_two_text(int kind)
-{
-    if (kind == 0)
-    {
-        return "Gram+: parede celular espessa, rica em peptidoglicano";
-    }
-
-    if (kind == 1)
-    {
-        return "Gram-: parede fina de peptidoglicano e membrana externa";
-    }
-
-    return "celula saudavel do proprio organismo: preserve-a";
-}
-
-// agente valido mais perto, -1 quando ninguem esta no alcance
-int pick_target(float x, float y)
-{
-    int target = -1;
-    int i;
-    float best = 0;
-
-    for (i = 0; i < NUM_AGENTES; i++)
-    {
-        float dx = agents[i].x - x;
-        float dy = agents[i].y - y;
-        float dist = dx * dx + dy * dy;
-
-        if (dist > SCAN_RANGE * SCAN_RANGE)
-        {
-            continue;
-        }
-
-        if (target == -1 || dist < best)
-        {
-            best = dist;
-            target = i;
-        }
-    }
-
-    return target;
-}
-
-// um pulso do scanner, revela a proxima camada do alvo
-void use_scanner()
-{
-    int target = pick_target(player_x, player_y);
-
-    if (target == -1)
-    {
-        return;
-    }
-
-    if (agents[target].layers < MAX_LAYERS)
-    {
-        agents[target].layers = agents[target].layers + 1;
-    }
-
-    if (agents[target].layers == MAX_LAYERS && agents[target].identified == false)
-    {
-        agents[target].identified = true;
-        identified_count = identified_count + 1;
-    }
-}
-
-// comeca partida nova, a identificacao do encontro e zerada
-void reset_match()
-{
-    int i;
-
-    for (i = 0; i < NUM_AGENTES; i++)
-    {
-        agents[i].layers = 0;
-        agents[i].identified = false;
-    }
-
-    player_x = 320;
-    player_y = 260;
-
-    key_up = false;
-    key_down = false;
-    key_left = false;
-    key_right = false;
-
-    identified_count = 0;
-    match_time = 0;
-}
-
 // o que ja foi revelado continua na tela durante o encontro
 void draw_scan_info()
 {
@@ -208,13 +72,13 @@ void draw_scan_info()
     {
         if (agents[i].layers >= 1)
         {
-            al_draw_textf(font, al_map_rgb(170, 170, 170), 10, 370 + line * 14, 0, "agente %d: %s", agents[i].id, layer_one_text(agents[i].kind));
+            al_draw_textf(font, al_map_rgb(170, 170, 170), 10, 370 + line * 14, 0, "agente %d: %s", agents[i].id, layer_one_text(agents[i].variant));
             line = line + 1;
         }
 
         if (agents[i].layers >= 2)
         {
-            al_draw_textf(font, al_map_rgb(220, 220, 220), 10, 370 + line * 14, 0, "  %s", layer_two_text(agents[i].kind));
+            al_draw_textf(font, al_map_rgb(220, 220, 220), 10, 370 + line * 14, 0, "  %s", layer_two_text(agents[i].variant));
             line = line + 1;
         }
     }
@@ -238,11 +102,11 @@ void draw_game()
 
     for (i = 0; i < NUM_AGENTES; i++)
     {
-        if (agents[i].kind == 0)
+        if (agents[i].variant == 0)
         {
             tint = al_map_rgb(190, 110, 240);
         }
-        else if (agents[i].kind == 1)
+        else if (agents[i].variant == 1)
         {
             tint = al_map_rgb(240, 90, 90);
         }
@@ -436,55 +300,6 @@ void handle_mouse_click(float x, float y)
     }
 }
 
-// a partida so anda no estado GAME
-void update_match(double dt)
-{
-    float step = player_speed * dt;
-
-    match_time = match_time + dt;
-
-    if (key_up)
-    {
-        player_y = player_y - step;
-    }
-
-    if (key_down)
-    {
-        player_y = player_y + step;
-    }
-
-    if (key_left)
-    {
-        player_x = player_x - step;
-    }
-
-    if (key_right)
-    {
-        player_x = player_x + step;
-    }
-
-    // o nanobo nao sai da tela
-    if (player_x < 16)
-    {
-        player_x = 16;
-    }
-
-    if (player_x > WIDTH - 16)
-    {
-        player_x = WIDTH - 16;
-    }
-
-    if (player_y < 16)
-    {
-        player_y = 16;
-    }
-
-    if (player_y > HEIGHT - 16)
-    {
-        player_y = HEIGHT - 16;
-    }
-}
-
 int main()
 {
     if (!al_init())
@@ -577,7 +392,7 @@ int main()
                 // a partida so atualiza no estado GAME
                 if (game_get_scene() == GAME_SCENE_GAME)
                 {
-                    update_match(deltaTime);
+                    update_match(deltaTime, WIDTH, HEIGHT);
                 }
                 redraw = true;
                 break;
