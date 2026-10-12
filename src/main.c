@@ -24,10 +24,6 @@
 ALLEGRO_FONT* font = NULL;
 ALLEGRO_BITMAP* nanobo = NULL;
 
-// variaveis do mouse
-float mouse_x = 0;
-float mouse_y = 0;
-
 // carrega tudo que o jogo precisa antes do loop por frame
 bool load_resources()
 {
@@ -117,7 +113,7 @@ void draw_game()
             tint = al_map_rgb(110, 220, 120);
         }
 
-        al_draw_tinted_bitmap(nanobo, tint, agents[i].x - 16, agents[i].y - 16, 0);
+        al_draw_tinted_bitmap(nanobo, tint, agents[i].x - AGENT_RADIUS, agents[i].y - AGENT_RADIUS, 0);
     }
 
     // o nanobo e desenhado onde o teclado deixou ele
@@ -134,7 +130,7 @@ void draw_game()
 
 void draw_message(const char* title, const char* hint)
 {
-    al_draw_text(font, al_map_rgb(255, 255, 255), 320, HEIGHT / 2 - 20, ALLEGRO_ALIGN_CENTRE, title);
+    al_draw_text(font, al_map_rgb(255, 255, 255), WIDTH / 2, HEIGHT / 2 - 20, ALLEGRO_ALIGN_CENTRE, title);
     al_draw_text(font, al_map_rgb(160, 160, 160), WIDTH / 2, HEIGHT / 2 + 10, ALLEGRO_ALIGN_CENTRE, hint);
 }
 
@@ -379,7 +375,6 @@ int main()
     al_register_event_source(queue, al_get_display_event_source(display));
     al_register_event_source(queue, al_get_timer_event_source(timer));
 
-    //ALLEGRO_MOUSE mouse;
     bool done = false;
     bool redraw = true;
 
@@ -412,11 +407,6 @@ int main()
                 handle_key_up(event.keyboard.keycode);
                 break;
 
-            case ALLEGRO_EVENT_MOUSE_AXES:
-                mouse_x = event.mouse.x;
-                mouse_y = event.mouse.y;
-                break;
-
             case ALLEGRO_EVENT_MOUSE_BUTTON_DOWN:
                 handle_mouse_click(event.mouse.x, event.mouse.y);
                 break;
@@ -440,8 +430,6 @@ int main()
     al_destroy_display(display);
     al_destroy_timer(timer);
     al_destroy_event_queue(queue);
-
-
 
     return 0;
 }

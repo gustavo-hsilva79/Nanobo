@@ -6,6 +6,9 @@
 // quantos agentes o encontro tem: 3 bacterias e 3 celulas saudaveis na Fase 1
 #define NUM_AGENTES 6
 
+// raio de desenho e de colisao dos agentes em pixels (metade do sprite de 32x32)
+#define AGENT_RADIUS 16
+
 // agente do encontro
 typedef struct
 {
