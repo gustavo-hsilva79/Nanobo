@@ -1,7 +1,7 @@
 # Guia: mover código do `main.c` para os módulos
 
 **Para quem é:** o próprio autor do jogo, mexendo no Visual Studio.  
-**Estado:** `src/entities/entities.c` e `src/gameplay/gameplay.c` já existem, já estão no `<ClCompile>` de `Nanobo.vcxproj` e já aparecem nas pastas *Entities* e *Gameplay* do Solution Explorer. Estão vazios de propósito — o código vai para lá aos poucos, um passo por vez.
+**Estado:** os passos 1 (entidades) e 2 (gameplay) **já foram feitos**. `entities.c` e `gameplay.c` estão no `<ClCompile>` de `Nanobo.vcxproj` e já contêm o código; no `main.c` sobrou o loop, os recursos, o desenho e a entrada (passo 3).
 
 ## Regra de ouro
 
@@ -28,7 +28,7 @@ git add .
 git commit -m "separei os arquivos do codigo e arrumei a documentacao"
 ```
 
-## Passo 1 — entidades
+## Passo 1 — entidades (feito)
 
 **O que sai do `main.c` para `entities.h` / `entities.c`:**
 
@@ -58,7 +58,7 @@ git commit -m "separei os arquivos do codigo e arrumei a documentacao"
 
 **Dica:** se aparecer erro `unresolved external symbol`, é sinal de que você declarou `extern` no `.h` mas esqueceu de colar a definição no `.c`. Se aparecer `redefinition`, colou a variável nos dois lugares.
 
-## Passo 2 — regras de gameplay
+## Passo 2 — regras de gameplay (feito)
 
 **O que sai do `main.c` para `gameplay.h` / `gameplay.c`:**
 
@@ -71,8 +71,9 @@ git commit -m "separei os arquivos do codigo e arrumei a documentacao"
 | `int pick_target(float x, float y)` | `gameplay.c` |
 | `void use_scanner()` | `gameplay.c` |
 | `void reset_match()` | `gameplay.c` |
-| `void update_match(double dt)` | `gameplay.c` |
+| `void update_match(double dt)` | `gameplay.c`, com a assinatura `update_match(double dt, float screen_w, float screen_h)` |
 | `double match_time` | `gameplay.c` |
+| `bool key_up`, `key_down`, `key_left`, `key_right` | `gameplay.c`, o `main` escreve e o update lê |
 
 **Como fazer:**
 
@@ -80,7 +81,7 @@ git commit -m "separei os arquivos do codigo e arrumei a documentacao"
    ```c
    void use_scanner();
    void reset_match();
-   void update_match(double dt);
+   void update_match(double dt, float screen_w, float screen_h);
    int pick_target(float x, float y);
    const char* layer_one_text(int kind);
    const char* layer_two_text(int kind);
@@ -89,6 +90,11 @@ git commit -m "separei os arquivos do codigo e arrumei a documentacao"
 3. Se alguma função usa algo que ficou no `main.c` (por exemplo `player_x`), confira se o `gameplay.c` está incluindo o `entities.h`: `#include "../entities/entities.h"`.
 4. Apague as funções do `main.c` e adicione `#include "gameplay/gameplay.h"` no topo.
 5. Compile e rode de novo.
+
+**Duas coisas ficaram um pouco diferentes do previsto:**
+
+- `update_match` recebe o tamanho da tela (`screen_w`, `screen_h`) porque quem conhece o tamanho da janela é o `main.c`, dono do `WIDTH`/`HEIGHT`. O `gameplay.c` usa os dois só para o Nanobô não sair da tela: no `main.c` a chamada ficou `update_match(deltaTime, WIDTH, HEIGHT);`.
+- as quatro teclas seguradas foram morar junto com o `match_time`, no `gameplay.c`: quem lê é o `update_match`, quem zera é o `reset_match`, e o `main.c` continua escrevendo nelas nos handlers de entrada.
 
 ## Passo 3 — conferir o que ficou parado
 
@@ -103,6 +109,8 @@ No `main.c` deve sobrar apenas isto:
 Se sobrou mais que isso, provavelmente ainda tem código esperando um lugar — e o lugar é `entities.c` ou `gameplay.c`.
 
 ## Depois de cada passo
+
+Conferido em 11/10/2026: depois do passo 2 o projeto compila em `Debug|x64` sem erro e sem aviso, e o jogo abre, anda e escaneia igual a antes.
 
 Rode exatamente o que está em [qa-poc.md](qa-poc.md) e confira: `↑` `↓` `←` `→` e `W` `A` `S` `D` movem o Nanobô, ele para ao soltar, não sai da tela, `ESC` volta ao menu, `SPACE` perto de um agente mostra as duas camadas e não identifica o mesmo agente duas vezes. Se algo disso quebrar, desfaça só o último passo — por isso um passo por vez.
 

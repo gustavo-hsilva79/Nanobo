@@ -362,10 +362,11 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
-# Ignore feito por n�s
+# Ignore feito pela dupla
 .agents
 .claude
 .hermes
 .pi
 skills-lock.json
 AGENTS.md
+IDEA.md
