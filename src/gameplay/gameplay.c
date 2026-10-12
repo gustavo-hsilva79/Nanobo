@@ -101,6 +101,7 @@ void reset_match()
 
     player_x = 320;
     player_y = 260;
+    player_facing = PLAYER_FACING_DOWN;
 
     key_up = false;
     key_down = false;
@@ -121,41 +122,45 @@ void update_match(double dt, float screen_w, float screen_h)
     if (key_up)
     {
         player_y = player_y - step;
+        player_facing = PLAYER_FACING_UP;
     }
 
     if (key_down)
     {
         player_y = player_y + step;
+        player_facing = PLAYER_FACING_DOWN;
     }
 
     if (key_left)
     {
         player_x = player_x - step;
+        player_facing = PLAYER_FACING_LEFT;
     }
 
     if (key_right)
     {
         player_x = player_x + step;
+        player_facing = PLAYER_FACING_RIGHT;
     }
 
     // o nanobo nao sai da tela
-    if (player_x < 16)
+    if (player_x < PLAYER_RADIUS)
     {
-        player_x = 16;
+        player_x = PLAYER_RADIUS;
     }
 
-    if (player_x > screen_w - 16)
+    if (player_x > screen_w - PLAYER_RADIUS)
     {
-        player_x = screen_w - 16;
+        player_x = screen_w - PLAYER_RADIUS;
     }
 
-    if (player_y < 16)
+    if (player_y < PLAYER_RADIUS)
     {
-        player_y = 16;
+        player_y = PLAYER_RADIUS;
     }
 
-    if (player_y > screen_h - 16)
+    if (player_y > screen_h - PLAYER_RADIUS)
     {
-        player_y = screen_h - 16;
+        player_y = screen_h - PLAYER_RADIUS;
     }
 }
