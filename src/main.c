@@ -24,6 +24,11 @@
 ALLEGRO_FONT* font = NULL;
 ALLEGRO_BITMAP* nanobo = NULL;
 
+// a arte de cada especie da Fase 1
+ALLEGRO_BITMAP* gram_positive = NULL;
+ALLEGRO_BITMAP* gram_negative = NULL;
+ALLEGRO_BITMAP* cell_sprite = NULL;
+
 // carrega tudo que o jogo precisa antes do loop por frame
 bool load_resources()
 {
@@ -41,12 +46,51 @@ bool load_resources()
         return false;
     }
 
+    gram_positive = al_load_bitmap("assets/sprites/bacteria_gram_positiva.png");
+    if (!gram_positive)
+    {
+        printf("couldn't load gram positive\n");
+        return false;
+    }
+
+    gram_negative = al_load_bitmap("assets/sprites/bacteria_gram_negativa.png");
+    if (!gram_negative)
+    {
+        printf("couldn't load gram negative\n");
+        return false;
+    }
+
+    cell_sprite = al_load_bitmap("assets/sprites/celula_propria.png");
+    if (!cell_sprite)
+    {
+        printf("couldn't load cell\n");
+        return false;
+    }
+
     return true;
 }
 
 // libera o que foi carregado, na ordem inversa
 void free_resources()
 {
+    if (gram_positive)
+    {
+        al_destroy_bitmap(gram_positive);
+        gram_positive = NULL;
+    }
+
+    if (gram_negative)
+    {
+        al_destroy_bitmap(gram_negative);
+        gram_negative = NULL;
+    }
+
+    if (cell_sprite)
+    {
+        al_destroy_bitmap(cell_sprite);
+        cell_sprite = NULL;
+    }
+
     if (nanobo)
     {
         al_destroy_bitmap(nanobo);
@@ -70,13 +114,13 @@ void draw_scan_info()
     {
         if (agents[i].layers >= 1)
         {
-            al_draw_textf(font, al_map_rgb(170, 170, 170), 10, 370 + line * 14, 0, "agente %d: %s", agents[i].id, layer_one_text(agents[i].variant));
+            al_draw_textf(font, al_map_rgb(170, 170, 170), 10, 370 + line * 14, 0, "agente %d: %s", agents[i].id, layer_one_text(agents[i].species));
             line = line + 1;
         }
 
         if (agents[i].layers >= 2)
         {
-            al_draw_textf(font, al_map_rgb(220, 220, 220), 10, 370 + line * 14, 0, "  %s", layer_two_text(agents[i].variant));
+            al_draw_textf(font, al_map_rgb(220, 220, 220), 10, 370 + line * 14, 0, "  %s", layer_two_text(agents[i].species));
             line = line + 1;
         }
     }
@@ -93,28 +137,30 @@ void draw_menu()
     al_draw_text(font, al_map_rgb(130, 130, 130), WIDTH / 2, BUTTON_Y + 80, ALLEGRO_ALIGN_CENTRE, "clique no botao ou aperte enter");
 }
 
+// sprite de cada especie, alinhado com as constantes do entities.h
+ALLEGRO_BITMAP* species_sprite(int species)
+{
+    if (species == SPECIES_GRAM_POSITIVE)
+    {
+        return gram_positive;
+    }
+
+    if (species == SPECIES_GRAM_NEGATIVE)
+    {
+        return gram_negative;
+    }
+
+    return cell_sprite;
+}
+
 void draw_game()
 {
     int i;
-    int contato;
-    ALLEGRO_COLOR tint;
+    int contact;
 
     for (i = 0; i < NUM_AGENTES; i++)
     {
-        if (agents[i].variant == 0)
-        {
-            tint = al_map_rgb(190, 110, 240);
-        }
-        else if (agents[i].variant == 1)
-        {
-            tint = al_map_rgb(240, 90, 90);
-        }
-        else
-        {
-            tint = al_map_rgb(110, 220, 120);
-        }
-
-        al_draw_tinted_bitmap(nanobo, tint, agents[i].x - AGENT_RADIUS, agents[i].y - AGENT_RADIUS, 0);
+        al_draw_bitmap(species_sprite(agents[i].species), agents[i].x - AGENT_RADIUS, agents[i].y - AGENT_RADIUS, 0);
     }
 
     // o nanobo e desenhado onde o teclado deixou ele
@@ -127,10 +173,10 @@ void draw_game()
     al_draw_textf(font, al_map_rgb(130, 130, 130), 10, 58, 0, "direcao: %d", player_facing);
 
     // linha temporaria: prova visual do contato enquanto a #11 nao mostra o dano
-    contato = touching_agent();
-    if (contato != -1)
+    contact = touching_agent();
+    if (contact != -1)
     {
-        al_draw_textf(font, al_map_rgb(240, 200, 90), 10, 74, 0, "encostado no agente %d", agents[contato].id);
+        al_draw_textf(font, al_map_rgb(240, 200, 90), 10, 74, 0, "encostado no agente %d", agents[contact].id);
     }
 
     draw_scan_info();
@@ -357,7 +403,6 @@ int main()
         return 1;
     }
 
-    al_set_new_display_flags(ALLEGRO_WINDOWED | ALLEGRO_RESIZABLE | ALLEGRO_MAXIMIZED);
     ALLEGRO_DISPLAY* display = al_create_display(WIDTH, HEIGHT);
     if (!display)
     {
@@ -384,8 +429,9 @@ int main()
 
     ALLEGRO_EVENT event;
 
-    // semente do sorteio das posicoes, uma vez por execucao
-    srand((unsigned int)time(NULL));
+    // semente do sorteio, uma vez por execucao: o relogio em segundos se repete
+    // entre duas aberturas no mesmo segundo, entao o relogio do allegro entra junto
+    srand((unsigned int)time(NULL) * 1000u + (unsigned int)(al_get_time() * 1000.0));
 
     al_start_timer(timer);
     while (1)

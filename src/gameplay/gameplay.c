@@ -1,5 +1,6 @@
 #include "gameplay.h"
 
+#include <stdio.h>
 #include <stdlib.h>
 
 #include "../entities/entities.h"
@@ -13,10 +14,19 @@ bool key_down = false;
 bool key_left = false;
 bool key_right = false;
 
-// primeira camada, so diz o que apareceu
-const char* layer_one_text(int kind)
+// distancia ao quadrado entre dois pontos, evita a raiz quadrada
+static float squared_distance(float ax, float ay, float bx, float by)
 {
-    if (kind == 2)
+    float dx = ax - bx;
+    float dy = ay - by;
+
+    return dx * dx + dy * dy;
+}
+
+// primeira camada, so diz o que apareceu
+const char* layer_one_text(int species)
+{
+    if (species == SPECIES_CELL)
     {
         return "celula do organismo detectada";
     }
@@ -25,14 +35,14 @@ const char* layer_one_text(int kind)
 }
 
 // segunda camada, o detalhe que o jogador interpreta
-const char* layer_two_text(int kind)
+const char* layer_two_text(int species)
 {
-    if (kind == 0)
+    if (species == SPECIES_GRAM_POSITIVE)
     {
         return "Gram+: parede celular espessa, rica em peptidoglicano";
     }
 
-    if (kind == 1)
+    if (species == SPECIES_GRAM_NEGATIVE)
     {
         return "Gram-: parede fina de peptidoglicano e membrana externa";
     }
@@ -49,9 +59,7 @@ int pick_target(float x, float y)
 
     for (i = 0; i < NUM_AGENTES; i++)
     {
-        float dx = agents[i].x - x;
-        float dy = agents[i].y - y;
-        float dist = dx * dx + dy * dy;
+        float dist = squared_distance(agents[i].x, agents[i].y, x, y);
 
         if (dist > SCAN_RANGE * SCAN_RANGE)
         {
@@ -69,21 +77,15 @@ int pick_target(float x, float y)
 }
 
 // agente que o nanobo esta encostando, -1 quando nenhum
-// contato e sobreposicao de circulos: a distancia entre os centros e menor
-// que a soma dos raios. e uma consulta pura -- nao aplica dano, nao guarda
-// estado e nao dispara evento, entao contato que dura varios frames devolve
-// sempre o mesmo resultado; quem trata o tempo e a vida (#11)
+// contato e sobreposicao de circulos; a consulta e pura, quem trata o tempo e a #11
 int touching_agent()
 {
-    float alcance = (float)(PLAYER_RADIUS + AGENT_RADIUS);
+    float reach = (float)(PLAYER_RADIUS + AGENT_RADIUS);
     int i;
 
     for (i = 0; i < NUM_AGENTES; i++)
     {
-        float dx = agents[i].x - player_x;
-        float dy = agents[i].y - player_y;
-
-        if (dx * dx + dy * dy <= alcance * alcance)
+        if (squared_distance(agents[i].x, agents[i].y, player_x, player_y) <= reach * reach)
         {
             return i;
         }
@@ -115,32 +117,41 @@ void use_scanner()
 }
 
 // pontos validos do cenario: dentro da area jogavel e fora do painel do scanner
-static const float pontos_validos[12][2] =
+static const float valid_points[12][2] =
 {
     {  90, 120 }, { 250, 110 }, { 430, 130 }, { 560, 200 },
     {  80, 250 }, { 200, 220 }, { 330, 160 }, { 470, 260 },
     { 110, 340 }, { 260, 340 }, { 400, 330 }, { 550, 350 }
 };
 
+// quantos pontos a tabela tem, sem repetir o numero
+#define NUM_VALID_POINTS ((int)(sizeof(valid_points) / sizeof(valid_points[0])))
+
 // sorteia um ponto valido e diferente para cada agente da fase
-void place_agents()
+static void place_agents()
 {
-    int usados[12] = { 0 };
+    int taken[NUM_VALID_POINTS] = { 0 };
     int i;
+
+    // sem pontos sobrando dois agentes nasceriam no mesmo lugar (e o laco travaria)
+    if (NUM_AGENTES > NUM_VALID_POINTS)
+    {
+        printf("poucos pontos validos para %d agentes\n", NUM_AGENTES);
+        return;
+    }
 
     for (i = 0; i < NUM_AGENTES; i++)
     {
-        int p;
+        int p = rand() % NUM_VALID_POINTS;
 
-        do
+        while (taken[p] == 1)
         {
-            p = rand() % 12;
+            p = (p + 1) % NUM_VALID_POINTS;
         }
-        while (usados[p] == 1);
 
-        usados[p] = 1;
-        agents[i].x = pontos_validos[p][0];
-        agents[i].y = pontos_validos[p][1];
+        taken[p] = 1;
+        agents[i].x = valid_points[p][0];
+        agents[i].y = valid_points[p][1];
     }
 }
 
@@ -168,6 +179,22 @@ void reset_match()
 
     identified_count = 0;
     match_time = 0;
+}
+
+// mantem um valor dentro da tela, respeitando o raio do nanobo
+static float clamp_to_screen(float value, float limit)
+{
+    if (value < PLAYER_RADIUS)
+    {
+        return PLAYER_RADIUS;
+    }
+
+    if (value > limit - PLAYER_RADIUS)
+    {
+        return limit - PLAYER_RADIUS;
+    }
+
+    return value;
 }
 
 // a partida so anda no estado GAME, o tamanho da tela vem do main
@@ -202,23 +229,6 @@ void update_match(double dt, float screen_w, float screen_h)
     }
 
     // o nanobo nao sai da tela
-    if (player_x < PLAYER_RADIUS)
-    {
-        player_x = PLAYER_RADIUS;
-    }
-
-    if (player_x > screen_w - PLAYER_RADIUS)
-    {
-        player_x = screen_w - PLAYER_RADIUS;
-    }
-
-    if (player_y < PLAYER_RADIUS)
-    {
-        player_y = PLAYER_RADIUS;
-    }
-
-    if (player_y > screen_h - PLAYER_RADIUS)
-    {
-        player_y = screen_h - PLAYER_RADIUS;
-    }
+    player_x = clamp_to_screen(player_x, screen_w);
+    player_y = clamp_to_screen(player_y, screen_h);
 }

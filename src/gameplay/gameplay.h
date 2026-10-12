@@ -22,8 +22,8 @@ extern bool key_left;
 extern bool key_right;
 
 // leitura do scanner
-const char* layer_one_text(int kind);
-const char* layer_two_text(int kind);
+const char* layer_one_text(int species);
+const char* layer_two_text(int species);
 int pick_target(float x, float y);
 void use_scanner();
 
@@ -33,8 +33,5 @@ int touching_agent();
 // partida
 void reset_match();
 void update_match(double dt, float screen_w, float screen_h);
-
-// sorteia as posicoes dos agentes no comeco de cada partida
-void place_agents();
 
 #endif
