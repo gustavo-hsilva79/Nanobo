@@ -3,8 +3,8 @@
 
 #include <stdbool.h>
 
-// quantos agentes o encontro tem
-#define NUM_AGENTES 3
+// quantos agentes o encontro tem: 3 bacterias e 3 celulas saudaveis na Fase 1
+#define NUM_AGENTES 6
 
 // agente do encontro
 typedef struct
