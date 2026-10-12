@@ -15,3 +15,6 @@
 
    // quantos pixels ele anda por segundo
    float player_speed = 200;
+
+   // para onde ele olha agora
+   int player_facing = PLAYER_FACING_DOWN;
