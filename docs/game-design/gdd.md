@@ -44,6 +44,14 @@ A primeira fase é o núcleo do MVP. Ela trabalha a diferenciação entre bacté
 
 O jogador deve usar as informações do scanner para interpretar o agente encontrado e escolher a ação correspondente.
 
+### Fase 1 — de onde os agentes podem nascer
+
+Os agentes nascem em pontos fixos da área jogável, sorteados a cada partida sem repetir ponto (implementados em `src/gameplay/gameplay.c`, na tabela `valid_points`). Um ponto válido respeita três regras:
+
+1. fica dentro da área jogável, com margem das bordas;
+2. fica fora da faixa do painel do scanner (as linhas de leitura ocupam de `y = 370` para baixo);
+3. fica a pelo menos **100 px** do ponto de nascimento do Nanobô `(320, 260)` — em 12/10/2026 um ponto a 22 px fazia um agente nascer já encostado (e, com a vida da #11, isso seria dano de graça no primeiro frame).
+
 ### Fase 2 — vírus
 
 A segunda fase é objetivo pós-MVP e integra a entrega final planejada. O conteúdo previsto envolve os ciclos lítico e lisogênico e uma mecânica de multiplicação limitada.

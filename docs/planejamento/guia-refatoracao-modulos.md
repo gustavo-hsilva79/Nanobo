@@ -117,7 +117,7 @@ Se sobrou mais que isso, provavelmente ainda tem código esperando um lugar — 
 | `agents[i].x - 16` no `draw_game` | O tamanho do agente é **dado da entidade**, não um literal solto no desenho (e a #10 vai usar o mesmo número na colisão) | `AGENT_RADIUS`, definido no `entities.h` ao lado de `PLAYER_RADIUS` |
 | `320` fixo no `draw_message` | Era metade da largura só por coincidência, enquanto o resto do arquivo usa `WIDTH / 2` | `WIDTH / 2` |
 
-**Ficou de propósito:** as teclas de teste do fluxo (`F`, `G`, `V`), que só saem quando as condições reais de fim de fase existirem (#26/#18), e a linha temporária `direcao: N` do HUD, que sai quando o disparo (#63) existir.
+**Ficou de propósito:** as teclas de teste do fluxo (`F`, `G`, `V`), que só saem quando as condições reais de fim de fase existirem (#26/#18), e as duas linhas temporárias do HUD: `direcao: N`, que sai quando o disparo (#63) existir, e `encostado no agente N`, que sai quando a vida (#11) mostrar o dano.
 
 ## Depois de cada passo
 

@@ -116,7 +116,7 @@ void use_scanner()
     }
 }
 
-// pontos validos do cenario: dentro da area jogavel e fora do painel do scanner
+// pontos validos do cenario, a regra de cada um esta em docs/game-design/gdd.md
 static const float valid_points[12][2] =
 {
     {  90, 120 }, { 250, 110 }, { 430, 130 }, { 560, 200 },
