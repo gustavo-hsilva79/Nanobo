@@ -9,14 +9,19 @@
 // raio de desenho e de colisao dos agentes em pixels (metade do sprite de 32x32)
 #define AGENT_RADIUS 16
 
+// especie do agente: define o texto do scanner e o desenho dele
+#define SPECIES_GRAM_POSITIVE 0
+#define SPECIES_GRAM_NEGATIVE 1
+#define SPECIES_CELL 2
+
 // agente do encontro
 typedef struct
 {
     int id;
     float x;
     float y;
-    int variant;      // 0 = gram positiva, 1 = gram negativa, 2 = celula propria
-    int layers;    // camadas que o scanner ja revelou
+    int species;      // SPECIES_*
+    int layers;       // camadas que o scanner ja revelou
     bool identified;
 } Agent;
 
