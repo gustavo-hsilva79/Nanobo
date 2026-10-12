@@ -255,15 +255,10 @@ void handle_key_down(int key)
 }
 
 // soltou a tecla, para de andar naquela direcao
+// vale em qualquer cena: se o soltar fosse ignorado durante a pausa, a tecla
+// solta ali deixaria o nanobo andando sozinho ao voltar pro jogo
 void handle_key_up(int key)
 {
-    GameScene scene = game_get_scene();
-
-    if (scene != GAME_SCENE_GAME)
-    {
-        return;
-    }
-
     if (key == ALLEGRO_KEY_UP || key == ALLEGRO_KEY_W)
     {
         key_up = false;
