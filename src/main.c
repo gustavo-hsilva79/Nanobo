@@ -96,6 +96,7 @@ void draw_menu()
 void draw_game()
 {
     int i;
+    int contato;
     ALLEGRO_COLOR tint;
 
     for (i = 0; i < NUM_AGENTES; i++)
@@ -124,6 +125,13 @@ void draw_game()
     al_draw_text(font, al_map_rgb(130, 130, 130), 10, 42, 0, "setas ou wasd para andar    space = scanner    esc = pausa");
     // linha temporaria: a direcao so fica visivel quando o disparo (#63) existir
     al_draw_textf(font, al_map_rgb(130, 130, 130), 10, 58, 0, "direcao: %d", player_facing);
+
+    // linha temporaria: prova visual do contato enquanto a #11 nao mostra o dano
+    contato = touching_agent();
+    if (contato != -1)
+    {
+        al_draw_textf(font, al_map_rgb(240, 200, 90), 10, 74, 0, "encostado no agente %d", agents[contato].id);
+    }
 
     draw_scan_info();
 }
@@ -349,6 +357,7 @@ int main()
         return 1;
     }
 
+    al_set_new_display_flags(ALLEGRO_WINDOWED | ALLEGRO_RESIZABLE | ALLEGRO_MAXIMIZED);
     ALLEGRO_DISPLAY* display = al_create_display(WIDTH, HEIGHT);
     if (!display)
     {

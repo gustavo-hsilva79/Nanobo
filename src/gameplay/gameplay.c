@@ -68,6 +68,30 @@ int pick_target(float x, float y)
     return target;
 }
 
+// agente que o nanobo esta encostando, -1 quando nenhum
+// contato e sobreposicao de circulos: a distancia entre os centros e menor
+// que a soma dos raios. e uma consulta pura -- nao aplica dano, nao guarda
+// estado e nao dispara evento, entao contato que dura varios frames devolve
+// sempre o mesmo resultado; quem trata o tempo e a vida (#11)
+int touching_agent()
+{
+    float alcance = (float)(PLAYER_RADIUS + AGENT_RADIUS);
+    int i;
+
+    for (i = 0; i < NUM_AGENTES; i++)
+    {
+        float dx = agents[i].x - player_x;
+        float dy = agents[i].y - player_y;
+
+        if (dx * dx + dy * dy <= alcance * alcance)
+        {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
 // um pulso do scanner, revela a proxima camada do alvo
 void use_scanner()
 {

@@ -27,6 +27,9 @@ const char* layer_two_text(int kind);
 int pick_target(float x, float y);
 void use_scanner();
 
+// contato: index do agente que o nanobo esta encostando, -1 quando nenhum
+int touching_agent();
+
 // partida
 void reset_match();
 void update_match(double dt, float screen_w, float screen_h);
