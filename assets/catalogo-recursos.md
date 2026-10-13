@@ -56,12 +56,12 @@ O fundo é escuro e de baixo contraste de propósito: os sprites precisam contin
 
 | Arquivo | Uso sugerido |
 |---|---|
-| `assets/sprites/icone_raio_roxo.png` | Raio correspondente à Gram+ (#16) |
-| `assets/sprites/icone_raio_vermelho.png` | Raio correspondente à Gram− (#16) |
+| `assets/sprites/icone_laser_roxo.png` | Laser correspondente à Gram+ (#16) |
+| `assets/sprites/icone_laser_vermelho.png` | Laser correspondente à Gram− (#16) |
 | `assets/sprites/icone_scanner.png` | Lupa, para indicar a ação de escanear |
 | `assets/sprites/icone_coracao.png` | Vida, para o HUD |
 
-> O coração é carmim, um vermelho mais frio que o da Gram−, para não competir com o raio vermelho no HUD.
+> O coração é carmim, um vermelho mais frio que o da Gram−, para não competir com o laser vermelho no HUD.
 
 ## Recursos previstos
 

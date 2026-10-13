@@ -23,7 +23,7 @@ registrar a identificação → quando a última camada do agente é revelada (#
         ↓
 o jogador interpreta a informação
         ↓
-o jogador escolhe a ação / raio
+o jogador escolhe a ação / laser
         ↓
 consequência
 ```
@@ -53,7 +53,7 @@ Regra já fechada, repetida aqui para que o fluxo fique em um único lugar:
 - No contexto da PoC existem **2 camadas** por agente, verificáveis.
 - Informação já revelada **permanece visível** durante o encontro; não é apagada ao trocar de alvo.
 - Depois que todas as camadas do agente foram reveladas, novas ativações sobre ele não revelam informação inexistente e não alteram o estado.
-- O conteúdo revelado descreve o agente e **não recomenda** qual ação ou raio o jogador deve escolher.
+- O conteúdo revelado descreve o agente e **não recomenda** qual ação ou laser o jogador deve escolher.
 
 ### Conteúdo das camadas na PoC
 
@@ -67,7 +67,7 @@ O texto da segunda camada é a informação curta de scanner já aprovada em `do
 | 1 | Célula saudável própria | “célula do organismo detectada” |
 | 2 | Célula saudável própria | “célula saudável do próprio organismo: preserve-a.” |
 
-Nenhuma camada diz “use o raio roxo” ou “não atire”. A ligação entre a pista e a ação é do jogador, conforme a regra de combate da #16.
+Nenhuma camada diz “use o laser roxo” ou “não atire”. A ligação entre a pista e a ação é do jogador, conforme a regra de combate da #16.
 
 **No MVP**, a estrutura deve permitir variar a quantidade e o conteúdo das camadas por agente ou por fase. A configuração final por agente/fase permanece **[PENDÊNCIA]** e não deve ser antecipada antes da revisão das regras da Fase 2 (#83/#87/#88).
 
@@ -88,12 +88,12 @@ O estado de identificação — identificações registradas, contador e camadas
 
 | Objetivo | Informação do scanner | Decisão do jogador | Evidência observável |
 |---|---|---|---|
-| Classificar bactérias pela pista do scanner | camada 2 com a descrição do envelope celular (Gram+ / Gram−) | escolher o raio correspondente | raio escolhido e resultado do ataque |
+| Classificar bactérias pela pista do scanner | camada 2 com a descrição do envelope celular (Gram+ / Gram−) | escolher o laser correspondente | laser escolhido e resultado do ataque |
 | Preservar a célula própria saudável | camada 1 e camada 2 indicando célula do próprio organismo | não atacar | ação escolhida e integridade da célula |
 
 ## 8. O que o scanner não faz
 
-- Não recomenda ação, raio ou alvo a atacar.
+- Não recomenda ação, laser ou alvo a atacar.
 - Não pontua e não dá bônus.
 - Não escolhe o alvo para o jogador além da seleção automática do mais próximo.
 - Não mantém informação entre encontros.

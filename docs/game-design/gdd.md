@@ -34,7 +34,7 @@ O scanner é uma mecânica central de investigação.
 - A leitura ocorre em pulsos/camadas.
 - Cada agente deve possuir identificação única para evitar que a mesma identificação seja contabilizada repetidamente.
 - As informações obtidas devem apoiar a interpretação do agente e a decisão do jogador.
-- A relação exata entre as informações do scanner, alcance/raio e apresentação visual ainda precisa ser validada nos testes.
+- A relação exata entre as informações do scanner, alcance/laser e apresentação visual ainda precisa ser validada nos testes.
 
 ## Agentes e conteúdo
 
@@ -108,7 +108,7 @@ Uma terceira fase somente deve ser considerada se houver tempo e estabilidade su
 
 - Regras finais de identificação e recomendação.
 - Conteúdo biológico detalhado e validado de cada agente.
-- Relação final entre dados do scanner e escolha do raio/ação.
+- Relação final entre dados do scanner e escolha do laser/ação.
 - Balanceamento de vida, dano, ataque, defesa, cooldowns e resistência.
 - Regras de progressão entre fases.
 - Apresentação final das informações do scanner.
