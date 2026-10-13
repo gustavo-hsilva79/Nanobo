@@ -37,7 +37,7 @@ O passo 4 depende do fluxo de retorno ao `MENU`, que ainda não existe (#20). En
 
 - Botões em `PAUSE`, `RESULTS`, `VICTORY` e `GAME OVER` (#51, #52, #53, #57).
 - Destaque visual do botão sob o cursor (*hover*).
-- Seleção de raio/ataque por mouse (#16).
+- Seleção de laser/ataque por mouse (#16).
 - Navegação de menu por outros dispositivos.
 
 ## 5. Observação sobre a posição do mouse

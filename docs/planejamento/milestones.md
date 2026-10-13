@@ -34,7 +34,7 @@ O registro reproduzível está em `docs/planejamento/qa-poc.md`. **Combate, vida
 
 ### M3.5 — Construção do Core Gameplay
 
-Acrescentar ao núcleo já provado tudo o que transforma a PoC em jogo: entidades e geração dos agentes (#13, #14, #22, #24, #25), detecção de contato (#10), vida, dano e invulnerabilidade (#11), ataque, projétil, raio e cooldown (#16, #49, #62–#64) e defesa (#17).
+Acrescentar ao núcleo já provado tudo o que transforma a PoC em jogo: entidades e geração dos agentes (#13, #14, #22, #24, #25), detecção de contato (#10), vida, dano e invulnerabilidade (#11), ataque, projétil, laser e cooldown (#16, #49, #62–#64) e defesa (#17).
 
 Este marco existe para que o escopo do M3 fique honesto: a PoC provou a investigação, não o combate.
 

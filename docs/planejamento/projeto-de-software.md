@@ -40,7 +40,7 @@ O MVP permanece centrado no núcleo jogável da Fase 1:
 - scanner;
 - identificação;
 - interpretação das informações;
-- escolha de ação/raio;
+- escolha de ação/laser;
 - combate;
 - defesa;
 - vida e dano;
@@ -203,7 +203,7 @@ Issues principais: #40–#47, #144–#176.
 | US01 | Como jogador, quero movimentar o Nanobô para explorar o ambiente. | Movimento reproduzível por teclado. |
 | US02 | Como jogador, quero escanear um agente para obter informações. | Alvo válido mais próximo é selecionado e informação é revelada em camadas. |
 | US03 | Como jogador, quero identificar agentes uma única vez por encontro. | Identificação não é contabilizada novamente para o mesmo agente. |
-| US04 | Como jogador, quero usar a informação do scanner para escolher o raio. | A informação permite ao jogador relacionar classificação e ação. |
+| US04 | Como jogador, quero usar a informação do scanner para escolher o laser. | A informação permite ao jogador relacionar classificação e ação. |
 | US05 | Como jogador, quero sofrer consequências quando tomar decisões inadequadas. | A consequência ocorre de acordo com as regras da fase e possui feedback. |
 | US06 | Como jogador, quero concluir uma fase e visualizar seu resultado. | Vitória/derrota e resultado são alcançáveis de forma reproduzível. |
 | US07 | Como jogador, quero enfrentar uma segunda fase na versão final. | A transição para a Fase 2 funciona e seu conteúdo educacional é jogável. |
@@ -303,7 +303,7 @@ Prioridades **remanejadas para o M3.5**:
 9. colisões e detecção de contato;
 10. agentes com comportamento próprio e geração;
 11. vida, dano e combate;
-12. defesa, raio e projétil;
+12. defesa, laser e projétil;
 13. relação informação → decisão → ação;
 14. fluxo mínimo da Fase 1.
 

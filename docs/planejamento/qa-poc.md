@@ -79,7 +79,7 @@ A PoC não cobre, e não deveria cobrir, o núcleo completo do MVP. Ficaram fora
 |---|---|
 | Colisão entre Nanobô e agentes | #10 — M3.5 |
 | Vida, dano periódico e invulnerabilidade | #11 — M3.5 |
-| Ataque, raios, projétil, cooldown e defesa | #16, #17, #49, #62–#64 — M3.5 |
+| Ataque, lasers, projétil, cooldown e defesa | #16, #17, #49, #62–#64 — M3.5 |
 | Comportamento próprio de bactéria e célula | #13, #14 — M3.5/M4 |
 | Geração e posicionamento dos agentes | #24, #25 — M3.5 |
 | Condições reais de fim de fase, vitória e derrota | #18, #20, #26 — M4 |

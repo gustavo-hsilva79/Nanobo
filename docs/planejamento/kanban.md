@@ -85,7 +85,7 @@ A tabela de marcos — data, tipo e objetivo de cada um — fica em **[milestone
 - #24 Geração dos agentes `[G]`
 - #25 Variação da ordem dos encontros `[G]`
 - #49 Colisão do projétil e resistência `[G]`
-- #62–#64 Seleção do raio, disparo e cooldown `[G]`
+- #62–#64 Seleção do laser, disparo e cooldown `[G]`
 
 > Neste marco o Eric fica com 3 SP (#7) e o Gustavo, com 32 SP. Para não acumular trabalho no M4, o Eric adianta no M3.5 as telas que não dependem do core gameplay: #7, #50, #51 e #53.
 
