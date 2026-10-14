@@ -12,7 +12,7 @@ Este documento limita o conteúdo ao que apoia a decisão do jogador. Separa fat
 | Bactéria Gram-negativa do cenário | Ameaça patogênica nesta missão | 2 pontos de resistência | “Gram−: parede fina de peptidoglicano e membrana externa.” |
 | Célula saudável própria | Célula a preservar; não é alvo | Não se aplica; ataques não a destroem | “Célula saudável do próprio organismo: preserve-a.” |
 
-As pistas Gram+ e Gram− descrevem diferenças gerais do envelope celular: Gram− tem camada relativamente fina de peptidoglicano sob membrana externa; Gram+ tipicamente tem parede espessa e não possui essa membrana externa ([OpenStax Biology 2e](https://openstax.org/books/biology-2e/pages/22-2-structure-of-prokaryotes-bacteria-and-archaea)). Essas pistas apoiam a escolha do raio correspondente, conforme a regra de combate já registrada na #16.
+As pistas Gram+ e Gram− descrevem diferenças gerais do envelope celular: Gram− tem camada relativamente fina de peptidoglicano sob membrana externa; Gram+ tipicamente tem parede espessa e não possui essa membrana externa ([OpenStax Biology 2e](https://openstax.org/books/biology-2e/pages/22-2-structure-of-prokaryotes-bacteria-and-archaea)). Essas pistas apoiam a escolha do laser correspondente, conforme a regra de combate já registrada na #16.
 
 **Resistência** é um atributo abstrato de combate do jogo: cada acerto correto reduz um ponto; a bactéria requer dois acertos corretos para ser neutralizada, conforme #49. Não significa resistência a antibióticos nem permite inferir suscetibilidade médica a partir da coloração de Gram ([CDC — antimicrobial resistance](https://www.cdc.gov/antimicrobial-resistance/about/index.html); [CDC NARMS — glossary](https://www.cdc.gov/narms/glossary/index.html)). A célula própria não é destruída por ataques, conforme #49.
 
@@ -32,7 +32,7 @@ Os estados lisogênico e lítico, a transição temporizada e a multiplicação 
 
 ### Fase 1
 
-1. **Classificar bactérias pela pista do scanner.** Diante das informações sobre parede celular e membrana externa, o jogador distingue Gram+ de Gram− e seleciona o raio correspondente. Evidência: classificação/raio escolhidos para cada encontro e resultado do ataque; o raio correto reduz resistência e o incorreto não, conforme #16 e #49.
+1. **Classificar bactérias pela pista do scanner.** Diante das informações sobre parede celular e membrana externa, o jogador distingue Gram+ de Gram− e seleciona o laser correspondente. Evidência: classificação/laser escolhidos para cada encontro e resultado do ataque; o laser correto reduz resistência e o incorreto não, conforme #16 e #49.
 2. **Preservar a célula própria saudável.** Diante da identificação do scanner, o jogador reconhece uma célula do próprio organismo e evita atacá-la. Evidência: ação escolhida e integridade da célula, que não pode ser destruída por ataque, conforme #49.
 
 ### Fase 2
