@@ -87,6 +87,11 @@ int touching_agent()
     {
         if (squared_distance(agents[i].x, agents[i].y, player.x, player.y) <= reach * reach)
         {
+            if (agents[i].species != SPECIES_CELL)
+            {
+                player.health--;
+            }
+
             return i;
         }
     }
@@ -168,6 +173,7 @@ void reset_match()
 
     player.x = 320;
     player.y = 260;
+    player.health = PLAYER_MAX_HEALTH;
     player.facing = PLAYER_FACING_DOWN;
 
     place_agents();
