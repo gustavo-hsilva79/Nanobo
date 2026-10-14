@@ -14,12 +14,6 @@ Agent agents[NUM_AGENTES] =
 
 int identified_count = 0;
 
-// onde o nanobo esta na partida
-float player_x = 320;
-float player_y = 260;
+// inicializar player
+Nanobo player = { 320, 260, 200, PLAYER_FACING_DOWN, PLAYER_MAX_HEALTH };
 
-// quantos pixels ele anda por segundo
-float player_speed = 200;
-
-// para onde ele olha agora
-int player_facing = PLAYER_FACING_DOWN;
