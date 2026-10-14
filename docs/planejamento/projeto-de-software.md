@@ -40,7 +40,7 @@ O MVP permanece centrado no núcleo jogável da Fase 1:
 - scanner;
 - identificação;
 - interpretação das informações;
-- escolha de ação/raio;
+- escolha de ação/laser;
 - combate;
 - defesa;
 - vida e dano;
@@ -148,9 +148,10 @@ assets/
 └── data/
 
 docs/
-├── one-sheet/
+├── one-sheet.md
 ├── game-design/
-└── planejamento/
+├── planejamento/
+└── arquivo/
 ```
 
 A estrutura existente do repositório deve ser preservada sempre que possível; novas abstrações só devem ser criadas quando houver necessidade real.
@@ -202,7 +203,7 @@ Issues principais: #40–#47, #144–#176.
 | US01 | Como jogador, quero movimentar o Nanobô para explorar o ambiente. | Movimento reproduzível por teclado. |
 | US02 | Como jogador, quero escanear um agente para obter informações. | Alvo válido mais próximo é selecionado e informação é revelada em camadas. |
 | US03 | Como jogador, quero identificar agentes uma única vez por encontro. | Identificação não é contabilizada novamente para o mesmo agente. |
-| US04 | Como jogador, quero usar a informação do scanner para escolher o raio. | A informação permite ao jogador relacionar classificação e ação. |
+| US04 | Como jogador, quero usar a informação do scanner para escolher o laser. | A informação permite ao jogador relacionar classificação e ação. |
 | US05 | Como jogador, quero sofrer consequências quando tomar decisões inadequadas. | A consequência ocorre de acordo com as regras da fase e possui feedback. |
 | US06 | Como jogador, quero concluir uma fase e visualizar seu resultado. | Vitória/derrota e resultado são alcançáveis de forma reproduzível. |
 | US07 | Como jogador, quero enfrentar uma segunda fase na versão final. | A transição para a Fase 2 funciona e seu conteúdo educacional é jogável. |
@@ -259,12 +260,13 @@ As estimativas atuais das Issues são a referência operacional. A dupla deve va
 |---|---:|---|
 | M1 — One Sheet Paper | 09/09/2026 | Conceito, escopo e visão do jogo |
 | M2 — Projeto de Software + Kanban | 23/09/2026 | Planejamento, EAP, requisitos, tarefas, estimativas e Kanban |
-| M3 — PoC | 07/10/2026 | Provar os maiores riscos técnicos e o núcleo da mecânica |
+| M3 — PoC | 07/10/2026 | Provar o núcleo de investigação: scanner, camadas e identificação única |
+| M3.5 — Core Gameplay | 21/10/2026 | Agentes, colisões, combate, vida e consequências |
 | M4 — MVP | 04/11/2026 | Demonstrar o núcleo jogável e educacional integrado |
 | M5 — Meta interna | 29/11/2026 | Estabilização e preparação da release |
 | M6 — Entrega final + apresentação | 02/12/2026 | Release, documentação, instalador e apresentação |
 
-**Observação:** M5 é meta interna do projeto, não entrega oficial da disciplina.
+**Observação:** M3.5 e M5 são metas internas do projeto, não entregas oficiais da disciplina. O M3.5 foi criado em 07/10/2026 para registrar o que ficou fora do escopo da PoC — ver `docs/planejamento/qa-poc.md`.
 
 ### M2 — foco imediato
 
@@ -285,22 +287,33 @@ O andamento efetivo das tarefas deve ser mantido no GitHub Project.
 
 A PoC deve reduzir as maiores incertezas antes da expansão do projeto.
 
-Prioridades:
+Prioridades **entregues no M3**:
 
 1. Game Loop e Delta Time;
 2. máquina de estados;
-3. entrada;
-4. movimentação;
-5. colisões;
-6. agentes;
-7. scanner e seleção de alvo;
-8. identificação;
-9. relação informação → decisão → ação;
-10. vida, dano e combate;
-11. fluxo mínimo da Fase 1;
-12. teste reproduzível dos riscos.
+3. entrada por teclado e mouse;
+4. movimentação do Nanobô;
+5. scanner e seleção do alvo válido mais próximo;
+6. leitura em camadas;
+7. identificação única por agente;
+8. teste reproduzível dos riscos.
+
+Prioridades **remanejadas para o M3.5**:
+
+9. colisões e detecção de contato;
+10. agentes com comportamento próprio e geração;
+11. vida, dano e combate;
+12. defesa, laser e projétil;
+13. relação informação → decisão → ação;
+14. fluxo mínimo da Fase 1.
+
+O registro do que foi efetivamente provado, com roteiro e resultado observado, está em `docs/planejamento/qa-poc.md`.
 
 A PoC não é considerada concluída apenas porque o programa compila.
+
+## 11.1 Experiência de processo
+
+A disciplina avalia o processo, não apenas o resultado. A partir do M3 o trabalho passa a ser entregue por **branch + Pull Request revisado**, conforme o workflow apresentado na Aula 4, em vez de commits diretos na `master`. As mensagens de commit devem ser descritivas (`docs(...)`, `feat(...)`, `fix(...)`) e fazer referência à Issue correspondente.
 
 ## 12. Critério geral de Done
 
@@ -373,7 +386,7 @@ Falhas relevantes devem ser reproduzíveis e registradas em Issues.
 
 ## 16. Documentos de referência
 
-- One Sheet: `docs/one-sheet/one-sheet.md`
+- One Sheet: `docs/one-sheet.md`
 - GDD: `docs/game-design/gdd.md`
 - Conteúdo biológico e objetivos de aprendizagem: `docs/game-design/conteudo-biologico.md`
 - Escopo: `docs/game-design/escopo.md`
@@ -381,9 +394,10 @@ Falhas relevantes devem ser reproduzíveis e registradas em Issues.
 - Kanban: `docs/planejamento/kanban.md`
 - Milestones: `docs/planejamento/milestones.md`
 - Fluxo de estados: `docs/planejamento/fluxo-estados.md`
+- Registro da PoC: `docs/planejamento/qa-poc.md`
 - Catálogo de recursos: `assets/catalogo-recursos.md`
 - Plano de execução: `docs/planejamento/plano-de-execucao.md`
-- Sequência operacional: `docs/planning/sequencia-issues.md`
+- Sequência operacional: `docs/planejamento/sequencia-issues.md`
 
 ## 17. Limites e pendências
 

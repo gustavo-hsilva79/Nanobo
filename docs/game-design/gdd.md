@@ -34,7 +34,7 @@ O scanner é uma mecânica central de investigação.
 - A leitura ocorre em pulsos/camadas.
 - Cada agente deve possuir identificação única para evitar que a mesma identificação seja contabilizada repetidamente.
 - As informações obtidas devem apoiar a interpretação do agente e a decisão do jogador.
-- A relação exata entre as informações do scanner, alcance/raio e apresentação visual ainda precisa ser validada nos testes.
+- A relação exata entre as informações do scanner, alcance/laser e apresentação visual ainda precisa ser validada nos testes.
 
 ## Agentes e conteúdo
 
@@ -43,6 +43,14 @@ O scanner é uma mecânica central de investigação.
 A primeira fase é o núcleo do MVP. Ela trabalha a diferenciação entre bactérias e células saudáveis, incluindo a distinção entre bactérias Gram-positivas e Gram-negativas.
 
 O jogador deve usar as informações do scanner para interpretar o agente encontrado e escolher a ação correspondente.
+
+### Fase 1 — de onde os agentes podem nascer
+
+Os agentes nascem em pontos fixos da área jogável, sorteados a cada partida sem repetir ponto (implementados em `src/gameplay/gameplay.c`, na tabela `valid_points`). Um ponto válido respeita três regras:
+
+1. fica dentro da área jogável, com margem das bordas;
+2. fica fora da faixa do painel do scanner (as linhas de leitura ocupam de `y = 370` para baixo);
+3. fica a pelo menos **100 px** do ponto de nascimento do Nanobô `(320, 260)` — em 12/10/2026 um ponto a 22 px fazia um agente nascer já encostado (e, com a vida da #11, isso seria dano de graça no primeiro frame).
 
 ### Fase 2 — vírus
 
@@ -100,7 +108,7 @@ Uma terceira fase somente deve ser considerada se houver tempo e estabilidade su
 
 - Regras finais de identificação e recomendação.
 - Conteúdo biológico detalhado e validado de cada agente.
-- Relação final entre dados do scanner e escolha do raio/ação.
+- Relação final entre dados do scanner e escolha do laser/ação.
 - Balanceamento de vida, dano, ataque, defesa, cooldowns e resistência.
 - Regras de progressão entre fases.
 - Apresentação final das informações do scanner.

@@ -19,6 +19,8 @@ O ciclo central do jogo é:
 O jogador deve interpretar as informações obtidas pelo scanner para decidir como agir, em vez de responder apenas a um quiz separado.
 
 > **Status:** em desenvolvimento.
+>
+> **PoC (M3 — 07/10/2026):** o núcleo de investigação está implementado e jogável — movimentação por teclado, scanner com seleção do alvo válido mais próximo, leitura em duas camadas e identificação única por agente. O roteiro reproduzível e o resultado observado estão em [Registro da PoC](docs/planejamento/qa-poc.md). Combate, vida, dano e agentes ainda não existem: pertencem ao marco interno M3.5.
 
 ## Núcleo do jogo
 
@@ -65,16 +67,27 @@ A entrega final deve cumprir esses requisitos. O MVP permanece deliberadamente c
 | **Visual Studio** | Ambiente de desenvolvimento atual |
 | **Git / GitHub** | Versionamento e colaboração |
 
+## Como compilar e executar
+
+Pré-requisitos: **Windows** e **Visual Studio 2022** com a carga de trabalho de desenvolvimento para desktop com C++.
+
+1. Abra `Nanobo.sln` no Visual Studio.
+2. Na primeira vez, deixe o Visual Studio **restaurar os pacotes NuGet** — `Allegro 5.2.11.3` e `AllegroDeps 1.16.0`, listados em `packages.config`. Se o build reclamar de `packages\Allegro*.targets` ausente, restaure os pacotes; não edite o projeto para contornar.
+3. Escolha a configuração **Debug | x64** e compile com `Ctrl+Shift+B`. As configurações Win32 são legadas.
+4. Execute a partir da **raiz do repositório** (a pasta onde está `Nanobo.sln`): o jogo carrega os recursos por caminho relativo, como `assets/sprites/nanobo.png`.
+
+O executável fica em `x64\Debug\Nanobo.exe`, ou `x64\Release\Nanobo.exe` quando a configuração é Release.
+
 ## Estrutura do projeto
 
 ```text
 Nanobo/
 ├── src/                    # Código-fonte
 │   ├── core/               # Núcleo e ciclo do jogo
-│   ├── gameplay/           # Regras e mecânicas de gameplay
 │   ├── entities/           # Entidades do jogo
+│   ├── gameplay/           # Regras e mecânicas de gameplay
 │   ├── scenes/             # Cenas e estados de jogo
-│   └── systems/            # Sistemas auxiliares
+│   └── systems/            # Sistemas auxiliares (ainda só no papel)
 │
 ├── assets/                 # Recursos utilizados pelo jogo
 │   ├── sprites/
@@ -86,13 +99,15 @@ Nanobo/
 │   └── data/
 │
 ├── docs/                   # Documentação do projeto
-│   ├── one-sheet/
 │   ├── game-design/
-│   └── planejamento/
+│   ├── planejamento/
+│   └── arquivo/            # o que não é mais referência viva
 │
-├── Nanobo.sln             # Solução do Visual Studio
-└── Jogo.vcxproj            # Projeto do Visual Studio
+├── Nanobo.sln              # Solução do Visual Studio
+└── Nanobo.vcxproj          # Projeto do Visual Studio
 ```
+
+> **Atenção:** entram na compilação os `<ClCompile>` de `Nanobo.vcxproj`: `src/main.c`, `src/core/game.c`, `src/entities/entities.c` e `src/gameplay/gameplay.c`. O `src/scenes/scenes.h` também é compilado, porque `src/core/game.h` o inclui. O `src/systems/` continua sendo só uma pasta planejada, sem código.
 
 ## Planejamento acadêmico
 
@@ -104,21 +119,32 @@ Nanobo/
 | MVP | 04/11/2026 | Entrega acadêmica |
 | Entrega final + apresentação | 02/12/2026 | Entrega acadêmica |
 
-Cada etapa corresponde a 20% da avaliação conforme o planejamento acadêmico registrado para o projeto.
+Cada etapa corresponde a 20% da avaliação conforme o planejamento acadêmico registrado para o projeto. Entre os marcos acadêmicos existem dois marcos internos, **M3.5 — Construção do Core Gameplay** (21/10) e **M5 — Release Candidate** (29/11), que não compõem nota.
+
+A lista completa dos marcos, com o objetivo e o critério de foco de cada um, está em [Milestones](docs/planejamento/milestones.md).
 
 ## Documentação
 
-- [One Sheet](docs/one-sheet/one-sheet.md)
+- [One Sheet](docs/one-sheet.md)
 - [GDD](docs/game-design/gdd.md)
 - [Escopo](docs/game-design/escopo.md)
 - [Decisões de Game Design](docs/game-design/decisoes.md)
 - [Conteúdo biológico e objetivos de aprendizagem](docs/game-design/conteudo-biologico.md)
+- [Regras do scanner](docs/game-design/scanner.md)
+- [Referências biológicas das Issues #2 e #177](docs/planejamento/referencias-biologicas-issues-2-177.md)
 - [Kanban](docs/planejamento/kanban.md)
+- [Milestones](docs/planejamento/milestones.md)
 - [Plano de Execução](docs/planejamento/plano-de-execucao.md)
 - [Projeto de Software](docs/planejamento/projeto-de-software.md)
-- [Milestones](docs/planejamento/milestones.md)
+- [Divisão de Issues da dupla](docs/planejamento/divisao-issues-dupla.md)
+- [Guia: mover código do main.c para os módulos](docs/planejamento/guia-refatoracao-modulos.md)
 - [Fluxo de estados](docs/planejamento/fluxo-estados.md)
+- [Interação por mouse](docs/planejamento/interacao-mouse.md)
+- [Registro da PoC](docs/planejamento/qa-poc.md)
+- [Validação da máquina de estados](docs/planejamento/qa-maquina-estados.md)
+- [Validação do carregamento de recursos](docs/planejamento/qa-recursos.md)
 - [Catálogo de recursos](assets/catalogo-recursos.md)
+- [Documentos arquivados](docs/arquivo/README.md)
 
 ## Desenvolvimento
 

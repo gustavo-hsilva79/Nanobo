@@ -1,5 +1,9 @@
 # Nanobô — Sequência operacional das Issues
 
+> **Este documento está congelado como registro histórico da auditoria de 16/09/2026.** Ele usa uma numeração de milestones (M1–M5) que foi substituída. A referência viva de marcos e do agrupamento das Issues é `docs/planejamento/kanban.md` + `docs/planejamento/milestones.md`, espelhando os Milestones do GitHub.
+>
+> **Diferenças conhecidas em relação ao estado atual:** este documento chama de **M5** o que hoje é o **M6** (entrega final + apresentação, 02/12/2026); não conhece o **M3.5 — Construção do Core Gameplay** (21/10/2026); e trata o **core gameplay loop** como entrega de 02/12, enquanto o Plano de Ensino o aplica na Aula 13 (04/11/2026), junto do MVP.
+>
 > **Objetivo:** transformar o backlog do GitHub em um mapa de dependências, validação e marcos, sem substituir o GitHub Project como fonte de verdade do andamento.
 >
 > **Última auditoria:** 16/09/2026.
