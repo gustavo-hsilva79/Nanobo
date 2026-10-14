@@ -8,6 +8,9 @@
 // tempo da partida em segundos, so conta dentro do estado GAME
 double match_time = 0;
 
+// cooldown de invulnerabilidade
+static double invulnerability_timer = 0.0;
+
 // teclas seguradas agora, quem escreve nelas e o handle_key_down/handle_key_up
 bool key_up = false;
 bool key_down = false;
@@ -87,11 +90,6 @@ int touching_agent()
     {
         if (squared_distance(agents[i].x, agents[i].y, player.x, player.y) <= reach * reach)
         {
-            if (agents[i].species != SPECIES_CELL)
-            {
-                player.health--;
-            }
-
             return i;
         }
     }
@@ -185,6 +183,7 @@ void reset_match()
 
     identified_count = 0;
     match_time = 0;
+    invulnerability_timer = 0.0;
 }
 
 // mantem um valor dentro da tela, respeitando o raio do nanobo
@@ -209,6 +208,16 @@ void update_match(double dt, float screen_w, float screen_h)
     float step = (float)(player.speed * dt);
 
     match_time = match_time + dt;
+
+    if (invulnerability_timer > 0.0)
+    {
+        invulnerability_timer -= dt;
+
+        if (invulnerability_timer < 0.0)
+        {
+            invulnerability_timer = 0.0;
+        }
+    }
 
     if (key_up)
     {
@@ -237,4 +246,19 @@ void update_match(double dt, float screen_w, float screen_h)
     // o nanobo nao sai da tela
     player.x = clamp_to_screen(player.x, screen_w);
     player.y = clamp_to_screen(player.y, screen_h);
+
+    int touched = touching_agent();
+
+    if (player.health > 0 
+        && touched != -1 
+        && agents[touched].species != SPECIES_CELL 
+        && invulnerability_timer <= 0.0)
+    {
+        player.health--;
+
+        if (player.health < 0)
+            player.health = 0;
+
+        invulnerability_timer = 1.0;
+    }
 }
