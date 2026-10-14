@@ -13,6 +13,7 @@ typedef enum GameScene
     GAME_SCENE_RESULTS,
     GAME_SCENE_VICTORY,
     GAME_SCENE_GAME_OVER,
+    GAME_SCENE_EXIT
 
 } GameScene;
 
@@ -38,7 +39,7 @@ void scane_menu_updade(GameState *state)
     }
     if (al_key_down(&key_state, ALLEGRO_KEY_ESCAPE)) 
     {
-        state->current_scene = GAME_SCENE_GAME_OVER;
+        state->current_scene = GAME_SCENE_EXIT;
     }
 
     al_destroy_event_queue(queue);
