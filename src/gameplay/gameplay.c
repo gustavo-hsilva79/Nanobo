@@ -85,7 +85,7 @@ int touching_agent()
 
     for (i = 0; i < NUM_AGENTES; i++)
     {
-        if (squared_distance(agents[i].x, agents[i].y, player_x, player_y) <= reach * reach)
+        if (squared_distance(agents[i].x, agents[i].y, player.x, player.y) <= reach * reach)
         {
             return i;
         }
@@ -97,7 +97,7 @@ int touching_agent()
 // um pulso do scanner, revela a proxima camada do alvo
 void use_scanner()
 {
-    int target = pick_target(player_x, player_y);
+    int target = pick_target(player.x, player.y);
 
     if (target == -1)
     {
@@ -166,9 +166,9 @@ void reset_match()
         agents[i].identified = false;
     }
 
-    player_x = 320;
-    player_y = 260;
-    player_facing = PLAYER_FACING_DOWN;
+    player.x = 320;
+    player.y = 260;
+    player.facing = PLAYER_FACING_DOWN;
 
     place_agents();
 
@@ -200,35 +200,35 @@ static float clamp_to_screen(float value, float limit)
 // a partida so anda no estado GAME, o tamanho da tela vem do main
 void update_match(double dt, float screen_w, float screen_h)
 {
-    float step = (float)(player_speed * dt);
+    float step = (float)(player.speed * dt);
 
     match_time = match_time + dt;
 
     if (key_up)
     {
-        player_y = player_y - step;
-        player_facing = PLAYER_FACING_UP;
+        player.y = player.y - step;
+        player.facing = PLAYER_FACING_UP;
     }
 
     if (key_down)
     {
-        player_y = player_y + step;
-        player_facing = PLAYER_FACING_DOWN;
+        player.y = player.y + step;
+        player.facing = PLAYER_FACING_DOWN;
     }
 
     if (key_left)
     {
-        player_x = player_x - step;
-        player_facing = PLAYER_FACING_LEFT;
+        player.x = player.x - step;
+        player.facing = PLAYER_FACING_LEFT;
     }
 
     if (key_right)
     {
-        player_x = player_x + step;
-        player_facing = PLAYER_FACING_RIGHT;
+        player.x = player.x + step;
+        player.facing = PLAYER_FACING_RIGHT;
     }
 
     // o nanobo nao sai da tela
-    player_x = clamp_to_screen(player_x, screen_w);
-    player_y = clamp_to_screen(player_y, screen_h);
+    player.x = clamp_to_screen(player.x, screen_w);
+    player.y = clamp_to_screen(player.y, screen_h);
 }

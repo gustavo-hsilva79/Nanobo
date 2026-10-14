@@ -164,13 +164,13 @@ void draw_game()
     }
 
     // o nanobo e desenhado onde o teclado deixou ele
-    al_draw_bitmap(nanobo, player_x - PLAYER_RADIUS, player_y - PLAYER_RADIUS, 0);
+    al_draw_bitmap(nanobo, player.x - PLAYER_RADIUS, player.y - PLAYER_RADIUS, 0);
 
     al_draw_textf(font, al_map_rgb(255, 255, 255), 10, 10, 0, "identificados: %d/%d", identified_count, NUM_AGENTES);
     al_draw_textf(font, al_map_rgb(255, 255, 255), 10, 26, 0, "tempo: %.1f", match_time);
     al_draw_text(font, al_map_rgb(130, 130, 130), 10, 42, 0, "setas ou wasd para andar    space = scanner    esc = pausa");
     // linha temporaria: a direcao so fica visivel quando o disparo (#63) existir
-    al_draw_textf(font, al_map_rgb(130, 130, 130), 10, 58, 0, "direcao: %d", player_facing);
+    al_draw_textf(font, al_map_rgb(130, 130, 130), 10, 58, 0, "direcao: %d", player.facing);
 
     // linha temporaria: prova visual do contato enquanto a #11 nao mostra o dano
     contact = touching_agent();
