@@ -18,11 +18,17 @@
 typedef struct
 {
     int id;
+    int health;
     float x;
     float y;
-    int species;      // SPECIES_*
-    int layers;       // camadas que o scanner ja revelou
+    float dx; // direcao em x
+    float dy; // direcao em y
+    int speed;
+    int species; // SPECIES_*
+    int layers; // camadas que o scanner ja revelou
     bool identified;
+    float direction_timer; // tempo ate a proxima mudanca de direcao
+    bool active;
 } Agent;
 
 extern Agent agents[NUM_AGENTES];

@@ -4,12 +4,13 @@
 // as posicoes iniciais sao so um valor de partida, o sorteio da #25 sobrescreve
 Agent agents[NUM_AGENTES] =
 {
-    { 1, 140, 130, SPECIES_GRAM_POSITIVE, 0, false },
-    { 2, 490, 150, SPECIES_GRAM_NEGATIVE, 0, false },
-    { 3, 320, 280, SPECIES_CELL, 0, false },
-    { 4, 100, 330, SPECIES_GRAM_POSITIVE, 0, false },
-    { 5, 300, 120, SPECIES_CELL, 0, false },
-    { 6, 540, 320, SPECIES_CELL, 0, false }
+    // id, health, x, y, dx, dy, speed, species, layers, identified, direction_timer, active
+    { 1, 2, 140, 130, 1, 1, 30, SPECIES_GRAM_POSITIVE, 0, false, 0, true },
+    { 2, 2, 490, 150, 1, 1, 30, SPECIES_GRAM_NEGATIVE, 0, false, 0, true },
+    { 3, 2, 320, 280, 1, 1, 30, SPECIES_CELL, 0, false, 0, true },
+    { 4, 2, 100, 330, 1, 1, 30, SPECIES_GRAM_POSITIVE, 0, false, 0, true },
+    { 5, 2, 300, 120, 1, 1, 30, SPECIES_CELL, 0, false, 0, true },
+    { 6, 2, 540, 320, 1, 1, 30, SPECIES_CELL, 0, false, 0, true }
 };
 
 int identified_count = 0;
