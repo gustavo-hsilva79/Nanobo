@@ -1,9 +1,14 @@
 #include "gameplay.h"
 
+#define _USE_MATH_DEFINES
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "../entities/entities.h"
+
+#define WIDTH 640
+#define HEIGHT 480
 
 // tempo da partida em segundos, so conta dentro do estado GAME
 double match_time = 0;
@@ -206,6 +211,35 @@ static float clamp_to_screen(float value, float limit)
 void update_match(double dt, float screen_w, float screen_h)
 {
     float step = (float)(player.speed * dt);
+
+    for (int i = 0; i < NUM_AGENTES; i++)
+    {
+        if (!agents[i].active)
+            continue;
+
+        agents[i].x += agents[i].dx * agents[i].speed * dt;
+        agents[i].y += agents[i].dy * agents[i].speed * dt;
+
+        agents[i].direction_timer -= dt;
+
+        // verificar colisao com a borda
+        if (agents[i].x < 0 || AGENT_RADIUS > WIDTH)
+            agents[i].dx = -agents[i].dx;
+        if (agents[i].y < 0 || AGENT_RADIUS > HEIGHT)
+            agents[i].dy = -agents[i].dy;
+
+        // mudanca aleatoria
+        if (agents[i].direction_timer <= 0)
+        {
+            float angle = rand() % 2 * M_PI;
+            agents[i].dx = cos(angle);
+            agents[i].dy = sin(angle);
+            agents[i].direction_timer = rand() % 5 + 1;
+        }
+
+        if (agents[i].health <= 0)
+            agents[i].active = false;
+    }
 
     match_time = match_time + dt;
 
