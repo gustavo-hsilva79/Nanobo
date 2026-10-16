@@ -1,16 +1,17 @@
 #include "entities.h"
 
 // composicao fixa da Fase 1: 2 bacterias Gram+, 1 Gram- e 3 celulas saudaveis
-// as posicoes iniciais sao so um valor de partida, o sorteio da #25 sobrescreve
+// estes sao os valores de partida: o reset_match re-sorteia posicao, direcao e
+// temporizador e devolve a resistencia cheia antes do primeiro quadro de jogo
 Agent agents[NUM_AGENTES] =
 {
     // id, resistencia, x, y, dx, dy, speed, species, layers, identified, direction_timer, active
-    { 1, 2, 140, 130, 1, 1, 30, SPECIES_GRAM_POSITIVE, 0, false, 0, true },
-    { 2, 2, 490, 150, 1, 1, 30, SPECIES_GRAM_NEGATIVE, 0, false, 0, true },
-    { 3, 2, 320, 280, 1, 1, 30, SPECIES_CELL, 0, false, 0, true },
-    { 4, 2, 100, 330, 1, 1, 30, SPECIES_GRAM_POSITIVE, 0, false, 0, true },
-    { 5, 2, 300, 120, 1, 1, 30, SPECIES_CELL, 0, false, 0, true },
-    { 6, 2, 540, 320, 1, 1, 30, SPECIES_CELL, 0, false, 0, true }
+    { 1, BACTERIA_RESISTANCE, 140, 130, 1, 0, AGENT_SPEED, SPECIES_GRAM_POSITIVE, 0, false, 1, true },
+    { 2, BACTERIA_RESISTANCE, 490, 150, 1, 0, AGENT_SPEED, SPECIES_GRAM_NEGATIVE, 0, false, 1, true },
+    { 3, CELL_RESISTANCE, 320, 280, 1, 0, AGENT_SPEED, SPECIES_CELL, 0, false, 1, true },
+    { 4, BACTERIA_RESISTANCE, 100, 330, 1, 0, AGENT_SPEED, SPECIES_GRAM_POSITIVE, 0, false, 1, true },
+    { 5, CELL_RESISTANCE, 300, 120, 1, 0, AGENT_SPEED, SPECIES_CELL, 0, false, 1, true },
+    { 6, CELL_RESISTANCE, 540, 320, 1, 0, AGENT_SPEED, SPECIES_CELL, 0, false, 1, true }
 };
 
 int identified_count = 0;

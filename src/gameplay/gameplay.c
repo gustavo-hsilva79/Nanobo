@@ -160,15 +160,47 @@ static void place_agents()
     }
 }
 
-// comeca partida nova, a identificacao do encontro e zerada
+// sorteia uma direcao unitaria nova e conta o tempo ate a proxima troca do agente
+static void pick_new_direction(int index)
+{
+    float angle = ((float)rand() / ((float)RAND_MAX + 1.0f)) * 2.0f * (float)M_PI;
+
+    agents[index].dx = cosf(angle);
+    agents[index].dy = sinf(angle);
+    agents[index].direction_timer = (float)(rand() % 5 + 1);
+}
+
+// resistencia de combate que cada especie precisa para ser neutralizada (#49)
+static int species_resistance(int species)
+{
+    if (species == SPECIES_CELL)
+    {
+        return CELL_RESISTANCE;
+    }
+
+    return BACTERIA_RESISTANCE;
+}
+
+// devolve o agente ao estado de partida nova: resistencia da especie, ativo de
+// novo e direcao propria; a posicao de nascimento quem sorteia e o place_agents
+static void reset_agent(int index)
+{
+    agents[index].resistance = species_resistance(agents[index].species);
+    agents[index].active = true;
+    agents[index].layers = 0;
+    agents[index].identified = false;
+    pick_new_direction(index);
+}
+
+// comeca partida nova: o encontro e o nanobo voltam ao estado inicial
 void reset_match()
 {
     int i;
 
+    // cada agente volta ao estado inicial, inclusive resistencia e direcao
     for (i = 0; i < NUM_AGENTES; i++)
     {
-        agents[i].layers = 0;
-        agents[i].identified = false;
+        reset_agent(i);
     }
 
     player.x = 320;
@@ -202,16 +234,6 @@ static float clamp_to_screen(float value, float limit)
     }
 
     return value;
-}
-
-// sorteia uma direcao unitaria nova e conta o tempo ate a proxima troca do agente
-static void pick_new_direction(int index)
-{
-    float angle = ((float)rand() / ((float)RAND_MAX + 1.0f)) * 2.0f * (float)M_PI;
-
-    agents[index].dx = cosf(angle);
-    agents[index].dy = sinf(angle);
-    agents[index].direction_timer = (float)(rand() % 5 + 1);
 }
 
 // a partida so anda no estado GAME, o tamanho da tela vem do main
@@ -258,9 +280,6 @@ void update_match(double dt, float screen_w, float screen_h)
             agents[i].y = (float)(SCAN_PANEL_Y - AGENT_RADIUS);
             agents[i].dy = -agents[i].dy;
         }
-
-        if (agents[i].resistance <= 0)
-            agents[i].active = false;
     }
 
     match_time = match_time + dt;
