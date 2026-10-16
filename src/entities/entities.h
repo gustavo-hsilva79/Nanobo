@@ -18,7 +18,7 @@
 typedef struct
 {
     int id;
-    int health;
+    int resistance; // quantos acertos validos ate neutralizar (#49)
     float x;
     float y;
     float dx; // direcao em x
