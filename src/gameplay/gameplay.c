@@ -64,7 +64,15 @@ int pick_target(float x, float y)
 
     for (i = 0; i < NUM_AGENTES; i++)
     {
-        float dist = squared_distance(agents[i].x, agents[i].y, x, y);
+        float dist;
+
+        // agente neutralizado nao e candidato do scanner
+        if (!agents[i].active)
+        {
+            continue;
+        }
+
+        dist = squared_distance(agents[i].x, agents[i].y, x, y);
 
         if (dist > SCAN_RANGE * SCAN_RANGE)
         {
@@ -90,6 +98,12 @@ int touching_agent()
 
     for (i = 0; i < NUM_AGENTES; i++)
     {
+        // agente neutralizado nao encosta mais no nanobo
+        if (!agents[i].active)
+        {
+            continue;
+        }
+
         if (squared_distance(agents[i].x, agents[i].y, player.x, player.y) <= reach * reach)
         {
             return i;
@@ -97,6 +111,38 @@ int touching_agent()
     }
 
     return -1;
+}
+
+// um acerto valido no agente tira 1 de resistencia e neutraliza quando ela zera
+// (#49); devolve true so no acerto que neutralizou, o evento unico que a #66 pontua
+bool hit_agent(int index)
+{
+    if (index < 0 || index >= NUM_AGENTES)
+    {
+        return false;
+    }
+
+    // agente ja neutralizado nao leva mais acerto
+    if (!agents[index].active)
+    {
+        return false;
+    }
+
+    // celula saudavel nao tem resistencia de combate: um acerto nunca a remove (#14)
+    if (agents[index].species == SPECIES_CELL)
+    {
+        return false;
+    }
+
+    agents[index].resistance = agents[index].resistance - 1;
+
+    if (agents[index].resistance <= 0)
+    {
+        agents[index].active = false;
+        return true;
+    }
+
+    return false;
 }
 
 // um pulso do scanner, revela a proxima camada do alvo

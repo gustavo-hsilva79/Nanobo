@@ -33,6 +33,9 @@ void use_scanner();
 // contato: index do agente que o nanobo esta encostando, -1 quando nenhum
 int touching_agent();
 
+// acerto valido no agente: devolve true quando esse acerto o neutralizou (#49)
+bool hit_agent(int index);
+
 // partida
 void reset_match();
 void update_match(double dt, float screen_w, float screen_h);
