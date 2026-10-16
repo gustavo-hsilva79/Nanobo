@@ -160,6 +160,12 @@ void draw_game()
 
     for (i = 0; i < NUM_AGENTES; i++)
     {
+        // agente neutralizado sai do desenho
+        if (!agents[i].active)
+        {
+            continue;
+        }
+
         al_draw_bitmap(species_sprite(agents[i].species), agents[i].x - AGENT_RADIUS, agents[i].y - AGENT_RADIUS, 0);
     }
 
