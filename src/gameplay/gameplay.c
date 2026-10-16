@@ -237,7 +237,7 @@ void update_match(double dt, float screen_w, float screen_h)
             agents[i].direction_timer = rand() % 5 + 1;
         }
 
-        if (agents[i].health <= 0)
+        if (agents[i].resistance <= 0)
             agents[i].active = false;
     }
 
