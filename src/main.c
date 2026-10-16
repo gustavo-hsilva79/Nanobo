@@ -114,13 +114,13 @@ void draw_scan_info()
     {
         if (agents[i].layers >= 1)
         {
-            al_draw_textf(font, al_map_rgb(170, 170, 170), 10, 370 + line * 14, 0, "agente %d: %s", agents[i].id, layer_one_text(agents[i].species));
+            al_draw_textf(font, al_map_rgb(170, 170, 170), 10, SCAN_PANEL_Y + line * 14, 0, "agente %d: %s", agents[i].id, layer_one_text(agents[i].species));
             line = line + 1;
         }
 
         if (agents[i].layers >= 2)
         {
-            al_draw_textf(font, al_map_rgb(220, 220, 220), 10, 370 + line * 14, 0, "  %s", layer_two_text(agents[i].species));
+            al_draw_textf(font, al_map_rgb(220, 220, 220), 10, SCAN_PANEL_Y + line * 14, 0, "  %s", layer_two_text(agents[i].species));
             line = line + 1;
         }
     }

@@ -9,6 +9,9 @@
 // alcance do scanner em pixels
 #define SCAN_RANGE 130
 
+// linha onde comeca o painel do scanner no desenho; a area dos agentes acaba aqui
+#define SCAN_PANEL_Y 370
+
 // camadas que o scanner revela antes de identificar o agente
 #define MAX_LAYERS 2
 
