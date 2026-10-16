@@ -7,9 +7,6 @@
 
 #include "../entities/entities.h"
 
-#define WIDTH 640
-#define HEIGHT 480
-
 // tempo da partida em segundos, so conta dentro do estado GAME
 double match_time = 0;
 
@@ -207,6 +204,16 @@ static float clamp_to_screen(float value, float limit)
     return value;
 }
 
+// sorteia uma direcao unitaria nova e conta o tempo ate a proxima troca do agente
+static void pick_new_direction(int index)
+{
+    float angle = ((float)rand() / ((float)RAND_MAX + 1.0f)) * 2.0f * (float)M_PI;
+
+    agents[index].dx = cosf(angle);
+    agents[index].dy = sinf(angle);
+    agents[index].direction_timer = (float)(rand() % 5 + 1);
+}
+
 // a partida so anda no estado GAME, o tamanho da tela vem do main
 void update_match(double dt, float screen_w, float screen_h)
 {
@@ -217,24 +224,39 @@ void update_match(double dt, float screen_w, float screen_h)
         if (!agents[i].active)
             continue;
 
-        agents[i].x += agents[i].dx * agents[i].speed * dt;
-        agents[i].y += agents[i].dy * agents[i].speed * dt;
+        agents[i].direction_timer -= (float)dt;
 
-        agents[i].direction_timer -= dt;
-
-        // verificar colisao com a borda
-        if (agents[i].x < 0 || AGENT_RADIUS > WIDTH)
-            agents[i].dx = -agents[i].dx;
-        if (agents[i].y < 0 || AGENT_RADIUS > HEIGHT)
-            agents[i].dy = -agents[i].dy;
-
-        // mudanca aleatoria
+        // a direcao so muda quando o tempo do agente acaba, nunca a cada quadro
         if (agents[i].direction_timer <= 0)
         {
-            float angle = rand() % 2 * M_PI;
-            agents[i].dx = cos(angle);
-            agents[i].dy = sin(angle);
-            agents[i].direction_timer = rand() % 5 + 1;
+            pick_new_direction(i);
+        }
+
+        agents[i].x += (float)(agents[i].dx * agents[i].speed * dt);
+        agents[i].y += (float)(agents[i].dy * agents[i].speed * dt);
+
+        // borda: o sentido vira e a posicao volta pra dentro da area jogavel
+        if (agents[i].x - AGENT_RADIUS < 0)
+        {
+            agents[i].x = (float)AGENT_RADIUS;
+            agents[i].dx = -agents[i].dx;
+        }
+        else if (agents[i].x + AGENT_RADIUS > screen_w)
+        {
+            agents[i].x = screen_w - (float)AGENT_RADIUS;
+            agents[i].dx = -agents[i].dx;
+        }
+
+        // o painel do scanner ocupa a faixa de baixo, o agente para antes dele
+        if (agents[i].y - AGENT_RADIUS < 0)
+        {
+            agents[i].y = (float)AGENT_RADIUS;
+            agents[i].dy = -agents[i].dy;
+        }
+        else if (agents[i].y + AGENT_RADIUS > SCAN_PANEL_Y)
+        {
+            agents[i].y = (float)(SCAN_PANEL_Y - AGENT_RADIUS);
+            agents[i].dy = -agents[i].dy;
         }
 
         if (agents[i].resistance <= 0)
