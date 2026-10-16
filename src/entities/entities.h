@@ -9,16 +9,25 @@
 // raio de desenho e de colisao dos agentes em pixels (metade do sprite de 32x32)
 #define AGENT_RADIUS 16
 
+// velocidade dos agentes da Fase 1 em pixels por segundo
+#define AGENT_SPEED 30
+
 // especie do agente: define o texto do scanner e o desenho dele
 #define SPECIES_GRAM_POSITIVE 0
 #define SPECIES_GRAM_NEGATIVE 1
 #define SPECIES_CELL 2
 
+// resistencia de combate dos agentes: quantos acertos validos ate neutralizar (#49)
+#define BACTERIA_RESISTANCE 2
+
+// celula saudavel nao tem resistencia de combate: nenhum acerto a remove (#14)
+#define CELL_RESISTANCE 0
+
 // agente do encontro
 typedef struct
 {
     int id;
-    int health;
+    int resistance; // quantos acertos validos ate neutralizar (#49)
     float x;
     float y;
     float dx; // direcao em x

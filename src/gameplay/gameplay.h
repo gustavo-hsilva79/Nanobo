@@ -9,6 +9,9 @@
 // alcance do scanner em pixels
 #define SCAN_RANGE 130
 
+// linha onde comeca o painel do scanner no desenho; a area dos agentes acaba aqui
+#define SCAN_PANEL_Y 370
+
 // camadas que o scanner revela antes de identificar o agente
 #define MAX_LAYERS 2
 
@@ -29,6 +32,9 @@ void use_scanner();
 
 // contato: index do agente que o nanobo esta encostando, -1 quando nenhum
 int touching_agent();
+
+// acerto valido no agente: devolve true quando esse acerto o neutralizou (#49)
+bool hit_agent(int index);
 
 // partida
 void reset_match();

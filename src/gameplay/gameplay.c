@@ -7,9 +7,6 @@
 
 #include "../entities/entities.h"
 
-#define WIDTH 640
-#define HEIGHT 480
-
 // tempo da partida em segundos, so conta dentro do estado GAME
 double match_time = 0;
 
@@ -67,7 +64,15 @@ int pick_target(float x, float y)
 
     for (i = 0; i < NUM_AGENTES; i++)
     {
-        float dist = squared_distance(agents[i].x, agents[i].y, x, y);
+        float dist;
+
+        // agente neutralizado nao e candidato do scanner
+        if (!agents[i].active)
+        {
+            continue;
+        }
+
+        dist = squared_distance(agents[i].x, agents[i].y, x, y);
 
         if (dist > SCAN_RANGE * SCAN_RANGE)
         {
@@ -93,6 +98,12 @@ int touching_agent()
 
     for (i = 0; i < NUM_AGENTES; i++)
     {
+        // agente neutralizado nao encosta mais no nanobo
+        if (!agents[i].active)
+        {
+            continue;
+        }
+
         if (squared_distance(agents[i].x, agents[i].y, player.x, player.y) <= reach * reach)
         {
             return i;
@@ -100,6 +111,38 @@ int touching_agent()
     }
 
     return -1;
+}
+
+// um acerto valido no agente tira 1 de resistencia e neutraliza quando ela zera
+// (#49); devolve true so no acerto que neutralizou, o evento unico que a #66 pontua
+bool hit_agent(int index)
+{
+    if (index < 0 || index >= NUM_AGENTES)
+    {
+        return false;
+    }
+
+    // agente ja neutralizado nao leva mais acerto
+    if (!agents[index].active)
+    {
+        return false;
+    }
+
+    // celula saudavel nao tem resistencia de combate: um acerto nunca a remove (#14)
+    if (agents[index].species == SPECIES_CELL)
+    {
+        return false;
+    }
+
+    agents[index].resistance = agents[index].resistance - 1;
+
+    if (agents[index].resistance <= 0)
+    {
+        agents[index].active = false;
+        return true;
+    }
+
+    return false;
 }
 
 // um pulso do scanner, revela a proxima camada do alvo
@@ -163,15 +206,47 @@ static void place_agents()
     }
 }
 
-// comeca partida nova, a identificacao do encontro e zerada
+// sorteia uma direcao unitaria nova e conta o tempo ate a proxima troca do agente
+static void pick_new_direction(int index)
+{
+    float angle = ((float)rand() / ((float)RAND_MAX + 1.0f)) * 2.0f * (float)M_PI;
+
+    agents[index].dx = cosf(angle);
+    agents[index].dy = sinf(angle);
+    agents[index].direction_timer = (float)(rand() % 5 + 1);
+}
+
+// resistencia de combate que cada especie precisa para ser neutralizada (#49)
+static int species_resistance(int species)
+{
+    if (species == SPECIES_CELL)
+    {
+        return CELL_RESISTANCE;
+    }
+
+    return BACTERIA_RESISTANCE;
+}
+
+// devolve o agente ao estado de partida nova: resistencia da especie, ativo de
+// novo e direcao propria; a posicao de nascimento quem sorteia e o place_agents
+static void reset_agent(int index)
+{
+    agents[index].resistance = species_resistance(agents[index].species);
+    agents[index].active = true;
+    agents[index].layers = 0;
+    agents[index].identified = false;
+    pick_new_direction(index);
+}
+
+// comeca partida nova: o encontro e o nanobo voltam ao estado inicial
 void reset_match()
 {
     int i;
 
+    // cada agente volta ao estado inicial, inclusive resistencia e direcao
     for (i = 0; i < NUM_AGENTES; i++)
     {
-        agents[i].layers = 0;
-        agents[i].identified = false;
+        reset_agent(i);
     }
 
     player.x = 320;
@@ -217,28 +292,40 @@ void update_match(double dt, float screen_w, float screen_h)
         if (!agents[i].active)
             continue;
 
-        agents[i].x += agents[i].dx * agents[i].speed * dt;
-        agents[i].y += agents[i].dy * agents[i].speed * dt;
+        agents[i].direction_timer -= (float)dt;
 
-        agents[i].direction_timer -= dt;
-
-        // verificar colisao com a borda
-        if (agents[i].x < 0 || AGENT_RADIUS > WIDTH)
-            agents[i].dx = -agents[i].dx;
-        if (agents[i].y < 0 || AGENT_RADIUS > HEIGHT)
-            agents[i].dy = -agents[i].dy;
-
-        // mudanca aleatoria
+        // a direcao so muda quando o tempo do agente acaba, nunca a cada quadro
         if (agents[i].direction_timer <= 0)
         {
-            float angle = rand() % 2 * M_PI;
-            agents[i].dx = cos(angle);
-            agents[i].dy = sin(angle);
-            agents[i].direction_timer = rand() % 5 + 1;
+            pick_new_direction(i);
         }
 
-        if (agents[i].health <= 0)
-            agents[i].active = false;
+        agents[i].x += (float)(agents[i].dx * agents[i].speed * dt);
+        agents[i].y += (float)(agents[i].dy * agents[i].speed * dt);
+
+        // borda: o sentido vira e a posicao volta pra dentro da area jogavel
+        if (agents[i].x - AGENT_RADIUS < 0)
+        {
+            agents[i].x = (float)AGENT_RADIUS;
+            agents[i].dx = -agents[i].dx;
+        }
+        else if (agents[i].x + AGENT_RADIUS > screen_w)
+        {
+            agents[i].x = screen_w - (float)AGENT_RADIUS;
+            agents[i].dx = -agents[i].dx;
+        }
+
+        // o painel do scanner ocupa a faixa de baixo, o agente para antes dele
+        if (agents[i].y - AGENT_RADIUS < 0)
+        {
+            agents[i].y = (float)AGENT_RADIUS;
+            agents[i].dy = -agents[i].dy;
+        }
+        else if (agents[i].y + AGENT_RADIUS > SCAN_PANEL_Y)
+        {
+            agents[i].y = (float)(SCAN_PANEL_Y - AGENT_RADIUS);
+            agents[i].dy = -agents[i].dy;
+        }
     }
 
     match_time = match_time + dt;
