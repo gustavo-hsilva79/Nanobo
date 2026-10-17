@@ -13,9 +13,12 @@
 #define AGENT_SPEED 30
 
 // especie do agente: define o texto do scanner e o desenho dele
-#define SPECIES_GRAM_POSITIVE 0
-#define SPECIES_GRAM_NEGATIVE 1
-#define SPECIES_CELL 2
+typedef enum
+{
+    SPECIES_GRAM_POSITIVE = 0,
+    SPECIES_GRAM_NEGATIVE = 1,
+    SPECIES_CELL = 2
+} Species;
 
 // resistencia de combate dos agentes: quantos acertos validos ate neutralizar (#49)
 #define BACTERIA_RESISTANCE 2
@@ -24,8 +27,11 @@
 #define CELL_RESISTANCE 0
 
 // raio escolhido pelo jogador: roxo para Gram+, vermelho para Gram- (#62)
-#define LASER_GRAM_POSITIVE 0
-#define LASER_GRAM_NEGATIVE 1
+typedef enum
+{
+    LASER_GRAM_POSITIVE = 0,
+    LASER_GRAM_NEGATIVE = 1
+} Laser;
 
 // quantos projeteis podem existir ao mesmo tempo
 #define MAX_PROJECTILES 4
@@ -46,7 +52,7 @@ typedef struct
     float dx; // direcao em x
     float dy; // direcao em y
     int speed;
-    int species; // SPECIES_*
+    Species species; // SPECIES_*
     int layers; // camadas que o scanner ja revelou
     bool identified;
     float direction_timer; // tempo ate a proxima mudanca de direcao
@@ -64,10 +70,13 @@ extern int identified_count;
 #define PLAYER_MAX_HEALTH 3
 
 // direcao para onde o nanobo olha, usada pelo disparo (#63)
-#define PLAYER_FACING_UP 0
-#define PLAYER_FACING_DOWN 1
-#define PLAYER_FACING_LEFT 2
-#define PLAYER_FACING_RIGHT 3
+typedef enum
+{
+    PLAYER_FACING_UP = 0,
+    PLAYER_FACING_DOWN = 1,
+    PLAYER_FACING_LEFT = 2,
+    PLAYER_FACING_RIGHT = 3
+} Facing;
 
 // struct do player
 typedef struct
@@ -75,9 +84,9 @@ typedef struct
     float x;
     float y;
     float speed;
-    int facing;
+    Facing facing;
     int health;
-    int laser; // LASER_* escolhido pelo jogador (#62)
+    Laser laser; // LASER_* escolhido pelo jogador (#62)
 } Nanobo;
 
 extern Nanobo player;
@@ -90,7 +99,7 @@ typedef struct
     float y;
     float dx; // direcao unitaria em x
     float dy; // direcao unitaria em y
-    int laser; // raio escolhido no momento do disparo
+    Laser laser; // raio escolhido no momento do disparo
 } Projectile;
 
 extern Projectile projectiles[MAX_PROJECTILES];
