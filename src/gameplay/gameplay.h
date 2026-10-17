@@ -15,6 +15,15 @@
 // camadas que o scanner revela antes de identificar o agente
 #define MAX_LAYERS 2
 
+// defesa (#17): janela ativa, recarga e forca do empurrao em quem encosta
+#define DEFENSE_DURATION 2.0
+#define DEFENSE_COOLDOWN 3.0
+#define DEFENSE_PUSH_TIME 0.5
+#define DEFENSE_PUSH_MULTIPLIER 2.0f
+
+// intervalo entre disparos (#64)
+#define ATTACK_COOLDOWN 1.0
+
 // tempo da partida em segundos, so conta dentro do estado GAME
 extern double match_time;
 
@@ -29,6 +38,13 @@ const char* layer_one_text(int species);
 const char* layer_two_text(int species);
 int pick_target(float x, float y);
 void use_scanner();
+
+// defesa: ativa, estado pro anel do HUD e empurrao de quem encosta (#17)
+void activate_defense();
+int defense_state();
+
+// ataque: um projetil por aperto, respeitando o cooldown (#63, #64)
+void shoot();
 
 // contato: index do agente que o nanobo esta encostando, -1 quando nenhum
 int touching_agent();

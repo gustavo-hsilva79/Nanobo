@@ -54,6 +54,33 @@ A proposta é que o jogador descubra informações, interprete dados do scanner 
 - Nos demais estados, nenhum clique tem ação definida nesta etapa.
 - Detalhes e roteiro de verificação em `docs/planejamento/interacao-mouse.md`.
 
+#### HUD de vida (17/10/2026)
+
+- A vida aparece como **3 corações de 16×16** (`assets/sprites/icone_coracao.png`), alinhados em (10, 74) com 18 px de espaçamento.
+- Coração perdido **não some: escurece** (tint 25%), para o jogador enxergar o máximo e o quanto já perdeu.
+- O coração é carmim, como o catálogo de arte já especificava, e não usa o vermelho do laser Gram−.
+- O texto `vida: %d` sai do HUD; a leitura passa a ser por contagem de corações.
+- A regra da #11 não muda: 3 vidas, 1 de dano por contato, 1 s de invulnerabilidade, sem cura.
+- Pontuação e objetivos continuam sem desenho definido — são o resto da #19.
+
+### Combate
+
+#### Defesa (16/10/2026)
+
+- A defesa é **imunidade total** a dano de contato durante **2 s**; ativa por tecla, sem custo de energia, com **3 s** de cooldown.
+- Contato durante a defesa **empurra a bactéria**: 2× a velocidade dela por 0,5 s, na direção do Nanobô para o agente. Só bactérias; a célula própria é escopo da #14.
+- Enquanto a defesa está ativa o disparo é ignorado; um projétil já em voo não é cancelado. Contato fora da defesa continua seguindo a regra da #11.
+- Feedback: anel em volta do Nanobô — ciano durante os 2 s, cinza durante a recarga, ausente quando a defesa está pronta.
+- Implementação em `src/gameplay/` (#17), com os timers dentro de `update_match` para congelarem na pausa.
+
+#### Controles de combate (16/10/2026)
+
+- **`X` = defesa, `J` = ataque, `1` = raio roxo (Gram+), `2` = raio vermelho (Gram−), `ESPAÇO` = scanner.** O ataque usa a direção do `facing`.
+- A escolha do raio é direta (tecla 1 ou 2), não por ciclo: são duas opções e o jogador precisa saber qual está selecionada — o HUD mostra `raio: roxo (Gram+)` ou `raio: vermelho (Gram-)`.
+- `SHIFT` foi descartada: tocar SHIFT cinco vezes dispara o aviso de Teclas de Aderência do Windows — ruim para uma habilidade de toque repetido.
+- Referências: Hades 2 (`Space` = dash), Enter the Gungeon (botão direito do mouse = esquiva), Hollow Knight (`X` = ataque, `C` = dash).
+- **Validado por Gustavo em 17/10/2026** (as quatro regras de defesa e a exclusão com o ataque). A revisão cruzada com o Eric fica registrada como pendência para a entrega do marco, sem bloquear a implementação.
+
 ### Fase 1
 
 A Fase 1 trabalha **bactérias e células saudáveis**, incluindo a diferenciação entre bactérias Gram-positivas e Gram-negativas.
@@ -83,7 +110,7 @@ O jogo terá pontuação, bônus por identificação e progressão. O hi-score d
 - Cooldown definitivo do scanner e configuração de camadas por agente/fase no MVP.
 - Conteúdo biológico detalhado e validado de cada agente.
 - Relação final entre dados do scanner e escolha do laser/ação.
-- Balanceamento de vida, dano, ataque, defesa, cooldowns e resistência.
+- Balanceamento de vida, dano, ataque, defesa, cooldowns e resistência (a regra de mitigação da defesa está fechada desde 16/10/2026; falta calibrar os números).
 - Regras de progressão entre fases.
 - Apresentação final das informações do scanner.
 - Regras detalhadas da multiplicação limitada da Fase 2.

@@ -13,6 +13,13 @@ double match_time = 0;
 // cooldown de invulnerabilidade
 static double invulnerability_timer = 0.0;
 
+// janela ativa da defesa e a recarga dela (#17)
+static double defense_timer = 0.0;
+static double defense_cooldown_timer = 0.0;
+
+// intervalo entre disparos (#64)
+static double attack_cooldown_timer = 0.0;
+
 // teclas seguradas agora, quem escreve nelas e o handle_key_down/handle_key_up
 bool key_up = false;
 bool key_down = false;
@@ -113,6 +120,17 @@ int touching_agent()
     return -1;
 }
 
+// raio que neutraliza cada especie: roxo para Gram+, vermelho para Gram- (#62)
+static int laser_for_species(int species)
+{
+    if (species == SPECIES_GRAM_POSITIVE)
+    {
+        return LASER_GRAM_POSITIVE;
+    }
+
+    return LASER_GRAM_NEGATIVE;
+}
+
 // um acerto valido no agente tira 1 de resistencia e neutraliza quando ela zera
 // (#49); devolve true so no acerto que neutralizou, o evento unico que a #66 pontua
 bool hit_agent(int index)
@@ -145,6 +163,70 @@ bool hit_agent(int index)
     return false;
 }
 
+// um projetil contra os agentes: o primeiro que cruzar leva o acerto e o projetil some (#49)
+static void hit_projectiles()
+{
+    int i;
+    int j;
+    float reach = (float)(PROJECTILE_RADIUS + AGENT_RADIUS);
+
+    for (i = 0; i < MAX_PROJECTILES; i++)
+    {
+        if (!projectiles[i].active)
+        {
+            continue;
+        }
+
+        for (j = 0; j < NUM_AGENTES; j++)
+        {
+            if (!agents[j].active)
+            {
+                continue;
+            }
+
+            if (squared_distance(projectiles[i].x, projectiles[i].y, agents[j].x, agents[j].y) > reach * reach)
+            {
+                continue;
+            }
+
+            // raio certo tira resistencia; raio errado so custa o projetil
+            if (agents[j].species != SPECIES_CELL && projectiles[i].laser == laser_for_species(agents[j].species))
+            {
+                hit_agent(j);
+            }
+
+            projectiles[i].active = false;
+            break;
+        }
+    }
+}
+
+// projetis andam em linha reta e somem ao sair da area jogavel (#63)
+static void update_projectiles(double dt, float screen_w)
+{
+    int i;
+    float floor_y = (float)SCAN_PANEL_Y;
+
+    for (i = 0; i < MAX_PROJECTILES; i++)
+    {
+        if (!projectiles[i].active)
+        {
+            continue;
+        }
+
+        projectiles[i].x += (float)(projectiles[i].dx * PROJECTILE_SPEED * dt);
+        projectiles[i].y += (float)(projectiles[i].dy * PROJECTILE_SPEED * dt);
+
+        if (projectiles[i].x < 0 || projectiles[i].x > screen_w
+            || projectiles[i].y < 0 || projectiles[i].y > floor_y)
+        {
+            projectiles[i].active = false;
+        }
+    }
+
+    hit_projectiles();
+}
+
 // um pulso do scanner, revela a proxima camada do alvo
 void use_scanner()
 {
@@ -165,6 +247,109 @@ void use_scanner()
         agents[target].identified = true;
         identified_count = identified_count + 1;
     }
+}
+
+// aperta a defesa: so ativa quando ela esta pronta (#17)
+void activate_defense()
+{
+    if (player.health <= 0)
+    {
+        return;
+    }
+
+    // durante a janela ativa ou a recarga o aperto nao faz nada
+    if (defense_timer > 0.0 || defense_cooldown_timer > 0.0)
+    {
+        return;
+    }
+
+    defense_timer = DEFENSE_DURATION;
+}
+
+// 1 = defesa ativa, 2 = recarregando, 0 = pronta; o main desenha o anel com isso
+int defense_state()
+{
+    if (defense_timer > 0.0)
+    {
+        return 1;
+    }
+
+    if (defense_cooldown_timer > 0.0)
+    {
+        return 2;
+    }
+
+    return 0;
+}
+
+// dispara um projetil na direcao do facing, respeitando defesa e cooldown (#63, #64)
+void shoot()
+{
+    int i;
+    int free_slot = -1;
+    float offset = (float)(PLAYER_RADIUS + PROJECTILE_RADIUS);
+
+    if (player.health <= 0)
+    {
+        return;
+    }
+
+    // ataque e defesa nao acontecem juntos (#17)
+    if (defense_timer > 0.0)
+    {
+        return;
+    }
+
+    if (attack_cooldown_timer > 0.0)
+    {
+        return;
+    }
+
+    for (i = 0; i < MAX_PROJECTILES; i++)
+    {
+        if (!projectiles[i].active)
+        {
+            free_slot = i;
+            break;
+        }
+    }
+
+    // sem espaco livre o disparo nao acontece, e o cooldown nao e gasto
+    if (free_slot == -1)
+    {
+        return;
+    }
+
+    projectiles[free_slot].active = true;
+    projectiles[free_slot].laser = player.laser;
+    projectiles[free_slot].x = player.x;
+    projectiles[free_slot].y = player.y;
+    projectiles[free_slot].dx = 0.0f;
+    projectiles[free_slot].dy = 0.0f;
+
+    // nasce encostado no nanobo para nao parecer deslocado
+    if (player.facing == PLAYER_FACING_UP)
+    {
+        projectiles[free_slot].y = player.y - offset;
+        projectiles[free_slot].dy = -1.0f;
+    }
+    else if (player.facing == PLAYER_FACING_DOWN)
+    {
+        projectiles[free_slot].y = player.y + offset;
+        projectiles[free_slot].dy = 1.0f;
+    }
+    else if (player.facing == PLAYER_FACING_LEFT)
+    {
+        projectiles[free_slot].x = player.x - offset;
+        projectiles[free_slot].dx = -1.0f;
+    }
+    else
+    {
+        projectiles[free_slot].x = player.x + offset;
+        projectiles[free_slot].dx = 1.0f;
+    }
+
+    attack_cooldown_timer = ATTACK_COOLDOWN;
 }
 
 // pontos validos do cenario, a regra de cada um esta em docs/game-design/gdd.md
@@ -216,6 +401,58 @@ static void pick_new_direction(int index)
     agents[index].direction_timer = (float)(rand() % 5 + 1);
 }
 
+// defesa ativa empurra a bacteria que encosta: direcao do nanobo para o agente (#17)
+static void repel_touching_agents()
+{
+    int i;
+    float reach = (float)(PLAYER_RADIUS + AGENT_RADIUS);
+
+    if (defense_timer <= 0.0)
+    {
+        return;
+    }
+
+    for (i = 0; i < NUM_AGENTES; i++)
+    {
+        float dx;
+        float dy;
+        float dist;
+
+        if (!agents[i].active)
+        {
+            continue;
+        }
+
+        // a celula propria nao e empurrada: o comportamento dela e da #14
+        if (agents[i].species == SPECIES_CELL)
+        {
+            continue;
+        }
+
+        dx = agents[i].x - player.x;
+        dy = agents[i].y - player.y;
+        dist = sqrtf(dx * dx + dy * dy);
+
+        if (dist > reach)
+        {
+            continue;
+        }
+
+        // centro exato do nanobo: sorteia uma direcao para nao dividir por zero
+        if (dist < 0.001f)
+        {
+            pick_new_direction(i);
+        }
+        else
+        {
+            agents[i].dx = dx / dist;
+            agents[i].dy = dy / dist;
+        }
+
+        agents[i].impulse_timer = (float)DEFENSE_PUSH_TIME;
+    }
+}
+
 // resistencia de combate que cada especie precisa para ser neutralizada (#49)
 static int species_resistance(int species)
 {
@@ -235,6 +472,7 @@ static void reset_agent(int index)
     agents[index].active = true;
     agents[index].layers = 0;
     agents[index].identified = false;
+    agents[index].impulse_timer = 0.0f;
     pick_new_direction(index);
 }
 
@@ -264,6 +502,15 @@ void reset_match()
     identified_count = 0;
     match_time = 0;
     invulnerability_timer = 0.0;
+    defense_timer = 0.0;
+    defense_cooldown_timer = 0.0;
+    attack_cooldown_timer = 0.0;
+
+    // partida nova comeca sem projetil na tela
+    for (i = 0; i < MAX_PROJECTILES; i++)
+    {
+        projectiles[i].active = false;
+    }
 }
 
 // mantem um valor dentro da tela, respeitando o raio do nanobo
@@ -289,19 +536,36 @@ void update_match(double dt, float screen_w, float screen_h)
 
     for (int i = 0; i < NUM_AGENTES; i++)
     {
+        float speed_factor = 1.0f;
+
         if (!agents[i].active)
             continue;
 
-        agents[i].direction_timer -= (float)dt;
-
-        // a direcao so muda quando o tempo do agente acaba, nunca a cada quadro
-        if (agents[i].direction_timer <= 0)
+        // durante o empurrao da defesa a direcao e a velocidade vem do impulso
+        if (agents[i].impulse_timer > 0.0f)
         {
-            pick_new_direction(i);
+            agents[i].impulse_timer -= (float)dt;
+            speed_factor = DEFENSE_PUSH_MULTIPLIER;
+
+            if (agents[i].impulse_timer <= 0.0f)
+            {
+                agents[i].impulse_timer = 0.0f;
+                pick_new_direction(i);
+            }
+        }
+        else
+        {
+            agents[i].direction_timer -= (float)dt;
+
+            // a direcao so muda quando o tempo do agente acaba, nunca a cada quadro
+            if (agents[i].direction_timer <= 0)
+            {
+                pick_new_direction(i);
+            }
         }
 
-        agents[i].x += (float)(agents[i].dx * agents[i].speed * dt);
-        agents[i].y += (float)(agents[i].dy * agents[i].speed * dt);
+        agents[i].x += (float)(agents[i].dx * agents[i].speed * speed_factor * dt);
+        agents[i].y += (float)(agents[i].dy * agents[i].speed * speed_factor * dt);
 
         // borda: o sentido vira e a posicao volta pra dentro da area jogavel
         if (agents[i].x - AGENT_RADIUS < 0)
@@ -340,6 +604,38 @@ void update_match(double dt, float screen_w, float screen_h)
         }
     }
 
+    // fim da janela de defesa vira o inicio da recarga (#17)
+    if (defense_timer > 0.0)
+    {
+        defense_timer -= dt;
+
+        if (defense_timer <= 0.0)
+        {
+            defense_timer = 0.0;
+            defense_cooldown_timer = DEFENSE_COOLDOWN;
+        }
+    }
+    else if (defense_cooldown_timer > 0.0)
+    {
+        defense_cooldown_timer -= dt;
+
+        if (defense_cooldown_timer < 0.0)
+        {
+            defense_cooldown_timer = 0.0;
+        }
+    }
+
+    // cooldown do ataque (#64)
+    if (attack_cooldown_timer > 0.0)
+    {
+        attack_cooldown_timer -= dt;
+
+        if (attack_cooldown_timer < 0.0)
+        {
+            attack_cooldown_timer = 0.0;
+        }
+    }
+
     if (key_up)
     {
         player.y = player.y - step;
@@ -368,12 +664,16 @@ void update_match(double dt, float screen_w, float screen_h)
     player.x = clamp_to_screen(player.x, screen_w);
     player.y = clamp_to_screen(player.y, screen_h);
 
+    repel_touching_agents();
+    update_projectiles(dt, screen_w);
+
     int touched = touching_agent();
 
     if (player.health > 0 
         && touched != -1 
         && agents[touched].species != SPECIES_CELL 
-        && invulnerability_timer <= 0.0)
+        && invulnerability_timer <= 0.0
+        && defense_timer <= 0.0)
     {
         player.health--;
 
