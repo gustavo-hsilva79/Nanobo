@@ -5,17 +5,20 @@
 // temporizador e devolve a resistencia cheia antes do primeiro quadro de jogo
 Agent agents[NUM_AGENTES] =
 {
-    // id, resistencia, x, y, dx, dy, speed, species, layers, identified, direction_timer, active
-    { 1, BACTERIA_RESISTANCE, 140, 130, 1, 0, AGENT_SPEED, SPECIES_GRAM_POSITIVE, 0, false, 1, true },
-    { 2, BACTERIA_RESISTANCE, 490, 150, 1, 0, AGENT_SPEED, SPECIES_GRAM_NEGATIVE, 0, false, 1, true },
-    { 3, CELL_RESISTANCE, 320, 280, 1, 0, AGENT_SPEED, SPECIES_CELL, 0, false, 1, true },
-    { 4, BACTERIA_RESISTANCE, 100, 330, 1, 0, AGENT_SPEED, SPECIES_GRAM_POSITIVE, 0, false, 1, true },
-    { 5, CELL_RESISTANCE, 300, 120, 1, 0, AGENT_SPEED, SPECIES_CELL, 0, false, 1, true },
-    { 6, CELL_RESISTANCE, 540, 320, 1, 0, AGENT_SPEED, SPECIES_CELL, 0, false, 1, true }
+    // id, resistencia, x, y, dx, dy, speed, species, layers, identified, direction_timer, impulse_timer, active
+    { 1, BACTERIA_RESISTANCE, 140, 130, 1, 0, AGENT_SPEED, SPECIES_GRAM_POSITIVE, 0, false, 1, 0, true },
+    { 2, BACTERIA_RESISTANCE, 490, 150, 1, 0, AGENT_SPEED, SPECIES_GRAM_NEGATIVE, 0, false, 1, 0, true },
+    { 3, CELL_RESISTANCE, 320, 280, 1, 0, AGENT_SPEED, SPECIES_CELL, 0, false, 1, 0, true },
+    { 4, BACTERIA_RESISTANCE, 100, 330, 1, 0, AGENT_SPEED, SPECIES_GRAM_POSITIVE, 0, false, 1, 0, true },
+    { 5, CELL_RESISTANCE, 300, 120, 1, 0, AGENT_SPEED, SPECIES_CELL, 0, false, 1, 0, true },
+    { 6, CELL_RESISTANCE, 540, 320, 1, 0, AGENT_SPEED, SPECIES_CELL, 0, false, 1, 0, true }
 };
 
 int identified_count = 0;
 
+// nenhum projetil vivo antes do primeiro disparo da partida
+Projectile projectiles[MAX_PROJECTILES];
+
 // inicializar player
-Nanobo player = { 320, 260, 200, PLAYER_FACING_DOWN, PLAYER_MAX_HEALTH };
+Nanobo player = { 320, 260, 200, PLAYER_FACING_DOWN, PLAYER_MAX_HEALTH, LASER_GRAM_POSITIVE };
 

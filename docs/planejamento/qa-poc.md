@@ -107,3 +107,68 @@ O zip contém `Nanobo.exe`, as DLLs do Allegro 5 e `assets/sprites/nanobo.png`. 
 ## 8. Falhas encontradas
 
 Nenhuma falha reproduzível foi encontrada nos itens efetivamente verificados. A ausência de verificação automatizada da movimentação está registrada na seção 4 e não é, por si só, uma falha do produto.
+
+## 9. PoC do combate (M3.5) — defesa, ataque e cooldown
+
+> **Adicionado em 16/10/2026.** Estende esta PoC para o escopo do M3.5. A regra da defesa está fechada em `docs/game-design/decisoes.md`; o mapa de teclas é `X` = defesa, `J` = ataque, `ESPAÇO` = scanner.
+
+### 9.1 Pré-requisitos
+
+1. Fechar qualquer `Nanobo.exe` aberto (o linker não regrava o executável em uso).
+2. Compilar `Debug|x64` no Visual Studio e executar a partir da **raiz do repositório**, para `assets/` ser encontrada.
+3. Apertar `ENTER` no menu para iniciar a partida.
+
+### 9.2 Defesa — roteiro numerado (#17)
+
+| # | Ação | Resultado esperado |
+|---|---|---|
+| 1 | Observar o Nanobô sem apertar nada | nenhum anel; a defesa está pronta |
+| 2 | Apertar `X` com o Nanobô longe de agentes | anel **ciano** aparece; some (vira cinza) depois de ~2 s |
+| 3 | Apertar `X` de novo durante o anel cinza | nada acontece; o anel continua cinza até o fim da recarga |
+| 4 | Cronometrar do fim do anel ciano até o anel desaparecer | ~3 s de recarga |
+| 5 | Deixar uma bactéria encostar durante o anel ciano | a **vida não cai** e a bactéria é **empurrada** para longe |
+| 6 | Repetir o contato sem defesa | a vida cai 1 e a bactéria **não** é empurrada |
+| 7 | Encostar numa célula saudável (ids 3, 5 ou 6) durante a defesa | a célula **não** é empurrada e a vida não cai |
+| 8 | Pausar com `ESC` durante o anel ciano e voltar | a defesa continua de onde parou (timer congelado) |
+| 9 | Deixar a vida chegar a 0 sem defesa | a partida chega a GAME OVER |
+| 10 | Voltar ao menu e iniciar partida nova | nenhum estado de defesa vaza (anel ausente, vida 3) |
+
+### 9.3 Ataque — roteiro numerado (#62, #63, #64, #49)
+
+| # | Ação | Resultado esperado |
+|---|---|---|
+| 1 | Apertar `J` | um projétil sai na direção do `facing` |
+| 2 | Apertar `J` duas vezes em menos de 1 s | o segundo disparo é ignorado (cooldown) |
+| 3 | Acertar a bactéria com o raio da cor certa | a resistência cai; ao zerar, o agente sai da cena |
+| 4 | Acertar com o raio da cor errada | nada acontece com a bactéria (regra da Fase 1) |
+| 5 | Atirar no meio da defesa | nenhum projétil é criado |
+| 6 | Apertar `X` com projétil em voo | o projétil continua e acerta |
+
+### 9.4 Resultado observado
+
+| Item | Esperado | Observado | Data | Quem verificou |
+|---|---|---|---|---|
+| Defesa 2 s / recarga 3 s | anel ciano 2 s, cinza 3 s | _a preencher_ | | |
+| Imunidade durante a defesa | vida não cai | _a preencher_ | | |
+| Empurrão da bactéria | agente sai de cima do Nanobô | _a preencher_ | | |
+| Célula não é empurrada | célula ignorada | _a preencher_ | | |
+| Pausa congela os timers | defesa continua ao voltar | _a preencher_ | | |
+| Contato sem defesa | vida cai 1 (regra da #11) | _a preencher_ | | |
+| Disparo e cooldown | 1 projétil por segundo | _a preencher_ | | |
+| Acerto válido | resistência cai e neutraliza | _a preencher_ | | |
+
+### 9.5 Evidência automatizada e por captura (17/10/2026)
+
+| Fonte | O que prova |
+|---|---|
+| Harness de regras puras (29 casos, fora do repositório) | janela de 2 s, recarga de 3 s, aperto bloqueado na recarga, imunidade, empurrão só em bactéria, célula intacta, dano da #11 preservado, 1 projétil por disparo, cooldown de 1 s, raio errado sem resistência, neutralização, projétil fora da tela |
+| Captura do jogo | anel ciano durante os 2 s e cinza na recarga; HUD `raio: roxo (Gram+)`; um único projétil roxo avançando com o `facing`; segundo `J` em 130 ms sem criar outro; 1 coração aceso e 2 escurecidos depois de dois contatos |
+
+O harness não prova desenho e a captura não prova regra com precisão de quadro: por isso os dois. A passada manual da tabela 9.4 continua sendo de quem joga — ela mede sensação, não regra.
+
+### 9.6 Limitações desta PoC
+
+- Sem automação: a injeção de tecla no Allegro não é confiável (registro da #181), então cada item é conferido com tecla apertada à mão.
+- A janela de 2 s e a recarga de 3 s são medidas a olho e cronômetro; o anel mostra o estado, não o número.
+- O empurrão depende do estado do timer do agente; se ele sortear direção nova no mesmo quadro, o deslocamento visível varia.
+- As teclas de teste `F`, `G` e `V` ainda existem e continuam sendo o único caminho para RESULTADOS, VITÓRIA e GAME OVER até a #7/#20/#53.
