@@ -7,6 +7,9 @@
 
 #include "../entities/entities.h"
 
+// a invulnerabilidade precisa existir para o dano nao virar por quadro
+_Static_assert(INVULNERABILITY_TIME > 0.0, "invulnerabilidade precisa ser positiva");
+
 // tempo da partida em segundos, so conta dentro do estado GAME
 double match_time = 0;
 
@@ -36,7 +39,7 @@ static float squared_distance(float ax, float ay, float bx, float by)
 }
 
 // primeira camada, so diz o que apareceu
-const char* layer_one_text(int species)
+const char* layer_one_text(Species species)
 {
     if (species == SPECIES_CELL)
     {
@@ -47,7 +50,7 @@ const char* layer_one_text(int species)
 }
 
 // segunda camada, o detalhe que o jogador interpreta
-const char* layer_two_text(int species)
+const char* layer_two_text(Species species)
 {
     if (species == SPECIES_GRAM_POSITIVE)
     {
@@ -121,7 +124,7 @@ int touching_agent()
 }
 
 // raio que neutraliza cada especie: roxo para Gram+, vermelho para Gram- (#62)
-static int laser_for_species(int species)
+static int laser_for_species(Species species)
 {
     if (species == SPECIES_GRAM_POSITIVE)
     {
@@ -353,28 +356,29 @@ void shoot()
 }
 
 // pontos validos do cenario, a regra de cada um esta em docs/game-design/gdd.md
-static const float valid_points[12][2] =
+// quantos pontos validos a tabela tem; o array usa esta constante
+#define NUM_VALID_POINTS 12
+
+static const float valid_points[][2] =
 {
     {  90, 120 }, { 250, 110 }, { 430, 130 }, { 560, 200 },
     {  80, 250 }, { 200, 220 }, { 330, 160 }, { 470, 260 },
     { 110, 340 }, { 260, 340 }, { 400, 330 }, { 550, 350 }
 };
 
-// quantos pontos a tabela tem, sem repetir o numero
-#define NUM_VALID_POINTS ((int)(sizeof(valid_points) / sizeof(valid_points[0])))
+// o array e sem dimensao de proposito: assim a contagem e a real e uma linha
+// faltando (ou sobrando) quebra o build em vez de virar zero
+_Static_assert(sizeof(valid_points) / sizeof(valid_points[0]) == NUM_VALID_POINTS,
+    "valid_points precisa ter NUM_VALID_POINTS linhas");
+
+// cada agente precisa de um ponto de nascimento proprio
+_Static_assert(NUM_AGENTES <= NUM_VALID_POINTS, "faltam pontos para todos os agentes");
 
 // sorteia um ponto valido e diferente para cada agente da fase
 static void place_agents()
 {
     int taken[NUM_VALID_POINTS] = { 0 };
     int i;
-
-    // sem pontos sobrando dois agentes nasceriam no mesmo lugar (e o laco travaria)
-    if (NUM_AGENTES > NUM_VALID_POINTS)
-    {
-        printf("poucos pontos validos para %d agentes\n", NUM_AGENTES);
-        return;
-    }
 
     for (i = 0; i < NUM_AGENTES; i++)
     {
@@ -454,7 +458,7 @@ static void repel_touching_agents()
 }
 
 // resistencia de combate que cada especie precisa para ser neutralizada (#49)
-static int species_resistance(int species)
+static int species_resistance(Species species)
 {
     if (species == SPECIES_CELL)
     {
@@ -516,17 +520,38 @@ void reset_match()
 // mantem um valor dentro da tela, respeitando o raio do nanobo
 static float clamp_to_screen(float value, float limit)
 {
-    if (value < PLAYER_RADIUS)
+    return fminf(fmaxf(value, (float)PLAYER_RADIUS), limit - (float)PLAYER_RADIUS);
+}
+
+// mantem o agente dentro da area jogavel e inverte o sentido quando ele bate
+static void bounce_agent_off_bounds(int index, float screen_w)
+{
+    float min_x = (float)AGENT_RADIUS;
+    float max_x = screen_w - (float)AGENT_RADIUS;
+    float min_y = (float)AGENT_RADIUS;
+    float max_y = (float)(SCAN_PANEL_Y - AGENT_RADIUS);
+
+    if (agents[index].x < min_x)
     {
-        return PLAYER_RADIUS;
+        agents[index].x = min_x;
+        agents[index].dx = -agents[index].dx;
+    }
+    else if (agents[index].x > max_x)
+    {
+        agents[index].x = max_x;
+        agents[index].dx = -agents[index].dx;
     }
 
-    if (value > limit - PLAYER_RADIUS)
+    if (agents[index].y < min_y)
     {
-        return limit - PLAYER_RADIUS;
+        agents[index].y = min_y;
+        agents[index].dy = -agents[index].dy;
     }
-
-    return value;
+    else if (agents[index].y > max_y)
+    {
+        agents[index].y = max_y;
+        agents[index].dy = -agents[index].dy;
+    }
 }
 
 // a partida so anda no estado GAME, o tamanho da tela vem do main
@@ -567,29 +592,7 @@ void update_match(double dt, float screen_w, float screen_h)
         agents[i].x += (float)(agents[i].dx * agents[i].speed * speed_factor * dt);
         agents[i].y += (float)(agents[i].dy * agents[i].speed * speed_factor * dt);
 
-        // borda: o sentido vira e a posicao volta pra dentro da area jogavel
-        if (agents[i].x - AGENT_RADIUS < 0)
-        {
-            agents[i].x = (float)AGENT_RADIUS;
-            agents[i].dx = -agents[i].dx;
-        }
-        else if (agents[i].x + AGENT_RADIUS > screen_w)
-        {
-            agents[i].x = screen_w - (float)AGENT_RADIUS;
-            agents[i].dx = -agents[i].dx;
-        }
-
-        // o painel do scanner ocupa a faixa de baixo, o agente para antes dele
-        if (agents[i].y - AGENT_RADIUS < 0)
-        {
-            agents[i].y = (float)AGENT_RADIUS;
-            agents[i].dy = -agents[i].dy;
-        }
-        else if (agents[i].y + AGENT_RADIUS > SCAN_PANEL_Y)
-        {
-            agents[i].y = (float)(SCAN_PANEL_Y - AGENT_RADIUS);
-            agents[i].dy = -agents[i].dy;
-        }
+        bounce_agent_off_bounds(i, screen_w);
     }
 
     match_time = match_time + dt;
@@ -680,6 +683,6 @@ void update_match(double dt, float screen_w, float screen_h)
         if (player.health < 0)
             player.health = 0;
 
-        invulnerability_timer = 1.0;
+        invulnerability_timer = INVULNERABILITY_TIME;
     }
 }

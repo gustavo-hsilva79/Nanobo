@@ -3,6 +3,12 @@
 
 #include <stdbool.h>
 
+// as regras falam das especies e direcoes do jogo
+#include "../entities/entities.h"
+
+// o projeto compila com /std:c11; sem isso o arquivo nao compila de proposito
+_Static_assert(__STDC_VERSION__ >= 201112L, "compilar com /std:c11 (ver Nanobo.vcxproj)");
+
 // regras centrais de gameplay ficam declaradas aqui
 // (alvo do scanner, camadas, vida, dano, cooldown, pontuacao e fim de fase)
 
@@ -24,6 +30,9 @@
 // intervalo entre disparos (#64)
 #define ATTACK_COOLDOWN 1.0
 
+// tempo de invulnerabilidade depois de levar dano (#11)
+#define INVULNERABILITY_TIME 1.0
+
 // tempo da partida em segundos, so conta dentro do estado GAME
 extern double match_time;
 
@@ -34,8 +43,8 @@ extern bool key_left;
 extern bool key_right;
 
 // leitura do scanner
-const char* layer_one_text(int species);
-const char* layer_two_text(int species);
+const char* layer_one_text(Species species);
+const char* layer_two_text(Species species);
 int pick_target(float x, float y);
 void use_scanner();
 

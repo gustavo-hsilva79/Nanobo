@@ -154,7 +154,7 @@ void draw_menu()
 }
 
 // sprite de cada especie, alinhado com as constantes do entities.h
-ALLEGRO_BITMAP* species_sprite(int species)
+ALLEGRO_BITMAP* species_sprite(Species species)
 {
     if (species == SPECIES_GRAM_POSITIVE)
     {
