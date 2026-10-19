@@ -1,6 +1,7 @@
 # Plano de execução do backlog restante — Nanobô
 
 > **Gerado em:** 16/10/2026.
+> **Atualização de 18/10/2026:** este retrato é de 16/10. Desde então #14, #16, #17, #49, #50, #51, #53, #62–#64, #68, #69 e #73 foram implementados e fechados. Para o estado corrente, vale `docs/planejamento/kanban.md`.
 > **Fontes:** GitHub via `gh` (124 issues abertas / 55 fechadas), Todoist do projeto (64 tarefas abertas), `docs/planejamento/`, `docs/game-design/` e leitura direta do `src/` no commit `ec7f072`.
 > **Regra desta etapa:** planejar. Nada foi alterado no repositório, nas issues, nos milestones ou no Todoist.
 > **Escopo:** detalhado até o MVP (04/11/2026); esboço depois dele até a entrega final (02/12/2026).
@@ -13,14 +14,14 @@
 |---|---|
 | Issues abertas / SP | **124 / 337** |
 | Issues fechadas | 55 (125 SP somados; 6 fechadas sem Story Points) |
-| Abertas por marco | M3.5 = 7 (21 SP) · M4 = 34 (84 SP) · M5 = 79 (219 SP) · M6 = 4 (13 SP) |
+| Abertas por marco em 16/10 | M3.5 = 7 (21 SP) · M4 = 34 (84 SP) · M5 = 79 (219 SP) · M6 = 4 (13 SP) |
 | Carga por responsável (abertas) | **Gustavo** 59 issues / 169 SP · **Eric** 65 issues / 168 SP |
 | Tarefas abertas no Todoist | 64 (60 ligadas a issue + 4 metas) |
-| Código do combate | ataque, projétil, laser, defesa, cooldown e pontuação **não existem** |
+| Código do combate | ataque, projétil, laser, defesa, cooldown e resistência **implementados**; pontuação **não existe** |
 
-Leitura honesta: a divisão de carga está aplicada e equilibrada no GitHub (169 × 168 SP, `assignees` preenchidos em 124/124 issues). O problema não é distribuição, é **tempo**: o M3.5 tem 7 issues abertas, todas do Gustavo, e fecha em 5 dias; o M5 concentra 219 SP em 25 dias.
+Leitura honesta: a divisão de carga está aplicada e equilibrada no GitHub (169 × 168 SP, `assignees` preenchidos em 124/124 issues). O problema não é distribuição, é **tempo**: o M3.5 tinha 7 issues abertas, todas do Gustavo, e fechava em 5 dias; o M5 concentra 219 SP em 25 dias.
 
-O que existe de combate hoje é uma única função pronta e **desconectada**: `hit_agent()` (`src/gameplay/gameplay.c:118`), que já tira resistência, neutraliza a bactéria e devolve `true` no acerto que a remove — mas não tem nenhum chamador no `src/`. O disparo precisa apenas chamá-la; a regra de acerto não precisa ser reescrita.
+O combate já está ligado: `hit_projectiles()` chama `hit_agent()` (`src/gameplay/gameplay.c`), e o disparo, o cooldown e a defesa estão em uso. O M3.5 está fechado: #14, #16, #49 e #62–#64 estão concluídas.
 
 ---
 
@@ -262,8 +263,9 @@ Registro da decisão: `docs/game-design/decisoes.md`. Roteiro de verificação m
 | ESPAÇO | scanner | existe |
 | ESC | pausa | existe |
 | ENTER | confirmar / nova partida | existe |
-| **X** | **defesa** | a implementar (#17) |
-| **J** | **ataque** | a implementar (#63) |
+| **X** | **defesa** | implementado (#17) |
+| **J** | **ataque** | implementado (#63) |
+| **1 / 2** | **seleção do laser** | implementado (#62) |
 | F, G, V | transições de teste | remover quando #20/#7 fecharem |
 
 Referências da escolha: Hades 2 usa `Space` para dash (ocupada aqui pelo scanner); Enter the Gungeon usa o botão direito do mouse (o mouse ainda não tem função de gameplay, por `interacao-mouse.md`); Hollow Knight usa `X` para ataque e `C` para dash — `X` é tecla de ação de combate na referência mais próxima. `SHIFT` foi descartada porque o Windows dispara o prompt de **Teclas de Aderência** ao tocar SHIFT cinco vezes.

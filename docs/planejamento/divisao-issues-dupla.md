@@ -4,6 +4,8 @@
 **Auditoria do backlog:** 11/10/2026 — GitHub Issues do repositório `gustavo-hsilva79/Nanobo`  
 **Status:** divisão calculada sobre o backlog real e pronta para aplicação no GitHub. Este documento substitui a proposta inicial de divisão, que partia de um retrato de **100 issues / 288 Story Points** e deixava 32 issues sem responsável.
 
+**Status das contagens:** retrato de 11/10/2026. Desde então #181 e #65 foram fechadas e o M3.5 avançou; para o estado corrente, vale `docs/planejamento/kanban.md`. Os totais abaixo não foram recalculados.
+
 ## 1. Objetivo
 
 Distribuir **todas** as issues abertas do Nanobô entre os dois integrantes de forma equilibrada em esforço estimado, mantendo coesão entre tarefas que mexem nos mesmos módulos e garantindo que cada integrante tanto **construa** quanto **verifique** parte do produto.
