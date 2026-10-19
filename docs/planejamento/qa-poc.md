@@ -7,6 +7,8 @@
 > **Tarefas cobertas:** #27 (cenário mínimo), #28 (execução e registro), #120–#126 (validação), #8 (entrada de teclado), #9 (movimentação).
 >
 > **Critério central:** a Aula 6 pede a mecânica principal do jogo implementada e rodando no Visual Studio. A mecânica principal do Nanobô é **escanear → identificar** (ver `docs/game-design/scanner.md` e `docs/game-design/decisoes.md`).
+>
+> **Atualização de 17/10/2026:** este documento registra a PoC do M3 como foi validada em 07/10 (três agentes, HUD `0/3`, sem combate). O jogo de hoje tem **6 agentes** e HUD `identificados: 0/6`, mais vida, laser, defesa e célula própria; a seção 9 registra a extensão do M3.5. Os resultados da seção 4 continuam sendo os observados naquela data e não foram reescritos.
 
 ## 1. O que a PoC prova
 
@@ -31,6 +33,8 @@
 | Janela | 640×480, fechável pela moldura |
 | Execução | a partir da raiz do repositório, para que `assets/sprites/nanobo.png` resolva |
 
+> A linha "Ferramenta" registra o ambiente de 07/10/2026. O `Nanobo.vcxproj` atual fixa o toolset **v143** e compila em C11; o roteiro continua válido.
+
 ## 3. Roteiro reproduzível
 
 1. Compilar `Debug|x64`.
@@ -40,11 +44,11 @@
 5. Segurar `↑` por cerca de um segundo: o Nanobô deve subir e parar de subir ao soltar.
 6. Repetir com `↓`, `←` e `→`, e depois com `W`, `A`, `S`, `D`.
 7. Levar o Nanobô até perto de uma borda e continuar andando para o mesmo lado: ele não deve sair da tela.
-8. Longe de todos os agentes, pressionar `SPACE` duas vezes: o contador deve continuar `0/3`.
-9. Aproximar-se de um agente e pressionar `SPACE` **uma** vez: aparece a primeira camada e o contador continua `0/3`.
-10. Pressionar `SPACE` **mais uma** vez no mesmo agente: aparece a segunda camada e o contador vai para `1/3`.
-11. Pressionar `SPACE` mais duas vezes no mesmo agente: contador permanece `1/3` e nenhuma camada nova aparece.
-12. Ir até um segundo agente e pressionar `SPACE` duas vezes: contador vai para `2/3`.
+8. Longe de todos os agentes, pressionar `SPACE` duas vezes: o contador deve continuar `0/6`.
+9. Aproximar-se de um agente e pressionar `SPACE` **uma** vez: aparece a primeira camada e o contador continua `0/6`.
+10. Pressionar `SPACE` **mais uma** vez no mesmo agente: aparece a segunda camada e o contador vai para `1/6`.
+11. Pressionar `SPACE` mais duas vezes no mesmo agente: contador permanece `1/6` e nenhuma camada nova aparece.
+12. Ir até um segundo agente e pressionar `SPACE` duas vezes: contador vai para `2/6`.
 13. Pressionar `ESC`, aguardar alguns segundos e comparar o tempo do HUD antes e depois.
 14. Pressionar `ESC` para retomar e fechar a janela pela moldura.
 
@@ -85,7 +89,7 @@ A PoC não cobre, e não deveria cobrir, o núcleo completo do MVP. Ficaram fora
 | Condições reais de fim de fase, vitória e derrota | #18, #20, #26 — M4 |
 | Pontuação, bônus e hi-score | #66, #67, #34 — M4/M5 |
 
-No código atual, `RESULTS`, `VICTORY` e `GAME OVER` ainda são alcançados por **teclas de teste** (`F`, `G` e `V`), não por condições de jogo. Isso é limitação conhecida e está registrada em `qa-maquina-estados.md` §6.
+No código atual, `RESULTS` e `VICTORY` ainda são alcançados por **teclas de teste** (`F` e `V`), não por condições de jogo; `GAME OVER` já é real por vida zerada (a tecla `G` continua forçando o estado). Isso é limitação conhecida e está registrada em `qa-maquina-estados.md` §6.
 
 O combate foi deliberadamente deixado fora do escopo do M3 porque o cronograma da disciplina concentra os riscos técnicos da PoC na investigação (scanner e identificação), e não no combate. O trabalho restante foi remanejado para o milestone **M3.5 — Construção do Core Gameplay** (21/10/2026).
 
@@ -148,14 +152,14 @@ Nenhuma falha reproduzível foi encontrada nos itens efetivamente verificados. A
 
 | Item | Esperado | Observado | Data | Quem verificou |
 |---|---|---|---|---|
-| Defesa 2 s / recarga 3 s | anel ciano 2 s, cinza 3 s | _a preencher_ | | |
-| Imunidade durante a defesa | vida não cai | _a preencher_ | | |
-| Empurrão da bactéria | agente sai de cima do Nanobô | _a preencher_ | | |
-| Célula não é empurrada | célula ignorada | _a preencher_ | | |
+| Defesa 2 s / recarga 3 s | anel ciano 2 s, cinza 3 s | coberto por 9.5 | 17/10/2026 | harness + captura |
+| Imunidade durante a defesa | vida não cai | coberto por 9.5 | 17/10/2026 | harness + captura |
+| Empurrão da bactéria | agente sai de cima do Nanobô | coberto por 9.5 | 17/10/2026 | harness + captura |
+| Célula não é empurrada | célula ignorada | coberto por 9.5 | 17/10/2026 | harness + captura |
 | Pausa congela os timers | defesa continua ao voltar | _a preencher_ | | |
-| Contato sem defesa | vida cai 1 (regra da #11) | _a preencher_ | | |
-| Disparo e cooldown | 1 projétil por segundo | _a preencher_ | | |
-| Acerto válido | resistência cai e neutraliza | _a preencher_ | | |
+| Contato sem defesa | vida cai 1 (regra da #11) | coberto por 9.5 | 17/10/2026 | harness + captura |
+| Disparo e cooldown | 1 projétil por segundo | coberto por 9.5 | 17/10/2026 | harness + captura |
+| Acerto válido | resistência cai e neutraliza | coberto por 9.5 | 17/10/2026 | harness + captura |
 
 ### 9.5 Evidência automatizada e por captura (17/10/2026)
 
@@ -171,4 +175,17 @@ O harness não prova desenho e a captura não prova regra com precisão de quadr
 - Sem automação: a injeção de tecla no Allegro não é confiável (registro da #181), então cada item é conferido com tecla apertada à mão.
 - A janela de 2 s e a recarga de 3 s são medidas a olho e cronômetro; o anel mostra o estado, não o número.
 - O empurrão depende do estado do timer do agente; se ele sortear direção nova no mesmo quadro, o deslocamento visível varia.
-- As teclas de teste `F`, `G` e `V` ainda existem e continuam sendo o único caminho para RESULTADOS, VITÓRIA e GAME OVER até a #7/#20/#53.
+- As teclas de teste `F`, `G` e `V` ainda existem: `F` e `V` continuam sendo o único caminho para RESULTADOS e VITÓRIA até a #20/#26; `G` força GAME OVER, que já é real por vida zerada.
+
+### 9.7 Célula própria (#14) — 18/10/2026
+
+Roteiro reproduzível:
+
+1. Iniciar a partida e localizar uma célula (ids 3, 5 ou 6).
+2. Observar por alguns segundos: ela anda mais devagar que as bactérias, em direção aleatória.
+3. Mirar nela e apertar `J`.
+4. Confirmar que a célula continua na cena e que um coração apaga.
+5. Repetir o disparo em menos de 1 s: a vida não cai de novo (invulnerabilidade).
+6. Mirar de novo e confirmar que ela continua identificável pelo scanner.
+
+Evidência automatizada (18/10/2026): harness de regras fora do repositório com 21 checagens — `CELL_SPEED 15`, deslocamento de 15 px/s contra 30 px/s da bactéria, ataque tira 1 de vida, célula permanece ativa e com resistência 0, invulnerabilidade bloqueia o segundo dano, scanner revela 2 camadas e identifica uma vez. O build `Debug|x64` compila.

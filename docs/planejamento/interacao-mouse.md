@@ -44,7 +44,7 @@ O passo 4 depende do fluxo de retorno ao `MENU`, que ainda não existe (#20). En
 
 Até a #9, o sprite do Nanobô era desenhado na posição do cursor e era essa posição que o scanner usava para medir distância até os agentes. Isso era comportamento provisório herdado do trabalho anterior no `src/main.c`.
 
-Com a #9 implementada, o Nanobô tem posição própria (`player_x`, `player_y`), é o teclado que a altera, e é essa posição que o scanner usa. A interação de interface definida nesta Issue — clique sobre `INICIAR` no `MENU` — não mudou. As coordenadas do cursor continuam sendo lidas em `ALLEGRO_EVENT_MOUSE_AXES`, mas nenhuma regra de gameplay depende delas hoje.
+Com a #9 implementada, o Nanobô tem posição própria (`Nanobo player`, em `src/entities/entities.c`), é o teclado que a altera, e é essa posição que o scanner usa. A interação de interface definida nesta Issue — clique sobre `INICIAR` no `MENU` — não mudou. As coordenadas vêm do próprio evento de clique (`event.mouse.x`/`event.mouse.y`); o caso `ALLEGRO_EVENT_MOUSE_AXES`, que só alimentava estado morto, foi removido em 12/10/2026.
 
 ## 6. Implementação atual
 

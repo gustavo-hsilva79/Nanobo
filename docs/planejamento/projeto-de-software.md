@@ -8,6 +8,8 @@
 >
 > **Tecnologias:** C + Allegro 5 + Git/GitHub + Visual Studio
 
+> **Registro da entrega de 23/09/2026.** O estado corrente do produto está no `README.md`; para datas, vale `docs/planejamento/milestones.md`, e para o trabalho, o `docs/planejamento/kanban.md`.
+
 ## 1. Objetivo
 
 Este documento consolida o planejamento de software do Nanobô para a entrega de Projeto de Software + Kanban. Ele descreve escopo, requisitos, entregáveis, decomposição do trabalho, dependências, estimativas, marcos e critérios de validação.
