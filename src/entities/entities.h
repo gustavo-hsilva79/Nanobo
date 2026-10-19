@@ -12,6 +12,9 @@
 // velocidade dos agentes da Fase 1 em pixels por segundo
 #define AGENT_SPEED 30
 
+// celula saudavel anda na metade da velocidade dos agentes: lenta e sem perseguir
+#define CELL_SPEED 15
+
 // especie do agente: define o texto do scanner e o desenho dele
 typedef enum
 {

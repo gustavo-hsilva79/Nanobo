@@ -166,6 +166,29 @@ bool hit_agent(int index)
     return false;
 }
 
+// dano no player: 1 de vida, respeitando a invulnerabilidade da #11
+static void damage_player()
+{
+    if (player.health <= 0)
+    {
+        return;
+    }
+
+    if (invulnerability_timer > 0.0)
+    {
+        return;
+    }
+
+    player.health--;
+
+    if (player.health < 0)
+    {
+        player.health = 0;
+    }
+
+    invulnerability_timer = INVULNERABILITY_TIME;
+}
+
 // um projetil contra os agentes: o primeiro que cruzar leva o acerto e o projetil some (#49)
 static void hit_projectiles()
 {
@@ -192,8 +215,12 @@ static void hit_projectiles()
                 continue;
             }
 
-            // raio certo tira resistencia; raio errado so custa o projetil
-            if (agents[j].species != SPECIES_CELL && projectiles[i].laser == laser_for_species(agents[j].species))
+            // atacar a celula saudavel custa 1 de vida ao player (#14)
+            if (agents[j].species == SPECIES_CELL)
+            {
+                damage_player();
+            }
+            else if (projectiles[i].laser == laser_for_species(agents[j].species))
             {
                 hit_agent(j);
             }
@@ -468,11 +495,23 @@ static int species_resistance(Species species)
     return BACTERIA_RESISTANCE;
 }
 
+// velocidade de cada especie: a celula saudavel e mais lenta que a bacteria (#14)
+static int species_speed(Species species)
+{
+    if (species == SPECIES_CELL)
+    {
+        return CELL_SPEED;
+    }
+
+    return AGENT_SPEED;
+}
+
 // devolve o agente ao estado de partida nova: resistencia da especie, ativo de
 // novo e direcao propria; a posicao de nascimento quem sorteia e o place_agents
 static void reset_agent(int index)
 {
     agents[index].resistance = species_resistance(agents[index].species);
+    agents[index].speed = species_speed(agents[index].species);
     agents[index].active = true;
     agents[index].layers = 0;
     agents[index].identified = false;
@@ -672,17 +711,10 @@ void update_match(double dt, float screen_w, float screen_h)
 
     int touched = touching_agent();
 
-    if (player.health > 0 
-        && touched != -1 
-        && agents[touched].species != SPECIES_CELL 
-        && invulnerability_timer <= 0.0
+    if (touched != -1
+        && agents[touched].species != SPECIES_CELL
         && defense_timer <= 0.0)
     {
-        player.health--;
-
-        if (player.health < 0)
-            player.health = 0;
-
-        invulnerability_timer = INVULNERABILITY_TIME;
+        damage_player();
     }
 }
