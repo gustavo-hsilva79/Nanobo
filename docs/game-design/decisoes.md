@@ -81,6 +81,21 @@ A proposta é que o jogador descubra informações, interprete dados do scanner 
 - Referências: Hades 2 (`Space` = dash), Enter the Gungeon (botão direito do mouse = esquiva), Hollow Knight (`X` = ataque, `C` = dash).
 - **Validado por Gustavo em 17/10/2026** (as quatro regras de defesa e a exclusão com o ataque). A revisão cruzada com o Eric fica registrada como pendência para a entrega do marco, sem bloquear a implementação.
 
+#### Ataque, projétil e resistência (17/10/2026)
+
+- O laser é escolhido por tecla (`1` roxo/Gram+, `2` vermelho/Gram−) e o disparo sai na direção do `facing`, com um projétil por aperto e cooldown de **1 s** (#63, #64).
+- O projétil nasce encostado no Nanobô, anda a **320 px/s**, some ao sair da área jogável e ocupa uma das **4** vagas (`MAX_PROJECTILES`).
+- Acerto com o laser certo tira **1** de resistência: bactéria tem **2**, célula tem **0**; ao zerar, o agente é neutralizado e sai da cena (#49).
+- Laser errado gasta o projétil e não altera a resistência; a célula saudável nunca é destruída por ataque.
+- A defesa ativa bloqueia o disparo; um projétil em voo não é cancelado.
+
+#### Célula própria (18/10/2026)
+
+- A célula saudável anda na metade da velocidade dos agentes (`CELL_SPEED 15`) e mantém direção aleatória; ela não persegue o Nanobô.
+- Atirar na célula não remove a célula nem altera resistência: tira **1** de vida do Nanobô, respeitando o 1 s de invulnerabilidade da #11.
+- A célula continua identificável pelo scanner e não concede pontos; ela não é um alvo de neutralização.
+- A defesa não protege do dano de um projétil já em voo contra a célula, porque o disparo é bloqueado enquanto a defesa está ativa; o projétil em voo não é cancelado.
+
 ### Fase 1
 
 A Fase 1 trabalha **bactérias e células saudáveis**, incluindo a diferenciação entre bactérias Gram-positivas e Gram-negativas.
