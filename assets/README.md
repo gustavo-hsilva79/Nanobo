@@ -9,6 +9,10 @@ Organização dos recursos utilizados pelo Nanobô.
 - `fonts/`: fontes utilizadas pela interface.
 - `data/`: dados auxiliares e arquivos carregados pelo jogo.
 
+## Carregados hoje
+
+`nanobo.png`, `bacteria_gram_positiva.png`, `bacteria_gram_negativa.png`, `celula_propria.png` e `icone_coracao.png`, mais a fonte embutida do Allegro. O inventário completo, com o que ainda não é carregado, está em [catalogo-recursos.md](catalogo-recursos.md).
+
 ## Organização
 
 Os assets devem ser adicionados conforme as funcionalidades forem implementadas. Evitar adicionar arquivos sem uso definido no jogo.
