@@ -2,7 +2,7 @@
 
 > **Estado:** regras fechadas pela dupla e consolidadas neste documento, que encerra o fluxo **Scanner → Informação → Interpretação → Decisão → Consequência** previsto na #3.
 >
-> **Última revisão:** 07/10/2026.
+> **Última revisão:** 18/10/2026 (revisão de implementação).
 >
 > **Tarefas relacionadas:** #59 (seleção do alvo), #60 (pulsos e camadas), #61 (identificação única).
 
@@ -110,12 +110,13 @@ O estado de identificação — identificações registradas, contador e camadas
 
 | Regra | Onde |
 |---|---|
-| Seleção do alvo mais próximo | `pick_target()`, chamado por `use_scanner()` com a posição do Nanobô (`player_x`, `player_y`), em `src/main.c` |
-| Pulsos e camadas | `use_scanner()` e `draw_scan_info()` em `src/main.c` |
-| Texto das camadas | `layer_one_text()` e `layer_two_text()` em `src/main.c` |
-| Identificação única | campo `identified` e `identified_count` em `src/main.c` |
-| Reinicialização da partida | `reset_match()` em `src/main.c` |
+| Seleção do alvo mais próximo | `pick_target()`, chamado por `use_scanner()` com `player.x`/`player.y`, em `src/gameplay/gameplay.c` |
+| Pulsos e camadas | `use_scanner()` em `src/gameplay/gameplay.c`; desenho em `draw_scan_info()`, `src/main.c` |
+| Texto das camadas | `layer_one_text()` e `layer_two_text()` em `src/gameplay/gameplay.c` |
+| Identificação única | campos `identified` e `identified_count` em `src/entities/entities.c` |
+| Reinicialização da partida | `reset_match()` em `src/gameplay/gameplay.c` |
+| Agentes fora do scanner | agente com `active == false` não é candidato nem é desenhado |
 
-A posição usada na medição de distância é a do Nanobô, alterada pelo teclado desde a #9 (`update_match()` em `src/main.c`). O roteiro de verificação está em `docs/planejamento/qa-poc.md`.
+A posição usada na medição de distância é a do Nanobô (`Nanobo player`, `src/entities/entities.c`), alterada pelo teclado em `update_match()`. O encontro da Fase 1 tem **6 agentes** (2 Gram+, 1 Gram−, 3 células), embora a regra de camadas continue com 2 por agente. O roteiro de verificação está em `docs/planejamento/qa-poc.md`.
 
 As regras de conteúdo biológico continuam em `docs/game-design/conteudo-biologico.md`.

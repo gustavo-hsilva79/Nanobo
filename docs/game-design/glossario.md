@@ -57,8 +57,22 @@ _Evitar_: descoberta, conclusão
 ## Combate
 
 **Laser**:
-O disparo que o jogador escolhe conforme a pista do scanner; há um para Gram-positiva e um para Gram-negativa.
+A arma que o jogador escolhe conforme a pista do scanner; há um para Gram-positiva (roxo) e um para Gram-negativa (vermelho).
 _Evitar_: raio, tiro, projétil (o projétil é o corpo que viaja)
+
+> O HUD ainda escreve `raio: roxo (Gram+)` / `raio: vermelho (Gram-)`. A troca dessa string para `laser` é tarefa de código separada; os documentos usam **laser**.
+
+**Resistência**:
+Quantos acertos válidos um agente suporta antes de ser neutralizado: 2 para bactéria, 0 para célula.
+_Evitar_: vida do agente, HP
+
+**Defesa**:
+A janela de 2 s em que o Nanobô não leva dano de contato e empurra bactérias; depois dela, 3 s de recarga.
+_Evitar_: escudo, bloqueio
+
+**Invulnerabilidade**:
+O 1 s após levar dano em que um novo contato não tira vida.
+_Evitar_: i-frames, imunidade (a imunidade é da defesa)
 
 ## Arte e animação
 

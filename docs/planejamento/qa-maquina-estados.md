@@ -5,6 +5,8 @@
 > **Tarefas cobertas:** #93 (transições), #94 (entrada por estado), #95 (atualização suspensa fora de `GAME`), #96 (render por estado).
 >
 > **Fora do escopo:** a validação integrada do fluxo de telas e fases pertence à #76, e a integração das condições reais de fim de fase pertence a #20/#68–#75.
+>
+> **Atualização de 17/10/2026:** o encontro passou a ter 6 agentes e o HUD mostra `identificados: 0/6`, além de vida e laser. `GAME` agora aceita `J` (ataque), `X` (defesa) e `1`/`2` (laser). `GAME OVER` passou a ser real por vida zerada; `RESULTS` e `VICTORY` continuam por teclas de teste. Os resultados da seção 5 são os observados em 07/10 e não foram reescritos.
 
 ## 1. Ambiente do teste
 
@@ -54,11 +56,11 @@ O estado atual é `currentScene`, variável estática de `src/core/game.c`. A ú
 1. Compilar `Debug|x64` e `Release|x64`.
 2. Executar `x64\Debug\Nanobo.exe` a partir da raiz do repositório.
 3. Confirmar a tela de `MENU` com o botão `INICIAR`.
-4. Pressionar `ENTER` e confirmar a entrada em `GAME`, com HUD e os três agentes.
-5. Com o cursor longe de todos os agentes, pressionar `SPACE` duas vezes.
-6. Mover o cursor até um agente dentro do alcance e pressionar `SPACE` duas vezes.
+4. Pressionar `ENTER` e confirmar a entrada em `GAME`, com HUD e os 6 agentes.
+5. Com o Nanobô longe de todos os agentes, pressionar `SPACE` duas vezes.
+6. Mover o Nanobô até um agente dentro do alcance e pressionar `SPACE` duas vezes.
 7. Repetir o passo 6 no mesmo agente mais duas vezes.
-8. Mover o cursor até um segundo agente e pressionar `SPACE` duas vezes.
+8. Mover o Nanobô até um segundo agente e pressionar `SPACE` duas vezes.
 9. Pressionar `ESC` e aguardar 4 segundos.
 10. Pressionar `ESC` e comparar o tempo de partida do HUD.
 11. Pressionar `F` e confirmar `RESULTS`.
@@ -87,7 +89,7 @@ A verificação foi visual (captura da área do cliente da janela) e por inspeç
 
 ## 6. Limitações conhecidas
 
-- As condições reais de conclusão de fase e de derrota ainda não existem. Os estados `RESULTS`, `VICTORY` e `GAME OVER` são alcançados por **teclas de teste** (`F` e `G`, e `V` dentro de `RESULTS`), que devem sair quando a #20 ligar as condições de verdade.
+- As condições reais de conclusão de fase ainda não foram implementadas; `GAME OVER` agora é real por vida zerada (a tecla `G` continua forçando o estado). Os estados `RESULTS` e `VICTORY` são alcançados por teclas de teste (`F` e `V`), que devem sair quando a #20/#26 ligarem as condições de verdade.
 - O passo 4 do roteiro de mouse da #23 (clique repetido) depende de um retorno ao `MENU` que ainda não existe (#20).
 
 > **Atualização de 07/10/2026 (após a #9):** o Nanobô deixou de seguir o cursor. Os passos deste roteiro que mandavam mover o cursor até um agente passam a ser feitos **movendo o Nanobô com as setas ou `WASD`**, porque é a posição dele que o scanner usa para medir distância. O HUD ganhou a dica `setas ou wasd para andar`. O roteiro da PoC, já nessa forma, está em `docs/planejamento/qa-poc.md`.

@@ -20,7 +20,9 @@ O jogador deve interpretar as informações obtidas pelo scanner para decidir co
 
 > **Status:** em desenvolvimento.
 >
-> **PoC (M3 — 07/10/2026):** o núcleo de investigação está implementado e jogável — movimentação por teclado, scanner com seleção do alvo válido mais próximo, leitura em duas camadas e identificação única por agente. O roteiro reproduzível e o resultado observado estão em [Registro da PoC](docs/planejamento/qa-poc.md). Combate, vida, dano e agentes ainda não existem: pertencem ao marco interno M3.5.
+> **M3 — PoC (07/10/2026):** o núcleo de investigação está implementado e jogável — movimentação por teclado, scanner com seleção do alvo válido mais próximo, leitura em duas camadas e identificação única por agente. O roteiro reproduzível e o resultado observado estão em [Registro da PoC](docs/planejamento/qa-poc.md).
+>
+> **M3.5 — core gameplay (concluído, 18/10/2026):** o combate está no código — ataque com laser, projétil, resistência e neutralização, defesa com cooldown, vida em corações, dano por contato e Game Over por vida zerada. O encontro tem **6 agentes** (2 Gram+, 1 Gram− e 3 células). A célula própria anda mais devagar e atacar uma célula custa 1 de vida ao Nanobô. Menu, pausa e tela de Game Over também estão prontos. Ainda faltam a pontuação e as condições reais de fim de fase (#18/#26); até lá, `RESULTS` e `VICTORY` são alcançados por teclas de teste. Os roteiros estão em [Registro da PoC](docs/planejamento/qa-poc.md).
 
 ## Núcleo do jogo
 
@@ -28,9 +30,9 @@ O jogador deve interpretar as informações obtidas pelo scanner para decidir co
 - Scanner com seleção do alvo válido mais próximo e leitura em pulsos/camadas.
 - Identificação única dos agentes encontrados.
 - Interpretação das informações do scanner para orientar a decisão do jogador.
-- Combate, defesa, vida, dano e consequências.
-- Pontuação, bônus por identificação, progressão e hi-score persistente.
-- Progressão por fases.
+- Combate implementado: laser por espécie, projétil, resistência, defesa e vida.
+- Pontuação, bônus por identificação, progressão e hi-score persistente *(planejados)*.
+- Progressão por fases *(planejada)*.
 
 ### Conteúdo planejado
 
@@ -41,6 +43,20 @@ A primeira fase trabalha a diferenciação entre bactérias e células saudávei
 **Fase 2 — vírus**
 
 A segunda fase é planejada para a entrega final, após o MVP. O conteúdo envolve os ciclos lítico e lisogênico e uma mecânica de multiplicação limitada. As regras biológicas e de balanceamento que ainda não foram validadas permanecem como pendências.
+
+## Controles atuais
+
+| Tecla | Ação |
+| --- | --- |
+| setas ou `WASD` | mover o Nanobô |
+| `ESPAÇO` | scanner: revela a próxima camada do alvo mais próximo |
+| `J` | atacar na direção em que o Nanobô está olhando |
+| `1` / `2` | escolher laser roxo (Gram+) / vermelho (Gram−) |
+| `X` | defesa: 2 s de imunidade e 3 s de recarga |
+| `ESC` | pausar / retomar |
+| `ENTER` | iniciar partida, confirmar, nova partida |
+| clique em `INICIAR` | iniciar partida no menu |
+| `F` / `G` / `V` | teclas de teste de fluxo, saem quando #20/#26 fecharem |
 
 ## Requisitos da disciplina
 
@@ -73,7 +89,7 @@ Pré-requisitos: **Windows** e **Visual Studio 2022** com a carga de trabalho de
 
 1. Abra `Nanobo.sln` no Visual Studio.
 2. Na primeira vez, deixe o Visual Studio **restaurar os pacotes NuGet** — `Allegro 5.2.11.3` e `AllegroDeps 1.16.0`, listados em `packages.config`. Se o build reclamar de `packages\Allegro*.targets` ausente, restaure os pacotes; não edite o projeto para contornar.
-3. Escolha a configuração **Debug | x64** e compile com `Ctrl+Shift+B`. As configurações Win32 são legadas.
+3. Escolha a configuração **Debug | x64** e compile com `Ctrl+Shift+B`. As configurações Win32 são legadas. O projeto compila em **C11** (`/std:c11`) com nível de aviso 4: código novo precisa compilar nos dois.
 4. Execute a partir da **raiz do repositório** (a pasta onde está `Nanobo.sln`): o jogo carrega os recursos por caminho relativo, como `assets/sprites/nanobo.png`.
 
 O executável fica em `x64\Debug\Nanobo.exe`, ou `x64\Release\Nanobo.exe` quando a configuração é Release.
@@ -83,7 +99,7 @@ O executável fica em `x64\Debug\Nanobo.exe`, ou `x64\Release\Nanobo.exe` quando
 ```text
 Nanobo/
 ├── src/                    # Código-fonte
-│   ├── core/               # Núcleo e ciclo do jogo
+│   ├── core/               # Máquina de estados das cenas
 │   ├── entities/           # Entidades do jogo
 │   ├── gameplay/           # Regras e mecânicas de gameplay
 │   ├── scenes/             # Cenas e estados de jogo
@@ -107,7 +123,7 @@ Nanobo/
 └── Nanobo.vcxproj          # Projeto do Visual Studio
 ```
 
-> **Atenção:** entram na compilação os `<ClCompile>` de `Nanobo.vcxproj`: `src/main.c`, `src/core/game.c`, `src/entities/entities.c` e `src/gameplay/gameplay.c`. O `src/scenes/scenes.h` também é compilado, porque `src/core/game.h` o inclui. O `src/systems/` continua sendo só uma pasta planejada, sem código.
+> **Atenção:** entram na compilação os `<ClCompile>` de `Nanobo.vcxproj`: `src/main.c`, `src/core/game.c`, `src/entities/entities.c` e `src/gameplay/gameplay.c`. O `src/scenes/scenes.h` também é compilado, porque `src/core/game.h` o inclui. O `src/systems/systems.h` é um cabeçalho vazio e continua fora do build: código escrito ali não compila.
 
 ## Planejamento acadêmico
 
@@ -125,17 +141,21 @@ A lista completa dos marcos, com o objetivo e o critério de foco de cada um, es
 
 ## Documentação
 
-- [One Sheet](docs/one-sheet.md)
+> Documentos marcados como *registro* foram escritos na data da entrega e não são atualizados; o estado corrente do produto está neste README.
+
+- [One Sheet](docs/one-sheet.md) *(registro de 09/09/2026)*
 - [GDD](docs/game-design/gdd.md)
 - [Escopo](docs/game-design/escopo.md)
 - [Decisões de Game Design](docs/game-design/decisoes.md)
 - [Conteúdo biológico e objetivos de aprendizagem](docs/game-design/conteudo-biologico.md)
+- [Glossário](docs/game-design/glossario.md)
 - [Regras do scanner](docs/game-design/scanner.md)
 - [Referências biológicas das Issues #2 e #177](docs/planejamento/referencias-biologicas-issues-2-177.md)
 - [Kanban](docs/planejamento/kanban.md)
 - [Milestones](docs/planejamento/milestones.md)
 - [Plano de Execução](docs/planejamento/plano-de-execucao.md)
-- [Projeto de Software](docs/planejamento/projeto-de-software.md)
+- [Plano de execução do backlog restante](docs/planejamento/plano-backlog-restante.md)
+- [Projeto de Software](docs/planejamento/projeto-de-software.md) *(registro de 23/09/2026)*
 - [Divisão de Issues da dupla](docs/planejamento/divisao-issues-dupla.md)
 - [Guia: mover código do main.c para os módulos](docs/planejamento/guia-refatoracao-modulos.md)
 - [Fluxo de estados](docs/planejamento/fluxo-estados.md)

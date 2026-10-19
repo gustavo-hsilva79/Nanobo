@@ -6,7 +6,7 @@
 >
 > **Inventário de recursos:** `assets/catalogo-recursos.md` (#108).
 
-## 1. Recursos carregados hoje
+## 1. Recursos carregados em 07/10/2026
 
 | Recurso | Origem | Carregado por |
 |---|---|---|
@@ -62,3 +62,11 @@ Não foi feita medição de memória nesta revisão. O limite de memória é val
 - Medição reproduzível de memória durante o ciclo completo.
 - Recursos de áudio, fundo e fonte de arquivo, quando existirem.
 - Repetição do teste depois que a #112 for exercitada por mais caminhos de encerramento.
+
+## 8. Atualização de 17/10/2026
+
+O `load_resources()` atual carrega, nesta ordem: `nanobo.png`, `bacteria_gram_positiva.png`, `bacteria_gram_negativa.png`, `celula_propria.png` e `icone_coracao.png`, além da fonte embutida. `free_resources()` libera na ordem inversa.
+
+- A falha de qualquer um dos cinco bitmaps imprime `couldn't load <recurso>` e encerra com código 1, como descrito na seção 3.
+- Fundo, spritesheet, ícones de laser/scanner, áudio e fonte de arquivo continuam fora do carregador.
+- A tabela da seção 1 é o retrato de 07/10; o inventário corrente é `assets/catalogo-recursos.md`.

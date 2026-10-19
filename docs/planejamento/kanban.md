@@ -4,6 +4,8 @@
 >
 > Este documento é a visão de planejamento. O **GitHub Project** é a fonte operacional do status de cada Issue e os **Milestones** do repositório são a fonte das datas. As listas abaixo reproduzem o agrupamento por milestone; em caso de divergência, vale o GitHub.
 
+> **Status das listas:** conferido no GitHub em **18/10/2026**. A fonte operacional continua sendo o GitHub Project; este arquivo é a leitura escrita daquele dia e deve ser reconferido antes de ser citado como atual.
+
 ## Entregas acadêmicas (Plano de Ensino)
 
 | Instrumento | Aplicação | Composição da nota | Milestone |
@@ -30,8 +32,8 @@ A tabela de marcos — data, tipo e objetivo de cada um — fica em **[milestone
 2. Estados/cenas e entrada de teclado/mouse. *(feito — M2)*
 3. Movimentação do Nanobô. *(feito — M3)*
 4. Scanner, seleção do alvo, pulsos/camadas e identificação única. *(feito — M3)*
-5. Entidades, geração de agentes e colisões. *(M3.5)*
-6. Combate, vida, dano, defesa e consequências. *(M3.5)*
+5. Entidades, geração de agentes e colisões. *(feito — M3.5)*
+6. Combate, vida, dano, defesa e consequências. *(feito — M3.5)*
 7. Exibição das informações, interpretação e decisão. *(M3.5 → M4)*
 8. Fluxo completo da Fase 1, pontuação, progressão, vitória e derrota. *(M4)*
 9. HUD, menu, pausa, Game Over e integração das telas. *(M4)*
@@ -58,52 +60,37 @@ A tabela de marcos — data, tipo e objetivo de cada um — fica em **[milestone
 - #177 Objetivos de aprendizagem e critérios educacionais *(fechada)*
 
 ### M3 — Prova de Conceito Técnica
-- #8 Input de teclado *(fechada)*
-- #9 Movimentação *(fechada)*
-- #27 Cenário mínimo do PoC *(fechada)*
-- #28 Teste e registro do PoC *(fechada)*
-- #120 Validar loop principal e Delta Time *(fechada)*
-- #121 Validar movimento e controles *(fechada)*
-- #122 Validar agentes e colisões *(fechada)*
-- #123 Validar scanner e identificação *(fechada)*
-- #124 Validar ataque, projétil e defesa *(fechada como não planejada; passou para o M3.5)*
-- #125 Validar variação de posições e ordem dos agentes *(fechada como não planejada; passou para o M3.5)*
-- #126 Consolidar resultados, limitações e correções necessárias da PoC *(fechada)*
-- #181 Confirmar manualmente a movimentação por teclado `[E]`
+- #8, #9, #27, #28, #120–#123, #126, #181 *(fechadas)*
+- #124 e #125 *(fechadas como não planejadas; passaram para o M3.5)*
 
-> O M3 está encerrado: a única issue aberta do marco é a #181. As issues #124 e #125 foram fechadas como não planejadas, e ataque, projétil, defesa e colisões passaram a ser escopo do M3.5.
+> O M3 está encerrado; nenhuma issue do marco segue aberta no GitHub em 18/10/2026.
 
 ### M3.5 — Construção do Core Gameplay
-- #7 Máquina de estados *(infraestrutura entregue; a Issue cobre o restante)* `[E]`
-- #10 Detecção de contato `[G]`
-- #11 Vida, dano e invulnerabilidade `[G]`
-- #13 Bactéria `[G]`
-- #14 Célula própria `[G]`
-- #16 Disparo e cooldown do ataque `[G]` *(agrupadora)*
-- #17 Defesa e cooldown `[G]`
-- #22 Personagem placeholder `[G]`
-- #24 Geração dos agentes `[G]`
-- #25 Variação da ordem dos encontros `[G]`
-- #49 Colisão do projétil e resistência `[G]`
-- #62–#64 Seleção do laser, disparo e cooldown `[G]`
 
-> Neste marco o Eric fica com 3 SP (#7) e o Gustavo, com 32 SP. Para não acumular trabalho no M4, o Eric adianta no M3.5 as telas que não dependem do core gameplay: #7, #50, #51 e #53.
+**Fechadas:** #7 `[E]`, #10, #11, #13, #14, #16, #17, #22, #24, #25, #49, #62, #63, #64 `[G]`.
+
+**Nenhuma issue aberta em 18/10/2026.**
+
+> Ataque, projétil, laser, cooldown, resistência e célula própria foram verificados e as issues fechadas; o M3.5 está encerrado.
+>
+> Neste marco o Eric ficou com 3 SP (#7) e o Gustavo, com 32 SP. Para não acumular trabalho no M4, o Eric adianta no M3.5 as telas que não dependem do core gameplay: #7, #50, #51 e #53.
 
 ### M4 — MVP Jogável
 - #18 Identificação, pontuação e consequências `[G]` *(agrupadora)*
-- #19 HUD `[E]`
+- #19 HUD `[E]` *(vida e laser prontos; pontuação, ameaças e destino pendentes)*
 - #20 Integração do fluxo das telas `[E]` *(agrupadora)*
 - #26 Destino e conclusão da fase `[G]`
 - #29 Vitória e reinício da partida *(fechada)*
-- #50 Menu inicial `[E]`
-- #51 Pausa `[E]`
+- #50 Menu inicial `[E]` *(fechada)*
+- #51 Pausa `[E]` *(fechada)*
 - #52 Vitória `[E]`
-- #53 Game Over `[E]`
+- #53 Game Over `[E]` *(fechada)*
 - #57 Tela de resultados entre fases `[E]`
 - #58 Tutorial introdutório da Fase 1 `[G]`
 - #66 Pontuação por ameaça neutralizada `[G]`
 - #67 Bônus de identificação completa `[G]`
-- #68–#76 Transições, reinício da partida e validação do fluxo `[E]`
+- #68, #69, #73 Transições Menu → Jogo, Jogo ↔ Pausa e Jogo → Game Over `[E]` *(fechadas)*
+- #70–#72, #74–#76 Resultados, próxima fase, Vitória, reinício e validação do fluxo `[E]`
 - #103–#107 Introdução a Gram+/Gram−, demonstração guiada e validação `[G]`
 - #171–#176 Tela de resultados e preservação da pontuação `[E]`
 - #178 Feedback visual e educacional das decisões `[G]`
@@ -124,7 +111,7 @@ A tabela de marcos — data, tipo e objetivo de cada um — fica em **[milestone
 - #41 Revisão do One Sheet/GDD `[E]`
 - #42 Build Release `[E]`
 - #55 Segunda fase jogável `[G]` *(agrupadora)*
-- #65 Identificação única na Fase 1 `[G]` *(no GitHub está no M6 — ver nota do M6)*
+- #65 Identificação única na Fase 1 `[G]` *(fechada; o GitHub ainda a mantém no M6)*
 - #77–#82 Formato, leitura, gravação e validação do hi-score `[E]`
 - #83–#91 Estados, multiplicação e integração da Fase 2 — `[G]` #83–#90 · `[E]` #91
 - #114–#119 Medição de memória `[G]`
@@ -137,7 +124,6 @@ A tabela de marcos — data, tipo e objetivo de cada um — fica em **[milestone
 - #44 Roteiro e materiais da apresentação `[G]`
 - #46 Validar produto final em máquina limpa `[E]`
 - #47 Ensaio completo da apresentação `[G]`
-- #65 Identificação única na Fase 1 `[G]` *(está neste marco no GitHub, mas é trabalho da Fase 1: deve migrar para o M5)*
 
 > As Issues #43, #44, #46 e #47 continuam no M6 no GitHub mesmo com itens equivalentes no M5. A consolidação dessas duplicidades é decisão da dupla e não foi feita automaticamente. Se as quatro forem fechadas como duplicatas, o equilíbrio se mantém movendo a #165 (1 SP) do Gustavo para o Eric: 159 / 159 SP.
 
@@ -176,3 +162,4 @@ Uma Issue só deve ir para **Done** quando:
 ## Histórico
 
 - **07/10/2026** — Kanban reconciliado com os Milestones reais do GitHub. O M3 foi reduzido ao núcleo de investigação; o restante foi movido para o novo **M3.5**. A Issue #12 (vírus) saiu do M3: já estava fechada e o vírus é escopo de Fase 2, conforme `docs/game-design/gdd.md`. T21 foi arquivada porque descrevia uma regra de trabalho do assistente, não uma tarefa do produto.
+- **18/10/2026** — Kanban reconferido com o GitHub: M3 encerrado, #65 e #181 fechadas, M3.5 encerrado sem issues abertas. Fechadas após verificação no código: #14, #16, #49, #50, #51, #53, #62–#64, #68, #69 e #73.

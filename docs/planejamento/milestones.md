@@ -36,11 +36,13 @@ O registro reproduzível está em `docs/planejamento/qa-poc.md`. **Combate, vida
 
 Acrescentar ao núcleo já provado tudo o que transforma a PoC em jogo: entidades e geração dos agentes (#13, #14, #22, #24, #25), detecção de contato (#10), vida, dano e invulnerabilidade (#11), ataque, projétil, laser e cooldown (#16, #49, #62–#64) e defesa (#17).
 
+**Estado em 18/10/2026:** entidades, geração, contato, vida, ataque, defesa, resistência e célula própria estão implementados; o marco não tem issues abertas.
+
 Este marco existe para que o escopo do M3 fique honesto: a PoC provou a investigação, não o combate.
 
 ### M4 — MVP
 
-Entregar uma partida completa centrada na Fase 1, com exploração, scanner, interpretação/identificação, combate, vida, pontuação, vitória e derrota, além do fluxo das telas necessário para jogar e reiniciar.
+Entregar uma partida completa centrada na Fase 1, com exploração, scanner, interpretação/identificação, pontuação e consequências, condições de vitória e derrota, além do fluxo das telas necessário para jogar e reiniciar. Combate, vida, menu, pausa e Game Over já estão prontos desde o M3.5.
 
 ### M5 — Release Candidate
 

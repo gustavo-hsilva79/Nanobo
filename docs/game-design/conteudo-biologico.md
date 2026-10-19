@@ -2,6 +2,8 @@
 
 > **Estado:** Aprovado pela dupla (Gustavo & Eric). Conteúdo factual e textos curtos de scanner revisados e validados, atendendo ao critério de aceite da Issue #2.
 
+> **Estado em 18/10/2026:** os dados da Fase 1 desta tabela estão implementados no jogo (resistência 2 para bactéria, célula não destrutível, laser por espécie, célula lenta e ataque à célula custando 1 vida). O conteúdo da Fase 2 continua apenas planejado.
+
 Este documento limita o conteúdo ao que apoia a decisão do jogador. Separa fatos biológicos de regras abstratas do jogo e registra lacunas como **[PENDÊNCIA]**.
 
 ## Fase 1 — bactérias e células próprias

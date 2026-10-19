@@ -3,6 +3,8 @@
 **Para quem é:** o próprio autor do jogo, mexendo no Visual Studio.  
 **Estado:** os **três passos estão feitos**. `entities.c` e `gameplay.c` estão no `<ClCompile>` de `Nanobo.vcxproj` e já contêm o código, e o passo 3 (auditoria do que sobrou no `main.c`) foi conferido em 12/10/2026 (commit `777b2df`).
 
+> **Nota de 18/10/2026:** o código final agrupou `player_x`, `player_y` e `player_speed` na struct `Nanobo player` (`src/entities/entities.c`). Os nomes soltos das tabelas abaixo são os do `main.c` de antes da refatoração; no código atual, use `player.x`, `player.y` e `player.speed`.
+
 ## Regra de ouro
 
 Cada coisa tem **uma casa só**:
@@ -117,13 +119,13 @@ Se sobrou mais que isso, provavelmente ainda tem código esperando um lugar — 
 | `agents[i].x - 16` no `draw_game` | O tamanho do agente é **dado da entidade**, não um literal solto no desenho (e a #10 vai usar o mesmo número na colisão) | `AGENT_RADIUS`, definido no `entities.h` ao lado de `PLAYER_RADIUS` |
 | `320` fixo no `draw_message` | Era metade da largura só por coincidência, enquanto o resto do arquivo usa `WIDTH / 2` | `WIDTH / 2` |
 
-**Ficou de propósito:** as teclas de teste do fluxo (`F`, `G`, `V`), que só saem quando as condições reais de fim de fase existirem (#26/#18), e as duas linhas temporárias do HUD: `direcao: N`, que sai quando o disparo (#63) existir, e `encostado no agente N`, que sai quando a vida (#11) mostrar o dano.
+**Ficou de propósito:** as teclas de teste do fluxo (`F`, `G`, `V`), que só saem quando as condições reais de fim de fase existirem (#26/#18), e a linha temporária `encostado no agente N`, que sai quando a vida (#11) mostrar o dano. A linha `direcao: N` já saiu com o disparo (#63).
 
 ## Depois de cada passo
 
-Conferido em 11/10/2026: depois do passo 2 o projeto compila em `Debug|x64` sem erro e sem aviso, e o jogo abre, anda e escaneia igual a antes.
+Conferido em 11/10/2026: depois do passo 2 o projeto compila em `Debug|x64` sem erro, e o jogo abre, anda e escaneia igual a antes. O build atual usa C11 e nível de aviso 4; avisos novos devem ser resolvidos, não ignorados.
 
-Rode exatamente o que está em [qa-poc.md](qa-poc.md) e confira: `↑` `↓` `←` `→` e `W` `A` `S` `D` movem o Nanobô, ele para ao soltar, não sai da tela, `ESC` volta ao menu, `SPACE` perto de um agente mostra as duas camadas e não identifica o mesmo agente duas vezes. Se algo disso quebrar, desfaça só o último passo — por isso um passo por vez.
+Rode exatamente o que está em [qa-poc.md](qa-poc.md) e confira: `↑` `↓` `←` `→` e `W` `A` `S` `D` movem o Nanobô, ele para ao soltar, não sai da tela, `ESC` pausa e retoma, `SPACE` perto de um agente mostra as duas camadas e não identifica o mesmo agente duas vezes. Se algo disso quebrar, desfaça só o último passo — por isso um passo por vez.
 
 ## Como commitar
 
