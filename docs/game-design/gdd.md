@@ -34,7 +34,7 @@ O scanner é uma mecânica central de investigação.
 - A leitura ocorre em pulsos/camadas.
 - Cada agente deve possuir identificação única para evitar que a mesma identificação seja contabilizada repetidamente.
 - As informações obtidas devem apoiar a interpretação do agente e a decisão do jogador.
-- A relação exata entre as informações do scanner, alcance/laser e apresentação visual ainda precisa ser validada nos testes.
+- A camada 2 traz a pista do envelope celular e o jogador escolhe o laser correspondente; o scanner não recomenda ação.
 
 ## Agentes e conteúdo
 
@@ -60,7 +60,19 @@ Foi definido um limite de referência de **3 vírus** para uma mecânica de desa
 
 ## Combate e consequências
 
-O projeto prevê combate e defesa como parte da tomada de decisão. Vida, dano, ataque, defesa, cooldowns, resistência e condições exatas de consequência ainda devem ser balanceados durante a implementação e os testes.
+O combate está implementado no M3.5. Os números atuais são ponto de partida, não balanceamento final:
+
+| Regra | Valor atual | Onde |
+|---|---|---|
+| Vida do Nanobô | 3 corações; 1 de dano por contato com bactéria ou por acertar a célula; 1 s de invulnerabilidade | `entities.h`, `gameplay.c` |
+| Ataque | laser na direção do `facing`, 1 disparo por segundo, até 4 projéteis na tela | `gameplay.c` |
+| Laser | roxo para Gram+, vermelho para Gram−; laser errado gasta o projétil e não tira resistência | `gameplay.c` |
+| Resistência | bactéria 2 acertos, célula 0 (não é destruída) | `entities.h` |
+| Defesa | 2 s de imunidade, 3 s de recarga; empurra bactéria a 2× a velocidade por 0,5 s | `gameplay.c` |
+| Consequência | resistência zerada neutraliza o agente, que sai da cena | `gameplay.c` |
+| Célula atacada | tiro na célula tira 1 de vida do Nanobô e não remove a célula; ela continua identificável | `gameplay.c` |
+
+O balanceamento de dano, cooldowns e resistência continua **[PENDÊNCIA]**; a regra fechada está em `docs/game-design/decisoes.md`.
 
 ## Pontuação e progressão
 
@@ -70,22 +82,22 @@ O hi-score deve ser persistente na versão final.
 
 ## Interface e controles
 
-O projeto utiliza entrada por **teclado e mouse**.
+O jogo usa teclado e mouse. Os controles implementados são:
 
-Os detalhes dos comandos, HUD e apresentação das informações serão refinados durante a implementação, respeitando o fluxo de gameplay e os requisitos da disciplina.
+- setas ou `WASD`: mover o Nanobô;
+- `ESPAÇO`: scanner;
+- `J`: atacar; `1`/`2`: laser roxo (Gram+) / vermelho (Gram−);
+- `X`: defesa;
+- `ESC`: pausa; `ENTER`: confirmar/iniciar;
+- clique no botão `INICIAR` do menu.
+
+O HUD mostra identificados, tempo, vida em corações, laser selecionado e o painel do scanner. A apresentação final das informações e a pontuação ainda serão refinadas (#19, #48).
 
 ## Estados e fluxo
 
-O jogo deverá organizar o fluxo por estados/cenas, contemplando no mínimo os estados necessários para:
+O fluxo está implementado em `src/core/game.c` com seis estados: `MENU`, `GAME`, `PAUSE`, `RESULTS`, `VICTORY` e `GAME OVER`. As transições permitidas e a regra de que só `GAME` atualiza a lógica estão em [Fluxo de estados](../planejamento/fluxo-estados.md).
 
-- menu inicial;
-- gameplay;
-- pausa;
-- vitória;
-- Game Over;
-- transição/reinício quando aplicável.
-
-A estrutura concreta da máquina de estados será definida durante a implementação.
+`GAME OVER` já é alcançado por vida zerada; `RESULTS` e `VICTORY` ainda dependem das teclas de teste `F` e `V` até a #20/#26.
 
 ## Áudio e arte
 
@@ -106,10 +118,9 @@ Uma terceira fase somente deve ser considerada se houver tempo e estabilidade su
 
 ## Pendências de design
 
-- Regras finais de identificação e recomendação.
 - Conteúdo biológico detalhado e validado de cada agente.
-- Relação final entre dados do scanner e escolha do laser/ação.
-- Balanceamento de vida, dano, ataque, defesa, cooldowns e resistência.
+- Cooldown definitivo do scanner.
+- Calibração dos números já implementados de vida, dano, ataque, defesa e resistência.
 - Regras de progressão entre fases.
 - Apresentação final das informações do scanner.
 - Regras detalhadas da multiplicação limitada da Fase 2.

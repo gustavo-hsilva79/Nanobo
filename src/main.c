@@ -24,6 +24,9 @@
 ALLEGRO_FONT* font = NULL;
 ALLEGRO_BITMAP* nanobo = NULL;
 
+// coracao do HUD de vida (#19)
+ALLEGRO_BITMAP* heart_icon = NULL;
+
 // a arte de cada especie da Fase 1
 ALLEGRO_BITMAP* gram_positive = NULL;
 ALLEGRO_BITMAP* gram_negative = NULL;
@@ -67,6 +70,13 @@ bool load_resources()
         return false;
     }
 
+    heart_icon = al_load_bitmap("assets/sprites/icone_coracao.png");
+    if (!heart_icon)
+    {
+        printf("couldn't load heart icon\n");
+        return false;
+    }
+
     return true;
 }
 
@@ -89,6 +99,12 @@ void free_resources()
     {
         al_destroy_bitmap(cell_sprite);
         cell_sprite = NULL;
+    }
+
+    if (heart_icon)
+    {
+        al_destroy_bitmap(heart_icon);
+        heart_icon = NULL;
     }
 
     if (nanobo)
@@ -138,7 +154,7 @@ void draw_menu()
 }
 
 // sprite de cada especie, alinhado com as constantes do entities.h
-ALLEGRO_BITMAP* species_sprite(int species)
+ALLEGRO_BITMAP* species_sprite(Species species)
 {
     if (species == SPECIES_GRAM_POSITIVE)
     {
@@ -172,19 +188,67 @@ void draw_game()
     // o nanobo e desenhado onde o teclado deixou ele
     al_draw_bitmap(nanobo, player.x - PLAYER_RADIUS, player.y - PLAYER_RADIUS, 0);
 
+    // anel da defesa: ciano enquanto protege, cinza durante a recarga (#17)
+    if (defense_state() == 1)
+    {
+        al_draw_circle(player.x, player.y, PLAYER_RADIUS + 2, al_map_rgb(0, 200, 255), 2);
+    }
+    else if (defense_state() == 2)
+    {
+        al_draw_circle(player.x, player.y, PLAYER_RADIUS + 2, al_map_rgb(90, 90, 90), 2);
+    }
+
+    // projetil na cor do raio escolhido no disparo (#63)
+    for (i = 0; i < MAX_PROJECTILES; i++)
+    {
+        if (!projectiles[i].active)
+        {
+            continue;
+        }
+
+        if (projectiles[i].laser == LASER_GRAM_POSITIVE)
+        {
+            al_draw_filled_circle(projectiles[i].x, projectiles[i].y, PROJECTILE_RADIUS, al_map_rgb(190, 90, 255));
+        }
+        else
+        {
+            al_draw_filled_circle(projectiles[i].x, projectiles[i].y, PROJECTILE_RADIUS, al_map_rgb(255, 70, 70));
+        }
+    }
+
     al_draw_textf(font, al_map_rgb(255, 255, 255), 10, 10, 0, "identificados: %d/%d", identified_count, NUM_AGENTES);
     al_draw_textf(font, al_map_rgb(255, 255, 255), 10, 26, 0, "tempo: %.1f", match_time);
-    al_draw_text(font, al_map_rgb(130, 130, 130), 10, 42, 0, "setas ou wasd para andar    space = scanner    esc = pausa");
-    // linha temporaria: a direcao so fica visivel quando o disparo (#63) existir
-    al_draw_textf(font, al_map_rgb(130, 130, 130), 10, 58, 0, "direcao: %d", player.facing);
-    // HUD temporario ate o planejamento do verdadeiro
-    al_draw_textf(font, al_map_rgb(130, 130, 130), 10, 74, 0, "vida: %d", player.health);
+    al_draw_text(font, al_map_rgb(130, 130, 130), 10, 42, 0, "wasd para andar    space = scanner    esc = pausa");
+    // a linha da direcao saiu com o #63: o que importa agora e o raio escolhido
+    al_draw_text(font, al_map_rgb(130, 130, 130), 10, 58, 0, "j = atacar    1/2 = raio    x = defesa");
+    // vida em coracoes de 16x16: os perdidos ficam escurecidos (#19)
+    for (i = 0; i < PLAYER_MAX_HEALTH; i++)
+    {
+        if (i < player.health)
+        {
+            al_draw_bitmap(heart_icon, 10 + i * 18, 74, 0);
+        }
+        else
+        {
+            al_draw_tinted_bitmap(heart_icon, al_map_rgba_f(0.25f, 0.25f, 0.25f, 1.0f), 10 + i * 18, 74, 0);
+        }
+    }
 
     // linha temporaria: prova visual do contato enquanto a #11 nao mostra o dano
     contact = touching_agent();
     if (contact != -1)
     {
         al_draw_textf(font, al_map_rgb(240, 200, 90), 10, 90, 0, "encostado no agente %d", agents[contact].id);
+    }
+
+    // raio escolhido: roxo para Gram+, vermelho para Gram- (#62)
+    if (player.laser == LASER_GRAM_POSITIVE)
+    {
+        al_draw_text(font, al_map_rgb(190, 90, 255), 10, 106, 0, "raio: roxo (Gram+)");
+    }
+    else
+    {
+        al_draw_text(font, al_map_rgb(255, 70, 70), 10, 106, 0, "raio: vermelho (Gram-)");
     }
 
     draw_scan_info();
@@ -269,6 +333,22 @@ void handle_key_down(int key)
         else if (key == ALLEGRO_KEY_ESCAPE)
         {
             game_set_scene(GAME_SCENE_PAUSE);
+        }
+        else if (key == ALLEGRO_KEY_J)
+        {
+            shoot();
+        }
+        else if (key == ALLEGRO_KEY_X)
+        {
+            activate_defense();
+        }
+        else if (key == ALLEGRO_KEY_1)
+        {
+            player.laser = LASER_GRAM_POSITIVE;
+        }
+        else if (key == ALLEGRO_KEY_2)
+        {
+            player.laser = LASER_GRAM_NEGATIVE;
         }
         // teclas de teste do fluxo, saem quando as condicoes de verdade existirem
         else if (key == ALLEGRO_KEY_F)

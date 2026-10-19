@@ -6,14 +6,18 @@ Inventário dos recursos necessários à execução atual, para orientar o carre
 
 | Recurso | Uso atual | Local |
 |---|---|---|
-| Sprite do Nanobô (32×32) | Personagem do jogador e, com tingimento por `al_draw_tinted_bitmap()`, os três agentes do encontro | `assets/sprites/nanobo.png`; carregado por `load_resources()` em `src/main.c` |
-| Fonte embutida do Allegro | Todo o texto da interface: HUD, painel do scanner, menu, pausa e telas de fim | Criada em memória por `al_create_builtin_font()` em `src/main.c`; não há arquivo de fonte |
+| Sprite do Nanobô (32×32) | Personagem do jogador | `assets/sprites/nanobo.png`; `load_resources()` em `src/main.c` |
+| Bactéria Gram-positiva (32×32) | Agente `SPECIES_GRAM_POSITIVE` | `assets/sprites/bacteria_gram_positiva.png`; idem |
+| Bactéria Gram-negativa (32×32) | Agente `SPECIES_GRAM_NEGATIVE` | `assets/sprites/bacteria_gram_negativa.png`; idem |
+| Célula saudável própria (32×32) | Agente `SPECIES_CELL` | `assets/sprites/celula_propria.png`; idem |
+| Ícone de coração (16×16) | HUD de vida | `assets/sprites/icone_coracao.png`; idem |
+| Fonte embutida do Allegro | Todo o texto da interface: HUD, painel do scanner, menu, pausa e telas de fim | `al_create_builtin_font()` em `src/main.c`; não há arquivo de fonte |
 
-> O sprite tingido **não** substitui a arte final dos agentes: a arte própria já existe (abaixo), mas ainda não é carregada pelo jogo.
+`free_resources()` libera os cinco bitmaps na ordem inversa e depois a fonte. O projétil é desenhado com `al_draw_filled_circle()` (primitivas), sem bitmap.
 
-## Arte final criada, ainda não carregada
+## Arte final criada
 
-Estes arquivos existem em `assets/`, mas **nenhum é carregado pelo jogo ainda** — a integração no código é tarefa separada. Cada recurso tem a fonte `.aseprite` editável ao lado do `.png` exportado; o `.png` é o arquivo que o jogo deve carregar.
+Os três sprites de agente e o ícone de coração já são carregados pelo jogo. O fundo, a tira de quadros do Nanobô e os ícones de laser/scanner ainda não são. Cada recurso tem a fonte `.aseprite` editável ao lado do `.png` exportado; o `.png` é o arquivo que o jogo deve carregar.
 
 Todos os sprites usam a mesma paleta, o mesmo tamanho de pixel e a mesma direção de luz (cima-esquerda), para manter a coesão visual.
 
@@ -25,7 +29,7 @@ Todos os sprites usam a mesma paleta, o mesmo tamanho de pixel e a mesma direç�
 | `assets/sprites/bacteria_gram_negativa.png` | Bactéria Gram-negativa | vermelho | bacilo (bastonete) | membrana externa fina, separada do corpo |
 | `assets/sprites/celula_propria.png` | Célula saudável própria | verde | célula maior e arredondada | núcleo delimitado com nucléolo e mitocôndrias |
 
-As cores seguem a regra da #16, já refletida nos tingimentos atuais de `src/main.c`: **roxo para Gram+** e **vermelho para Gram−**. A célula própria é verde.
+As cores seguem a regra da #16: **roxo para Gram+** e **vermelho para Gram−**; a célula própria é verde. O HUD usa o mesmo roxo e vermelho nos projéteis, e o coração é carmim para não competir com o laser vermelho.
 
 A forma e o tamanho também separam os agentes: as bactérias são pequenas e simples (sem organelas), enquanto a célula própria é maior e tem núcleo delimitado — a diferença procarioto/eucarioto.
 
@@ -67,8 +71,9 @@ O fundo é escuro e de baixo contraste de propósito: os sprites precisam contin
 
 | Tipo | Recursos necessários | Local definido | Estado |
 |---|---|---|---|
-| Sprites e animações | Arte final dos agentes e spritesheet animado do Nanobô | `assets/sprites/` | Resolvido: ver seções acima |
-| Cenários | Fundo/ambiente microscópico das fases | `assets/backgrounds/` | Resolvido: ver seção acima |
+| Sprites e animações | Arte final dos agentes e spritesheet animado do Nanobô | `assets/sprites/` | Agentes carregados; spritesheet criado e não carregado |
+| Cenários | Fundo/ambiente microscópico das fases | `assets/backgrounds/` | Criado; não carregado |
+| Ícones de interface | Laser, scanner e vida | `assets/sprites/` | Criados; só o coração é carregado |
 | Fontes | Tipografia final da interface | `assets/fonts/` | [PENDÊNCIA] Fonte ainda não escolhida; a fonte embutida atual é provisória |
 | Música | Trilha da partida | `assets/audio/music/` | [PENDÊNCIA] Arquivo ainda não definido |
 | Efeitos sonoros | Feedback de ações e eventos | `assets/audio/sfx/` | [PENDÊNCIA] Arquivos ainda não definidos |

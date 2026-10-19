@@ -2,6 +2,8 @@
 
 > Documento de visão rápida do projeto. Regras detalhadas e decisões devem ser mantidas no GDD, escopo e decisões de Game Design.
 
+> **Registro da entrega de 09/09/2026.** O estado corrente do produto está no `README.md`; este documento não é atualizado a cada marco.
+
 ## High Concept
 
 Jogo educacional 2D em C com Allegro 5 no qual o jogador controla o Nanobô em um ambiente microscópico inspirado no interior do corpo humano, explora, analisa organismos pelo scanner, interpreta as informações e toma decisões com consequências no gameplay.

@@ -16,6 +16,8 @@ Desenvolver o núcleo jogável primeiro, validando os maiores riscos técnicos a
 8. **Pós-MVP:** segunda fase com vírus, ciclos lítico/lisogênico e multiplicação limitada.
 9. **Release:** spritesheet/animação, áudio, hi-score, liberação de recursos, testes, memória, build e instalador Windows.
 
+> **Progresso em 18/10/2026:** itens 1–5 implementados (base, estados/entrada, entidades/colisões, scanner/identificação, combate/vida, incluindo a célula própria). Itens 6–9 continuam pendentes.
+
 ## Estratégia da PoC
 
 A PoC deve provar os riscos técnicos e de gameplay mais relevantes antes da expansão do conteúdo. Priorizar:
