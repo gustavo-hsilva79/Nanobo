@@ -96,6 +96,9 @@ A tabela de marcos — data, tipo e objetivo de cada um — fica em **[milestone
 - #178 Feedback visual e educacional das decisões `[G]`
 - #179 Aprimoramento de movimento (polimento) `[G]`
 
+### Fora dos marcos
+- #186 Resolução 640x360, escala inteira e câmera de mundo maior `[G]` *(aberta)*
+
 ### M5 — Polimento, Estabilização e Release Candidate
 - #30 Spritesheet e animação `[G]`
 - #31 Efeitos sonoros `[G]`

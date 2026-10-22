@@ -51,7 +51,7 @@ Cada quadro é um recorte de 32×32 na tira, na ordem dos quadros. Em Allegro, o
 
 | Arquivo | Conteúdo |
 |---|---|
-| `assets/backgrounds/fundo_microscopico.png` | Ambiente microscópico, **640×480**, no tamanho exato da tela |
+| `assets/backgrounds/fundo_microscopico.png` | Ambiente microscópico, **640×480** — arte antiga, fora do tamanho da tela atual (640×360); precisa ser reexportado antes de entrar em `load_resources()` |
 | `assets/backgrounds/fundo_microscopico.aseprite` | Fonte editável |
 
 O fundo é escuro e de baixo contraste de propósito: os sprites precisam continuar legíveis por cima dele.

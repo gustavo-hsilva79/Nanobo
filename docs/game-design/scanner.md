@@ -117,6 +117,6 @@ O estado de identificação — identificações registradas, contador e camadas
 | Reinicialização da partida | `reset_match()` em `src/gameplay/gameplay.c` |
 | Agentes fora do scanner | agente com `active == false` não é candidato nem é desenhado |
 
-A posição usada na medição de distância é a do Nanobô (`Nanobo player`, `src/entities/entities.c`), alterada pelo teclado em `update_match()`. O encontro da Fase 1 tem **6 agentes** (2 Gram+, 1 Gram−, 3 células), embora a regra de camadas continue com 2 por agente. O roteiro de verificação está em `docs/planejamento/qa-poc.md`.
+A posição usada na medição de distância é a do Nanobô (`Nanobo player`, `src/entities/entities.c`), alterada pelo teclado em `update_match()`. O encontro da Fase 1 tem **9 agentes** (3 Gram+, 3 Gram−, 3 células), embora a regra de camadas continue com 2 por agente. O roteiro de verificação está em `docs/planejamento/qa-poc.md`.
 
 As regras de conteúdo biológico continuam em `docs/game-design/conteudo-biologico.md`.
