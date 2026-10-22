@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <time.h>
+#include <math.h>
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
@@ -12,13 +13,25 @@
 #include "entities/entities.h"
 #include "gameplay/gameplay.h"
 
-#define WIDTH 640
-#define HEIGHT 480
-
 #define BUTTON_X 220
-#define BUTTON_Y 300
+#define BUTTON_Y 200
 #define BUTTON_W 200
 #define BUTTON_H 50
+
+// medidas do HUD: tudo derivado do painel, nunca coordenada magica
+#define HUD_MARGIN 10
+#define HUD_LINES 5
+#define HUD_LINE_H ((PANEL_H - 2 * HUD_MARGIN) / HUD_LINES)
+
+// a fonte embutida tem 8 px: menos de 12 por linha encosta uma na outra
+_Static_assert(HUD_LINE_H >= 12, "linha do HUD apertada demais para a fonte");
+_Static_assert(HUD_LINES * HUD_LINE_H + 2 * HUD_MARGIN <= PANEL_H, "HUD nao cabe no painel");
+
+// y de cada linha do HUD, contando de cima para baixo dentro do painel
+int hud_y(int line)
+{
+    return SCAN_PANEL_Y + HUD_MARGIN + line * HUD_LINE_H;
+}
 
 // recursos do jogo, carregados uma vez antes do loop
 ALLEGRO_FONT* font = NULL;
@@ -31,6 +44,103 @@ ALLEGRO_BITMAP* heart_icon = NULL;
 ALLEGRO_BITMAP* gram_positive = NULL;
 ALLEGRO_BITMAP* gram_negative = NULL;
 ALLEGRO_BITMAP* cell_sprite = NULL;
+
+// janela, canvas logico e a escala inteira aplicada na saida
+ALLEGRO_DISPLAY* display = NULL;
+ALLEGRO_BITMAP* canvas = NULL;
+float screen_scale = 1.0f;
+float screen_off_x = 0.0f;
+float screen_off_y = 0.0f;
+
+// maior escala inteira que cabe na janela; abaixo de 1 encolhe para caber
+void update_screen_fit()
+{
+    int w = al_get_display_width(display);
+    int h = al_get_display_height(display);
+    float fit_w;
+    float fit_h;
+    float fit;
+
+    if (w < 1 || h < 1)
+    {
+        return;
+    }
+
+    fit_w = (float)w / (float)SCREEN_W;
+    fit_h = (float)h / (float)SCREEN_H;
+    fit = fit_w < fit_h ? fit_w : fit_h;
+
+    // escala quebrada so quando a janela e menor que a tela logica
+    if (fit >= 1.0f)
+    {
+        fit = floorf(fit);
+    }
+
+    screen_scale = fit;
+    screen_off_x = ((float)w - (float)SCREEN_W * fit) / 2.0f;
+    screen_off_y = ((float)h - (float)SCREEN_H * fit) / 2.0f;
+}
+
+// abre a janela no maior multiplo inteiro que cabe no monitor
+bool create_window()
+{
+    ALLEGRO_MONITOR_INFO monitor;
+    int scale = 2;
+
+    if (al_get_monitor_info(0, &monitor))
+    {
+        int monitor_w = monitor.x2 - monitor.x1;
+        int monitor_h = monitor.y2 - monitor.y1;
+        int fit_w = (monitor_w - 80) / SCREEN_W;
+        int fit_h = (monitor_h - 120) / SCREEN_H;
+
+        scale = fit_w < fit_h ? fit_w : fit_h;
+
+        if (scale < 1)
+        {
+            scale = 1;
+        }
+
+        if (scale > 6)
+        {
+            scale = 6;
+        }
+    }
+
+    al_set_new_display_flags(ALLEGRO_WINDOWED | ALLEGRO_RESIZABLE);
+    display = al_create_display(SCREEN_W * scale, SCREEN_H * scale);
+
+    if (!display)
+    {
+        printf("couldn't initialize display\n");
+        return false;
+    }
+
+    canvas = al_create_bitmap(SCREEN_W, SCREEN_H);
+
+    if (!canvas)
+    {
+        printf("couldn't initialize canvas\n");
+        return false;
+    }
+
+    return true;
+}
+
+// F11 alterna fullscreen sem mudar a resolucao do monitor
+void toggle_fullscreen()
+{
+    int flags = al_get_display_flags(display);
+
+    if (flags & ALLEGRO_FULLSCREEN_WINDOW)
+    {
+        al_set_display_flag(display, ALLEGRO_FULLSCREEN_WINDOW, false);
+    }
+    else
+    {
+        al_set_display_flag(display, ALLEGRO_FULLSCREEN_WINDOW, true);
+    }
+}
 
 // carrega tudo que o jogo precisa antes do loop por frame
 bool load_resources()
@@ -120,37 +230,47 @@ void free_resources()
     }
 }
 
-// o que ja foi revelado continua na tela durante o encontro
+// leitura do ultimo alvo escaneado; apertar space de novo rele o alvo
 void draw_scan_info()
 {
-    int i;
-    int line = 0;
+    int target = last_scan_target();
+    char line[128];
 
-    for (i = 0; i < NUM_AGENTES; i++)
+    if (target == -1)
     {
-        if (agents[i].layers >= 1)
-        {
-            al_draw_textf(font, al_map_rgb(170, 170, 170), 10, SCAN_PANEL_Y + line * 14, 0, "agente %d: %s", agents[i].id, layer_one_text(agents[i].species));
-            line = line + 1;
-        }
+        al_draw_text(font, al_map_rgb(130, 130, 130), HUD_MARGIN, hud_y(3), 0,
+            "alvo: nenhum (chegue perto e aperte space)");
+        return;
+    }
 
-        if (agents[i].layers >= 2)
-        {
-            al_draw_textf(font, al_map_rgb(220, 220, 220), 10, SCAN_PANEL_Y + line * 14, 0, "  %s", layer_two_text(agents[i].species));
-            line = line + 1;
-        }
+    if (!agents[target].active)
+    {
+        snprintf(line, sizeof(line), "agente %d: neutralizado", agents[target].id);
+        al_draw_text(font, al_map_rgb(130, 130, 130), HUD_MARGIN, hud_y(3), 0, line);
+        return;
+    }
+
+    snprintf(line, sizeof(line), "agente %d: %s", agents[target].id,
+        layer_one_text(agents[target].species));
+    al_draw_text(font, al_map_rgb(170, 170, 170), HUD_MARGIN, hud_y(3), 0, line);
+
+    if (agents[target].layers >= 2)
+    {
+        // a camada 2 e a linha mais longa do painel: o clip do draw_hud corta o excedente
+        snprintf(line, sizeof(line), "  %s", layer_two_text(agents[target].species));
+        al_draw_text(font, al_map_rgb(220, 220, 220), HUD_MARGIN, hud_y(4), 0, line);
     }
 }
 
 void draw_menu()
 {
-    al_draw_text(font, al_map_rgb(255, 255, 255), WIDTH / 2, 120, ALLEGRO_ALIGN_CENTRE, "NANOBO");
-    al_draw_text(font, al_map_rgb(170, 170, 170), WIDTH / 2, 150, ALLEGRO_ALIGN_CENTRE, "defenda o organismo");
+    al_draw_text(font, al_map_rgb(255, 255, 255), SCREEN_W / 2, 80, ALLEGRO_ALIGN_CENTRE, "NANOBO");
+    al_draw_text(font, al_map_rgb(170, 170, 170), SCREEN_W / 2, 110, ALLEGRO_ALIGN_CENTRE, "defenda o organismo");
 
     al_draw_rectangle(BUTTON_X, BUTTON_Y, BUTTON_X + BUTTON_W, BUTTON_Y + BUTTON_H, al_map_rgb(255, 255, 255), 1);
-    al_draw_text(font, al_map_rgb(255, 255, 255), WIDTH / 2, BUTTON_Y + 20, ALLEGRO_ALIGN_CENTRE, "INICIAR");
+    al_draw_text(font, al_map_rgb(255, 255, 255), SCREEN_W / 2, BUTTON_Y + 20, ALLEGRO_ALIGN_CENTRE, "INICIAR");
 
-    al_draw_text(font, al_map_rgb(130, 130, 130), WIDTH / 2, BUTTON_Y + 80, ALLEGRO_ALIGN_CENTRE, "clique no botao ou aperte enter");
+    al_draw_text(font, al_map_rgb(130, 130, 130), SCREEN_W / 2, BUTTON_Y + 80, ALLEGRO_ALIGN_CENTRE, "clique no botao ou aperte enter");
 }
 
 // sprite de cada especie, alinhado com as constantes do entities.h
@@ -169,10 +289,90 @@ ALLEGRO_BITMAP* species_sprite(Species species)
     return cell_sprite;
 }
 
-void draw_game()
+// coordenada do mundo para o pixel do canvas, arredondada para nao tremer
+float view_x(float x)
+{
+    return floorf(x - camera.x);
+}
+
+float view_y(float y)
+{
+    return floorf(y - camera.y);
+}
+
+// status e leitura do scanner no rodape: a faixa do mundo fica limpa
+void draw_hud()
 {
     int i;
     int contact;
+    int hearts_x;
+    char status[64];
+    char contact_text[64];
+
+    al_draw_line(0, SCAN_PANEL_Y - 1, SCREEN_W, SCAN_PANEL_Y - 1, al_map_rgb(60, 60, 60), 1);
+
+    // nada do HUD pode vazar para a faixa do mundo; o clip vale so no painel
+    al_set_clipping_rectangle(0, SCAN_PANEL_Y, SCREEN_W, PANEL_H);
+
+    // o status e medido na hora: os coracoes entram logo depois dele
+    snprintf(status, sizeof(status), "identificados: %d/%d    tempo: %.1f",
+        identified_count, NUM_AGENTES, match_time);
+    al_draw_text(font, al_map_rgb(255, 255, 255), HUD_MARGIN, hud_y(0), 0, status);
+
+    hearts_x = HUD_MARGIN + al_get_text_width(font, status) + 24;
+
+    // vida em coracoes: tamanho e espacamento vem do bitmap, nao de literal (#19)
+    for (i = 0; i < PLAYER_MAX_HEALTH; i++)
+    {
+        int hx = hearts_x + i * (al_get_bitmap_width(heart_icon) + 2);
+
+        if (i < player.health)
+        {
+            al_draw_bitmap(heart_icon, hx, hud_y(0), 0);
+        }
+        else
+        {
+            al_draw_tinted_bitmap(heart_icon, al_map_rgba_f(0.25f, 0.25f, 0.25f, 1.0f),
+                hx, hud_y(0), 0);
+        }
+    }
+
+    al_draw_text(font, al_map_rgb(130, 130, 130), HUD_MARGIN, hud_y(1), 0,
+        "wasd anda   space scanner   j atira   1/2 raio   x defesa   esc pausa   f11 tela");
+
+    if (player.laser == LASER_GRAM_POSITIVE)
+    {
+        al_draw_text(font, al_map_rgb(190, 90, 255), HUD_MARGIN, hud_y(2), 0,
+            "raio: roxo (Gram+)");
+    }
+    else
+    {
+        al_draw_text(font, al_map_rgb(255, 70, 70), HUD_MARGIN, hud_y(2), 0,
+            "raio: vermelho (Gram-)");
+    }
+
+    // linha temporaria: prova visual do contato enquanto a #11 nao mostra o dano
+    contact = touching_agent();
+
+    if (contact != -1)
+    {
+        int w;
+
+        snprintf(contact_text, sizeof(contact_text), "encostado no agente %d", agents[contact].id);
+        w = al_get_text_width(font, contact_text);
+        al_draw_text(font, al_map_rgb(240, 200, 90), SCREEN_W - HUD_MARGIN - w, hud_y(2), 0,
+            contact_text);
+    }
+
+    draw_scan_info();
+
+    // o quadro seguinte desenha o mundo no mesmo canvas: sem isso ele sai cortado
+    al_reset_clipping_rectangle();
+}
+
+void draw_game()
+{
+    int i;
 
     for (i = 0; i < NUM_AGENTES; i++)
     {
@@ -182,20 +382,25 @@ void draw_game()
             continue;
         }
 
-        al_draw_bitmap(species_sprite(agents[i].species), agents[i].x - AGENT_RADIUS, agents[i].y - AGENT_RADIUS, 0);
+        al_draw_bitmap(species_sprite(agents[i].species),
+            view_x(agents[i].x) - AGENT_RADIUS,
+            view_y(agents[i].y) - AGENT_RADIUS, 0);
     }
 
-    // o nanobo e desenhado onde o teclado deixou ele
-    al_draw_bitmap(nanobo, player.x - PLAYER_RADIUS, player.y - PLAYER_RADIUS, 0);
+    // o nanobo e desenhado onde o mundo deixou ele, ja descontada a camera
+    al_draw_bitmap(nanobo, view_x(player.x) - PLAYER_RADIUS,
+        view_y(player.y) - PLAYER_RADIUS, 0);
 
     // anel da defesa: ciano enquanto protege, cinza durante a recarga (#17)
     if (defense_state() == 1)
     {
-        al_draw_circle(player.x, player.y, PLAYER_RADIUS + 2, al_map_rgb(0, 200, 255), 2);
+        al_draw_circle(view_x(player.x), view_y(player.y), PLAYER_RADIUS + 2,
+            al_map_rgb(0, 200, 255), 2);
     }
     else if (defense_state() == 2)
     {
-        al_draw_circle(player.x, player.y, PLAYER_RADIUS + 2, al_map_rgb(90, 90, 90), 2);
+        al_draw_circle(view_x(player.x), view_y(player.y), PLAYER_RADIUS + 2,
+            al_map_rgb(90, 90, 90), 2);
     }
 
     // projetil na cor do raio escolhido no disparo (#63)
@@ -208,63 +413,32 @@ void draw_game()
 
         if (projectiles[i].laser == LASER_GRAM_POSITIVE)
         {
-            al_draw_filled_circle(projectiles[i].x, projectiles[i].y, PROJECTILE_RADIUS, al_map_rgb(190, 90, 255));
+            al_draw_filled_circle(view_x(projectiles[i].x), view_y(projectiles[i].y),
+                PROJECTILE_RADIUS, al_map_rgb(190, 90, 255));
         }
         else
         {
-            al_draw_filled_circle(projectiles[i].x, projectiles[i].y, PROJECTILE_RADIUS, al_map_rgb(255, 70, 70));
+            al_draw_filled_circle(view_x(projectiles[i].x), view_y(projectiles[i].y),
+                PROJECTILE_RADIUS, al_map_rgb(255, 70, 70));
         }
     }
 
-    al_draw_textf(font, al_map_rgb(255, 255, 255), 10, 10, 0, "identificados: %d/%d", identified_count, NUM_AGENTES);
-    al_draw_textf(font, al_map_rgb(255, 255, 255), 10, 26, 0, "tempo: %.1f", match_time);
-    al_draw_text(font, al_map_rgb(130, 130, 130), 10, 42, 0, "wasd para andar    space = scanner    esc = pausa");
-    // a linha da direcao saiu com o #63: o que importa agora e o raio escolhido
-    al_draw_text(font, al_map_rgb(130, 130, 130), 10, 58, 0, "j = atacar    1/2 = raio    x = defesa");
-    // vida em coracoes de 16x16: os perdidos ficam escurecidos (#19)
-    for (i = 0; i < PLAYER_MAX_HEALTH; i++)
-    {
-        if (i < player.health)
-        {
-            al_draw_bitmap(heart_icon, 10 + i * 18, 74, 0);
-        }
-        else
-        {
-            al_draw_tinted_bitmap(heart_icon, al_map_rgba_f(0.25f, 0.25f, 0.25f, 1.0f), 10 + i * 18, 74, 0);
-        }
-    }
-
-    // linha temporaria: prova visual do contato enquanto a #11 nao mostra o dano
-    contact = touching_agent();
-    if (contact != -1)
-    {
-        al_draw_textf(font, al_map_rgb(240, 200, 90), 10, 90, 0, "encostado no agente %d", agents[contact].id);
-    }
-
-    // raio escolhido: roxo para Gram+, vermelho para Gram- (#62)
-    if (player.laser == LASER_GRAM_POSITIVE)
-    {
-        al_draw_text(font, al_map_rgb(190, 90, 255), 10, 106, 0, "raio: roxo (Gram+)");
-    }
-    else
-    {
-        al_draw_text(font, al_map_rgb(255, 70, 70), 10, 106, 0, "raio: vermelho (Gram-)");
-    }
-
-    draw_scan_info();
+    draw_hud();
 }
 
 void draw_message(const char* title, const char* hint)
 {
-    al_draw_text(font, al_map_rgb(255, 255, 255), WIDTH / 2, HEIGHT / 2 - 20, ALLEGRO_ALIGN_CENTRE, title);
-    al_draw_text(font, al_map_rgb(160, 160, 160), WIDTH / 2, HEIGHT / 2 + 10, ALLEGRO_ALIGN_CENTRE, hint);
+    al_draw_text(font, al_map_rgb(255, 255, 255), SCREEN_W / 2, SCREEN_H / 2 - 20, ALLEGRO_ALIGN_CENTRE, title);
+    al_draw_text(font, al_map_rgb(160, 160, 160), SCREEN_W / 2, SCREEN_H / 2 + 10, ALLEGRO_ALIGN_CENTRE, hint);
 }
 
-// cada estado desenha so o que e dele
+// cada estado desenha so o que e dele, tudo no canvas logico
 void render()
 {
     GameScene scene = game_get_scene();
 
+    update_screen_fit();
+    al_set_target_bitmap(canvas);
     al_clear_to_color(al_map_rgb(0, 0, 0));
 
     if (scene == GAME_SCENE_MENU)
@@ -292,6 +466,13 @@ void render()
         draw_message("GAME OVER", "enter = nova partida");
     }
 
+    // o canvas vai para a janela com escala inteira e barras pretas
+    al_set_target_backbuffer(display);
+    al_clear_to_color(al_map_rgb(0, 0, 0));
+    al_draw_scaled_bitmap(canvas, 0, 0, SCREEN_W, SCREEN_H,
+        screen_off_x, screen_off_y,
+        (float)SCREEN_W * screen_scale, (float)SCREEN_H * screen_scale, 0);
+
     al_flip_display();
 }
 
@@ -299,6 +480,12 @@ void render()
 void handle_key_down(int key)
 {
     GameScene scene = game_get_scene();
+
+    if (key == ALLEGRO_KEY_F11)
+    {
+        toggle_fullscreen();
+        return;
+    }
 
     if (scene == GAME_SCENE_MENU)
     {
@@ -422,14 +609,17 @@ void handle_key_up(int key)
     }
 }
 
-// clique do mouse, so a interface do menu tem alvo por enquanto
+// clique do mouse vem em pixel da janela: converte para pixel da tela logica
 void handle_mouse_click(float x, float y)
 {
     GameScene scene = game_get_scene();
+    float lx = (x - screen_off_x) / screen_scale;
+    float ly = (y - screen_off_y) / screen_scale;
 
     if (scene == GAME_SCENE_MENU)
     {
-        if (x >= BUTTON_X && x <= BUTTON_X + BUTTON_W && y >= BUTTON_Y && y <= BUTTON_Y + BUTTON_H)
+        if (lx >= BUTTON_X && lx <= BUTTON_X + BUTTON_W
+            && ly >= BUTTON_Y && ly <= BUTTON_Y + BUTTON_H)
         {
             reset_match();
             game_set_scene(GAME_SCENE_GAME);
@@ -491,10 +681,10 @@ int main()
         return 1;
     }
 
-    ALLEGRO_DISPLAY* display = al_create_display(WIDTH, HEIGHT);
-    if (!display)
+    if (!create_window())
     {
-        printf("couldn't initialize display\n");
+        al_destroy_timer(timer);
+        al_destroy_event_queue(queue);
         return 1;
     }
 
@@ -554,6 +744,11 @@ int main()
                 handle_mouse_click(event.mouse.x, event.mouse.y);
                 break;
 
+            case ALLEGRO_EVENT_DISPLAY_RESIZE:
+                al_acknowledge_resize(event.display.source);
+                redraw = true;
+                break;
+
             case ALLEGRO_EVENT_DISPLAY_CLOSE:
                 done = true;
                 break;
@@ -570,6 +765,13 @@ int main()
     }
 
     free_resources();
+
+    if (canvas)
+    {
+        al_destroy_bitmap(canvas);
+        canvas = NULL;
+    }
+
     al_destroy_display(display);
     al_destroy_timer(timer);
     al_destroy_event_queue(queue);
