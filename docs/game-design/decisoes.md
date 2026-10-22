@@ -56,7 +56,7 @@ A proposta é que o jogador descubra informações, interprete dados do scanner 
 
 #### HUD de vida (17/10/2026)
 
-- A vida aparece como **3 corações de 16×16** (`assets/sprites/icone_coracao.png`), alinhados em (10, 74) com 18 px de espaçamento.
+- A vida aparece como **3 corações de 16×16** (`assets/sprites/icone_coracao.png`); desde 22/10/2026 a fileira fica na primeira linha do painel (`hud_y(0)`, hoje y=266) logo depois da largura medida do texto de status, com 2 px de folga entre corações (o passo vem de `al_get_bitmap_width`).
 - Coração perdido **não some: escurece** (tint 25%), para o jogador enxergar o máximo e o quanto já perdeu.
 - O coração é carmim, como o catálogo de arte já especificava, e não usa o vermelho do laser Gram−.
 - O texto `vida: %d` sai do HUD; a leitura passa a ser por contagem de corações.
@@ -123,7 +123,7 @@ O jogo terá pontuação, bônus por identificação e progressão. O hi-score d
 ### Resolução, escala inteira e câmera (22/10/2026)
 
 - A tela lógica é **640×360** (16:9), desenhada num bitmap e ampliada na janela por **escala inteira**, com barras pretas quando a janela não for múltipla. 640×360 é a maior resolução 16:9 que cai exata em 720p (2×), 1080p (3×), 1440p (4×) e 4K (6×).
-- A janela é **redimensionável**, abre no maior múltiplo inteiro que cabe no monitor e **F11** alterna fullscreen, sempre com escala inteira.
+- A janela é **redimensionável**, abre no maior múltiplo inteiro que cabe no monitor e **F11** alterna fullscreen, escala inteira quando o encaixe der 1x ou mais; janela menor que 640×360 encolhe proporcionalmente.
 - A **faixa visível do mundo** é 640×256 (múltipla de 32, o lado do tile do mapa futuro) e o **painel do scanner** ocupa os 104 px do rodapé; o painel é HUD, não faz parte do mundo.
 - O **mundo** nasce com **1920×512** (3 telas por 2 faixas) e uma **câmera** presa nas bordas acompanha o Nanobô. O tamanho do mapa passou a ser constante (`WORLD_W`/`WORLD_H`), não o tamanho da tela: é o que permite crescer para paredes e caminhos sem reescrever as regras.
 - A Fase 1 passa a ter **9 agentes** (3 Gram+, 3 Gram−, 3 células) para não esvaziar o mapa maior; o **alcance do scanner continua 130 px**.
