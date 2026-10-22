@@ -52,6 +52,7 @@ Regra já fechada, repetida aqui para que o fluxo fique em um único lugar:
 - Cada ativação válida revela **somente a próxima camada ainda não descoberta** do alvo selecionado.
 - No contexto da PoC existem **2 camadas** por agente, verificáveis.
 - Informação já revelada **permanece visível** durante o encontro; não é apagada ao trocar de alvo.
+  > **Atualização 22/10/2026:** o painel passou a mostrar só a leitura do alvo atual; as camadas já reveladas continuam guardadas em cada agente e voltam a aparecer quando ele é lido de novo.
 - Depois que todas as camadas do agente foram reveladas, novas ativações sobre ele não revelam informação inexistente e não alteram o estado.
 - O conteúdo revelado descreve o agente e **não recomenda** qual ação ou laser o jogador deve escolher.
 
@@ -117,6 +118,6 @@ O estado de identificação — identificações registradas, contador e camadas
 | Reinicialização da partida | `reset_match()` em `src/gameplay/gameplay.c` |
 | Agentes fora do scanner | agente com `active == false` não é candidato nem é desenhado |
 
-A posição usada na medição de distância é a do Nanobô (`Nanobo player`, `src/entities/entities.c`), alterada pelo teclado em `update_match()`. O encontro da Fase 1 tem **6 agentes** (2 Gram+, 1 Gram−, 3 células), embora a regra de camadas continue com 2 por agente. O roteiro de verificação está em `docs/planejamento/qa-poc.md`.
+A posição usada na medição de distância é a do Nanobô (`Nanobo player`, `src/entities/entities.c`), alterada pelo teclado em `update_match()`. O encontro da Fase 1 tem **9 agentes** (3 Gram+, 3 Gram−, 3 células), embora a regra de camadas continue com 2 por agente. O roteiro de verificação está em `docs/planejamento/qa-poc.md`.
 
 As regras de conteúdo biológico continuam em `docs/game-design/conteudo-biologico.md`.

@@ -23,6 +23,9 @@ static double defense_cooldown_timer = 0.0;
 // intervalo entre disparos (#64)
 static double attack_cooldown_timer = 0.0;
 
+// ultimo alvo lido pelo scanner: o painel do HUD mostra so ele
+static int scan_target = -1;
+
 // teclas seguradas agora, quem escreve nelas e o handle_key_down/handle_key_up
 bool key_up = false;
 bool key_down = false;
@@ -231,11 +234,10 @@ static void hit_projectiles()
     }
 }
 
-// projetis andam em linha reta e somem ao sair da area jogavel (#63)
-static void update_projectiles(double dt, float screen_w)
+// projetis andam em linha reta e somem ao sair do mundo (#63)
+static void update_projectiles(double dt)
 {
     int i;
-    float floor_y = (float)SCAN_PANEL_Y;
 
     for (i = 0; i < MAX_PROJECTILES; i++)
     {
@@ -247,8 +249,8 @@ static void update_projectiles(double dt, float screen_w)
         projectiles[i].x += (float)(projectiles[i].dx * PROJECTILE_SPEED * dt);
         projectiles[i].y += (float)(projectiles[i].dy * PROJECTILE_SPEED * dt);
 
-        if (projectiles[i].x < 0 || projectiles[i].x > screen_w
-            || projectiles[i].y < 0 || projectiles[i].y > floor_y)
+        if (projectiles[i].x < 0 || projectiles[i].x > (float)WORLD_W
+            || projectiles[i].y < 0 || projectiles[i].y > (float)WORLD_H)
         {
             projectiles[i].active = false;
         }
@@ -267,6 +269,9 @@ void use_scanner()
         return;
     }
 
+    // o painel do HUD relembra o ultimo alvo, mesmo depois de andar
+    scan_target = target;
+
     if (agents[target].layers < MAX_LAYERS)
     {
         agents[target].layers = agents[target].layers + 1;
@@ -277,6 +282,12 @@ void use_scanner()
         agents[target].identified = true;
         identified_count = identified_count + 1;
     }
+}
+
+// ultimo alvo lido pelo scanner, -1 antes da primeira leitura
+int last_scan_target()
+{
+    return scan_target;
 }
 
 // aperta a defesa: so ativa quando ela esta pronta (#17)
@@ -388,9 +399,9 @@ void shoot()
 
 static const float valid_points[][2] =
 {
-    {  90, 120 }, { 250, 110 }, { 430, 130 }, { 560, 200 },
-    {  80, 250 }, { 200, 220 }, { 330, 160 }, { 470, 260 },
-    { 110, 340 }, { 260, 340 }, { 400, 330 }, { 550, 350 }
+    {  160,  96 }, {  480, 140 }, {  800,  96 }, { 1120, 140 },
+    { 1440,  96 }, { 1760, 140 }, {  160, 420 }, {  480, 380 },
+    {  800, 420 }, { 1120, 380 }, { 1440, 420 }, { 1760, 380 }
 };
 
 // o array e sem dimensao de proposito: assim a contagem e a real e uma linha
@@ -419,6 +430,36 @@ static void place_agents()
         taken[p] = 1;
         agents[i].x = valid_points[p][0];
         agents[i].y = valid_points[p][1];
+    }
+}
+
+// a camera segue o nanobo e para nas bordas do mundo
+static void update_camera()
+{
+    float max_x = (float)(WORLD_W - SCREEN_W);
+    float max_y = (float)(WORLD_H - PLAY_H);
+
+    camera.x = player.x - (float)SCREEN_W / 2.0f;
+    camera.y = player.y - (float)PLAY_H / 2.0f;
+
+    if (camera.x < 0.0f)
+    {
+        camera.x = 0.0f;
+    }
+
+    if (camera.y < 0.0f)
+    {
+        camera.y = 0.0f;
+    }
+
+    if (camera.x > max_x)
+    {
+        camera.x = max_x;
+    }
+
+    if (camera.y > max_y)
+    {
+        camera.y = max_y;
     }
 }
 
@@ -530,8 +571,8 @@ void reset_match()
         reset_agent(i);
     }
 
-    player.x = 320;
-    player.y = 260;
+    player.x = (float)WORLD_W / 2.0f;
+    player.y = (float)WORLD_H / 2.0f;
     player.health = PLAYER_MAX_HEALTH;
     player.facing = PLAYER_FACING_DOWN;
 
@@ -554,21 +595,26 @@ void reset_match()
     {
         projectiles[i].active = false;
     }
+
+    scan_target = -1;
+
+    // a camera ja nasce no lugar certo do mundo novo
+    update_camera();
 }
 
-// mantem um valor dentro da tela, respeitando o raio do nanobo
-static float clamp_to_screen(float value, float limit)
+// mantem um valor dentro do mundo, respeitando o raio do nanobo
+static float clamp_to_world(float value, float limit)
 {
     return fminf(fmaxf(value, (float)PLAYER_RADIUS), limit - (float)PLAYER_RADIUS);
 }
 
-// mantem o agente dentro da area jogavel e inverte o sentido quando ele bate
-static void bounce_agent_off_bounds(int index, float screen_w)
+// mantem o agente dentro do mundo e inverte o sentido quando ele bate
+static void bounce_agent_off_bounds(int index)
 {
     float min_x = (float)AGENT_RADIUS;
-    float max_x = screen_w - (float)AGENT_RADIUS;
+    float max_x = (float)(WORLD_W - AGENT_RADIUS);
     float min_y = (float)AGENT_RADIUS;
-    float max_y = (float)(SCAN_PANEL_Y - AGENT_RADIUS);
+    float max_y = (float)(WORLD_H - AGENT_RADIUS);
 
     if (agents[index].x < min_x)
     {
@@ -593,8 +639,8 @@ static void bounce_agent_off_bounds(int index, float screen_w)
     }
 }
 
-// a partida so anda no estado GAME, o tamanho da tela vem do main
-void update_match(double dt, float screen_w, float screen_h)
+// a partida so anda no estado GAME; o mundo vem das constantes
+void update_match(double dt)
 {
     float step = (float)(player.speed * dt);
 
@@ -631,7 +677,7 @@ void update_match(double dt, float screen_w, float screen_h)
         agents[i].x += (float)(agents[i].dx * agents[i].speed * speed_factor * dt);
         agents[i].y += (float)(agents[i].dy * agents[i].speed * speed_factor * dt);
 
-        bounce_agent_off_bounds(i, screen_w);
+        bounce_agent_off_bounds(i);
     }
 
     match_time = match_time + dt;
@@ -702,12 +748,13 @@ void update_match(double dt, float screen_w, float screen_h)
         player.facing = PLAYER_FACING_RIGHT;
     }
 
-    // o nanobo nao sai da tela
-    player.x = clamp_to_screen(player.x, screen_w);
-    player.y = clamp_to_screen(player.y, screen_h);
+    // o nanobo nao sai do mundo
+    player.x = clamp_to_world(player.x, (float)WORLD_W);
+    player.y = clamp_to_world(player.y, (float)WORLD_H);
 
     repel_touching_agents();
-    update_projectiles(dt, screen_w);
+    update_projectiles(dt);
+    update_camera();
 
     int touched = touching_agent();
 
