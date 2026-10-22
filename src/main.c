@@ -532,7 +532,7 @@ int main()
                 // a partida so atualiza no estado GAME
                 if (game_get_scene() == GAME_SCENE_GAME)
                 {
-                    update_match(deltaTime, WIDTH, HEIGHT);
+                    update_match(deltaTime);
 
                     if (player.health == 0)
                     {
