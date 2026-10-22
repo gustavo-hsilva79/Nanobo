@@ -120,6 +120,17 @@ O jogo terá pontuação, bônus por identificação e progressão. O hi-score d
 - Grade da tira: **8 quadros por direção** (1–4 parado, 220 ms cada; 5–8 andando, 110 ms cada), 32×32 por quadro, tira final **256×128**, com as linhas na ordem do `player_facing` (`UP`, `DOWN`, `LEFT`, `RIGHT`) — assim o código acha a linha sem tabela de conversão.
 - Os arquivos novos são criados **ao lado dos antigos, sem alterá-los** (`nanobo_v2.png`, `nanobo_spritesheet_v2.png` e a fonte `.aseprite`). A troca no jogo é etapa separada.
 
+### Resolução, escala inteira e câmera (22/10/2026)
+
+- A tela lógica é **640×360** (16:9), desenhada num bitmap e ampliada na janela por **escala inteira**, com barras pretas quando a janela não for múltipla. 640×360 é a maior resolução 16:9 que cai exata em 720p (2×), 1080p (3×), 1440p (4×) e 4K (6×).
+- A janela é **redimensionável**, abre no maior múltiplo inteiro que cabe no monitor e **F11** alterna fullscreen, sempre com escala inteira.
+- A **faixa visível do mundo** é 640×256 (múltipla de 32, o lado do tile do mapa futuro) e o **painel do scanner** ocupa os 104 px do rodapé; o painel é HUD, não faz parte do mundo.
+- O **mundo** nasce com **1920×512** (3 telas por 2 faixas) e uma **câmera** presa nas bordas acompanha o Nanobô. O tamanho do mapa passou a ser constante (`WORLD_W`/`WORLD_H`), não o tamanho da tela: é o que permite crescer para paredes e caminhos sem reescrever as regras.
+- A Fase 1 passa a ter **9 agentes** (3 Gram+, 3 Gram−, 3 células) para não esvaziar o mapa maior; o **alcance do scanner continua 130 px**.
+- O scanner mostra **só a leitura do alvo atual**; `space` de novo relê o alvo. A lista de todos os agentes saiu: ela estourava o painel (12 linhas de 14 px = 168 px num espaço de 110 px).
+- O HUD não usa coordenada fixa: cada linha sai de `hud_y()`, que soma `SCAN_PANEL_Y`, `HUD_MARGIN` e `line * HUD_LINE_H` — 5 linhas de 16 px dentro dos 104 px do painel — e os corações começam depois da largura medida do texto de status.
+- Princípio de escala inteira para pixel art conforme a documentação do Godot sobre múltiplas resoluções; 1920×1080 como resolução de exibição mais comum.
+
 ## Pendências
 
 - Cooldown definitivo do scanner e configuração de camadas por agente/fase no MVP.

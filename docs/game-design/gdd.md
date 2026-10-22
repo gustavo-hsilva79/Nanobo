@@ -46,11 +46,11 @@ O jogador deve usar as informações do scanner para interpretar o agente encont
 
 ### Fase 1 — de onde os agentes podem nascer
 
-Os agentes nascem em pontos fixos da área jogável, sorteados a cada partida sem repetir ponto (implementados em `src/gameplay/gameplay.c`, na tabela `valid_points`). Um ponto válido respeita três regras:
+Os agentes nascem em pontos fixos do mundo, sorteados a cada partida sem repetir ponto (implementados em `src/gameplay/gameplay.c`, na tabela `valid_points`, com **12** coordenadas conferidas por `_Static_assert`). Um ponto válido respeita três regras:
 
-1. fica dentro da área jogável, com margem das bordas;
-2. fica fora da faixa do painel do scanner (as linhas de leitura ocupam de `y = 370` para baixo);
-3. fica a pelo menos **100 px** do ponto de nascimento do Nanobô `(320, 260)` — em 12/10/2026 um ponto a 22 px fazia um agente nascer já encostado (e, com a vida da #11, isso seria dano de graça no primeiro frame).
+1. fica dentro do mundo de **1920×512** (3 telas de 640 px por 2 faixas de 256 px), com margem das bordas;
+2. fica dentro da altura do mundo e não mais da faixa do painel: a câmera mostra 256 px por vez, então o painel do scanner deixou de limitar o nascimento — a tabela usa `y = 96`/`140` na metade de cima e `y = 380`/`420` na de baixo;
+3. fica a pelo menos **100 px** do ponto de nascimento do Nanobô `(960, 256)` — em 12/10/2026 um ponto a 22 px fazia um agente nascer já encostado (e, com a vida da #11, isso seria dano de graça no primeiro frame).
 
 ### Fase 2 — vírus
 
@@ -89,9 +89,10 @@ O jogo usa teclado e mouse. Os controles implementados são:
 - `J`: atacar; `1`/`2`: laser roxo (Gram+) / vermelho (Gram−);
 - `X`: defesa;
 - `ESC`: pausa; `ENTER`: confirmar/iniciar;
+- `F11`: tela cheia, sempre com escala inteira;
 - clique no botão `INICIAR` do menu.
 
-O HUD mostra identificados, tempo, vida em corações, laser selecionado e o painel do scanner. A apresentação final das informações e a pontuação ainda serão refinadas (#19, #48).
+O HUD ocupa o rodapé de 104 px (identificados, tempo, vida, laser, controles e a leitura do alvo atual). A apresentação final das informações e a pontuação ainda serão refinadas (#19, #48).
 
 ## Estados e fluxo
 

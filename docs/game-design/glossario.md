@@ -21,7 +21,7 @@ O tipo biológico de um agente: Gram-positiva, Gram-negativa ou célula saudáve
 _Evitar_: tipo, variante
 
 **Fase**:
-A unidade de conteúdo do jogo; a Fase 1 tem 3 bactérias e 3 células saudáveis.
+A unidade de conteúdo do jogo; a Fase 1 tem 3 bactérias Gram+, 3 Gram− e 3 células saudáveis.
 _Evitar_: encontro, nível
 
 **Partida**:
