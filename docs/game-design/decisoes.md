@@ -42,6 +42,7 @@ A proposta é que o jogador descubra informações, interprete dados do scanner 
 - Cada ativação válida revela somente a próxima camada ainda não descoberta do alvo selecionado.
 - No PoC existem 2 camadas por agente, verificáveis; o conteúdo das camadas está em `docs/game-design/scanner.md`.
 - Informação já revelada permanece visível durante o encontro.
+  > **Atualização 22/10/2026:** o painel passou a mostrar só a leitura do alvo atual; as camadas já reveladas continuam guardadas em cada agente e voltam a aparecer quando ele é lido de novo.
 - A identificação de um agente é registrada quando a última camada disponível dele é revelada, e não se repete dentro do mesmo encontro.
 - O scanner não recomenda ação e não atribui pontuação nem bônus.
 

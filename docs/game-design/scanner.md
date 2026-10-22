@@ -52,6 +52,7 @@ Regra já fechada, repetida aqui para que o fluxo fique em um único lugar:
 - Cada ativação válida revela **somente a próxima camada ainda não descoberta** do alvo selecionado.
 - No contexto da PoC existem **2 camadas** por agente, verificáveis.
 - Informação já revelada **permanece visível** durante o encontro; não é apagada ao trocar de alvo.
+  > **Atualização 22/10/2026:** o painel passou a mostrar só a leitura do alvo atual; as camadas já reveladas continuam guardadas em cada agente e voltam a aparecer quando ele é lido de novo.
 - Depois que todas as camadas do agente foram reveladas, novas ativações sobre ele não revelam informação inexistente e não alteram o estado.
 - O conteúdo revelado descreve o agente e **não recomenda** qual ação ou laser o jogador deve escolher.
 
