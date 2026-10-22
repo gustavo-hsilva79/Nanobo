@@ -107,7 +107,7 @@ bool create_window()
         }
     }
 
-    al_set_new_display_flags(ALLEGRO_WINDOWED | ALLEGRO_RESIZABLE);
+    al_set_new_display_flags(ALLEGRO_WINDOWED | ALLEGRO_RESIZABLE | ALLEGRO_MAXIMIZED);
     display = al_create_display(SCREEN_W * scale, SCREEN_H * scale);
 
     if (!display)
