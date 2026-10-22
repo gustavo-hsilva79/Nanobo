@@ -15,8 +15,26 @@ _Static_assert(__STDC_VERSION__ >= 201112L, "compilar com /std:c11 (ver Nanobo.v
 // alcance do scanner em pixels
 #define SCAN_RANGE 130
 
-// linha onde comeca o painel do scanner no desenho; a area dos agentes acaba aqui
-#define SCAN_PANEL_Y 370
+// tela logica: o jogo desenha num bitmap deste tamanho e a janela amplia
+#define SCREEN_W 640
+#define SCREEN_H 360
+
+// faixa visivel do mundo; multipla de 32, o lado de um tile do mapa futuro
+#define PLAY_H 256
+
+// painel do scanner no rodape da tela logica
+#define PANEL_H 104
+
+// o painel comeca onde a faixa visivel do mundo acaba
+#define SCAN_PANEL_Y PLAY_H
+
+// a tela e a faixa mais o painel, e tudo fecha com o tile de 32 px
+_Static_assert(PANEL_H + PLAY_H == SCREEN_H, "tela = faixa do mundo + painel");
+_Static_assert(SCREEN_W % 32 == 0, "largura da tela precisa ser multipla de 32");
+_Static_assert(PLAY_H % 32 == 0, "faixa do mundo precisa ser multipla de 32");
+_Static_assert(WORLD_W % SCREEN_W == 0, "mundo precisa ter um numero inteiro de telas");
+_Static_assert(WORLD_H % PLAY_H == 0, "mundo precisa ter um numero inteiro de faixas");
+_Static_assert(WORLD_W % 32 == 0 && WORLD_H % 32 == 0, "mundo precisa fechar no tile de 32");
 
 // camadas que o scanner revela antes de identificar o agente
 #define MAX_LAYERS 2
@@ -61,8 +79,11 @@ int touching_agent();
 // acerto valido no agente: devolve true quando esse acerto o neutralizou (#49)
 bool hit_agent(int index);
 
-// partida
+// partida: o tamanho do mundo vem das constantes, nao do main
 void reset_match();
-void update_match(double dt, float screen_w, float screen_h);
+void update_match(double dt);
+
+// ultimo alvo lido pelo scanner, -1 antes da primeira leitura
+int last_scan_target();
 
 #endif
