@@ -3,8 +3,12 @@
 
 #include <stdbool.h>
 
-// quantos agentes o encontro tem: 3 bacterias e 3 celulas saudaveis na Fase 1
-#define NUM_AGENTES 6
+// quantos agentes o encontro tem: 3 bacterias Gram+, 3 Gram- e 3 celulas
+#define NUM_AGENTES 9
+
+// tamanho total do mundo em pixels: 3 telas de 640 por 2 faixas de 256
+#define WORLD_W 1920
+#define WORLD_H 512
 
 // raio de desenho e de colisao dos agentes em pixels (metade do sprite de 32x32)
 #define AGENT_RADIUS 16
@@ -106,5 +110,14 @@ typedef struct
 } Projectile;
 
 extern Projectile projectiles[MAX_PROJECTILES];
+
+// camera: canto superior esquerdo da faixa visivel do mundo
+typedef struct
+{
+    float x;
+    float y;
+} Camera;
+
+extern Camera camera;
 
 #endif
