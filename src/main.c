@@ -338,7 +338,7 @@ void draw_hud()
     }
 
     al_draw_text(font, al_map_rgb(130, 130, 130), HUD_MARGIN, hud_y(1), 0,
-        "wasd anda   space scanner   j atira   1/2 raio   x defesa   esc pausa   f11 tela");
+        "wasd anda  space scanner  j atira  1/2 raio  x defesa  esc pausa  f11 tela");
 
     if (player.laser == LASER_GRAM_POSITIVE)
     {
@@ -373,6 +373,9 @@ void draw_hud()
 void draw_game()
 {
     int i;
+
+    // o mundo para na faixa jogavel: sprite nenhum entra no painel
+    al_set_clipping_rectangle(0, 0, SCREEN_W, PLAY_H);
 
     for (i = 0; i < NUM_AGENTES; i++)
     {
@@ -422,6 +425,9 @@ void draw_game()
                 PROJECTILE_RADIUS, al_map_rgb(255, 70, 70));
         }
     }
+
+    // o clip do painel nao pode intersectar o clip do mundo, senao o HUD some
+    al_reset_clipping_rectangle();
 
     draw_hud();
 }
