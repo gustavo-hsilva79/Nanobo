@@ -11,7 +11,7 @@ A #23 pedia que a interação de mouse fosse escolhida pela dupla antes da imple
 **Clique com o botão esquerdo sobre o botão `INICIAR` na tela de `MENU` inicia a partida** (`MENU → GAME`).
 
 - A ação já estava prevista pelo fluxo de telas: `MENU → GAME` é a transição de entrada do menu inicial (#20, #50).
-- A área clicável é o retângulo do botão: `x` de 220 a 420 e `y` de 300 a 350 na tela de 640×480.
+- A área clicável é o retângulo do botão: `x` de 220 a 420 e `y` de 200 a 250 na tela lógica de 640×360 (`BUTTON_X/Y/W/H` em `src/main.c`).
 - A mesma ação continua disponível por teclado (`ENTER`), que é o caminho já implementado na #94. O clique é uma segunda forma de acionar a mesma transição, não uma mecânica nova.
 
 ## 2. Regras

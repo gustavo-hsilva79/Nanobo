@@ -89,7 +89,7 @@ O jogo usa teclado e mouse. Os controles implementados são:
 - `J`: atacar; `1`/`2`: laser roxo (Gram+) / vermelho (Gram−);
 - `X`: defesa;
 - `ESC`: pausa; `ENTER`: confirmar/iniciar;
-- `F11`: tela cheia, sempre com escala inteira;
+- `F11`: tela cheia, escala inteira quando o encaixe der 1x ou mais; janela menor que 640×360 encolhe proporcionalmente;
 - clique no botão `INICIAR` do menu.
 
 O HUD ocupa o rodapé de 104 px (identificados, tempo, vida, laser, controles e a leitura do alvo atual). A apresentação final das informações e a pontuação ainda serão refinadas (#19, #48).
