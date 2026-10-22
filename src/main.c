@@ -77,8 +77,8 @@ void update_screen_fit()
     }
 
     screen_scale = fit;
-    screen_off_x = ((float)w - (float)SCREEN_W * fit) / 2.0f;
-    screen_off_y = ((float)h - (float)SCREEN_H * fit) / 2.0f;
+    screen_off_x = floorf(((float)w - (float)SCREEN_W * fit) / 2.0f);
+    screen_off_y = floorf(((float)h - (float)SCREEN_H * fit) / 2.0f);
 }
 
 // abre a janela no maior multiplo inteiro que cabe no monitor
@@ -254,7 +254,7 @@ void draw_scan_info()
         layer_one_text(agents[target].species));
     al_draw_text(font, al_map_rgb(170, 170, 170), HUD_MARGIN, hud_y(3), 0, line);
 
-    if (agents[target].layers >= 2)
+    if (agents[target].layers >= MAX_LAYERS)
     {
         // a camada 2 e a linha mais longa do painel: o clip do draw_hud corta o excedente
         snprintf(line, sizeof(line), "  %s", layer_two_text(agents[target].species));
