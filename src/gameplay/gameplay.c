@@ -13,6 +13,9 @@ _Static_assert(INVULNERABILITY_TIME > 0.0, "invulnerabilidade precisa ser positi
 // tempo da partida em segundos, so conta dentro do estado GAME
 double match_time = 0;
 
+// pontos da partida atual: so a neutralizacao de uma ameaca soma (#66)
+int score = 0;
+
 // cooldown de invulnerabilidade
 static double invulnerability_timer = 0.0;
 
@@ -163,6 +166,10 @@ bool hit_agent(int index)
     if (agents[index].resistance <= 0)
     {
         agents[index].active = false;
+
+        // o acerto que neutralizou e o unico evento que pontua (#66)
+        score = score + SCORE_PER_THREAT;
+
         return true;
     }
 
@@ -584,6 +591,7 @@ void reset_match()
     key_right = false;
 
     identified_count = 0;
+    score = 0;
     match_time = 0;
     invulnerability_timer = 0.0;
     defense_timer = 0.0;
