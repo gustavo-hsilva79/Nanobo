@@ -315,8 +315,9 @@ void draw_hud()
     al_set_clipping_rectangle(0, SCAN_PANEL_Y, SCREEN_W, PANEL_H);
 
     // o status e medido na hora: os coracoes entram logo depois dele
-    snprintf(status, sizeof(status), "identificados: %d/%d    tempo: %.1f",
-        identified_count, NUM_AGENTES, match_time);
+    // temporaria: prova visual dos pontos ate a #172 cuidar da exibicao
+    snprintf(status, sizeof(status), "identificados: %d/%d    pontos: %d    tempo: %.1f",
+        identified_count, NUM_AGENTES, score, match_time);
     al_draw_text(font, al_map_rgb(255, 255, 255), HUD_MARGIN, hud_y(0), 0, status);
 
     hearts_x = HUD_MARGIN + al_get_text_width(font, status) + 24;
