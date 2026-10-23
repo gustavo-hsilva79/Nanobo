@@ -48,11 +48,17 @@ _Static_assert(WORLD_W % 32 == 0 && WORLD_H % 32 == 0, "mundo precisa fechar no 
 // intervalo entre disparos (#64)
 #define ATTACK_COOLDOWN 1.0
 
+// pontos por ameaca neutralizada, concedidos uma vez por agente (#66)
+#define SCORE_PER_THREAT 10
+
 // tempo de invulnerabilidade depois de levar dano (#11)
 #define INVULNERABILITY_TIME 1.0
 
 // tempo da partida em segundos, so conta dentro do estado GAME
 extern double match_time;
+
+// pontos da partida atual: a neutralizacao de uma ameaca soma (#66)
+extern int score;
 
 // teclas seguradas agora, o main escreve isso na entrada e o update le pra mover
 extern bool key_up;
