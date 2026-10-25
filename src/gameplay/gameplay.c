@@ -32,6 +32,10 @@ static int scan_target = -1;
 // fase concluida: vira true uma vez e so o reset_match desliga (#26)
 static bool phase_finished = false;
 
+// mensagem educacional da ultima decisao e o tempo que ela ainda fica na tela (#178)
+static const char* feedback = NULL;
+static double feedback_timer = 0.0;
+
 // teclas seguradas agora, quem escreve nelas e o handle_key_down/handle_key_up
 bool key_up = false;
 bool key_down = false;
@@ -202,6 +206,19 @@ static void damage_player()
     invulnerability_timer = INVULNERABILITY_TIME;
 }
 
+// guarda a mensagem da decisao que acabou de acontecer, sem mexer em nenhum estado (#178)
+static void set_feedback(const char* text)
+{
+    feedback = text;
+    feedback_timer = FEEDBACK_TIME;
+}
+
+// mensagem atual, NULL quando o tempo dela ja passou (#178)
+const char* feedback_text()
+{
+    return feedback;
+}
+
 // um projetil contra os agentes: o primeiro que cruzar leva o acerto e o projetil some (#49)
 static void hit_projectiles()
 {
@@ -228,14 +245,34 @@ static void hit_projectiles()
                 continue;
             }
 
-            // atacar a celula saudavel custa 1 de vida ao player (#14)
+            // atacar a celula saudavel custa 1 de vida ao player (#14, #178)
             if (agents[j].species == SPECIES_CELL)
             {
                 damage_player();
+                set_feedback("celula do organismo: atacar custa 1 de vida");
             }
             else if (projectiles[i].laser == laser_for_species(agents[j].species))
             {
-                hit_agent(j);
+                if (hit_agent(j))
+                {
+                    set_feedback("ameaca neutralizada: +10 pontos");
+                }
+                else
+                {
+                    set_feedback("acerto valido: a bacteria ainda resiste");
+                }
+            }
+            else
+            {
+                // raio errado: a mensagem diz qual parede barrou o disparo (#178)
+                if (agents[j].species == SPECIES_GRAM_POSITIVE)
+                {
+                    set_feedback("parede Gram+ espessa: o raio vermelho nao penetra");
+                }
+                else
+                {
+                    set_feedback("membrana externa da Gram-: o raio roxo nao penetra");
+                }
             }
 
             projectiles[i].active = false;
@@ -648,6 +685,8 @@ void reset_match()
     identified_count = 0;
     score = 0;
     phase_finished = false;
+    feedback = NULL;
+    feedback_timer = 0.0;
     match_time = 0;
     invulnerability_timer = 0.0;
     defense_timer = 0.0;
@@ -788,6 +827,18 @@ void update_match(double dt)
         }
     }
 
+    // a mensagem educacional some sozinha e nunca bloqueia o jogo (#178)
+    if (feedback_timer > 0.0)
+    {
+        feedback_timer -= dt;
+
+        if (feedback_timer <= 0.0)
+        {
+            feedback_timer = 0.0;
+            feedback = NULL;
+        }
+    }
+
     if (key_up)
     {
         player.y = player.y - step;
@@ -827,6 +878,7 @@ void update_match(double dt)
         && defense_timer <= 0.0)
     {
         damage_player();
+        set_feedback("contato com bacteria: -1 de vida");
     }
 
     conclude_phase_if_ready();

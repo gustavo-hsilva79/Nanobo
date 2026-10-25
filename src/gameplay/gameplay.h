@@ -59,6 +59,9 @@ _Static_assert(WORLD_W % 32 == 0 && WORLD_H % 32 == 0, "mundo precisa fechar no 
 // bonus de identificacao completa ao concluir a fase (#67)
 #define IDENTIFICATION_BONUS 15
 
+// quanto tempo a mensagem educacional fica na tela, em segundos (#178)
+#define FEEDBACK_TIME 2.5
+
 // tempo de invulnerabilidade depois de levar dano (#11)
 #define INVULNERABILITY_TIME 1.0
 
@@ -92,6 +95,9 @@ int touching_agent();
 
 // acerto valido no agente: devolve true quando esse acerto o neutralizou (#49)
 bool hit_agent(int index);
+
+// mensagem educacional da ultima decisao; NULL quando nao ha nada a mostrar (#178)
+const char* feedback_text();
 
 // fase: ameacas ainda ativas e se a condicao de conclusao ja foi cumprida (#26)
 int threats_left();
