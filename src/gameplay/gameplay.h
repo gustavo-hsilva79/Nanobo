@@ -51,6 +51,14 @@ _Static_assert(WORLD_W % 32 == 0 && WORLD_H % 32 == 0, "mundo precisa fechar no 
 // pontos por ameaca neutralizada, concedidos uma vez por agente (#66)
 #define SCORE_PER_THREAT 10
 
+// destino da Fase 1: canto oposto ao nascimento, visivel desde o inicio (#26)
+#define DESTINATION_X ((float)WORLD_W - 64.0f)
+#define DESTINATION_Y ((float)WORLD_H - 64.0f)
+#define DESTINATION_RADIUS 24
+
+// bonus de identificacao completa ao concluir a fase (#67)
+#define IDENTIFICATION_BONUS 15
+
 // tempo de invulnerabilidade depois de levar dano (#11)
 #define INVULNERABILITY_TIME 1.0
 
@@ -84,6 +92,10 @@ int touching_agent();
 
 // acerto valido no agente: devolve true quando esse acerto o neutralizou (#49)
 bool hit_agent(int index);
+
+// fase: ameacas ainda ativas e se a condicao de conclusao ja foi cumprida (#26)
+int threats_left();
+bool phase_completed();
 
 // partida: o tamanho do mundo vem das constantes, nao do main
 void reset_match();
