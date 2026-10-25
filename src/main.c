@@ -378,6 +378,14 @@ void draw_game()
     // o mundo para na faixa jogavel: sprite nenhum entra no painel
     al_set_clipping_rectangle(0, 0, SCREEN_W, PLAY_H);
 
+    // destino da fase: anel e rotulo visiveis desde o inicio (#26)
+    al_draw_filled_circle(view_x(DESTINATION_X), view_y(DESTINATION_Y), DESTINATION_RADIUS,
+        al_map_rgb(40, 34, 18));
+    al_draw_circle(view_x(DESTINATION_X), view_y(DESTINATION_Y), DESTINATION_RADIUS,
+        al_map_rgb(240, 190, 70), 3);
+    al_draw_text(font, al_map_rgb(240, 190, 70), view_x(DESTINATION_X),
+        view_y(DESTINATION_Y) - 40, ALLEGRO_ALIGN_CENTRE, "destino");
+
     for (i = 0; i < NUM_AGENTES; i++)
     {
         // agente neutralizado sai do desenho
@@ -429,6 +437,13 @@ void draw_game()
 
     // o clip do painel nao pode intersectar o clip do mundo, senao o HUD some
     al_reset_clipping_rectangle();
+
+    // temporaria: prova da conclusao ate a #70 levar a partida para Resultados
+    if (phase_completed())
+    {
+        al_draw_text(font, al_map_rgb(240, 190, 70), SCREEN_W / 2, 8, ALLEGRO_ALIGN_CENTRE,
+            "fase concluida");
+    }
 
     draw_hud();
 }
