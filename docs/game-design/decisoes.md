@@ -99,11 +99,11 @@ A proposta é que o jogador descubra informações, interprete dados do scanner 
 
 #### Consequência de não atacar (25/10/2026)
 
-- Ignorar uma ameaça não tem penalidade de tempo: o custo é o que o jogo já aplica.
+- Ignorar uma ameaça não tem penalidade de tempo: o custo é o que o jogo já aplica; os 2,5 s são só o tempo que a mensagem fica visível.
 - O contato com a bactéria tira **1** de vida, respeitando a invulnerabilidade de 1 s (#11).
 - A ameaça ignorada deixa de valer os **+10** da neutralização (#66).
 - A Fase 1 não conclui com ameaça ativa: o destino só libera a vitória com as **6** neutralizadas (#26).
-- O feedback educacional (#178) comunica esse custo no momento da decisão; não existe barra de integridade do organismo nem segunda condição de derrota no MVP.
+- O feedback educacional (#178) comunica o custo no momento em que ele é aplicado, e só quando é aplicado; não existe barra de integridade do organismo nem segunda condição de derrota no MVP.
 
 **Descartado por enquanto:** cronômetro de infecção, aceleração das bactérias e perda de pontos por tempo. Os três punem o tempo de leitura do scanner, que é o núcleo da aprendizagem, e criam um segundo estado de falha para o MVP. Se o playtest do M5 mostrar que falta pressão, a opção mais barata de ler é a **aceleração** das bactérias, nunca a perda de pontos.
 
