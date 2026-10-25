@@ -183,17 +183,17 @@ bool hit_agent(int index)
     return false;
 }
 
-// dano no player: 1 de vida, respeitando a invulnerabilidade da #11
-static void damage_player()
+// dano no player: 1 de vida, respeitando a invulnerabilidade da #11; devolve se o dano aconteceu
+static bool damage_player()
 {
     if (player.health <= 0)
     {
-        return;
+        return false;
     }
 
     if (invulnerability_timer > 0.0)
     {
-        return;
+        return false;
     }
 
     player.health--;
@@ -204,6 +204,8 @@ static void damage_player()
     }
 
     invulnerability_timer = INVULNERABILITY_TIME;
+
+    return true;
 }
 
 // guarda a mensagem da decisao que acabou de acontecer, sem mexer em nenhum estado (#178)
@@ -248,8 +250,11 @@ static void hit_projectiles()
             // atacar a celula saudavel custa 1 de vida ao player (#14, #178)
             if (agents[j].species == SPECIES_CELL)
             {
-                damage_player();
-                set_feedback("celula do organismo: atacar custa 1 de vida");
+                // a mensagem so promete a vida perdida quando o dano aconteceu (#178)
+                if (damage_player())
+                {
+                    set_feedback("celula do organismo: atacar custa 1 de vida");
+                }
             }
             else if (projectiles[i].laser == laser_for_species(agents[j].species))
             {
@@ -877,8 +882,11 @@ void update_match(double dt)
         && agents[touched].species != SPECIES_CELL
         && defense_timer <= 0.0)
     {
-        damage_player();
-        set_feedback("contato com bacteria: -1 de vida");
+        // contato a cada quadro nao pode reescrever a mensagem sem dano novo (#178)
+        if (damage_player())
+        {
+            set_feedback("contato com bacteria: -1 de vida");
+        }
     }
 
     conclude_phase_if_ready();
