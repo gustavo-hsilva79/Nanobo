@@ -29,6 +29,9 @@ static double attack_cooldown_timer = 0.0;
 // ultimo alvo lido pelo scanner: o painel do HUD mostra so ele
 static int scan_target = -1;
 
+// fase concluida: vira true uma vez e so o reset_match desliga (#26)
+static bool phase_finished = false;
+
 // teclas seguradas agora, quem escreve nelas e o handle_key_down/handle_key_up
 bool key_up = false;
 bool key_down = false;
@@ -567,6 +570,58 @@ static void reset_agent(int index)
     pick_new_direction(index);
 }
 
+// quantas ameacas ainda estao ativas: celula saudavel nao conta (#26)
+int threats_left()
+{
+    int i;
+    int total = 0;
+
+    for (i = 0; i < NUM_AGENTES; i++)
+    {
+        if (agents[i].active && agents[i].species != SPECIES_CELL)
+        {
+            total = total + 1;
+        }
+    }
+
+    return total;
+}
+
+// a fase ja foi concluida? a #70 le isso para entrar em Resultados (#26)
+bool phase_completed()
+{
+    return phase_finished;
+}
+
+// conclusao: sem ameacas e com o nanobo no destino, uma vez por partida (#26)
+static void conclude_phase_if_ready()
+{
+    float reach = (float)(PLAYER_RADIUS + DESTINATION_RADIUS);
+
+    if (phase_finished || player.health <= 0)
+    {
+        return;
+    }
+
+    if (threats_left() > 0)
+    {
+        return;
+    }
+
+    if (squared_distance(player.x, player.y, DESTINATION_X, DESTINATION_Y) > reach * reach)
+    {
+        return;
+    }
+
+    phase_finished = true;
+
+    // bonus de identificacao completa, so na conclusao e so uma vez (#67)
+    if (identified_count == NUM_AGENTES)
+    {
+        score = score + IDENTIFICATION_BONUS;
+    }
+}
+
 // comeca partida nova: o encontro e o nanobo voltam ao estado inicial
 void reset_match()
 {
@@ -592,6 +647,7 @@ void reset_match()
 
     identified_count = 0;
     score = 0;
+    phase_finished = false;
     match_time = 0;
     invulnerability_timer = 0.0;
     defense_timer = 0.0;
@@ -772,4 +828,6 @@ void update_match(double dt)
     {
         damage_player();
     }
+
+    conclude_phase_if_ready();
 }
