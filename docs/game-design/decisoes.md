@@ -149,11 +149,40 @@ O jogo terá pontuação, bônus por identificação e progressão. O hi-score d
 - O HUD não usa coordenada fixa: cada linha sai de `hud_y()`, que soma `SCAN_PANEL_Y`, `HUD_MARGIN` e `line * HUD_LINE_H` — 5 linhas de 16 px dentro dos 104 px do painel — e os corações começam depois da largura medida do texto de status.
 - Princípio de escala inteira para pixel art conforme a documentação do Godot sobre múltiplas resoluções; 1920×1080 como resolução de exibição mais comum.
 
+### Fecho da fase e telas do MVP (26/10/2026)
+
+- A conclusão da Fase 1 (6 ameaças neutralizadas + Nanobô no destino) leva a `RESULTS` automaticamente, uma única vez, sem tecla de teste (#70).
+- `RESULTS` apresenta os números reais da partida: pontos, ameaças neutralizadas/total, agentes identificados/total e se o bônus de +15 foi pago (#57, #171–#176).
+- Com uma fase no MVP, `RESULTS` continua para `VICTORY`; `VICTORY` e `GAME OVER` iniciam nova partida por `ENTER`, com reset completo de vida, pontuação, identificação, agentes, projéteis, cooldowns e timers (#52, #72, #74, #75).
+- A preferência de laser (`1`/`2`) **persiste** entre partidas: é escolha do jogador, não estado da partida. O reset não a altera.
+- `F`, `G` e `H` são teclas de QA e existem **somente no build Debug**; o Release não permite saltar estados (#76).
+
+### Pontuação, bônus e composição da Fase 1 (registro de 25/10/2026)
+
+- A Fase 1 tem **9 agentes**: 3 bactérias Gram+, 3 Gram− e 3 células saudáveis.
+- São **6 ameaças** (as bactérias); as células não contam para a conclusão (#26).
+- Cada ameaça neutralizada vale **+10 pontos**, uma única vez (#66).
+- O bônus de **+15** é pago apenas na conclusão com `identificados = 9/9`, uma única vez (#67).
+- `9/9` é condição de bônus, **não** de vitória: a fase conclui com menos identificações (#26, #67).
+- Os valores são os já implementados e verificados; a calibração de dificuldade continua em aberto.
+
+### Pausa por perda de foco (26/10/2026)
+
+- Quando a janela perde o foco durante `GAME`, a partida entra em `PAUSE`; o retorno é por `ESC`, como na pausa normal.
+- A regra existe para que alt-tab, notificação ou troca de janela não causem dano ou Game Over sem o jogador estar vendo o jogo.
+
+### Texto do scanner e aprendizagem (26/10/2026)
+
+- A camada 2 descreve o envelope (parede espessa sem membrana externa / parede fina sob membrana externa) e **não nomeia Gram+ nem Gram−**.
+- A regra que liga a pista à classificação e ao laser é ensinada uma vez na tela inicial: parede espessa = Gram+ = raio roxo; parede fina com membrana externa = Gram− = raio vermelho.
+- O feedback posterior à ação pode nomear a classificação; o painel do scanner, não.
+- A troca da paleta das bactérias (cor deixa de coincidir com o laser) fica para o M5, condicionada a playtest.
+
 ## Pendências
 
 - Cooldown definitivo do scanner e configuração de camadas por agente/fase no MVP.
 - Conteúdo biológico detalhado e validado de cada agente.
-- Relação final entre dados do scanner e escolha do laser/ação.
+- Relação final entre dados do scanner e escolha do laser/ação — validar em playtest se a pista do envelope basta para classificar sem a resposta pronta.
 - Balanceamento de vida, dano, ataque, defesa, cooldowns e resistência (a regra de mitigação da defesa está fechada desde 16/10/2026; falta calibrar os números).
 - Regras de progressão entre fases.
 - Apresentação final das informações do scanner.

@@ -16,7 +16,7 @@ O MVP deve entregar uma partida completa e jogável centrada em **uma fase**, co
 - pontuação e consequências;
 - condições de vitória e derrota.
 
-> **Estado em 18/10/2026:** exploração, scanner, identificação, combate, defesa, vida e célula própria estão implementados. Pontuação, condições de vitória/derrota e o fluxo completo de telas ainda não estão; o MVP só fecha quando esses itens existirem.
+> **Estado em 26/10/2026:** exploração, scanner, identificação, combate, defesa, vida, célula própria, pontuação e conclusão da fase estão implementados. O fluxo de telas (Resultados → Vitória → reinício) está implementado na branch do MVP e aguarda revisão; o MVP só fecha quando esse fluxo estiver validado em `master`.
 
 A Fase 1 do MVP trabalha bactérias e células saudáveis, incluindo a diferenciação entre bactérias Gram-positivas e Gram-negativas.
 
