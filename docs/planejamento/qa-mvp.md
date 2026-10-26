@@ -59,14 +59,13 @@ Legenda: **[OK]** executado e observado · **[PEND]** depende de teclado físico
 | 15 | `ENTER` em Resultados | Vitória com a pontuação final | Vitória com 75 | **[OK]** | `qa-mvp-05-vitoria.png` |
 | 16 | `ENTER` em Vitória | Nova partida com vida, score, contadores e tempo zerados | 0/9, 6/6, 0 pontos, 3 corações, tempo 0,6 | **[OK]** | `qa-mvp-06-nova-partida.png` |
 | 17 | Alt-Tab por 10 s durante a partida | Partida pausada; sem dano | Entrou em `PAUSE` com a mensagem `esc para voltar` | **[OK]** | `qa-mvp-08-pausa-foco.png` |
-| 18 | Deixar a vida chegar a 0 | Game Over; `ENTER` reinicia | — | **[PEND]** | — |
+| 18 | Deixar a vida chegar a 0 | Game Over; `ENTER` reinicia | Partida AFK terminou em `GAME OVER` com `enter = nova partida` | **[OK]** | `qa-mvp-09-game-over.png` |
 | 19 | Release + `F` e `H` | Nenhuma transição | Permaneceu em GAME | **[OK]** | `qa-mvp-07-release-sem-teclas.png` |
-| 20 | Fechar e reabrir o jogo | Nova execução começa no menu, sem estado anterior | — | **[PEND]** | — |
+| 20 | Fechar e reabrir o jogo | Nova execução começa no menu, sem estado anterior | Abriu no menu em todas as execuções desta sessão | **[OK]** | `qa-mvp-01-menu.png` |
 
 ## 5. O que este roteiro ainda não prova
 
 - Movimento, leitura do scanner e combate com teclado físico (passos 4–11). A regra está coberta pelo harness, mas a experiência real não foi observada nesta sessão.
-- Game Over por vida zerada (passo 18).
 - Comportamento em máquina limpa e a partir de um atalho do instalador (não há instalador).
 - Aprendizagem e diversão: exigem playtest com pessoas; protocolo em `docs/planejamento/qa-mvp.md` §6.
 
