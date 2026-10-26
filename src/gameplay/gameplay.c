@@ -260,7 +260,15 @@ static void hit_projectiles()
             {
                 if (hit_agent(j))
                 {
-                    set_feedback("ameaca neutralizada: +10 pontos");
+                    // sem identificacao a ameaca sai da cena e o bonus de 9/9 fica impossivel
+                    if (agents[j].identified)
+                    {
+                        set_feedback("ameaca neutralizada: +10 pontos");
+                    }
+                    else
+                    {
+                        set_feedback("neutralizada sem identificar: o bonus de 9/9 se perdeu");
+                    }
                 }
                 else
                 {
