@@ -123,6 +123,13 @@ Foi definido um limite de referência de **3 vírus** para uma mecânica de desa
 
 O jogo terá pontuação, bônus por identificação e progressão. O hi-score deverá ser persistente na versão final.
 
+#### Identificação e neutralização (25/10/2026)
+
+- Neutralizar uma ameaça antes de escaneá-la não a identifica: ela sai da cena e não volta ao alcance do scanner.
+- Com isso, o bônus de identificação completa (#67) fica impossível naquela fase; a fase conclui normalmente, porque identificação não é requisito de vitória (#26).
+- Não existe caminho alternativo para identificar um agente neutralizado.
+- O HUD mostra as ameaças restantes e a mensagem avisa no momento em que o bônus se perde.
+
 ### Artes do Nanobô (v2)
 
 - O sprite do Nanobô continua **32×32**; a ideia de um quadro 48×48 foi descartada — aumentar a resolução não garantia ganho visual.

@@ -306,7 +306,7 @@ void draw_hud()
     int i;
     int contact;
     int hearts_x;
-    char status[64];
+    char status[96];
     char contact_text[64];
 
     al_draw_line(0, SCAN_PANEL_Y - 1, SCREEN_W, SCAN_PANEL_Y - 1, al_map_rgb(60, 60, 60), 1);
@@ -315,9 +315,9 @@ void draw_hud()
     al_set_clipping_rectangle(0, SCAN_PANEL_Y, SCREEN_W, PANEL_H);
 
     // o status e medido na hora: os coracoes entram logo depois dele
-    // temporaria: prova visual dos pontos ate a #172 cuidar da exibicao
-    snprintf(status, sizeof(status), "identificados: %d/%d    pontos: %d    tempo: %.1f",
-        identified_count, NUM_AGENTES, score, match_time);
+    // temporaria: pontos e ameacas ate a #19/#172 cuidarem do HUD
+    snprintf(status, sizeof(status), "identificados: %d/%d    ameacas: %d    pontos: %d    tempo: %.1f",
+        identified_count, NUM_AGENTES, threats_left(), score, match_time);
     al_draw_text(font, al_map_rgb(255, 255, 255), HUD_MARGIN, hud_y(0), 0, status);
 
     hearts_x = HUD_MARGIN + al_get_text_width(font, status) + 24;
