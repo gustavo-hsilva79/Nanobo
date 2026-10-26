@@ -1,7 +1,7 @@
 # Nanobô — QA do MVP (Fase 1)
 
 > **Escopo:** roteiro ponta a ponta da Fase 1 e do fluxo de telas do MVP.
-> **Branch:** `feat/mvp-fluxo-e-hud` · **Commit do código testado:** `79d97b9`
+> **Branch:** `feat/mvp-fluxo-e-hud` · **Commit do código testado:** `79d97b9` · **PR:** [#193](https://github.com/gustavo-hsilva79/Nanobo/pull/193)
 > **Data da execução parcial:** 26/10/2026
 > **Ambiente:** Windows 11, monitor 2560×1440, janela maximizada, executável a partir da raiz do repositório; Debug|x64 e Release|x64.
 

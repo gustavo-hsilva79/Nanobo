@@ -2,7 +2,7 @@
 
 > **Base:** relatório `Nanobo-auditoria/Auditoria_Nanobo_26-10-2026.md` (26/10/2026) e inventário `inventario-issues-2026-10-26.csv`.
 > **Commit de partida:** `1bc1f35` (`master`).
-> **Branch de trabalho:** `feat/mvp-fluxo-e-hud`.
+> **Branch de trabalho:** `feat/mvp-fluxo-e-hud` · **PR:** [#193](https://github.com/gustavo-hsilva79/Nanobo/pull/193).
 > **Objetivo:** fechar o caminho crítico do MVP de 04/11 sem alterar decisões de Game Design não registradas.
 > **Regra:** nada foi mesclado em `master`; o PR aguarda revisão de Gustavo e Eric.
 
@@ -179,6 +179,7 @@ Ambiente: Windows 11, monitor 2560×1440, janela maximizada, executável a parti
 7. **#184:** fechar como *not planned* ou reescrever para "indicador do alvo atual".
 8. **Issues do Eric:** definir quem revisa #19/#52/#57/#70–#76 e quando fecham.
 9. **Milestone #65:** corrigir para M4/M5.
+10. **Harness de regras:** decidir se ele passa a ser versionado no repositório (fora do build do jogo) ou continua externo; hoje está documentado em `qa-mvp.md` §3, mas não é reproduzível só com o repositório.
 
 ## 9. Resumo final
 
