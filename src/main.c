@@ -374,6 +374,7 @@ void draw_hud()
 void draw_game()
 {
     int i;
+    const char* message;
 
     // o mundo para na faixa jogavel: sprite nenhum entra no painel
     al_set_clipping_rectangle(0, 0, SCREEN_W, PLAY_H);
@@ -433,6 +434,15 @@ void draw_game()
             al_draw_filled_circle(view_x(projectiles[i].x), view_y(projectiles[i].y),
                 PROJECTILE_RADIUS, al_map_rgb(255, 70, 70));
         }
+    }
+
+    // feedback educacional curto da ultima decisao (#178)
+    message = feedback_text();
+
+    if (message != NULL)
+    {
+        al_draw_text(font, al_map_rgb(255, 230, 140), SCREEN_W / 2, PLAY_H - 26,
+            ALLEGRO_ALIGN_CENTRE, message);
     }
 
     // o clip do painel nao pode intersectar o clip do mundo, senao o HUD some
