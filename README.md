@@ -22,7 +22,9 @@ O jogador deve interpretar as informações obtidas pelo scanner para decidir co
 >
 > **M3 — PoC (07/10/2026):** o núcleo de investigação está implementado e jogável — movimentação por teclado, scanner com seleção do alvo válido mais próximo, leitura em duas camadas e identificação única por agente. O roteiro reproduzível e o resultado observado estão em [Registro da PoC](docs/planejamento/qa-poc.md).
 >
-> **M3.5 — core gameplay (concluído, 18/10/2026):** o combate está no código — ataque com laser, projétil, resistência e neutralização, defesa com cooldown, vida em corações, dano por contato e Game Over por vida zerada. O encontro tem **9 agentes** (3 Gram+, 3 Gram− e 3 células), num mundo de 1920×512 que rola com a câmera: a tela lógica é **640×360**, ampliada na janela por escala inteira. A célula própria anda mais devagar e atacar uma célula custa 1 de vida ao Nanobô. Menu, pausa e tela de Game Over também estão prontos. Ainda faltam a pontuação e as condições reais de fim de fase (#18/#26); até lá, `RESULTS` e `VICTORY` são alcançados por teclas de teste. Os roteiros estão em [Registro da PoC](docs/planejamento/qa-poc.md).
+> **M3.5 — core gameplay (concluído, 18/10/2026):** o combate está no código — ataque com laser, projétil, resistência e neutralização, defesa com cooldown, vida em corações, dano por contato e Game Over por vida zerada. O encontro tem **9 agentes** (3 Gram+, 3 Gram− e 3 células), num mundo de 1920×512 que rola com a câmera: a tela lógica é **640×360**, ampliada na janela por escala inteira. A célula própria anda mais devagar e atacar uma célula custa 1 de vida ao Nanobô. Menu, pausa e tela de Game Over também estão prontos. A pontuação e a conclusão da fase foram implementadas em 23–25/10 (#18/#26). Os roteiros estão em [Registro da PoC](docs/planejamento/qa-poc.md) e no [QA do MVP](docs/planejamento/qa-mvp.md).
+>
+> **M4 — MVP (26/10/2026):** o fluxo da partida está fechado — a fase conclui em `RESULTS` sem tecla de teste, a tela de Resultados mostra pontos, ameaças neutralizadas, agentes identificados e o bônus, `RESULTS` leva a `VICTORY`, e `VICTORY`/`GAME OVER` reiniciam com reset completo. A HUD ganhou objetivo, `restam x/6`, estado do raio e marca do destino; o menu ganhou a instrução mínima (objetivo, controles e a regra Gram/laser); a camada 2 do scanner deixou de entregar a classificação pronta; perder o foco pausa a partida. Evidências em [QA do MVP](docs/planejamento/qa-mvp.md).
 
 ## Núcleo do jogo
 
@@ -31,7 +33,7 @@ O jogador deve interpretar as informações obtidas pelo scanner para decidir co
 - Identificação única dos agentes encontrados.
 - Interpretação das informações do scanner para orientar a decisão do jogador.
 - Combate implementado: laser por espécie, projétil, resistência, defesa e vida.
-- Pontuação, bônus por identificação, progressão e hi-score persistente *(planejados)*.
+- Pontuação (+10 por ameaça) e bônus de identificação (+15 com 9/9) implementados; hi-score persistente *(planejado)*.
 - Progressão por fases *(planejada)*.
 
 ### Conteúdo planejado
@@ -56,7 +58,8 @@ A segunda fase é planejada para a entrega final, após o MVP. O conteúdo envol
 | `ESC` | pausar / retomar |
 | `ENTER` | iniciar partida, confirmar, nova partida |
 | clique em `INICIAR` | iniciar partida no menu |
-| `F` / `G` / `V` | teclas de teste de fluxo, saem quando #20/#26 fecharem |
+
+> `F`, `G` e `H` são teclas de QA e existem apenas no build Debug (concluir a fase com/sem bônus e forçar Game Over). O Release não permite saltar estados.
 
 ## Requisitos da disciplina
 
@@ -161,6 +164,8 @@ A lista completa dos marcos, com o objetivo e o critério de foco de cada um, es
 - [Fluxo de estados](docs/planejamento/fluxo-estados.md)
 - [Interação por mouse](docs/planejamento/interacao-mouse.md)
 - [Registro da PoC](docs/planejamento/qa-poc.md)
+- [QA do MVP](docs/planejamento/qa-mvp.md)
+- [Execução das correções da auditoria](docs/auditoria/execucao-correcoes-2026-10.md)
 - [Validação da máquina de estados](docs/planejamento/qa-maquina-estados.md)
 - [Validação do carregamento de recursos](docs/planejamento/qa-recursos.md)
 - [Catálogo de recursos](assets/catalogo-recursos.md)

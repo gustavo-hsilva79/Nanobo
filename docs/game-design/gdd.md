@@ -35,6 +35,7 @@ O scanner é uma mecânica central de investigação.
 - Cada agente deve possuir identificação única para evitar que a mesma identificação seja contabilizada repetidamente.
 - As informações obtidas devem apoiar a interpretação do agente e a decisão do jogador.
 - A camada 2 traz a pista do envelope celular e o jogador escolhe o laser correspondente; o scanner não recomenda ação.
+- O texto da camada 2 descreve a parede e a membrana **sem nomear Gram+ nem Gram−**; a regra que liga a pista à classificação e ao laser é ensinada na tela inicial.
 
 ## Agentes e conteúdo
 
@@ -76,9 +77,15 @@ O balanceamento de dano, cooldowns e resistência continua **[PENDÊNCIA]**; a r
 
 ## Pontuação e progressão
 
-A pontuação deve considerar as decisões do jogador e pode incluir bônus por identificação. A progressão deve refletir a conclusão dos objetivos da fase e as consequências das ações.
+A pontuação atual da Fase 1:
 
-O hi-score deve ser persistente na versão final.
+| Evento | Pontos | Regra |
+|---|---:|---|
+| Ameaça neutralizada | **+10** | uma vez por ameaça, só no acerto que zera a resistência (#66) |
+| Identificação completa | **+15** | uma vez, na conclusão, se `identificados = 9/9` (#67) |
+| Placar máximo da fase | **75** | 6 ameaças + bônus |
+
+`9/9` é condição de bônus, não de vitória: a fase conclui com menos identificações (#26, #67). O hi-score deve ser persistente na versão final.
 
 ## Interface e controles
 
@@ -92,13 +99,17 @@ O jogo usa teclado e mouse. Os controles implementados são:
 - `F11`: tela cheia, escala inteira quando o encaixe der 1x ou mais; janela menor que 640×360 encolhe proporcionalmente;
 - clique no botão `INICIAR` do menu.
 
-O HUD ocupa o rodapé de 104 px (identificados, tempo, vida, laser, controles e a leitura do alvo atual). A apresentação final das informações e a pontuação ainda serão refinadas (#19, #48).
+O HUD ocupa o rodapé de 104 px: identificados x/9, ameaças restantes x/6, pontos, tempo, três corações, raio selecionado com estado (`[pronto]`/`[recarga]`) e a leitura do alvo atual. O objetivo da fase aparece na segunda linha do painel; os controles e a regra Gram/laser ficam na tela inicial, para não competir com a leitura do jogo. A marca do destino aparece na borda da faixa visível quando ele está fora da câmera (#19).
 
 ## Estados e fluxo
 
 O fluxo está implementado em `src/core/game.c` com seis estados: `MENU`, `GAME`, `PAUSE`, `RESULTS`, `VICTORY` e `GAME OVER`. As transições permitidas e a regra de que só `GAME` atualiza a lógica estão em [Fluxo de estados](../planejamento/fluxo-estados.md).
 
-`GAME OVER` já é alcançado por vida zerada; `RESULTS` e `VICTORY` ainda dependem das teclas de teste `F` e `V` até a #20/#26.
+`GAME OVER` é alcançado por vida zerada; `RESULTS` é alcançado automaticamente quando a fase conclui (6 ameaças neutralizadas + Nanobô no destino); `VICTORY` vem de `RESULTS`; `VICTORY` e `GAME OVER` iniciam nova partida com reset completo. `F`, `G` e `H` são teclas de QA e existem somente no build Debug (#70, #76).
+
+### Resultados e vitória
+
+A tela de Resultados apresenta os números reais da partida: pontos, ameaças neutralizadas/total, agentes identificados/total e se o bônus de +15 foi pago. A tela de Vitória mostra a pontuação final e inicia nova partida. O resumo biológico detalhado (#174) fica para depois do MVP.
 
 ## Áudio e arte
 
