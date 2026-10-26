@@ -32,6 +32,9 @@ static int scan_target = -1;
 // fase concluida: vira true uma vez e so o reset_match desliga (#26)
 static bool phase_finished = false;
 
+// bonus de identificacao pago na conclusao, lido pela tela de resultados (#67)
+static bool bonus_awarded = false;
+
 // mensagem educacional da ultima decisao e o tempo que ela ainda fica na tela (#178)
 static const char* feedback = NULL;
 static double feedback_timer = 0.0;
@@ -62,17 +65,18 @@ const char* layer_one_text(Species species)
     return "bacteria detectada";
 }
 
-// segunda camada, o detalhe que o jogador interpreta
+// segunda camada, a pista do envelope que o jogador interpreta (#3)
+// o texto descreve a parede e a membrana sem nomear Gram+: a classificacao e do jogador
 const char* layer_two_text(Species species)
 {
     if (species == SPECIES_GRAM_POSITIVE)
     {
-        return "Gram+: parede celular espessa, rica em peptidoglicano";
+        return "parede celular espessa e clara, sem membrana externa";
     }
 
     if (species == SPECIES_GRAM_NEGATIVE)
     {
-        return "Gram-: parede fina de peptidoglicano e membrana externa";
+        return "parede fina de peptidoglicano sob membrana externa";
     }
 
     return "celula saudavel do proprio organismo: preserve-a";
@@ -637,6 +641,45 @@ int threats_left()
     return total;
 }
 
+// total de ameacas da fase: celula saudavel nao conta (#19)
+int threats_total()
+{
+    int i;
+    int total = 0;
+
+    for (i = 0; i < NUM_AGENTES; i++)
+    {
+        if (agents[i].species != SPECIES_CELL)
+        {
+            total = total + 1;
+        }
+    }
+
+    return total;
+}
+
+// o bonus de +15 foi pago nesta conclusao? a tela de resultados le isso (#67)
+bool identification_bonus_awarded()
+{
+    return bonus_awarded;
+}
+
+// o disparo esta liberado agora? o HUD usa para o indicador do ataque (#19)
+bool attack_ready()
+{
+    if (player.health <= 0)
+    {
+        return false;
+    }
+
+    if (defense_timer > 0.0)
+    {
+        return false;
+    }
+
+    return attack_cooldown_timer <= 0.0;
+}
+
 // a fase ja foi concluida? a #70 le isso para entrar em Resultados (#26)
 bool phase_completed()
 {
@@ -669,6 +712,7 @@ static void conclude_phase_if_ready()
     if (identified_count == NUM_AGENTES)
     {
         score = score + IDENTIFICATION_BONUS;
+        bonus_awarded = true;
     }
 }
 
@@ -698,6 +742,7 @@ void reset_match()
     identified_count = 0;
     score = 0;
     phase_finished = false;
+    bonus_awarded = false;
     feedback = NULL;
     feedback_timer = 0.0;
     match_time = 0;

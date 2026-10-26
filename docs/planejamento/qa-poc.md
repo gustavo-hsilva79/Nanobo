@@ -101,6 +101,7 @@ O combate foi deliberadamente deixado fora do escopo do M3 porque o cronograma d
 - Não há suíte de testes automatizados no projeto, e nenhuma foi criada nesta revisão.
 - A leitura por camadas não tem cooldown; o valor definitivo segue **[PENDÊNCIA]** em `docs/game-design/scanner.md`.
 - O diâmetro desenhado do sprite (32 px) e o limite de borda usado na movimentação (16 px) são números provisórios.
+- O loop usa **passo fixo de 1/60 s** (delta constante), não delta real: o rótulo “Delta Time” da §1 descreve o passo fixo. Em máquina que não sustenta 60 Hz, a simulação desacelera em vez de pular quadros.
 
 ## 7. Como reproduzir a entrega
 
