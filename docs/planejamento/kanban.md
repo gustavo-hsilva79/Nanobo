@@ -76,11 +76,13 @@ A tabela de marcos — data, tipo e objetivo de cada um — fica em **[milestone
 > Neste marco o Eric ficou com 3 SP (#7) e o Gustavo, com 32 SP. Para não acumular trabalho no M4, o Eric adianta no M3.5 as telas que não dependem do core gameplay: #7, #50, #51 e #53.
 
 ### M4 — MVP Jogável
+
+> **Atualização de 26/10/2026:** #18, #26, #66, #67, #178 e #191 fecharam. O fluxo Resultados → Vitória → reinício, a HUD com objetivo e a camada 2 do scanner estão implementados na branch `feat/mvp-fluxo-e-hud`; os itens correspondentes aguardam revisão cruzada antes de fechar. #58/#103–#107 e #179 foram propostos para o M5; #184 foi proposto para *not planned*. A lista abaixo é o retrato de 18/10.
 - #18 Identificação, pontuação e consequências `[G]` *(agrupadora)*
 - #19 HUD `[E]` *(vida e laser prontos; pontuação, ameaças e destino pendentes)*
 - #20 Integração do fluxo das telas `[E]` *(agrupadora)*
 - #26 Destino e conclusão da fase `[G]`
-- #29 Vitória e reinício da partida *(fechada)*
+- #29 Vitória e reinício da partida *(fechada como duplicata; o trabalho está em #52/#72/#74/#75)*
 - #50 Menu inicial `[E]` *(fechada)*
 - #51 Pausa `[E]` *(fechada)*
 - #52 Vitória `[E]`
@@ -97,7 +99,7 @@ A tabela de marcos — data, tipo e objetivo de cada um — fica em **[milestone
 - #179 Aprimoramento de movimento (polimento) `[G]`
 
 ### Fora dos marcos
-- #186 Resolução 640x360, escala inteira e câmera de mundo maior `[G]` *(aberta)*
+- #186 Resolução 640x360, escala inteira e câmera de mundo maior `[G]` *(fechada em 22/10; está no M5)*
 
 ### M5 — Polimento, Estabilização e Release Candidate
 - #30 Spritesheet e animação `[G]`
@@ -166,3 +168,4 @@ Uma Issue só deve ir para **Done** quando:
 
 - **07/10/2026** — Kanban reconciliado com os Milestones reais do GitHub. O M3 foi reduzido ao núcleo de investigação; o restante foi movido para o novo **M3.5**. A Issue #12 (vírus) saiu do M3: já estava fechada e o vírus é escopo de Fase 2, conforme `docs/game-design/gdd.md`. T21 foi arquivada porque descrevia uma regra de trabalho do assistente, não uma tarefa do produto.
 - **18/10/2026** — Kanban reconferido com o GitHub: M3 encerrado, #65 e #181 fechadas, M3.5 encerrado sem issues abertas. Fechadas após verificação no código: #14, #16, #49, #50, #51, #53, #62–#64, #68, #69 e #73.
+- **26/10/2026** — Auditoria completa e execução do caminho crítico do MVP. #18, #26, #66, #67, #178 e #191 fecharam; o fluxo Resultados → Vitória → reinício, a HUD com objetivo e o texto da camada 2 do scanner foram implementados na branch `feat/mvp-fluxo-e-hud` e aguardam revisão. Propostas registradas em `docs/auditoria/execucao-correcoes-2026-10.md`: #58/#103–#107 e #179 para o M5, #184 para *not planned*, consolidação das 80 Issues do M5.

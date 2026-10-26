@@ -23,12 +23,15 @@ Este documento define o fluxo geral da máquina de estados previsto em #7/#98. A
 - Estados terminais e `PAUSE` não atualizam a lógica da partida; apenas `GAME` executa a atualização do gameplay.
 - Fechar a janela encerra o processo, sem exigir uma transição para outro estado.
 
-## Implementação atual (18/10/2026)
+## Implementação atual (26/10/2026)
 
 `src/core/game.c` implementa exatamente a tabela de transições acima; qualquer par fora dela é ignorado.
 
 - `GAME OVER` é alcançado de verdade quando `player.health == 0`.
-- `RESULTS` e `VICTORY` ainda são alcançados pelas teclas de teste `F` e `V`; a condição real de fim de fase é a #26.
+- `RESULTS` é alcançado automaticamente quando a fase conclui (6 ameaças neutralizadas + Nanobô no destino, #26/#70); `VICTORY` vem de `RESULTS` por `ENTER`.
+- `VICTORY` e `GAME OVER` iniciam nova partida com reset completo (#74/#75).
+- `F`, `G` e `H` são teclas de QA e existem somente no build Debug; o Release não tem atalho de estado (#76).
+- Perder o foco da janela durante `GAME` entra em `PAUSE`; retomar é `ESC`.
 - Não existe caminho de volta para `MENU`; nova partida em `VICTORY`/`GAME OVER` vai direto para `GAME`.
 - `PAUSE` congela os timers porque `update_match()` só roda em `GAME`.
 

@@ -99,6 +99,15 @@ bool hit_agent(int index);
 // mensagem educacional da ultima decisao; NULL quando nao ha nada a mostrar (#178)
 const char* feedback_text();
 
+// total de ameacas da fase, mesmo depois de neutralizadas (#19)
+int threats_total();
+
+// true quando o bonus de identificacao foi pago na conclusao (#67)
+bool identification_bonus_awarded();
+
+// true quando o disparo esta liberado agora (#19)
+bool attack_ready();
+
 // fase: ameacas ainda ativas e se a condicao de conclusao ja foi cumprida (#26)
 int threats_left();
 bool phase_completed();

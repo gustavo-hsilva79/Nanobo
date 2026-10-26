@@ -264,13 +264,26 @@ void draw_scan_info()
 
 void draw_menu()
 {
-    al_draw_text(font, al_map_rgb(255, 255, 255), SCREEN_W / 2, 80, ALLEGRO_ALIGN_CENTRE, "NANOBO");
-    al_draw_text(font, al_map_rgb(170, 170, 170), SCREEN_W / 2, 110, ALLEGRO_ALIGN_CENTRE, "defenda o organismo");
+    char objective[96];
+
+    al_draw_text(font, al_map_rgb(255, 255, 255), SCREEN_W / 2, 56, ALLEGRO_ALIGN_CENTRE, "NANOBO");
+    al_draw_text(font, al_map_rgb(170, 170, 170), SCREEN_W / 2, 82, ALLEGRO_ALIGN_CENTRE, "defenda o organismo");
 
     al_draw_rectangle(BUTTON_X, BUTTON_Y, BUTTON_X + BUTTON_W, BUTTON_Y + BUTTON_H, al_map_rgb(255, 255, 255), 1);
     al_draw_text(font, al_map_rgb(255, 255, 255), SCREEN_W / 2, BUTTON_Y + 20, ALLEGRO_ALIGN_CENTRE, "INICIAR");
 
-    al_draw_text(font, al_map_rgb(130, 130, 130), SCREEN_W / 2, BUTTON_Y + 80, ALLEGRO_ALIGN_CENTRE, "clique no botao ou aperte enter");
+    al_draw_text(font, al_map_rgb(130, 130, 130), SCREEN_W / 2, BUTTON_Y + 64, ALLEGRO_ALIGN_CENTRE,
+        "clique no botao ou aperte enter");
+
+    // instrucao minima do MVP: objetivo, controles e a regra que liga pista a laser (#58)
+    snprintf(objective, sizeof(objective), "objetivo: neutralize as %d bacterias e alcance o destino", threats_total());
+    al_draw_text(font, al_map_rgb(240, 190, 70), SCREEN_W / 2, 286, ALLEGRO_ALIGN_CENTRE, objective);
+    al_draw_text(font, al_map_rgb(170, 170, 170), SCREEN_W / 2, 304, ALLEGRO_ALIGN_CENTRE,
+        "space le o scanner   j atira   1/2 escolhe o raio   x defende");
+    al_draw_text(font, al_map_rgb(170, 170, 170), SCREEN_W / 2, 320, ALLEGRO_ALIGN_CENTRE,
+        "parede espessa, sem membrana externa = Gram+ = raio roxo");
+    al_draw_text(font, al_map_rgb(170, 170, 170), SCREEN_W / 2, 334, ALLEGRO_ALIGN_CENTRE,
+        "parede fina sob membrana externa = Gram- = raio vermelho");
 }
 
 // sprite de cada especie, alinhado com as constantes do entities.h
@@ -300,6 +313,48 @@ float view_y(float y)
     return floorf(y - camera.y);
 }
 
+// quando o destino esta fora da faixa visivel, uma marca na borda mostra o caminho (#19)
+void draw_destination_hint()
+{
+    float sx = view_x(DESTINATION_X);
+    float sy = view_y(DESTINATION_Y);
+    float margin_x = 34.0f;
+    float margin_y = 18.0f;
+    float cx;
+    float cy;
+
+    if (sx >= 0.0f && sx <= (float)SCREEN_W && sy >= 0.0f && sy <= (float)PLAY_H)
+    {
+        return;
+    }
+
+    cx = sx;
+    cy = sy;
+
+    if (cx < margin_x)
+    {
+        cx = margin_x;
+    }
+
+    if (cx > (float)SCREEN_W - margin_x)
+    {
+        cx = (float)SCREEN_W - margin_x;
+    }
+
+    if (cy < margin_y)
+    {
+        cy = margin_y;
+    }
+
+    if (cy > (float)PLAY_H - margin_y)
+    {
+        cy = (float)PLAY_H - margin_y;
+    }
+
+    al_draw_filled_circle(cx, cy, 6.0f, al_map_rgb(240, 190, 70));
+    al_draw_text(font, al_map_rgb(240, 190, 70), cx, cy + 10.0f, ALLEGRO_ALIGN_CENTRE, "destino");
+}
+
 // status e leitura do scanner no rodape: a faixa do mundo fica limpa
 void draw_hud()
 {
@@ -307,6 +362,7 @@ void draw_hud()
     int contact;
     int hearts_x;
     char status[96];
+    char laser_text[64];
     char contact_text[64];
 
     al_draw_line(0, SCAN_PANEL_Y - 1, SCREEN_W, SCAN_PANEL_Y - 1, al_map_rgb(60, 60, 60), 1);
@@ -316,8 +372,8 @@ void draw_hud()
 
     // o status e medido na hora: os coracoes entram logo depois dele
     // temporaria: pontos e ameacas ate a #19/#172 cuidarem do HUD
-    snprintf(status, sizeof(status), "identificados: %d/%d    ameacas: %d    pontos: %d    tempo: %.1f",
-        identified_count, NUM_AGENTES, threats_left(), score, match_time);
+    snprintf(status, sizeof(status), "identificados: %d/%d    restam: %d/%d    pontos: %d    tempo: %.1f",
+        identified_count, NUM_AGENTES, threats_left(), threats_total(), score, match_time);
     al_draw_text(font, al_map_rgb(255, 255, 255), HUD_MARGIN, hud_y(0), 0, status);
 
     hearts_x = HUD_MARGIN + al_get_text_width(font, status) + 24;
@@ -338,19 +394,24 @@ void draw_hud()
         }
     }
 
-    al_draw_text(font, al_map_rgb(130, 130, 130), HUD_MARGIN, hud_y(1), 0,
-        "wasd anda  space scanner  j atira  1/2 raio  x defesa  esc pausa  f11 tela");
-
-    if (player.laser == LASER_GRAM_POSITIVE)
+    if (threats_left() > 0)
     {
-        al_draw_text(font, al_map_rgb(190, 90, 255), HUD_MARGIN, hud_y(2), 0,
-            "raio: roxo (Gram+)");
+        al_draw_text(font, al_map_rgb(240, 190, 70), HUD_MARGIN, hud_y(1), 0,
+            "objetivo: neutralize as bacterias e chegue ao destino");
     }
     else
     {
-        al_draw_text(font, al_map_rgb(255, 70, 70), HUD_MARGIN, hud_y(2), 0,
-            "raio: vermelho (Gram-)");
+        al_draw_text(font, al_map_rgb(240, 190, 70), HUD_MARGIN, hud_y(1), 0,
+            "objetivo: va ao destino");
     }
+
+    snprintf(laser_text, sizeof(laser_text), "raio: %s (%s)%s",
+        player.laser == LASER_GRAM_POSITIVE ? "roxo" : "vermelho",
+        player.laser == LASER_GRAM_POSITIVE ? "Gram+" : "Gram-",
+        attack_ready() ? "  [pronto]" : "  [recarga]");
+    al_draw_text(font,
+        player.laser == LASER_GRAM_POSITIVE ? al_map_rgb(190, 90, 255) : al_map_rgb(255, 70, 70),
+        HUD_MARGIN, hud_y(2), 0, laser_text);
 
     // linha temporaria: prova visual do contato enquanto a #11 nao mostra o dano
     contact = touching_agent();
@@ -445,15 +506,11 @@ void draw_game()
             ALLEGRO_ALIGN_CENTRE, message);
     }
 
+    // marca o destino quando ele esta fora da faixa visivel (#19)
+    draw_destination_hint();
+
     // o clip do painel nao pode intersectar o clip do mundo, senao o HUD some
     al_reset_clipping_rectangle();
-
-    // temporaria: prova da conclusao ate a #70 levar a partida para Resultados
-    if (phase_completed())
-    {
-        al_draw_text(font, al_map_rgb(240, 190, 70), SCREEN_W / 2, 8, ALLEGRO_ALIGN_CENTRE,
-            "fase concluida");
-    }
 
     draw_hud();
 }
@@ -462,6 +519,56 @@ void draw_message(const char* title, const char* hint)
 {
     al_draw_text(font, al_map_rgb(255, 255, 255), SCREEN_W / 2, SCREEN_H / 2 - 20, ALLEGRO_ALIGN_CENTRE, title);
     al_draw_text(font, al_map_rgb(160, 160, 160), SCREEN_W / 2, SCREEN_H / 2 + 10, ALLEGRO_ALIGN_CENTRE, hint);
+}
+
+// resumo da fase concluida com os numeros reais da partida (#57, #171-176)
+void draw_results()
+{
+    char line[96];
+    int neutralized = threats_total() - threats_left();
+
+    al_draw_text(font, al_map_rgb(255, 255, 255), SCREEN_W / 2, 44, ALLEGRO_ALIGN_CENTRE,
+        "FASE CONCLUIDA");
+    al_draw_text(font, al_map_rgb(150, 150, 150), SCREEN_W / 2, 66, ALLEGRO_ALIGN_CENTRE,
+        "resumo do encontro");
+
+    snprintf(line, sizeof(line), "pontos: %d", score);
+    al_draw_text(font, al_map_rgb(255, 255, 255), SCREEN_W / 2, 106, ALLEGRO_ALIGN_CENTRE, line);
+
+    snprintf(line, sizeof(line), "ameacas neutralizadas: %d/%d", neutralized, threats_total());
+    al_draw_text(font, al_map_rgb(220, 220, 220), SCREEN_W / 2, 128, ALLEGRO_ALIGN_CENTRE, line);
+
+    snprintf(line, sizeof(line), "agentes identificados: %d/%d", identified_count, NUM_AGENTES);
+    al_draw_text(font, al_map_rgb(220, 220, 220), SCREEN_W / 2, 150, ALLEGRO_ALIGN_CENTRE, line);
+
+    if (identification_bonus_awarded())
+    {
+        snprintf(line, sizeof(line), "bonus de identificacao: +%d", IDENTIFICATION_BONUS);
+        al_draw_text(font, al_map_rgb(120, 220, 140), SCREEN_W / 2, 172, ALLEGRO_ALIGN_CENTRE, line);
+    }
+    else
+    {
+        snprintf(line, sizeof(line), "bonus de identificacao: nao obtido (%d/%d)",
+            identified_count, NUM_AGENTES);
+        al_draw_text(font, al_map_rgb(200, 170, 90), SCREEN_W / 2, 172, ALLEGRO_ALIGN_CENTRE, line);
+    }
+
+    al_draw_text(font, al_map_rgb(170, 170, 170), SCREEN_W / 2, 232, ALLEGRO_ALIGN_CENTRE,
+        "enter = continuar");
+}
+
+// fim da execucao: pontuacao final e reinicio (#52)
+void draw_victory()
+{
+    char line[64];
+
+    al_draw_text(font, al_map_rgb(255, 255, 255), SCREEN_W / 2, 100, ALLEGRO_ALIGN_CENTRE, "VITORIA");
+
+    snprintf(line, sizeof(line), "pontuacao final: %d", score);
+    al_draw_text(font, al_map_rgb(240, 190, 70), SCREEN_W / 2, 140, ALLEGRO_ALIGN_CENTRE, line);
+
+    al_draw_text(font, al_map_rgb(170, 170, 170), SCREEN_W / 2, 190, ALLEGRO_ALIGN_CENTRE,
+        "enter = nova partida");
 }
 
 // cada estado desenha so o que e dele, tudo no canvas logico
@@ -487,11 +594,11 @@ void render()
     }
     else if (scene == GAME_SCENE_RESULTS)
     {
-        draw_message("FASE CONCLUIDA", "enter = proxima fase    v = vitoria");
+        draw_results();
     }
     else if (scene == GAME_SCENE_VICTORY)
     {
-        draw_message("VITORIA", "enter = nova partida");
+        draw_victory();
     }
     else if (scene == GAME_SCENE_GAME_OVER)
     {
@@ -569,15 +676,57 @@ void handle_key_down(int key)
         {
             player.laser = LASER_GRAM_NEGATIVE;
         }
-        // teclas de teste do fluxo, saem quando as condicoes de verdade existirem
+#ifdef _DEBUG
+        // teclas de QA: so existem no Debug, nunca no Release (#76)
+        // F forca a condicao real de conclusao para testar a transicao da #70
         else if (key == ALLEGRO_KEY_F)
         {
-            game_set_scene(GAME_SCENE_RESULTS);
+            int i;
+
+            for (i = 0; i < NUM_AGENTES; i++)
+            {
+                if (agents[i].species != SPECIES_CELL)
+                {
+                    // dois acertos validos, o mesmo caminho da regra de combate (#49)
+                    hit_agent(i);
+                    hit_agent(i);
+                }
+            }
+
+            player.x = DESTINATION_X;
+            player.y = DESTINATION_Y;
         }
+        // G forca Game Over; vida zerada continua sendo o caminho real
         else if (key == ALLEGRO_KEY_G)
         {
             game_set_scene(GAME_SCENE_GAME_OVER);
         }
+        // H identifica os 9 e conclui, para testar o caminho do bonus (#67)
+        else if (key == ALLEGRO_KEY_H)
+        {
+            int i;
+
+            for (i = 0; i < NUM_AGENTES; i++)
+            {
+                agents[i].layers = MAX_LAYERS;
+                agents[i].identified = true;
+            }
+
+            identified_count = NUM_AGENTES;
+
+            for (i = 0; i < NUM_AGENTES; i++)
+            {
+                if (agents[i].species != SPECIES_CELL)
+                {
+                    hit_agent(i);
+                    hit_agent(i);
+                }
+            }
+
+            player.x = DESTINATION_X;
+            player.y = DESTINATION_Y;
+        }
+#endif
     }
     else if (scene == GAME_SCENE_PAUSE)
     {
@@ -589,10 +738,6 @@ void handle_key_down(int key)
     else if (scene == GAME_SCENE_RESULTS)
     {
         if (key == ALLEGRO_KEY_ENTER)
-        {
-            game_set_scene(GAME_SCENE_GAME);
-        }
-        else if (key == ALLEGRO_KEY_V)
         {
             game_set_scene(GAME_SCENE_VICTORY);
         }
@@ -760,6 +905,11 @@ int main()
                     {
                         game_set_scene(GAME_SCENE_GAME_OVER);
                     }
+                    // fase cumprida entra em Resultados sozinha (#70)
+                    else if (phase_completed())
+                    {
+                        game_set_scene(GAME_SCENE_RESULTS);
+                    }
                 }
                 redraw = true;
                 break;
@@ -779,6 +929,14 @@ int main()
             case ALLEGRO_EVENT_DISPLAY_RESIZE:
                 al_acknowledge_resize(event.display.source);
                 redraw = true;
+                break;
+
+            case ALLEGRO_EVENT_DISPLAY_SWITCH_OUT:
+                // alt-tab nao pode matar o jogador: a partida pausa ao perder o foco (#19)
+                if (game_get_scene() == GAME_SCENE_GAME)
+                {
+                    game_set_scene(GAME_SCENE_PAUSE);
+                }
                 break;
 
             case ALLEGRO_EVENT_DISPLAY_CLOSE:

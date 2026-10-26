@@ -63,12 +63,14 @@ O texto da segunda camada é a informação curta de scanner já aprovada em `do
 | Camada | Agente | Conteúdo revelado |
 |---:|---|---|
 | 1 | Bactéria (Gram+ ou Gram−) | “bactéria detectada” |
-| 2 | Bactéria Gram-positiva | “Gram+: parede celular espessa, rica em peptidoglicano.” |
-| 2 | Bactéria Gram-negativa | “Gram−: parede fina de peptidoglicano e membrana externa.” |
+| 2 | Bactéria Gram-positiva | “parede celular espessa e clara, sem membrana externa.” |
+| 2 | Bactéria Gram-negativa | “parede fina de peptidoglicano sob membrana externa.” |
 | 1 | Célula saudável própria | “célula do organismo detectada” |
 | 2 | Célula saudável própria | “célula saudável do próprio organismo: preserve-a.” |
 
 Nenhuma camada diz “use o laser roxo” ou “não atire”. A ligação entre a pista e a ação é do jogador, conforme a regra de combate da #16.
+
+A camada 2 também **não nomeia a classificação**: “parede espessa, sem membrana externa” é a pista; concluir que se trata de Gram+ e escolher o raio roxo é a decisão. A regra parede → Gram → laser é ensinada uma vez na tela inicial do jogo, não repetida em cada leitura.
 
 **No MVP**, a estrutura deve permitir variar a quantidade e o conteúdo das camadas por agente ou por fase. A configuração final por agente/fase permanece **[PENDÊNCIA]** e não deve ser antecipada antes da revisão das regras da Fase 2 (#83/#87/#88).
 
