@@ -77,7 +77,7 @@ Nada foi implementado. A escolha depende da dupla e do playtest de 05–08/11.
 | **#58 (recorte do MVP)** | Tela inicial com objetivo, controles e a regra pista → Gram → laser | `main.c` (`draw_menu`) | Pessoa nova entende o objetivo sem explicação verbal | Captura 01 |
 | **#178 / #67** | Estado do bônus exposto para a tela | `gameplay.c` (`bonus_awarded`) | Bônus aparece só quando pago | Harness 78/78 |
 | **#76 (parcial)** | Teclas `F`, `G` e `H` viram QA **somente no Debug**; Release não salta estado | `main.c` (`#ifdef _DEBUG`) | Release não reage a `F`/`H` | Captura 07 |
-| **Pausa por foco** | Perder o foco em `GAME` entra em `PAUSE` | `main.c` (`DISPLAY_SWITCH_OUT`) | Alt-tab não causa dano | Ver §4.3 |
+| **Pausa por foco** | Perder o foco em `GAME` entra em `PAUSE` | `main.c` (`DISPLAY_SWITCH_OUT`) | Alt-tab não causa dano | Captura `qa-mvp-08-pausa-foco.png` |
 
 ### O que ficou fora desta entrega
 
@@ -117,8 +117,9 @@ Ambiente: Windows 11, monitor 2560×1440, janela maximizada, executável a parti
 | 05 | ENTER em Resultados | Vitória com a pontuação final | `qa-mvp-05-vitoria.png` |
 | 06 | ENTER em Vitória | Nova partida: 0/9, 6/6, 0 pontos, 3 corações, tempo zerado | `qa-mvp-06-nova-partida.png` |
 | 07 | Release + `F` e `H` | Nenhuma transição; permanece em GAME | `qa-mvp-07-release-sem-teclas.png` |
+| 08 | Alt+Tab durante a partida | Entra em `PAUSE` com `esc para voltar` | `qa-mvp-08-pausa-foco.png` |
 
-**Não verificado nesta sessão:** movimento com teclas seguradas, leitura real do scanner e combate com teclado físico (a injeção de tecla segurada continua não confiável neste ambiente); pausa por perda de foco de forma interativa; Game Over por vida zerada; instalação em máquina limpa. Esses itens estão no roteiro de `docs/planejamento/qa-mvp.md` para a dupla executar.
+**Não verificado nesta sessão:** movimento com teclas seguradas, leitura real do scanner e combate com teclado físico (a injeção de tecla segurada continua não confiável neste ambiente); Game Over por vida zerada; instalação em máquina limpa. Esses itens estão no roteiro de `docs/planejamento/qa-mvp.md` para a dupla executar.
 
 ## 5. Documentação sincronizada
 
@@ -192,7 +193,6 @@ Ambiente: Windows 11, monitor 2560×1440, janela maximizada, executável a parti
 - Build Debug/Release sem avisos; harness 78/78.
 
 **Corrigido, mas não testado**
-- Pausa por perda de foco (implementada; falta o teste interativo).
 - Persistência da preferência de laser entre partidas (comportamento mantido e documentado; sem teste dedicado).
 
 **Não corrigido**

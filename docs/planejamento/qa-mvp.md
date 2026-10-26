@@ -58,7 +58,7 @@ Legenda: **[OK]** executado e observado · **[PEND]** depende de teclado físico
 | 14 | Conferir Resultados com bônus | 75 pontos, 6/6, 9/9, +15 | 75, 6/6, 9/9, +15 | **[OK]** | `qa-mvp-04-resultados-bonus.png` |
 | 15 | `ENTER` em Resultados | Vitória com a pontuação final | Vitória com 75 | **[OK]** | `qa-mvp-05-vitoria.png` |
 | 16 | `ENTER` em Vitória | Nova partida com vida, score, contadores e tempo zerados | 0/9, 6/6, 0 pontos, 3 corações, tempo 0,6 | **[OK]** | `qa-mvp-06-nova-partida.png` |
-| 17 | Alt-Tab por 10 s durante a partida | Partida pausada; sem dano | Implementado; não testado interativamente | **[N/E]** | — |
+| 17 | Alt-Tab por 10 s durante a partida | Partida pausada; sem dano | Entrou em `PAUSE` com a mensagem `esc para voltar` | **[OK]** | `qa-mvp-08-pausa-foco.png` |
 | 18 | Deixar a vida chegar a 0 | Game Over; `ENTER` reinicia | — | **[PEND]** | — |
 | 19 | Release + `F` e `H` | Nenhuma transição | Permaneceu em GAME | **[OK]** | `qa-mvp-07-release-sem-teclas.png` |
 | 20 | Fechar e reabrir o jogo | Nova execução começa no menu, sem estado anterior | — | **[PEND]** | — |
@@ -66,7 +66,6 @@ Legenda: **[OK]** executado e observado · **[PEND]** depende de teclado físico
 ## 5. O que este roteiro ainda não prova
 
 - Movimento, leitura do scanner e combate com teclado físico (passos 4–11). A regra está coberta pelo harness, mas a experiência real não foi observada nesta sessão.
-- Pausa por perda de foco (passo 17).
 - Game Over por vida zerada (passo 18).
 - Comportamento em máquina limpa e a partir de um atalho do instalador (não há instalador).
 - Aprendizagem e diversão: exigem playtest com pessoas; protocolo em `docs/planejamento/qa-mvp.md` §6.
@@ -95,6 +94,7 @@ Legenda: **[OK]** executado e observado · **[PEND]** depende de teclado físico
 | Build Debug/Release | auditoria | 26/10/2026 | 0 avisos, 0 erros |
 | Harness de regras | auditoria | 26/10/2026 | 78/78 |
 | Fluxo de telas com teclas de QA | auditoria | 26/10/2026 | OK (passos 12–16, 19) |
+| Pausa por perda de foco | auditoria | 26/10/2026 | OK (passo 17; Alt+Tab real) |
 | Passos com teclado físico | — | — | pendente |
 | Playtest com pessoa externa | — | — | pendente |
 | Revisão cruzada do PR | — | — | pendente |
