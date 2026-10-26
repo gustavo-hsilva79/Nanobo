@@ -118,8 +118,9 @@ Ambiente: Windows 11, monitor 2560×1440, janela maximizada, executável a parti
 | 06 | ENTER em Vitória | Nova partida: 0/9, 6/6, 0 pontos, 3 corações, tempo zerado | `qa-mvp-06-nova-partida.png` |
 | 07 | Release + `F` e `H` | Nenhuma transição; permanece em GAME | `qa-mvp-07-release-sem-teclas.png` |
 | 08 | Alt+Tab durante a partida | Entra em `PAUSE` com `esc para voltar` | `qa-mvp-08-pausa-foco.png` |
+| 09 | Partida parada até a vida zerar | `GAME OVER` com `enter = nova partida` | `qa-mvp-09-game-over.png` |
 
-**Não verificado nesta sessão:** movimento com teclas seguradas, leitura real do scanner e combate com teclado físico (a injeção de tecla segurada continua não confiável neste ambiente); Game Over por vida zerada; instalação em máquina limpa. Esses itens estão no roteiro de `docs/planejamento/qa-mvp.md` para a dupla executar.
+**Não verificado nesta sessão:** movimento com teclas seguradas, leitura real do scanner e combate com teclado físico (a injeção de tecla segurada continua não confiável neste ambiente); instalação em máquina limpa. Esses itens estão no roteiro de `docs/planejamento/qa-mvp.md` para a dupla executar.
 
 ## 5. Documentação sincronizada
 
@@ -191,6 +192,7 @@ Ambiente: Windows 11, monitor 2560×1440, janela maximizada, executável a parti
 - Tela inicial com objetivo, controles e regra Gram/laser (#58 recorte).
 - Texto da camada 2 sem a classificação pronta (#3/#177).
 - Teclas de QA fora do Release (#76 parcial).
+- Pausa por perda de foco (Alt+Tab), verificada em jogo.
 - Build Debug/Release sem avisos; harness 78/78.
 
 **Corrigido, mas não testado**
