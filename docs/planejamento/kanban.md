@@ -77,7 +77,7 @@ A tabela de marcos — data, tipo e objetivo de cada um — fica em **[milestone
 
 ### M4 — MVP Jogável
 
-> **Atualização de 26/10/2026:** #18, #26, #66, #67, #178 e #191 fecharam. O fluxo Resultados → Vitória → reinício, a HUD com objetivo e a camada 2 do scanner estão implementados na branch `feat/mvp-fluxo-e-hud`; os itens correspondentes aguardam revisão cruzada antes de fechar. #58/#103–#107 e #179 foram propostos para o M5; #184 foi proposto para *not planned*. A lista abaixo é o retrato de 18/10.
+> **Atualização de 26/10/2026:** #18, #26, #66, #67, #178 e #191 fecharam. O fluxo Resultados → Vitória → reinício, a HUD com objetivo e a camada 2 do scanner foram mesclados no PR #193; #19, #52, #70, #72, #74, #75, #171, #172 e #173 fecharam. #57, #71, #174–#176, #58, #103–#107 e #179 foram para o M5; #184 foi encerrada como não planejada. A lista abaixo é o retrato de 18/10.
 - #18 Identificação, pontuação e consequências `[G]` *(agrupadora)*
 - #19 HUD `[E]` *(vida e laser prontos; pontuação, ameaças e destino pendentes)*
 - #20 Integração do fluxo das telas `[E]` *(agrupadora)*
