@@ -5,7 +5,6 @@
 > **Branch de trabalho:** `feat/mvp-fluxo-e-hud` · **PR:** [#193](https://github.com/gustavo-hsilva79/Nanobo/pull/193), mesclado em 26/10/2026 no commit `e512ad745d2a2647b05d7b8351b80f428874a568`.
 > **Revisão:** o merge foi feito por decisão do dono do repositório, sem a revisão do Eric; a revisão cruzada fica registrada como pendência retroativa para o próximo PR.
 > **Objetivo:** fechar o caminho crítico do MVP de 04/11 sem alterar decisões de Game Design não registradas.
-> **Regra:** nada foi mesclado em `master`; o PR aguarda revisão de Gustavo e Eric.
 
 ## 1. Fase 0 — revalidação do estado
 
