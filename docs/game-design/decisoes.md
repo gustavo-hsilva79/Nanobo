@@ -64,6 +64,20 @@ A proposta é que o jogador descubra informações, interprete dados do scanner 
 - A regra da #11 não muda: 3 vidas, 1 de dano por contato, 1 s de invulnerabilidade, sem cura.
 - Pontuação e objetivos continuam sem desenho definido — são o resto da #19.
 
+#### Tema visual da interface (28/10/2026)
+
+- A interface usa a **mesma paleta dos sprites**: `#121A24` (tinta), `#1A2634` (painel), `#F2F5F7` (texto), `#A8B8C8` (texto apagado), `#FFD23F` (destaque), `#BE6EF0` (Gram+), `#F05A5A` (Gram−), `#7DF9FF` (ciano), `#6EDC78` (verde) e `#FFE894` (feedback). Não há cor avulsa na UI.
+- Três níveis de texto: principal, apagado e destaque. Cor com significado fica reservada a conteúdo (espécie, raio, vida, scanner), nunca a decoração.
+- Painel, botão, pips de ameaça e barra de recarga são desenhados com primitivas do Allegro; moldura de 1 px sempre com deslocamento **+0,5 px**, senão a linha cai um pixel acima do texto.
+- O botão tem três estados: normal, foco do teclado (moldura de destaque) e cursor em cima (moldura de destaque + preenchimento escuro). A ativação continua no **pressionar** do mouse (down), como registrado em `interacao-mouse.md`.
+- Desenho e clique leem a **mesma lista de botões** (`screen_buttons`), para a área desenhada e a área clicável nunca divergirem.
+- A grade do HUD continua com 5 linhas de 16 px; mudou o conteúdo das zonas: vitais e objetivo nas linhas 0-1, sub-painel do scanner nas linhas 2-4.
+- A HUD mostra **pips** de ameaça (bloco cheio = neutralizada) no lugar de `restam: 6/6`, e o tempo em **mm:ss**.
+- A interface é desenhada no canvas lógico de 640×360 e ampliada por escala inteira; nenhuma função de desenho lê escala ou deslocamento da janela. A janela tem **mínimo de 640×360**, então a escala nunca fica quebrada.
+- O cursor é guardado em pixel da **janela** e convertido no desenho; `resize` e `F11` releem a posição, para o hover não ficar preso no lugar antigo.
+- Cor translúcida em `al_map_rgba` **não mistura**: o blend padrão espera cor pré-multiplicada, então alfa sobre o canvas satura. Fundos e molduras da UI usam cor opaca (`UI_HOVER`, `UI_LINE`, `UI_FRAME`, `UI_SLOT`); só o escurecimento da pausa usa alfa, com RGB zero.
+- A fonte continua sendo a embutida do Allegro (8×8). O título do menu é o mesmo glifo ampliado 3× a partir de um bitmap montado no carregamento; a fonte definitiva segue pendente.
+
 ### Combate
 
 #### Defesa (16/10/2026)

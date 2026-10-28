@@ -54,3 +54,13 @@ Com a #9 implementada, o Nanobô tem posição própria (`Nanobo player`, em `sr
 | Desenho do botão | `draw_menu()` em `src/main.c` |
 | Tratamento do clique | `handle_mouse_click()` em `src/main.c` |
 | Leitura do evento | caso `ALLEGRO_EVENT_MOUSE_BUTTON_DOWN` em `main()` |
+
+## 7. Atualização 28/10/2026 — botões em todas as telas
+
+O escopo da §4 mudou com o polimento de menus e HUD: agora **todas as telas não-jogáveis têm botão** (`MENU`, `PAUSE`, `RESULTS`, `VICTORY` e `GAME OVER`), todos com foco de teclado e destaque sob o cursor.
+
+- O retângulo do botão do menu passou a **240..400 × 208..236** na tela lógica (`BUTTON_X/Y/W/H` em `src/main.c`); os números da §1 são o registro da revisão anterior.
+- Desenho e clique leem a mesma lista (`screen_buttons`), então a área clicável é sempre a área desenhada.
+- A ativação continua acontecendo no **pressionar** (down), preservando o passo 4 da §3; ainda não existe estado visual de "apertado" porque ele não chega a ser desenhado.
+- Hover, resize e `F11` usam uma conversão única (`to_logical_x/y`) e o cursor é guardado em pixel da janela, relido no resize e no fullscreen.
+- Continua valendo: clique fora de qualquer botão não produz efeito; no estado `GAME` nenhum clique tem ação.
