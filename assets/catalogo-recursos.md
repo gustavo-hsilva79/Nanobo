@@ -11,13 +11,17 @@ Inventário dos recursos necessários à execução atual, para orientar o carre
 | Bactéria Gram-negativa (32×32) | Agente `SPECIES_GRAM_NEGATIVE` | `assets/sprites/bacteria_gram_negativa.png`; idem |
 | Célula saudável própria (32×32) | Agente `SPECIES_CELL` | `assets/sprites/celula_propria.png`; idem |
 | Ícone de coração (16×16) | HUD de vida | `assets/sprites/icone_coracao.png`; idem |
+| Ícone de scanner (16×16) | Cabeçalho do painel do scanner e bloco "como jogar" do menu | `assets/sprites/icone_scanner.png`; idem |
+| Ícone de laser roxo (16×16) | Indicador de raio da HUD e regra do menu | `assets/sprites/icone_laser_roxo.png`; idem |
+| Ícone de laser vermelho (16×16) | Indicador de raio da HUD e regra do menu | `assets/sprites/icone_laser_vermelho.png`; idem |
+| Ícone de defesa (16×16) | Linha de controles do menu | `assets/sprites/icone_defesa.png`; idem |
 | Fonte embutida do Allegro | Todo o texto da interface: HUD, painel do scanner, menu, pausa e telas de fim | `al_create_builtin_font()` em `src/main.c`; não há arquivo de fonte |
 
-`free_resources()` libera os cinco bitmaps na ordem inversa e depois a fonte. O projétil é desenhado com `al_draw_filled_circle()` (primitivas), sem bitmap.
+`free_resources()` libera os nove bitmaps na ordem inversa e depois a fonte. O título do menu é um bitmap montado em tempo de carregamento a partir da fonte (`make_text_bitmap`), também liberado ali. O projétil é desenhado com `al_draw_filled_circle()` (primitivas), sem bitmap.
 
 ## Arte final criada
 
-Os três sprites de agente e o ícone de coração já são carregados pelo jogo. O fundo, a tira de quadros do Nanobô e os ícones de laser/scanner ainda não são. Cada recurso tem a fonte `.aseprite` editável ao lado do `.png` exportado; o `.png` é o arquivo que o jogo deve carregar.
+Os três sprites de agente, o coração e os quatro ícones de interface são carregados pelo jogo. O fundo e a tira de quadros do Nanobô ainda não são. Cada recurso tem a fonte `.aseprite` editável ao lado do `.png` exportado; o `.png` é o arquivo que o jogo deve carregar.
 
 Todos os sprites usam a mesma paleta, o mesmo tamanho de pixel e a mesma direção de luz (cima-esquerda), para manter a coesão visual.
 
@@ -73,7 +77,7 @@ O fundo é escuro e de baixo contraste de propósito: os sprites precisam contin
 |---|---|---|---|
 | Sprites e animações | Arte final dos agentes e spritesheet animado do Nanobô | `assets/sprites/` | Agentes carregados; spritesheet criado e não carregado |
 | Cenários | Fundo/ambiente microscópico das fases | `assets/backgrounds/` | Criado; não carregado |
-| Ícones de interface | Laser, scanner e vida | `assets/sprites/` | Criados; só o coração é carregado |
+| Ícones de interface | Laser, scanner, vida e defesa | `assets/sprites/` | Criados e carregados (os quatro ícones e o coração) |
 | Fontes | Tipografia final da interface | `assets/fonts/` | [PENDÊNCIA] Fonte ainda não escolhida; a fonte embutida atual é provisória |
 | Música | Trilha da partida | `assets/audio/music/` | [PENDÊNCIA] Arquivo ainda não definido |
 | Efeitos sonoros | Feedback de ações e eventos | `assets/audio/sfx/` | [PENDÊNCIA] Arquivos ainda não definidos |
