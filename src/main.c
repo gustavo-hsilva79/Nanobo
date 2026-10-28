@@ -82,6 +82,9 @@ ALLEGRO_BITMAP* gram_positive = NULL;
 ALLEGRO_BITMAP* gram_negative = NULL;
 ALLEGRO_BITMAP* cell_sprite = NULL;
 
+// mapa do mundo inteiro da Fase 1 (1920x512), sempre atras do resto
+ALLEGRO_BITMAP* world_map = NULL;
+
 // janela, canvas logico e a escala inteira aplicada na saida
 ALLEGRO_DISPLAY* display = NULL;
 ALLEGRO_BITMAP* canvas = NULL;
@@ -328,12 +331,25 @@ bool load_resources()
         return false;
     }
 
+    world_map = al_load_bitmap("assets/backgrounds/mapa_fase1.png");
+    if (!world_map)
+    {
+        printf("couldn't load world map\n");
+        return false;
+    }
+
     return true;
 }
 
 // libera o que foi carregado, na ordem inversa
 void free_resources()
 {
+    if (world_map)
+    {
+        al_destroy_bitmap(world_map);
+        world_map = NULL;
+    }
+
     if (gram_positive)
     {
         al_destroy_bitmap(gram_positive);
@@ -963,6 +979,9 @@ void draw_game()
 
     // o mundo para na faixa jogavel: sprite nenhum entra no painel
     al_set_clipping_rectangle(0, 0, SCREEN_W, PLAY_H);
+
+    // mapa do mundo deslocado pela camera, atras de destino, agentes e nanobo
+    al_draw_bitmap(world_map, -floorf(camera.x), -floorf(camera.y), 0);
 
     // destino da fase: anel e rotulo visiveis desde o inicio (#26)
     al_draw_filled_circle(view_x(DESTINATION_X), view_y(DESTINATION_Y), DESTINATION_RADIUS,

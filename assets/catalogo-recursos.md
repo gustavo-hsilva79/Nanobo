@@ -51,11 +51,22 @@ A forma e o tamanho também separam os agentes: as bactérias são pequenas e si
 
 Cada quadro é um recorte de 32×32 na tira, na ordem dos quadros. Em Allegro, o recorte sai de `al_create_sub_bitmap(tira, quadro * 32, 0, 32, 32)`.
 
-### Fundo do cenário
+### Mapa da Fase 1
 
 | Arquivo | Conteúdo |
 |---|---|
-| `assets/backgrounds/fundo_microscopico.png` | Ambiente microscópico, **640×480** — arte antiga, fora do tamanho da tela atual (640×360); precisa ser reexportado antes de entrar em `load_resources()` |
+| `assets/backgrounds/mapa_fase1.png` | Mapa do mundo inteiro, **1920×512** (60×16 tiles de 32 px), opaco |
+| `assets/backgrounds/mapa_fase1.aseprite` | Fonte editável, cinco camadas: `fundo`, `tecido`, `corredores`, `bordas`, `marcos` |
+
+O mapa cobre exatamente `WORLD_W`×`WORLD_H` e desenha a estrutura que o gameplay já usa, sem tocar nas regras: dois corredores horizontais de largura variável, a veia central, o atalho da esquerda, a clareira de nascimento em `(960, 256)` com a doca tracejada e o poro do destino em `(1856, 448)`, com a única luz quente do cenário. O tecido é **decoração**: não existe colisão, o Nanobô anda por cima de tudo.
+
+O mapa foi desenhado pelo MCP do Aseprite em cinco scripts (um por camada), para poder ser regerado ou ajustado por script.
+
+### Fundo do cenário (arte antiga)
+
+| Arquivo | Conteúdo |
+|---|---|
+| `assets/backgrounds/fundo_microscopico.png` | Ambiente microscópico, **640×480** — arte antiga, fora do tamanho da tela atual (640×360) e fora do mundo 1920×512; fica no repositório como referência |
 | `assets/backgrounds/fundo_microscopico.aseprite` | Fonte editável |
 
 O fundo é escuro e de baixo contraste de propósito: os sprites precisam continuar legíveis por cima dele.
@@ -76,7 +87,7 @@ O fundo é escuro e de baixo contraste de propósito: os sprites precisam contin
 | Tipo | Recursos necessários | Local definido | Estado |
 |---|---|---|---|
 | Sprites e animações | Arte final dos agentes e spritesheet animado do Nanobô | `assets/sprites/` | Agentes carregados; spritesheet criado e não carregado |
-| Cenários | Fundo/ambiente microscópico das fases | `assets/backgrounds/` | Criado; não carregado |
+| Cenários | Mapa do mundo da Fase 1, 1920×512 | `assets/backgrounds/` | Criado; não carregado |
 | Ícones de interface | Laser, scanner, vida e defesa | `assets/sprites/` | Criados e carregados (os quatro ícones e o coração) |
 | Fontes | Tipografia final da interface | `assets/fonts/` | [PENDÊNCIA] Fonte ainda não escolhida; a fonte embutida atual é provisória |
 | Música | Trilha da partida | `assets/audio/music/` | [PENDÊNCIA] Arquivo ainda não definido |
