@@ -3,6 +3,7 @@
 > **Escopo:** roteiro ponta a ponta da Fase 1 e do fluxo de telas do MVP.
 > **Branch:** `feat/mvp-fluxo-e-hud` · **Commit do código testado:** `79d97b9` · **PR:** [#193](https://github.com/gustavo-hsilva79/Nanobo/pull/193)
 > **Data da execução parcial:** 26/10/2026
+> **Atualização:** 28/10/2026 — passo 3 (clique em `INICIAR`) executado e corrigido; evidência na §8.
 > **Ambiente:** Windows 11, monitor 2560×1440, janela maximizada, executável a partir da raiz do repositório; Debug|x64 e Release|x64.
 
 ## 1. Como reproduzir
@@ -44,7 +45,7 @@ Legenda: **[OK]** executado e observado · **[PEND]** depende de teclado físico
 |---|---|---|---|---|---|
 | 1 | Abrir o jogo | Menu com título, botão e instrução do objetivo | Menu com objetivo, controles e regra Gram/laser | **[OK]** | `qa-mvp-01-menu.png` |
 | 2 | Iniciar por `ENTER` | Partida com 3 corações, 0/9, restam 6/6 | 0/9, 6/6, 0 pontos, 3 corações | **[OK]** | `qa-mvp-02-jogo.png` |
-| 3 | Iniciar por clique em `INICIAR` | Mesma partida | — | **[PEND]** | — |
+| 3 | Iniciar por clique em `INICIAR` | Mesma partida | Clique dentro do botão inicia a partida; clique fora do retângulo não inicia (§8) | **[OK]** | `qa-mvp-10-menu-clique.png`, `qa-mvp-11-clique-iniciar.png` |
 | 4 | Mover com setas/WASD e parar ao soltar | Nanobô anda e para; não sai do mundo | — | **[PEND]** | — |
 | 5 | Aproximar de uma bactéria e apertar `SPACE` 1× | Camada 1; contador 0/9 | — | **[PEND]** | — |
 | 6 | `SPACE` 2ª vez | Camada 2 descreve o envelope; contador 1/9 | — | **[PEND]** | — |
@@ -94,6 +95,29 @@ Legenda: **[OK]** executado e observado · **[PEND]** depende de teclado físico
 | Harness de regras | auditoria | 26/10/2026 | 78/78 |
 | Fluxo de telas com teclas de QA | auditoria | 26/10/2026 | OK (passos 12–16, 19) |
 | Pausa por perda de foco | auditoria | 26/10/2026 | OK (passo 17; Alt+Tab real) |
+| Clique em `INICIAR` | auditoria | 28/10/2026 | OK (passo 3; corrigido, §8) |
 | Passos com teclado físico | — | — | pendente |
 | Playtest com pessoa externa | — | — | pendente |
 | Revisão cruzada do PR | — | — | pendente |
+
+## 8. Atualização 28/10/2026 — clique em `INICIAR`
+
+O passo 3 estava pendente porque o clique não iniciava a partida. A causa não era o retângulo do botão: com a janela criada por `ALLEGRO_MAXIMIZED`, o Allegro continuava reportando o tamanho pedido na criação (1920×1080) em vez do cliente real (2560×1411), porque o resize da maximização acontece antes da fila de eventos existir e o `al_acknowledge_resize` do loop nunca recebia o evento. O driver esticava então o backbuffer de 1920×1080 na janela inteira, enquanto `update_screen_fit()` calculava escala 3 com offset (0, 0) e `handle_mouse_click` convertia o clique com um tamanho que não era o da tela — o clique caía fora do retângulo 220..420 × 200..250 do `INICIAR`.
+
+Correção em `src/main.c`, sem mudar coordenada nenhuma:
+
+- `create_window()` termina com `al_acknowledge_resize(display)` + `update_screen_fit()`, então a abertura já sincroniza o tamanho real da janela.
+- `toggle_fullscreen()` faz o mesmo par depois da troca de modo e, ao sair do fullscreen, reaplica `ALLEGRO_MAXIMIZED` — a janela volta maximizada em vez de encolher para 1920×1080.
+
+Evidência (Debug|x64, árvore com a correção, ainda sem commit). Na abertura o cliente é 2560×1411, escala 3 com offset (320, 165); os pontos abaixo estão em pixel do cliente:
+
+| Ponto clicado | Pixel lógico | Resultado |
+|---|---|---|
+| 1280, 840 (centro) | 320, 225 | inicia a partida |
+| 985, 770 (canto interno) | 221, 201 | inicia a partida |
+| 1280, 950 (abaixo do botão) | 320, 261 | permanece no menu |
+| 1590, 840 (fora à direita) | 423, 225 | permanece no menu |
+
+- `qa-mvp-10-menu-clique.png` — menu maximizado antes do clique.
+- `qa-mvp-11-clique-iniciar.png` — partida aberta pelo clique.
+- F11: fullscreen em 2560×1440 (4× exato, sem barras); na volta, janela maximizada em 2556×1407, escala 3 com offset (318, 163), e o clique no botão continua iniciando a partida. `ENTER` e o fluxo Resultados/Vitória não mudam.
