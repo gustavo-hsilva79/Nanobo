@@ -124,6 +124,12 @@ bool create_window()
         return false;
     }
 
+    // a janela nasce maximizada, mas o allegro continua com o tamanho pedido na
+    // criacao: sem este ack a escala sai menor que a janela e o clique do mouse
+    // e convertido com um tamanho que nao e o da tela
+    al_acknowledge_resize(display);
+    update_screen_fit();
+
     return true;
 }
 
@@ -135,11 +141,19 @@ void toggle_fullscreen()
     if (flags & ALLEGRO_FULLSCREEN_WINDOW)
     {
         al_set_display_flag(display, ALLEGRO_FULLSCREEN_WINDOW, false);
+        // a janela volta para o tamanho pedido na criacao (1920x1080); maximizar
+        // de novo devolve a janela ao tamanho do monitor da pessoa
+        al_set_display_flag(display, ALLEGRO_MAXIMIZED, true);
     }
     else
     {
         al_set_display_flag(display, ALLEGRO_FULLSCREEN_WINDOW, true);
     }
+
+    // a troca de modo muda o tamanho real da tela, e o allegro so conta isso
+    // depois do ack: sem ele a escala e o clique ficam no tamanho anterior
+    al_acknowledge_resize(display);
+    update_screen_fit();
 }
 
 // carrega tudo que o jogo precisa antes do loop por frame
