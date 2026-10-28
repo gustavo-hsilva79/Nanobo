@@ -680,6 +680,18 @@ bool attack_ready()
     return attack_cooldown_timer <= 0.0;
 }
 
+// fracao restante da recarga do ataque: 1 logo depois do disparo, 0 quando pronto
+// (a defesa ativa tambem bloqueia o disparo, mas nao gasta a recarga)
+float attack_cooldown_left()
+{
+    if (attack_cooldown_timer <= 0.0)
+    {
+        return 0.0f;
+    }
+
+    return (float)(attack_cooldown_timer / ATTACK_COOLDOWN);
+}
+
 // a fase ja foi concluida? a #70 le isso para entrar em Resultados (#26)
 bool phase_completed()
 {

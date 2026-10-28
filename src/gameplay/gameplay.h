@@ -108,6 +108,9 @@ bool identification_bonus_awarded();
 // true quando o disparo esta liberado agora (#19)
 bool attack_ready();
 
+// fracao restante da recarga do ataque, 0 quando pronto (barra do HUD)
+float attack_cooldown_left();
+
 // fase: ameacas ainda ativas e se a condicao de conclusao ja foi cumprida (#26)
 int threats_left();
 bool phase_completed();
