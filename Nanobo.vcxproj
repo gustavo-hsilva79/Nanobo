@@ -107,10 +107,11 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <!-- padrao C11 so nas plataformas x64: a Release|Win32 legada usa toolset v14 -->
+  <!-- padrao C11 e fontes UTF-8 so nas plataformas x64: a Release|Win32 legada usa toolset v14 -->
   <ItemDefinitionGroup Condition="'$(Platform)'=='x64'">
     <ClCompile>
       <LanguageStandard_C>stdc11</LanguageStandard_C>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
