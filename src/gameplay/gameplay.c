@@ -59,10 +59,10 @@ const char* layer_one_text(Species species)
 {
     if (species == SPECIES_CELL)
     {
-        return "celula do organismo detectada";
+        return "célula do organismo detectada";
     }
 
-    return "bacteria detectada";
+    return "bactéria detectada";
 }
 
 // segunda camada, a pista do envelope que o jogador interpreta (#3)
@@ -79,7 +79,7 @@ const char* layer_two_text(Species species)
         return "parede fina de peptidoglicano sob membrana externa";
     }
 
-    return "celula saudavel do proprio organismo: preserve-a";
+    return "célula saudável do próprio organismo: preserve-a";
 }
 
 // agente valido mais perto, -1 quando ninguem esta no alcance
@@ -257,7 +257,7 @@ static void hit_projectiles()
                 // a mensagem so promete a vida perdida quando o dano aconteceu (#178)
                 if (damage_player())
                 {
-                    set_feedback("celula do organismo: atacar custa 1 de vida");
+                    set_feedback("célula do organismo: atacar custa 1 de vida");
                 }
             }
             else if (projectiles[i].laser == laser_for_species(agents[j].species))
@@ -267,16 +267,16 @@ static void hit_projectiles()
                     // sem identificacao a ameaca sai da cena e o bonus de 9/9 fica impossivel
                     if (agents[j].identified)
                     {
-                        set_feedback("ameaca neutralizada: +10 pontos");
+                        set_feedback("ameaça neutralizada: +10 pontos");
                     }
                     else
                     {
-                        set_feedback("neutralizada sem identificar: o bonus de 9/9 se perdeu");
+                        set_feedback("neutralizada sem identificar: o bônus de 9/9 se perdeu");
                     }
                 }
                 else
                 {
-                    set_feedback("acerto valido: a bacteria ainda resiste");
+                    set_feedback("acerto válido: a bactéria ainda resiste");
                 }
             }
             else
@@ -284,11 +284,11 @@ static void hit_projectiles()
                 // raio errado: a mensagem diz qual parede barrou o disparo (#178)
                 if (agents[j].species == SPECIES_GRAM_POSITIVE)
                 {
-                    set_feedback("parede Gram+ espessa: o raio vermelho nao penetra");
+                    set_feedback("parede Gram+ espessa: o raio vermelho não penetra");
                 }
                 else
                 {
-                    set_feedback("membrana externa da Gram-: o raio roxo nao penetra");
+                    set_feedback("membrana externa da Gram-: o raio roxo não penetra");
                 }
             }
 
@@ -950,7 +950,7 @@ void update_match(double dt)
         // contato a cada quadro nao pode reescrever a mensagem sem dano novo (#178)
         if (damage_player())
         {
-            set_feedback("contato com bacteria: -1 de vida");
+            set_feedback("contato com bactéria: -1 de vida");
         }
     }
 

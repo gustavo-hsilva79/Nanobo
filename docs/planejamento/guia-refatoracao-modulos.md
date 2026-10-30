@@ -127,6 +127,15 @@ Conferido em 11/10/2026: depois do passo 2 o projeto compila em `Debug|x64` sem 
 
 Rode exatamente o que está em [qa-poc.md](qa-poc.md) e confira: `↑` `↓` `←` `→` e `W` `A` `S` `D` movem o Nanobô, ele para ao soltar, não sai da tela, `ESC` pausa e retoma, `SPACE` perto de um agente mostra as duas camadas e não identifica o mesmo agente duas vezes. Se algo disso quebrar, desfaça só o último passo — por isso um passo por vez.
 
+## Codificação dos fontes (30/10/2026)
+
+Os arquivos `.c`/`.h` do projeto são **UTF-8**, e o build entrega essa codificação ao compilador: o `ItemDefinitionGroup` da plataforma x64 no `Nanobo.vcxproj` liga `/utf-8` ao lado do `/std:c11`. Sem a flag o MSVC lê o arquivo na codepage do sistema e cada acento chega à tela como dois caracteres (`cÃ©lula`), sem nenhum aviso de compilação.
+
+- Escreva os textos da interface em português correto, com acento: `bactéria`, `ameaça`, `VITÓRIA`, `NANOBÔ`.
+- Nenhum arquivo salvo em cp1252/ANSI: o sintoma é mojibake na tela.
+- A fonte embutida do Allegro desenha UTF-8 e conta a largura por caractere, então acentuar o texto não muda o layout.
+- A configuração `Release|Win32` legada não recebe a flag e não é usada.
+
 ## Como commitar
 
 Um commit simples, no fim, com tudo junto:

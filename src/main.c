@@ -320,7 +320,7 @@ bool load_resources()
         return false;
     }
 
-    title_bitmap = make_text_bitmap("NANOBO", al_map_rgb(255, 255, 255));
+    title_bitmap = make_text_bitmap("NANOBÔ", al_map_rgb(255, 255, 255));
     if (!title_bitmap)
     {
         printf("couldn't build title\n");
@@ -700,7 +700,7 @@ void draw_scan_panel()
     else
     {
         al_draw_text(font, UI_DIM, (float)text_x, (float)hud_y(4), 0,
-            "space: revelar a proxima camada");
+            "space: revelar a próxima camada");
     }
 }
 
@@ -773,10 +773,10 @@ void draw_menu()
     draw_buttons(buttons, count);
 
     al_draw_text(font, UI_DIM, SCREEN_W / 2, 248, ALLEGRO_ALIGN_CENTRE,
-        "enter ou clique para comecar");
+        "enter ou clique para começar");
 
     // objetivo da fase e o atalho de tela cheia
-    snprintf(objective, sizeof(objective), "objetivo: neutralizar as %d bacterias e chegar ao destino",
+    snprintf(objective, sizeof(objective), "objetivo: neutralizar as %d bactérias e chegar ao destino",
         threats_total());
     al_draw_text(font, UI_DIM, SCREEN_W / 2, 278, ALLEGRO_ALIGN_CENTRE, objective);
     al_draw_text(font, UI_DIM, SCREEN_W - HUD_MARGIN, 336, ALLEGRO_ALIGN_RIGHT, "F11 tela cheia");
@@ -915,8 +915,8 @@ void draw_hud()
     al_draw_text(font, UI_DIM, (float)x, (float)hud_y(0), 0, line);
     x += al_get_text_width(font, line) + UI_GAP;
 
-    al_draw_text(font, UI_DIM, (float)x, (float)hud_y(0), 0, "ameacas");
-    x += al_get_text_width(font, "ameacas") + 6;
+    al_draw_text(font, UI_DIM, (float)x, (float)hud_y(0), 0, "ameaças");
+    x += al_get_text_width(font, "ameaças") + 6;
     draw_pips((float)x, (float)(hud_y(0) + (al_get_font_line_height(font) - UI_PIP) / 2),
         threats_total(), threats_total() - threats_left());
 
@@ -955,11 +955,11 @@ void draw_hud()
     if (threats_left() > 0)
     {
         al_draw_text(font, UI_AMBER, HUD_MARGIN, hud_y(1), 0,
-            "objetivo: neutralizar as bacterias e chegar ao destino");
+            "objetivo: neutralizar as bactérias e chegar ao destino");
     }
     else
     {
-        al_draw_text(font, UI_AMBER, HUD_MARGIN, hud_y(1), 0, "objetivo: va ao destino");
+        al_draw_text(font, UI_AMBER, HUD_MARGIN, hud_y(1), 0, "objetivo: vá ao destino");
     }
 
     draw_scan_panel();
@@ -1090,7 +1090,7 @@ void draw_results()
     float right = (float)SCREEN_W - 152.0f;
     ALLEGRO_COLOR bonus_color;
 
-    al_draw_text(font, UI_TEXT, SCREEN_W / 2, 30, ALLEGRO_ALIGN_CENTRE, "FASE 1 CONCLUIDA");
+    al_draw_text(font, UI_TEXT, SCREEN_W / 2, 30, ALLEGRO_ALIGN_CENTRE, "FASE 1 CONCLUÍDA");
     draw_rule((float)SCREEN_W / 2, 44.0f, 200.0f, UI_FRAME);
     al_draw_text(font, UI_DIM, SCREEN_W / 2, 52, ALLEGRO_ALIGN_CENTRE, "resumo do encontro");
 
@@ -1100,7 +1100,7 @@ void draw_results()
     draw_stat(left, 82.0f, right, "pontos", value, UI_TEXT);
 
     snprintf(value, sizeof(value), "%d/%d", neutralized, threats_total());
-    draw_stat(left, 102.0f, right, "ameacas neutralizadas", value, UI_TEXT);
+    draw_stat(left, 102.0f, right, "ameaças neutralizadas", value, UI_TEXT);
 
     snprintf(value, sizeof(value), "%d/%d", identified_count, NUM_AGENTES);
     draw_stat(left, 122.0f, right, "agentes identificados", value, UI_TEXT);
@@ -1113,19 +1113,19 @@ void draw_results()
     else
     {
         bonus_color = UI_AMBER;
-        snprintf(value, sizeof(value), "nao obtido");
+        snprintf(value, sizeof(value), "não obtido");
     }
 
-    draw_stat(left, 142.0f, right, "bonus de identificacao", value, bonus_color);
+    draw_stat(left, 142.0f, right, "bônus de identificação", value, bonus_color);
 
     // espaco reservado ao resumo biologico da fase (#174)
     draw_panel(140.0f, 176.0f, 360.0f, 36.0f, UI_INK, UI_LINE);
     al_draw_text(font, UI_DIM, SCREEN_W / 2, 190, ALLEGRO_ALIGN_CENTRE,
-        "resumo biologico da fase: pendente (#174)");
+        "resumo biológico da fase: pendente (#174)");
 
     draw_buttons(buttons, count);
 
-    snprintf(line, sizeof(line), "enter tambem continua");
+    snprintf(line, sizeof(line), "enter também continua");
     al_draw_text(font, UI_DIM, SCREEN_W / 2, 276, ALLEGRO_ALIGN_CENTRE, line);
 }
 
@@ -1139,18 +1139,18 @@ void draw_victory()
     float left = 152.0f;
     float right = (float)SCREEN_W - 152.0f;
 
-    al_draw_text(font, UI_TEXT, SCREEN_W / 2, 30, ALLEGRO_ALIGN_CENTRE, "VITORIA");
+    al_draw_text(font, UI_TEXT, SCREEN_W / 2, 30, ALLEGRO_ALIGN_CENTRE, "VITÓRIA");
     draw_rule((float)SCREEN_W / 2, 44.0f, 200.0f, UI_FRAME);
     al_draw_text(font, UI_DIM, SCREEN_W / 2, 52, ALLEGRO_ALIGN_CENTRE,
-        "voce defendeu o organismo");
+        "você defendeu o organismo");
 
     draw_panel(140.0f, 72.0f, 360.0f, 96.0f, UI_INK, UI_FRAME);
 
     snprintf(value, sizeof(value), "%d", score);
-    draw_stat(left, 82.0f, right, "pontuacao final", value, UI_AMBER);
+    draw_stat(left, 82.0f, right, "pontuação final", value, UI_AMBER);
 
     snprintf(value, sizeof(value), "%d/%d", threats_total() - threats_left(), threats_total());
-    draw_stat(left, 102.0f, right, "ameacas neutralizadas", value, UI_TEXT);
+    draw_stat(left, 102.0f, right, "ameaças neutralizadas", value, UI_TEXT);
 
     snprintf(value, sizeof(value), "%d/%d", identified_count, NUM_AGENTES);
     draw_stat(left, 122.0f, right, "agentes identificados", value, UI_TEXT);
@@ -1162,7 +1162,7 @@ void draw_victory()
     draw_buttons(buttons, count);
 
     al_draw_text(font, UI_DIM, SCREEN_W / 2, 256, ALLEGRO_ALIGN_CENTRE,
-        "enter tambem comeca de novo");
+        "enter também começa de novo");
 }
 
 void draw_game_over()
@@ -1186,7 +1186,7 @@ void draw_game_over()
     draw_stat(left, 82.0f, right, "pontos", value, UI_TEXT);
 
     snprintf(value, sizeof(value), "%d/%d", threats_total() - threats_left(), threats_total());
-    draw_stat(left, 102.0f, right, "ameacas neutralizadas", value, UI_TEXT);
+    draw_stat(left, 102.0f, right, "ameaças neutralizadas", value, UI_TEXT);
 
     snprintf(value, sizeof(value), "%d/%d", identified_count, NUM_AGENTES);
     draw_stat(left, 122.0f, right, "agentes identificados", value, UI_TEXT);
@@ -1198,7 +1198,7 @@ void draw_game_over()
     draw_buttons(buttons, count);
 
     al_draw_text(font, UI_DIM, SCREEN_W / 2, 248, ALLEGRO_ALIGN_CENTRE,
-        "enter tambem reinicia");
+        "enter também reinicia");
 }
 
 // cada estado desenha so o que e dele, tudo no canvas logico
