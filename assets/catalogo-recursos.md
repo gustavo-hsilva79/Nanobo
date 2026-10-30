@@ -16,12 +16,13 @@ Inventário dos recursos necessários à execução atual, para orientar o carre
 | Ícone de laser vermelho (16×16) | Indicador de raio da HUD e regra do menu | `assets/sprites/icone_laser_vermelho.png`; idem |
 | Ícone de defesa (16×16) | Linha de controles do menu | `assets/sprites/icone_defesa.png`; idem |
 | Fonte embutida do Allegro | Todo o texto da interface: HUD, painel do scanner, menu, pausa e telas de fim | `al_create_builtin_font()` em `src/main.c`; não há arquivo de fonte |
+| Mapa do mundo da Fase 1 (1920×512) | Fundo do mundo, desenhado atrás de destino, agentes e Nanobô | `assets/backgrounds/mapa_fase1.png`; idem |
 
-`free_resources()` libera os nove bitmaps na ordem inversa e depois a fonte. O título do menu é um bitmap montado em tempo de carregamento a partir da fonte (`make_text_bitmap`), também liberado ali. O projétil é desenhado com `al_draw_filled_circle()` (primitivas), sem bitmap.
+`free_resources()` libera os dez bitmaps na ordem inversa e depois a fonte. O título do menu (`NANOBÔ`) é um bitmap montado em tempo de carregamento a partir da fonte (`make_text_bitmap`), também liberado ali. O projétil é desenhado com `al_draw_filled_circle()` (primitivas), sem bitmap.
 
 ## Arte final criada
 
-Os três sprites de agente, o coração e os quatro ícones de interface são carregados pelo jogo. O fundo e a tira de quadros do Nanobô ainda não são. Cada recurso tem a fonte `.aseprite` editável ao lado do `.png` exportado; o `.png` é o arquivo que o jogo deve carregar.
+Os três sprites de agente, o coração, os quatro ícones de interface e o mapa do mundo são carregados pelo jogo. A tira de quadros do Nanobô ainda não é; a arte antiga de fundo (`fundo_microscopico.png`) ficou como referência. Cada recurso tem a fonte `.aseprite` editável ao lado do `.png` exportado; o `.png` é o arquivo que o jogo deve carregar.
 
 Todos os sprites usam a mesma paleta, o mesmo tamanho de pixel e a mesma direção de luz (cima-esquerda), para manter a coesão visual.
 
@@ -87,7 +88,7 @@ O fundo é escuro e de baixo contraste de propósito: os sprites precisam contin
 | Tipo | Recursos necessários | Local definido | Estado |
 |---|---|---|---|
 | Sprites e animações | Arte final dos agentes e spritesheet animado do Nanobô | `assets/sprites/` | Agentes carregados; spritesheet criado e não carregado |
-| Cenários | Mapa do mundo da Fase 1, 1920×512 | `assets/backgrounds/` | Criado; não carregado |
+| Cenários | Mapa do mundo da Fase 1, 1920×512 | `assets/backgrounds/` | Criado e carregado (`ca4845a`) |
 | Ícones de interface | Laser, scanner, vida e defesa | `assets/sprites/` | Criados e carregados (os quatro ícones e o coração) |
 | Fontes | Tipografia final da interface | `assets/fonts/` | [PENDÊNCIA] Fonte ainda não escolhida; a fonte embutida atual é provisória |
 | Música | Trilha da partida | `assets/audio/music/` | [PENDÊNCIA] Arquivo ainda não definido |
