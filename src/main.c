@@ -133,12 +133,8 @@ void update_screen_fit()
     fit_h = (float)h / (float)SCREEN_H;
     fit = fit_w < fit_h ? fit_w : fit_h;
 
-    // escala quebrada so quando a janela e menor que a tela logica
-    if (fit >= 1.0f)
-    {
-        fit = floorf(fit);
-    }
-
+    // a escala acompanha a janela: maximizar ou redimensionar preenche a tela
+    // inteira, e so sobra barra quando a proporcao da janela nao e 16:9
     screen_scale = fit;
     screen_off_x = floorf(((float)w - (float)SCREEN_W * fit) / 2.0f);
     screen_off_y = floorf(((float)h - (float)SCREEN_H * fit) / 2.0f);
