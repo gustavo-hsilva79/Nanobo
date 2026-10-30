@@ -192,6 +192,14 @@ O jogo terá pontuação, bônus por identificação e progressão. O hi-score d
 - O feedback posterior à ação pode nomear a classificação; o painel do scanner, não.
 - A troca da paleta das bactérias (cor deixa de coincidir com o laser) fica para o M5, condicionada a playtest.
 
+### Triagem de menus e HUD (28/10/2026)
+
+- **Feedback em uma cor.** `set_feedback` recebe só o texto e todas as mensagens saem em `UI_WARM`; a consequência está na frase ("ameaça neutralizada: +10 pontos" × "parede Gram+ espessa: o raio vermelho não penetra"), não na cor. Um `feedback_kind` atravessando `gameplay.c` não paga o custo. Reabrir se o playtest do M5 mostrar jogador confundindo ganho com perda.
+- **Botão com três estados.** Normal, foco e hover; não existe estado "pressionado" porque a ativação acontece no *down* e a tela troca no mesmo evento, então esse quadro nunca seria desenhado. Revisitar só se aparecer botão que não navega (um toggle de configuração).
+- **`main.c` sem extração por enquanto.** O arquivo concentra loop, eventos, kit de UI, desenho das seis telas e entrada; extrair `ui.c` mexeria no `<ClCompile>`, no `AGENTS.md` e no guia de módulos por ganho organizacional, não funcional. Gatilho objetivo para reavaliar: `main.c` acima de 2.000 linhas, uma terceira tela nova, conflito de merge recorrente no arquivo ou build perceptivelmente lento.
+- **Tile de fundo adiado na triagem.** O mundo era preto e a arte antiga (`fundo_microscopico.png`, 640×480) não cobria 1920×512 nem tiling. A decisão foi superada pela dupla: o commit `ca4845a` trouxe `mapa_fase1.png` (1920×512) e `load_resources()` passou a carregá-lo atrás de destino, agentes e Nanobô.
+- **Fonte embutida mantida; o que faltava era a acentuação.** Os textos agora são escritos em português correto em UTF-8 e o build usa `/utf-8` (ver `docs/planejamento/guia-refatoracao-modulos.md`); trocar a fonte por TTF ou bitmap continua fora do MVP.
+
 ## Pendências
 
 - Cooldown definitivo do scanner e configuração de camadas por agente/fase no MVP.

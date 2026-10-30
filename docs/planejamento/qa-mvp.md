@@ -4,6 +4,7 @@
 > **Branch:** `feat/mvp-fluxo-e-hud` · **Commit do código testado:** `79d97b9` · **PR:** [#193](https://github.com/gustavo-hsilva79/Nanobo/pull/193)
 > **Data da execução parcial:** 26/10/2026
 > **Atualização:** 28/10/2026 — passo 3 (clique em `INICIAR`) executado e corrigido; evidência na §8.
+> **Atualização:** 30/10/2026 — textos da interface e do feedback acentuados (#194) e evidências datadas do polimento de menus e HUD (#196); ver §9.
 > **Ambiente:** Windows 11, monitor 2560×1440, janela maximizada, executável a partir da raiz do repositório; Debug|x64 e Release|x64.
 
 ## 1. Como reproduzir
@@ -40,6 +41,8 @@ Essas teclas **não existem no Release** (`#ifdef _DEBUG`). O Release foi testad
 ## 4. Roteiro e resultado
 
 Legenda: **[OK]** executado e observado · **[PEND]** depende de teclado físico ou de pessoa · **[N/E]** não executado nesta sessão.
+
+**Como ler os passos 2, 11 e 16:** a HUD de 26/10 mostrava `restam: 6/6` em cinco linhas de texto. Desde `4ae9135` a linha do HUD é `identificados x/9`, `ameaças` com marcas, `pontos`, tempo e o raio com a barra de recarga; a tela atual está na §9. Os resultados observados na data original ficam como estão.
 
 | # | Passo | Esperado | Observado | Status | Evidência |
 |---|---|---|---|---|---|
@@ -96,6 +99,8 @@ Legenda: **[OK]** executado e observado · **[PEND]** depende de teclado físico
 | Fluxo de telas com teclas de QA | auditoria | 26/10/2026 | OK (passos 12–16, 19) |
 | Pausa por perda de foco | auditoria | 26/10/2026 | OK (passo 17; Alt+Tab real) |
 | Clique em `INICIAR` | auditoria | 28/10/2026 | OK (passo 3; corrigido, §8) |
+| Acentuação dos textos (#194) | auditoria | 30/10/2026 | OK (seis telas, §9) |
+| Harness de regras após a acentuação | auditoria | 30/10/2026 | 83/83 (§9) |
 | Passos com teclado físico | — | — | pendente |
 | Playtest com pessoa externa | — | — | pendente |
 | Revisão cruzada do PR | — | — | pendente |
@@ -121,3 +126,35 @@ Evidência (Debug|x64, árvore com a correção, ainda sem commit). Na abertura 
 - `qa-mvp-10-menu-clique.png` — menu maximizado antes do clique.
 - `qa-mvp-11-clique-iniciar.png` — partida aberta pelo clique.
 - F11: fullscreen em 2560×1440 (4× exato, sem barras); na volta, janela maximizada em 2556×1407, escala 3 com offset (318, 163), e o clique no botão continua iniciando a partida. `ENTER` e o fluxo Resultados/Vitória não mudam.
+
+## 9. Atualização 30/10/2026 — textos acentuados e evidências do polimento
+
+**Commit testado:** `75030ea` (`master`) — textos em UTF-8 acentuado, `/utf-8` no `ItemDefinitionGroup` x64 e o harness com as asserções de texto atualizadas.
+**Build:** `Debug|x64` e `Release|x64` com `-t:Rebuild`: **0 avisos, 0 erros**.
+**Ambiente:** Windows 11, monitor 2560×1440 a 125%, janela maximizada — cliente 2560×1411, escala inteira 3× com offset (320, 165). Executável aberto a partir da raiz do repositório.
+**Como as capturas foram feitas:** o jogo foi dirigido por `PostMessage` (`ENTER`, `ESC`, `F`, `G`), sem roubar o foco, e a área de cliente foi copiada em 1:1 com `CopyFromScreen`; os PNGs deste registro estão reduzidos a 50% (1280×706) com `magick`.
+
+### O que foi observado
+
+| # | Passo | Resultado | Evidência |
+|---|---|---|---|---|
+| 21 | Abrir o jogo | Menu com `NANOBÔ`, `enter ou clique para começar` e `objetivo: neutralizar as 6 bactérias e chegar ao destino` | `qa-mvp-12-menu-acentos.png` |
+| 22 | `ENTER` inicia a partida | HUD `identificados 0/9  ameaças`, `pontos 0`, `00:01`, raio roxo e `pronto`; objetivo `neutralizar as bactérias` | `qa-mvp-13-jogo-acentos.png` |
+| 23 | `ESC` pausa | `PAUSE`, botão `CONTINUAR` e `esc para voltar` sobre o mundo escurecido | `qa-mvp-14-pausa-acentos.png` |
+| 24 | `F` (QA) conclui a fase | `FASE 1 CONCLUÍDA`, `pontos 60`, `ameaças neutralizadas 6/6`, `agentes identificados 0/9`, `bônus de identificação  não obtido`, `enter também continua` | `qa-mvp-15-resultados-acentos.png` |
+| 25 | `ENTER` em Resultados | `VITÓRIA`, `você defendeu o organismo`, `pontuação final 60`, `ameaças neutralizadas 6/6`, `tempo de partida`, `enter também começa de novo` | `qa-mvp-16-vitoria-acentos.png` |
+| 26 | `ENTER` e depois `G` (QA) | `GAME OVER`, `suas 3 vidas acabaram`, `0/6` e `enter também reinicia` | `qa-mvp-17-game-over-acentos.png` |
+
+- Nenhuma das seis telas exibiu mojibake: `ç`, `ã`, `ê`, `ó` e `ô` saem como um glifo só e o layout não se desloca — a fonte embutida desenha UTF-8 e a largura é contada por caractere.
+- O painel do scanner também foi observado com alvo no alcance: `alvo 8`, `bactéria detectada` (texto de `src/gameplay/gameplay.c`) e `space: revelar a próxima camada`, sem mojibake.
+
+### O que não foi testado nesta execução
+
+- **Mensagens de feedback na tela** (`ameaça neutralizada: +10 pontos`, `contato com bactéria: -1 de vida`, raio errado em cada espécie, ataque à célula): exigem mirar e andar com tecla segurada, e neste ambiente a injeção de tecla perde o foco para outra janela. A codificação está provada em dois níveis — o harness compara as sete mensagens byte a byte (83/83) e as sequências UTF-8 acentuadas estão no binário. A captura on-screen fica pendente.
+- Teclado físico: os passos 4–11 e 19 continuam `[PEND]`. `F11` já está registrado na §8 (fullscreen 4× sem barras) e não foi reexecutado nesta sessão.
+- Escala 4× (fullscreen em 1440p) e janela mínima: não recapturadas nesta sessão.
+- Playtest com pessoa externa (§6).
+
+### Harness de regras
+
+**83 casos, 83 passaram, 0 falharam** — mesmo total da medição de 28/10. Nove asserções de texto passaram a comparar a grafia acentuada; nenhum caso foi acrescentado ou removido.
