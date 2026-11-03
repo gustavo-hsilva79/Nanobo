@@ -14,7 +14,7 @@
 #include "gameplay/gameplay.h"
 
 #define BUTTON_X 240
-#define BUTTON_Y 208
+#define BUTTON_Y 210
 #define BUTTON_W 160
 #define BUTTON_H 28
 
@@ -726,15 +726,16 @@ void draw_scan_panel()
 void draw_menu()
 {
     char objective[96];
+    char bonus[96];
     int count;
     const UiButton* buttons = screen_buttons(&count);
     float panel_x = 40.0f;
-    float panel_y = 80.0f;
     float panel_w = (float)SCREEN_W - 80.0f;
-    float panel_h = 110.0f;
     float col_x = panel_x + 12.0f;
-    float x;
-    float y;
+    float controls_y = 66.0f;
+    float controls_h = 84.0f;
+    float goal_y = 156.0f;
+    float goal_h = 48.0f;
 
     // titulo em bitmap ampliado: o mesmo pixel, com peso de titulo
     if (title_bitmap)
@@ -747,55 +748,43 @@ void draw_menu()
             (float)(tw * TITLE_SCALE), (float)(th * TITLE_SCALE), 0);
     }
 
-    al_draw_text(font, UI_DIM, SCREEN_W / 2, 58, ALLEGRO_ALIGN_CENTRE, "defenda o organismo");
+    al_draw_text(font, UI_DIM, SCREEN_W / 2, 52, ALLEGRO_ALIGN_CENTRE, "defenda o organismo");
 
-    draw_panel(panel_x, panel_y, panel_w, panel_h, UI_INK, UI_FRAME);
-    al_draw_text(font, UI_AMBER, col_x, panel_y + 10.0f, 0, "COMO JOGAR");
+    // controles em tres grupos: movimentacao, combate e equipamentos (#201)
+    draw_panel(panel_x, controls_y, panel_w, controls_h, UI_INK, UI_FRAME);
+    al_draw_text(font, UI_AMBER, col_x, controls_y + 8.0f, 0, "Como jogar");
 
-    // controles da fase: teclado move e defende, mouse mira, atira e escaneia (#198)
-    y = panel_y + 32.0f;
-    al_draw_text(font, UI_TEXT, col_x, y, 0, "setas/wasd mover · cursor mira");
-    x = col_x + (float)al_get_text_width(font, "setas/wasd mover · cursor mira") + 8.0f;
-    al_draw_bitmap(defense_icon, x, y - 4.0f, 0);
-    al_draw_text(font, UI_TEXT, x + 20.0f, y, 0, "x defender");
+    al_draw_text(font, UI_AMBER, col_x, controls_y + 22.0f, 0, "Movimentação");
+    al_draw_text(font, UI_TEXT, col_x + 104.0f, controls_y + 22.0f, 0,
+        "setas ou WASD mover · cursor mirar");
 
-    y = panel_y + 54.0f;
-    x = col_x;
+    al_draw_text(font, UI_AMBER, col_x, controls_y + 38.0f, 0, "Combate");
+    al_draw_text(font, UI_TEXT, col_x + 104.0f, controls_y + 38.0f, 0,
+        "botão esquerdo atirar · botão direito escanear");
 
-    al_draw_bitmap(scanner_icon, x, y - 4.0f, 0);
-    x += 20.0f;
-    al_draw_text(font, UI_TEXT, x, y, 0, "direito escanear");
-    x += al_get_text_width(font, "direito escanear") + UI_GAP;
+    al_draw_text(font, UI_AMBER, col_x, controls_y + 54.0f, 0, "Equipamentos");
+    al_draw_text(font, UI_TEXT, col_x + 104.0f, controls_y + 54.0f, 0,
+        "1 e 2 ou roda: módulo A/B");
 
-    al_draw_text(font, UI_TEXT, x, y, 0, "esquerdo atirar");
-    x += al_get_text_width(font, "esquerdo atirar") + UI_GAP;
+    al_draw_text(font, UI_DIM, col_x, controls_y + 70.0f, 0,
+        "A age na parede · B age na camada externa");
 
-    al_draw_bitmap(laser_purple_icon, x, y - 4.0f, 0);
-    x += 20.0f;
-    al_draw_text(font, UI_TEXT, x, y, 0, "1 A");
-    x += al_get_text_width(font, "1 A") + UI_GAP;
+    // objetivo da missao em painel proprio, com os numeros da fase (#201)
+    draw_panel(panel_x, goal_y, panel_w, goal_h, UI_INK, UI_FRAME);
+    al_draw_text(font, UI_AMBER, col_x, goal_y + 8.0f, 0, "Objetivo da missão");
 
-    al_draw_bitmap(laser_red_icon, x, y - 4.0f, 0);
-    x += 20.0f;
-    al_draw_text(font, UI_TEXT, x, y, 0, "2 B");
-    x += al_get_text_width(font, "2 B") + UI_GAP;
+    snprintf(objective, sizeof(objective), "neutralizar as %d bactérias e chegar ao destino",
+        threats_total());
+    al_draw_text(font, UI_TEXT, col_x, goal_y + 22.0f, 0, objective);
 
-    al_draw_text(font, UI_DIM, x, y, 0, "roda troca");
-
-    // a regra que liga a estrutura ao modulo, ensinada uma vez (#3, #105)
-    y = panel_y + 78.0f;
-    al_draw_text(font, UI_DIM, col_x, y, 0,
-        "A parede (Gram+) · B camada extra (Gram-)");
+    snprintf(bonus, sizeof(bonus), "identificar os %d agentes vale +%d pontos",
+        NUM_AGENTES, IDENTIFICATION_BONUS);
+    al_draw_text(font, UI_DIM, col_x, goal_y + 34.0f, 0, bonus);
 
     draw_buttons(buttons, count);
 
-    al_draw_text(font, UI_DIM, SCREEN_W / 2, 248, ALLEGRO_ALIGN_CENTRE,
+    al_draw_text(font, UI_DIM, SCREEN_W / 2, 246, ALLEGRO_ALIGN_CENTRE,
         "enter ou clique para começar");
-
-    // objetivo da fase e o atalho de tela cheia
-    snprintf(objective, sizeof(objective), "objetivo: neutralizar as %d bactérias e chegar ao destino",
-        threats_total());
-    al_draw_text(font, UI_DIM, SCREEN_W / 2, 278, ALLEGRO_ALIGN_CENTRE, objective);
     al_draw_text(font, UI_DIM, SCREEN_W - HUD_MARGIN, 336, ALLEGRO_ALIGN_RIGHT, "F11 tela cheia");
 }
 
