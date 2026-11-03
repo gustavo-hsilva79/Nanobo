@@ -48,16 +48,20 @@ A segunda fase é planejada para a entrega final, após o MVP. O conteúdo envol
 
 ## Controles atuais
 
-| Tecla | Ação |
+| Controle | Ação |
 | --- | --- |
 | setas ou `WASD` | mover o Nanobô |
-| `ESPAÇO` | scanner: revela a próxima camada do alvo mais próximo |
-| `J` | atacar na direção em que o Nanobô está olhando |
-| `1` / `2` | escolher laser roxo (Gram+) / vermelho (Gram−) |
+| cursor | mirar; dentro da fase o cursor do sistema vira a mira desenhada |
+| botão esquerdo | atirar na direção do cursor |
+| botão direito sobre o agente | escanear: revela a próxima camada do alvo sob o cursor |
+| `1` / `2`, roda do mouse ou clique no ícone do módulo | trocar o módulo A/B |
 | `X` | defesa: 2 s de imunidade e 3 s de recarga |
 | `ESC` | pausar / retomar |
 | `ENTER` | iniciar partida, confirmar, nova partida |
 | clique em `INICIAR` | iniciar partida no menu |
+| `F11` | tela cheia |
+
+> `ESPAÇO` e `J` **não são mais** ataque e scanner desde #198: o mouse controla mira, ataque e scanner, e o teclado fica com movimento, defesa, módulo, pausa e navegação.
 
 > `F`, `G` e `H` são teclas de QA e existem apenas no build Debug (concluir a fase com/sem bônus e forçar Game Over). O Release não permite saltar estados.
 
