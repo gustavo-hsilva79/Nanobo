@@ -745,7 +745,10 @@ void draw_menu()
 
     // controles da fase: teclado move e defende, mouse mira, atira e escaneia (#198)
     y = panel_y + 32.0f;
-    al_draw_text(font, UI_TEXT, col_x, y, 0, "setas/wasd mover · cursor mira · x defender");
+    al_draw_text(font, UI_TEXT, col_x, y, 0, "setas/wasd mover · cursor mira");
+    x = col_x + (float)al_get_text_width(font, "setas/wasd mover · cursor mira") + 8.0f;
+    al_draw_bitmap(defense_icon, x, y - 4.0f, 0);
+    al_draw_text(font, UI_TEXT, x + 20.0f, y, 0, "x defender");
 
     y = panel_y + 54.0f;
     x = col_x;
@@ -772,8 +775,7 @@ void draw_menu()
 
     // a regra que liga a estrutura ao modulo, ensinada uma vez (#3, #105)
     y = panel_y + 78.0f;
-    al_draw_bitmap(defense_icon, col_x, y - 4.0f, 0);
-    al_draw_text(font, UI_DIM, col_x + 20.0f, y, 0,
+    al_draw_text(font, UI_DIM, col_x, y, 0,
         "A parede (Gram+) · B camada extra (Gram-)");
 
     draw_buttons(buttons, count);
@@ -1074,7 +1076,8 @@ void draw_game()
     aim_x = to_logical_x(mouse_x);
     aim_y = to_logical_y(mouse_y);
 
-    if (aim_x >= 0.0f && aim_x < (float)SCREEN_W && aim_y >= 0.0f && aim_y < (float)PLAY_H)
+    if (game_get_scene() == GAME_SCENE_GAME && aim_x >= 0.0f && aim_x < (float)SCREEN_W
+        && aim_y >= 0.0f && aim_y < (float)PLAY_H)
     {
         al_draw_circle(aim_x, aim_y, 5.0f, UI_CYAN, 1.0f);
         al_draw_line(aim_x - 9.0f, aim_y + 0.5f, aim_x - 3.0f, aim_y + 0.5f, UI_CYAN, 1.0f);
@@ -1457,8 +1460,8 @@ void handle_game_click(int button, float lx, float ly)
     float wx;
     float wy;
 
-    // clique no painel do HUD nao e acao de mundo
-    if (ly < 0.0f || ly >= (float)PLAY_H)
+    // clique no painel do HUD e na barra preta da janela nao e acao de mundo
+    if (lx < 0.0f || lx >= (float)SCREEN_W || ly < 0.0f || ly >= (float)PLAY_H)
     {
         return;
     }

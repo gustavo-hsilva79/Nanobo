@@ -28,9 +28,9 @@
 | CT-02 | menu, linha 2 | `direito escanear` / `esquerdo atirar` / `1 A` / `2 B` / `roda troca` | 16 / 15 / 3 / 3 / 10 | RF-12 |
 | CT-03 | menu, linha 3 | `A parede (Gram+) · B camada extra (Gram-)` | 41 | spec, "Módulo A e B" |
 | CT-04 | HUD | letra `A` ou `B` ao lado do ícone do módulo | 1 | #198 |
-| CT-05 | painel do scanner, sem alvo | `chegue perto e clique com o botão direito` | 42 | #198 |
-| CT-06 | painel do scanner, alvo neutralizado | `chegue perto de outro alvo e clique com o botão direito` | 57 | #198 |
-| CT-07 | painel do scanner, dica de ação | `botão direito: escanear` / `botão direito: escanear de novo` | 23 / 30 | #198 |
-| CT-08 | painel do scanner, próxima camada | `botão direito: revelar a próxima camada` | 40 | #198 |
+| CT-05 | painel do scanner, sem alvo | `chegue perto e clique com o botão direito` | 41 | #198 |
+| CT-06 | painel do scanner, alvo neutralizado | `chegue perto de outro alvo e clique com o botão direito` | 55 | #198 |
+| CT-07 | painel do scanner, dica de ação | `botão direito: escanear` / `botão direito: escanear de novo` | 23 / 31 | #198 |
+| CT-08 | painel do scanner, próxima camada | `botão direito: revelar a próxima camada` | 39 | #198 |
 
 **Limite:** a fonte embutida é 8×8, então o painel aceita ~70 caracteres por linha (640 px menos margens). Nenhuma linha acima passa de 57 caracteres.
