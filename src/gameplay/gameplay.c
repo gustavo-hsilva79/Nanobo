@@ -16,6 +16,9 @@ double match_time = 0;
 // pontos da partida atual: so a neutralizacao de uma ameaca soma (#66)
 int score = 0;
 
+// contadores do resumo educativo: zerados no reset_match, so memoria (#200)
+MatchProgress progress = { 0 };
+
 // cooldown de invulnerabilidade
 static double invulnerability_timer = 0.0;
 
@@ -254,6 +257,8 @@ static void hit_projectiles()
             // atacar a celula saudavel custa 1 de vida ao player (#14, #178)
             if (agents[j].species == SPECIES_CELL)
             {
+                progress.cell_attacks = progress.cell_attacks + 1;
+
                 // a mensagem so promete a vida perdida quando o dano aconteceu (#178)
                 if (damage_player())
                 {
@@ -262,6 +267,8 @@ static void hit_projectiles()
             }
             else if (projectiles[i].laser == laser_for_species(agents[j].species))
             {
+                progress.correct_decisions = progress.correct_decisions + 1;
+
                 if (hit_agent(j))
                 {
                     // sem identificacao a ameaca sai da cena e o bonus de 9/9 fica impossivel
@@ -281,6 +288,8 @@ static void hit_projectiles()
             }
             else
             {
+                progress.wrong_decisions = progress.wrong_decisions + 1;
+
                 // raio errado: a mensagem diz qual parede barrou o disparo (#178)
                 if (agents[j].species == SPECIES_GRAM_POSITIVE)
                 {
@@ -323,7 +332,35 @@ static void update_projectiles(double dt)
     hit_projectiles();
 }
 
-// um pulso do scanner, revela a proxima camada do alvo
+// revela a proxima camada do alvo e identifica quando as duas apareceram (#60, #61)
+static void reveal_layer(int index)
+{
+    // o painel do HUD relembra o ultimo alvo, mesmo depois de andar
+    scan_target = index;
+
+    if (agents[index].layers < MAX_LAYERS)
+    {
+        agents[index].layers = agents[index].layers + 1;
+    }
+
+    if (agents[index].layers == MAX_LAYERS && agents[index].identified == false)
+    {
+        agents[index].identified = true;
+        identified_count = identified_count + 1;
+
+        // o resumo conta leitura de agente Gram+ e Gram-, uma vez por agente (#200)
+        if (agents[index].species == SPECIES_GRAM_POSITIVE)
+        {
+            progress.scans_gram_positive = progress.scans_gram_positive + 1;
+        }
+        else if (agents[index].species == SPECIES_GRAM_NEGATIVE)
+        {
+            progress.scans_gram_negative = progress.scans_gram_negative + 1;
+        }
+    }
+}
+
+// um pulso do scanner a partir do nanobo, revela a proxima camada do alvo
 void use_scanner()
 {
     int target = pick_target(player.x, player.y);
@@ -333,19 +370,7 @@ void use_scanner()
         return;
     }
 
-    // o painel do HUD relembra o ultimo alvo, mesmo depois de andar
-    scan_target = target;
-
-    if (agents[target].layers < MAX_LAYERS)
-    {
-        agents[target].layers = agents[target].layers + 1;
-    }
-
-    if (agents[target].layers == MAX_LAYERS && agents[target].identified == false)
-    {
-        agents[target].identified = true;
-        identified_count = identified_count + 1;
-    }
+    reveal_layer(target);
 }
 
 // ultimo alvo lido pelo scanner, -1 antes da primeira leitura
@@ -753,6 +778,14 @@ void reset_match()
 
     identified_count = 0;
     score = 0;
+
+    // contadores do resumo educativo voltam a zero (#200)
+    progress.scans_gram_positive = 0;
+    progress.scans_gram_negative = 0;
+    progress.correct_decisions = 0;
+    progress.wrong_decisions = 0;
+    progress.cell_attacks = 0;
+
     phase_finished = false;
     bonus_awarded = false;
     feedback = NULL;

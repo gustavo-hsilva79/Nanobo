@@ -1127,6 +1127,14 @@ void draw_results()
 
     snprintf(line, sizeof(line), "enter também continua");
     al_draw_text(font, UI_DIM, SCREEN_W / 2, 276, ALLEGRO_ALIGN_CENTRE, line);
+
+#ifdef _DEBUG
+    // leitura temporaria dos contadores da #200; some quando a #174 desenhar o resumo
+    snprintf(line, sizeof(line), "QA progresso: scans %d/%d  decisoes %d/%d  celulas %d",
+        progress.scans_gram_positive, progress.scans_gram_negative,
+        progress.correct_decisions, progress.wrong_decisions, progress.cell_attacks);
+    al_draw_text(font, UI_DIM, SCREEN_W / 2, 300, ALLEGRO_ALIGN_CENTRE, line);
+#endif
 }
 
 void draw_victory()
