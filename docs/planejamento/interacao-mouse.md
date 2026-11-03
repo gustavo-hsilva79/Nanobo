@@ -59,7 +59,8 @@ Com a #9 implementada, o Nanobô tem posição própria (`Nanobo player`, em `sr
 
 O escopo da §4 mudou com o polimento de menus e HUD: agora **todas as telas não-jogáveis têm botão** (`MENU`, `PAUSE`, `RESULTS`, `VICTORY` e `GAME OVER`), todos com foco de teclado e destaque sob o cursor.
 
-- O retângulo do botão do menu passou a **240..400 × 208..236** na tela lógica (`BUTTON_X/Y/W/H` em `src/main.c`); os números da §1 são o registro da revisão anterior.
+- O retângulo do botão do menu passou a **240..400 × 210..238** na tela lógica (`BUTTON_X/Y/W/H` em `src/main.c`); os números da §1 são o registro da revisão anterior.
+- O botão `CONTINUAR` dos resultados fica em **240..400 × 196..224**; `NOVA PARTIDA` da vitória em **240..400 × 212..240** e a do game over em **240..400 × 204..232** (`screen_buttons`).
 - Desenho e clique leem a mesma lista (`screen_buttons`), então a área clicável é sempre a área desenhada.
 - A ativação continua acontecendo no **pressionar** (down), preservando o passo 4 da §3; ainda não existe estado visual de "apertado" porque ele não chega a ser desenhado.
 - Hover, resize e `F11` usam uma conversão única (`to_logical_x/y`) e o cursor é guardado em pixel da janela, relido no resize e no fullscreen.
