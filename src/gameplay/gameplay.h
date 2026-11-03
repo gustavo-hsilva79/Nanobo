@@ -68,6 +68,18 @@ _Static_assert(WORLD_W % 32 == 0 && WORLD_H % 32 == 0, "mundo precisa fechar no 
 // tempo da partida em segundos, so conta dentro do estado GAME
 extern double match_time;
 
+// progresso da partida para o resumo educativo (#200): so memoria, sem arquivo
+typedef struct
+{
+    int scans_gram_positive; // agentes Gram+ identificados pelo scanner
+    int scans_gram_negative; // agentes Gram- identificados pelo scanner
+    int correct_decisions;   // disparos com o modulo certo no alvo
+    int wrong_decisions;     // disparos com o modulo errado no alvo
+    int cell_attacks;        // disparos que acertaram uma celula propria
+} MatchProgress;
+
+extern MatchProgress progress;
+
 // pontos da partida atual: a neutralizacao de uma ameaca soma (#66)
 extern int score;
 
