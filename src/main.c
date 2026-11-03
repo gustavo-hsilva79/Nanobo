@@ -218,6 +218,12 @@ void toggle_fullscreen()
     al_acknowledge_resize(display);
     update_screen_fit();
     refresh_mouse();
+
+    // a troca de modo pode devolver o cursor do sistema: reaplica o estado da fase (#198)
+    if (game_get_scene() == GAME_SCENE_GAME)
+    {
+        al_hide_mouse_cursor(display);
+    }
 }
 
 // texto virado bitmap: o titulo amplia o mesmo glifo sem borrar
@@ -651,7 +657,7 @@ void draw_scan_panel()
     char line[128];
     int panel_y = hud_y(2) - 6;
     int text_x = 36;
-    const char* hint = "space: ler";
+    const char* hint = "botão direito: escanear";
 
     draw_panel(8.0f, (float)panel_y, (float)SCREEN_W - 16.0f,
         (float)(3 * HUD_LINE_H + 12), UI_PANEL, UI_FRAME);
@@ -662,7 +668,7 @@ void draw_scan_panel()
     {
         al_draw_text(font, UI_DIM, (float)text_x, (float)hud_y(2), 0, "nenhum alvo no alcance");
         al_draw_text(font, UI_DIM, (float)text_x, (float)hud_y(3), 0,
-            "chegue perto e aperte space");
+            "chegue perto e clique com o botão direito");
         snprintf(line, sizeof(line), "alcance do scanner: %d px", SCAN_RANGE);
         al_draw_text(font, UI_FRAME, (float)text_x, (float)hud_y(4), 0, line);
         return;
@@ -673,7 +679,7 @@ void draw_scan_panel()
         snprintf(line, sizeof(line), "alvo %d  neutralizado", agents[target].id);
         al_draw_text(font, UI_DIM, (float)text_x, (float)hud_y(2), 0, line);
         al_draw_text(font, UI_DIM, (float)text_x, (float)hud_y(3), 0,
-            "chegue perto de outro alvo e aperte space");
+            "chegue perto de outro alvo e clique com o botão direito");
         return;
     }
 
@@ -683,7 +689,7 @@ void draw_scan_panel()
     // a dica de acao fica na mesma linha do cabecalho
     if (agents[target].layers >= MAX_LAYERS)
     {
-        hint = "space: ler de novo";
+        hint = "botão direito: escanear de novo";
     }
 
     al_draw_text(font, UI_DIM, (float)(SCREEN_W - 16 - al_get_text_width(font, hint)),
@@ -700,7 +706,7 @@ void draw_scan_panel()
     else
     {
         al_draw_text(font, UI_DIM, (float)text_x, (float)hud_y(4), 0,
-            "space: revelar a próxima camada");
+            "botão direito: revelar a próxima camada");
     }
 }
 
@@ -737,38 +743,40 @@ void draw_menu()
     draw_panel(panel_x, panel_y, panel_w, panel_h, UI_INK, UI_FRAME);
     al_draw_text(font, UI_AMBER, col_x, panel_y + 10.0f, 0, "COMO JOGAR");
 
-    // controles numa linha, cada um com o icone da acao
+    // controles da fase: teclado move e defende, mouse mira, atira e escaneia (#198)
     y = panel_y + 32.0f;
+    al_draw_text(font, UI_TEXT, col_x, y, 0, "setas/wasd mover · cursor mira");
+    x = col_x + (float)al_get_text_width(font, "setas/wasd mover · cursor mira") + 8.0f;
+    al_draw_bitmap(defense_icon, x, y - 4.0f, 0);
+    al_draw_text(font, UI_TEXT, x + 20.0f, y, 0, "x defender");
+
+    y = panel_y + 54.0f;
     x = col_x;
 
     al_draw_bitmap(scanner_icon, x, y - 4.0f, 0);
     x += 20.0f;
-    al_draw_text(font, UI_TEXT, x, y, 0, "space ler");
-    x += al_get_text_width(font, "space ler") + UI_GAP;
+    al_draw_text(font, UI_TEXT, x, y, 0, "direito escanear");
+    x += al_get_text_width(font, "direito escanear") + UI_GAP;
+
+    al_draw_text(font, UI_TEXT, x, y, 0, "esquerdo atirar");
+    x += al_get_text_width(font, "esquerdo atirar") + UI_GAP;
 
     al_draw_bitmap(laser_purple_icon, x, y - 4.0f, 0);
     x += 20.0f;
-    al_draw_text(font, UI_TEXT, x, y, 0, "1 roxo");
-    x += al_get_text_width(font, "1 roxo") + UI_GAP;
+    al_draw_text(font, UI_TEXT, x, y, 0, "1 A");
+    x += al_get_text_width(font, "1 A") + UI_GAP;
 
     al_draw_bitmap(laser_red_icon, x, y - 4.0f, 0);
     x += 20.0f;
-    al_draw_text(font, UI_TEXT, x, y, 0, "2 vermelho");
-    x += al_get_text_width(font, "2 vermelho") + UI_GAP;
+    al_draw_text(font, UI_TEXT, x, y, 0, "2 B");
+    x += al_get_text_width(font, "2 B") + UI_GAP;
 
-    al_draw_bitmap(defense_icon, x, y - 4.0f, 0);
-    x += 20.0f;
-    al_draw_text(font, UI_TEXT, x, y, 0, "x defender");
+    al_draw_text(font, UI_DIM, x, y, 0, "roda troca");
 
-    // a regra que liga a pista do envelope ao raio, ensinada uma vez (#3)
-    y = panel_y + 58.0f;
-    al_draw_filled_rectangle(col_x, y - 1.0f, col_x + 8.0f, y + 7.0f, UI_PURPLE);
-    al_draw_text(font, UI_DIM, col_x + 16.0f, y, 0, "parede espessa = Gram+ = raio roxo");
-
+    // a regra que liga a estrutura ao modulo, ensinada uma vez (#3, #105)
     y = panel_y + 78.0f;
-    al_draw_filled_rectangle(col_x, y - 1.0f, col_x + 8.0f, y + 7.0f, UI_RED);
-    al_draw_text(font, UI_DIM, col_x + 16.0f, y, 0,
-        "parede fina + membrana externa = Gram- = raio vermelho");
+    al_draw_text(font, UI_DIM, col_x, y, 0,
+        "A parede (Gram+) · B camada extra (Gram-)");
 
     draw_buttons(buttons, count);
 
@@ -875,6 +883,7 @@ void draw_hud()
     int total_seconds;
     int x_score;
     int x_time;
+    int x_letter;
     int x_icon;
     int x_bar;
     int x_word;
@@ -882,6 +891,7 @@ void draw_hud()
     char score_text[32];
     char timer_text[16];
     const char* state_text;
+    const char* module_letter;
     ALLEGRO_BITMAP* laser_icon;
 
     al_draw_filled_rectangle(0.0f, (float)SCAN_PANEL_Y, (float)SCREEN_W, (float)SCREEN_H, UI_INK);
@@ -936,6 +946,9 @@ void draw_hud()
 
     laser_icon = player.laser == LASER_GRAM_POSITIVE ? laser_purple_icon : laser_red_icon;
 
+    // o HUD diz qual modulo esta ativo, nao so a cor (#198)
+    module_letter = player.laser == LASER_GRAM_POSITIVE ? "A" : "B";
+
     total_seconds = (int)match_time;
     snprintf(timer_text, sizeof(timer_text), "%02d:%02d", total_seconds / 60, total_seconds % 60);
     snprintf(score_text, sizeof(score_text), "pontos %d", score);
@@ -943,11 +956,13 @@ void draw_hud()
     x_word = SCREEN_W - HUD_MARGIN - al_get_text_width(font, state_text);
     x_bar = x_word - 6 - UI_BAR_W;
     x_icon = x_bar - 4 - al_get_bitmap_width(laser_icon);
-    x_time = x_icon - UI_GAP - al_get_text_width(font, timer_text);
+    x_letter = x_icon - 4 - al_get_text_width(font, module_letter);
+    x_time = x_letter - UI_GAP - al_get_text_width(font, timer_text);
     x_score = x_time - UI_GAP - al_get_text_width(font, score_text);
 
     al_draw_text(font, UI_TEXT, (float)x_score, (float)hud_y(0), 0, score_text);
     al_draw_text(font, UI_DIM, (float)x_time, (float)hud_y(0), 0, timer_text);
+    al_draw_text(font, UI_AMBER, (float)x_letter, (float)hud_y(0), 0, module_letter);
     al_draw_bitmap(laser_icon, (float)x_icon, (float)(hud_y(0) - 4), 0);
     draw_cooldown_bar((float)x_bar, (float)(hud_y(0) + 1), attack_cooldown_left());
     al_draw_text(font, UI_DIM, (float)x_word, (float)hud_y(0), 0, state_text);
@@ -972,6 +987,8 @@ void draw_game()
 {
     int i;
     const char* message;
+    float aim_x;
+    float aim_y;
 
     // o mundo para na faixa jogavel: sprite nenhum entra no painel
     al_set_clipping_rectangle(0, 0, SCREEN_W, PLAY_H);
@@ -1055,6 +1072,20 @@ void draw_game()
     // marca o destino quando ele esta fora da faixa visivel (#19)
     draw_destination_hint();
 
+    // mira livre: o cursor do sistema some na fase e vira esta marca (#198)
+    aim_x = to_logical_x(mouse_x);
+    aim_y = to_logical_y(mouse_y);
+
+    if (game_get_scene() == GAME_SCENE_GAME && aim_x >= 0.0f && aim_x < (float)SCREEN_W
+        && aim_y >= 0.0f && aim_y < (float)PLAY_H)
+    {
+        al_draw_circle(aim_x, aim_y, 5.0f, UI_CYAN, 1.0f);
+        al_draw_line(aim_x - 9.0f, aim_y + 0.5f, aim_x - 3.0f, aim_y + 0.5f, UI_CYAN, 1.0f);
+        al_draw_line(aim_x + 3.0f, aim_y + 0.5f, aim_x + 9.0f, aim_y + 0.5f, UI_CYAN, 1.0f);
+        al_draw_line(aim_x + 0.5f, aim_y - 9.0f, aim_x + 0.5f, aim_y - 3.0f, UI_CYAN, 1.0f);
+        al_draw_line(aim_x + 0.5f, aim_y + 3.0f, aim_x + 0.5f, aim_y + 9.0f, UI_CYAN, 1.0f);
+    }
+
     // o clip do painel nao pode intersectar o clip do mundo, senao o HUD some
     al_reset_clipping_rectangle();
 
@@ -1127,6 +1158,14 @@ void draw_results()
 
     snprintf(line, sizeof(line), "enter também continua");
     al_draw_text(font, UI_DIM, SCREEN_W / 2, 276, ALLEGRO_ALIGN_CENTRE, line);
+
+#ifdef _DEBUG
+    // leitura temporaria dos contadores da #200; some quando a #174 desenhar o resumo
+    snprintf(line, sizeof(line), "QA progresso: scans %d/%d  decisoes %d/%d  celulas %d",
+        progress.scans_gram_positive, progress.scans_gram_negative,
+        progress.correct_decisions, progress.wrong_decisions, progress.cell_attacks);
+    al_draw_text(font, UI_DIM, SCREEN_W / 2, 300, ALLEGRO_ALIGN_CENTRE, line);
+#endif
 }
 
 void draw_victory()
@@ -1211,6 +1250,16 @@ void render()
     {
         ui_last_scene = scene;
         ui_focus = 0;
+
+        // na fase o cursor do sistema vira mira; nas outras telas ele volta (#198)
+        if (scene == GAME_SCENE_GAME)
+        {
+            al_hide_mouse_cursor(display);
+        }
+        else
+        {
+            al_show_mouse_cursor(display);
+        }
     }
 
     update_screen_fit();
@@ -1310,17 +1359,9 @@ void handle_key_down(int key)
     {
         key_right = true;
     }
-    else if (key == ALLEGRO_KEY_SPACE)
-    {
-        use_scanner();
-    }
     else if (key == ALLEGRO_KEY_ESCAPE)
     {
         game_set_scene(GAME_SCENE_PAUSE);
-    }
-    else if (key == ALLEGRO_KEY_J)
-    {
-        shoot();
     }
     else if (key == ALLEGRO_KEY_X)
     {
@@ -1413,14 +1454,48 @@ void handle_key_up(int key)
     }
 }
 
+// clique na fase: esquerdo atira para o cursor, direito escaneia o alvo sob ele (#198)
+void handle_game_click(int button, float lx, float ly)
+{
+    float wx;
+    float wy;
+
+    // clique no painel do HUD e na barra preta da janela nao e acao de mundo
+    if (lx < 0.0f || lx >= (float)SCREEN_W || ly < 0.0f || ly >= (float)PLAY_H)
+    {
+        return;
+    }
+
+    wx = lx + camera.x;
+    wy = ly + camera.y;
+
+    if (button == 1)
+    {
+        shoot_toward(wx, wy);
+    }
+    else if (button == 2)
+    {
+        scan_at(wx, wy);
+    }
+}
+
 // clique do mouse vem em pixel da janela: converte para pixel da tela logica
-void handle_mouse_click(float x, float y)
+void handle_mouse_click(int button, float x, float y)
 {
     float lx = to_logical_x(x);
     float ly = to_logical_y(y);
     int count;
-    const UiButton* buttons = screen_buttons(&count);
+    const UiButton* buttons;
     int i;
+
+    // na fase o clique e acao de jogo, nao botao de tela (#198)
+    if (game_get_scene() == GAME_SCENE_GAME)
+    {
+        handle_game_click(button, lx, ly);
+        return;
+    }
+
+    buttons = screen_buttons(&count);
 
     if (buttons == NULL)
     {
@@ -1556,13 +1631,19 @@ int main()
                 break;
 
             case ALLEGRO_EVENT_MOUSE_BUTTON_DOWN:
-                handle_mouse_click(event.mouse.x, event.mouse.y);
+                handle_mouse_click(event.mouse.button, event.mouse.x, event.mouse.y);
                 break;
 
             case ALLEGRO_EVENT_MOUSE_AXES:
                 // hover: guarda o pixel da janela, quem desenha converte
                 mouse_x = event.mouse.x;
                 mouse_y = event.mouse.y;
+
+                // roda do mouse troca o modulo dentro da fase (#198)
+                if (event.mouse.dz != 0 && game_get_scene() == GAME_SCENE_GAME)
+                {
+                    toggle_module();
+                }
                 break;
 
             case ALLEGRO_EVENT_DISPLAY_RESIZE:
