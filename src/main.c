@@ -30,8 +30,6 @@ _Static_assert(HUD_LINES * HUD_LINE_H + 2 * HUD_MARGIN <= PANEL_H, "HUD nao cabe
 // medidas do kit de interface, todas derivadas do painel e da fonte
 #define UI_PAD 8
 #define UI_GAP 12
-#define UI_PIP 6
-#define UI_PIP_GAP 2
 #define UI_BAR_SEGMENTS 4
 #define UI_SEG_W 8
 #define UI_SEG_H 6
@@ -613,20 +611,6 @@ void activate_button(int index)
     }
 }
 
-// pips de ameaca: bloco cheio conta como neutralizada
-void draw_pips(float x, float y, int total, int checks)
-{
-    int i;
-
-    for (i = 0; i < total; i++)
-    {
-        float px = x + (float)i * (float)(UI_PIP + UI_PIP_GAP);
-        ALLEGRO_COLOR color = i < checks ? UI_AMBER : UI_SLOT;
-
-        al_draw_filled_rectangle(px, y, px + (float)UI_PIP, y + (float)UI_PIP, color);
-    }
-}
-
 // barra da recarga do ataque: segmento cheio quando o disparo esta liberado
 void draw_cooldown_bar(float x, float y, float fraction)
 {
@@ -924,14 +908,9 @@ void draw_hud()
 
     x = HUD_MARGIN + PLAYER_MAX_HEALTH * (al_get_bitmap_width(heart_icon) + 2) + UI_GAP;
 
-    snprintf(line, sizeof(line), "identificados %d/%d", identified_count, NUM_AGENTES);
+    // ameacas com contador: seis blocos de 6 px nao dizem quantas restam
+    snprintf(line, sizeof(line), "ameaças %d/%d", threats_total() - threats_left(), threats_total());
     al_draw_text(font, UI_DIM, (float)x, (float)hud_y(0), 0, line);
-    x += al_get_text_width(font, line) + UI_GAP;
-
-    al_draw_text(font, UI_DIM, (float)x, (float)hud_y(0), 0, "ameaças");
-    x += al_get_text_width(font, "ameaças") + 6;
-    draw_pips((float)x, (float)(hud_y(0) + (al_get_font_line_height(font) - UI_PIP) / 2),
-        threats_total(), threats_total() - threats_left());
 
     // lado direito: pontos, tempo e o raio com a recarga, tudo medido da borda
     if (defense_state() == 1)
@@ -979,6 +958,11 @@ void draw_hud()
     {
         al_draw_text(font, UI_AMBER, HUD_MARGIN, hud_y(1), 0, "objetivo: vá ao destino");
     }
+
+    // identificados fica na linha do objetivo: e progresso do bonus, nao do combate
+    snprintf(line, sizeof(line), "identificados %d/%d", identified_count, NUM_AGENTES);
+    al_draw_text(font, UI_DIM, (float)(SCREEN_W - HUD_MARGIN), (float)hud_y(1),
+        ALLEGRO_ALIGN_RIGHT, line);
 
     draw_scan_panel();
 
