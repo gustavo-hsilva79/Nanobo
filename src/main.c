@@ -98,6 +98,9 @@ float mouse_y = 0.0f;
 
 // botao focado na tela atual e a ultima cena desenhada
 int ui_focus = 0;
+
+// overlay de depuracao da interface: F1 liga e desliga, so existe no Debug
+bool show_debug = false;
 GameScene ui_last_scene = GAME_SCENE_MENU;
 
 // rele a posicao do cursor na janela: resize e fullscreen mudam o referencial
@@ -1149,22 +1152,20 @@ void draw_results()
 
     draw_stat(left, 142.0f, right, "bônus de identificação", value, bonus_color);
 
-    // espaco reservado ao resumo biologico da fase (#174)
-    draw_panel(140.0f, 176.0f, 360.0f, 36.0f, UI_INK, UI_LINE);
-    al_draw_text(font, UI_DIM, SCREEN_W / 2, 190, ALLEGRO_ALIGN_CENTRE,
-        "resumo biológico da fase: pendente (#174)");
-
     draw_buttons(buttons, count);
 
     snprintf(line, sizeof(line), "enter também continua");
     al_draw_text(font, UI_DIM, SCREEN_W / 2, 276, ALLEGRO_ALIGN_CENTRE, line);
 
 #ifdef _DEBUG
-    // leitura temporaria dos contadores da #200; some quando a #174 desenhar o resumo
-    snprintf(line, sizeof(line), "QA progresso: scans %d/%d  decisoes %d/%d  celulas %d",
-        progress.scans_gram_positive, progress.scans_gram_negative,
-        progress.correct_decisions, progress.wrong_decisions, progress.cell_attacks);
-    al_draw_text(font, UI_DIM, SCREEN_W / 2, 300, ALLEGRO_ALIGN_CENTRE, line);
+    // leitura temporaria dos contadores da #200: F1 liga e desliga (#202)
+    if (show_debug)
+    {
+        snprintf(line, sizeof(line), "QA scans %d/%d decisoes %d/%d celulas %d",
+            progress.scans_gram_positive, progress.scans_gram_negative,
+            progress.correct_decisions, progress.wrong_decisions, progress.cell_attacks);
+        al_draw_text(font, UI_DIM, SCREEN_W / 2, 340, ALLEGRO_ALIGN_CENTRE, line);
+    }
 #endif
 }
 
@@ -1311,6 +1312,13 @@ void handle_key_down(int key)
     if (key == ALLEGRO_KEY_F11)
     {
         toggle_fullscreen();
+        return;
+    }
+
+    // F1 liga a leitura de QA sobre a tela, em qualquer cena (#202)
+    if (key == ALLEGRO_KEY_F1)
+    {
+        show_debug = !show_debug;
         return;
     }
 
