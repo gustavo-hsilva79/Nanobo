@@ -743,38 +743,38 @@ void draw_menu()
     draw_panel(panel_x, panel_y, panel_w, panel_h, UI_INK, UI_FRAME);
     al_draw_text(font, UI_AMBER, col_x, panel_y + 10.0f, 0, "COMO JOGAR");
 
-    // controles numa linha, cada um com o icone da acao
+    // controles da fase: teclado move e defende, mouse mira, atira e escaneia (#198)
     y = panel_y + 32.0f;
+    al_draw_text(font, UI_TEXT, col_x, y, 0, "setas/wasd mover · cursor mira · x defender");
+
+    y = panel_y + 54.0f;
     x = col_x;
 
     al_draw_bitmap(scanner_icon, x, y - 4.0f, 0);
     x += 20.0f;
-    al_draw_text(font, UI_TEXT, x, y, 0, "space ler");
-    x += al_get_text_width(font, "space ler") + UI_GAP;
+    al_draw_text(font, UI_TEXT, x, y, 0, "direito escanear");
+    x += al_get_text_width(font, "direito escanear") + UI_GAP;
+
+    al_draw_text(font, UI_TEXT, x, y, 0, "esquerdo atirar");
+    x += al_get_text_width(font, "esquerdo atirar") + UI_GAP;
 
     al_draw_bitmap(laser_purple_icon, x, y - 4.0f, 0);
     x += 20.0f;
-    al_draw_text(font, UI_TEXT, x, y, 0, "1 roxo");
-    x += al_get_text_width(font, "1 roxo") + UI_GAP;
+    al_draw_text(font, UI_TEXT, x, y, 0, "1 A");
+    x += al_get_text_width(font, "1 A") + UI_GAP;
 
     al_draw_bitmap(laser_red_icon, x, y - 4.0f, 0);
     x += 20.0f;
-    al_draw_text(font, UI_TEXT, x, y, 0, "2 vermelho");
-    x += al_get_text_width(font, "2 vermelho") + UI_GAP;
+    al_draw_text(font, UI_TEXT, x, y, 0, "2 B");
+    x += al_get_text_width(font, "2 B") + UI_GAP;
 
-    al_draw_bitmap(defense_icon, x, y - 4.0f, 0);
-    x += 20.0f;
-    al_draw_text(font, UI_TEXT, x, y, 0, "x defender");
+    al_draw_text(font, UI_DIM, x, y, 0, "roda troca");
 
-    // a regra que liga a pista do envelope ao raio, ensinada uma vez (#3)
-    y = panel_y + 58.0f;
-    al_draw_filled_rectangle(col_x, y - 1.0f, col_x + 8.0f, y + 7.0f, UI_PURPLE);
-    al_draw_text(font, UI_DIM, col_x + 16.0f, y, 0, "parede espessa = Gram+ = raio roxo");
-
+    // a regra que liga a estrutura ao modulo, ensinada uma vez (#3, #105)
     y = panel_y + 78.0f;
-    al_draw_filled_rectangle(col_x, y - 1.0f, col_x + 8.0f, y + 7.0f, UI_RED);
-    al_draw_text(font, UI_DIM, col_x + 16.0f, y, 0,
-        "parede fina + membrana externa = Gram- = raio vermelho");
+    al_draw_bitmap(defense_icon, col_x, y - 4.0f, 0);
+    al_draw_text(font, UI_DIM, col_x + 20.0f, y, 0,
+        "A parede (Gram+) · B camada extra (Gram−)");
 
     draw_buttons(buttons, count);
 
@@ -881,6 +881,7 @@ void draw_hud()
     int total_seconds;
     int x_score;
     int x_time;
+    int x_letter;
     int x_icon;
     int x_bar;
     int x_word;
@@ -888,6 +889,7 @@ void draw_hud()
     char score_text[32];
     char timer_text[16];
     const char* state_text;
+    const char* module_letter;
     ALLEGRO_BITMAP* laser_icon;
 
     al_draw_filled_rectangle(0.0f, (float)SCAN_PANEL_Y, (float)SCREEN_W, (float)SCREEN_H, UI_INK);
@@ -942,6 +944,9 @@ void draw_hud()
 
     laser_icon = player.laser == LASER_GRAM_POSITIVE ? laser_purple_icon : laser_red_icon;
 
+    // o HUD diz qual modulo esta ativo, nao so a cor (#198)
+    module_letter = player.laser == LASER_GRAM_POSITIVE ? "A" : "B";
+
     total_seconds = (int)match_time;
     snprintf(timer_text, sizeof(timer_text), "%02d:%02d", total_seconds / 60, total_seconds % 60);
     snprintf(score_text, sizeof(score_text), "pontos %d", score);
@@ -949,11 +954,13 @@ void draw_hud()
     x_word = SCREEN_W - HUD_MARGIN - al_get_text_width(font, state_text);
     x_bar = x_word - 6 - UI_BAR_W;
     x_icon = x_bar - 4 - al_get_bitmap_width(laser_icon);
-    x_time = x_icon - UI_GAP - al_get_text_width(font, timer_text);
+    x_letter = x_icon - 4 - al_get_text_width(font, module_letter);
+    x_time = x_letter - UI_GAP - al_get_text_width(font, timer_text);
     x_score = x_time - UI_GAP - al_get_text_width(font, score_text);
 
     al_draw_text(font, UI_TEXT, (float)x_score, (float)hud_y(0), 0, score_text);
     al_draw_text(font, UI_DIM, (float)x_time, (float)hud_y(0), 0, timer_text);
+    al_draw_text(font, UI_AMBER, (float)x_letter, (float)hud_y(0), 0, module_letter);
     al_draw_bitmap(laser_icon, (float)x_icon, (float)(hud_y(0) - 4), 0);
     draw_cooldown_bar((float)x_bar, (float)(hud_y(0) + 1), attack_cooldown_left());
     al_draw_text(font, UI_DIM, (float)x_word, (float)hud_y(0), 0, state_text);
@@ -978,6 +985,8 @@ void draw_game()
 {
     int i;
     const char* message;
+    float aim_x;
+    float aim_y;
 
     // o mundo para na faixa jogavel: sprite nenhum entra no painel
     al_set_clipping_rectangle(0, 0, SCREEN_W, PLAY_H);
@@ -1039,6 +1048,19 @@ void draw_game()
             al_draw_filled_circle(view_x(projectiles[i].x), view_y(projectiles[i].y),
                 PROJECTILE_RADIUS, UI_RED);
         }
+    }
+
+    // mira livre: o cursor do sistema some na fase e vira esta marca (#198)
+    aim_x = to_logical_x(mouse_x);
+    aim_y = to_logical_y(mouse_y);
+
+    if (aim_x >= 0.0f && aim_x < (float)SCREEN_W && aim_y >= 0.0f && aim_y < (float)PLAY_H)
+    {
+        al_draw_circle(aim_x, aim_y, 5.0f, UI_CYAN, 1.0f);
+        al_draw_line(aim_x - 9.0f, aim_y + 0.5f, aim_x - 3.0f, aim_y + 0.5f, UI_CYAN, 1.0f);
+        al_draw_line(aim_x + 3.0f, aim_y + 0.5f, aim_x + 9.0f, aim_y + 0.5f, UI_CYAN, 1.0f);
+        al_draw_line(aim_x + 0.5f, aim_y - 9.0f, aim_x + 0.5f, aim_y - 3.0f, UI_CYAN, 1.0f);
+        al_draw_line(aim_x + 0.5f, aim_y + 3.0f, aim_x + 0.5f, aim_y + 9.0f, UI_CYAN, 1.0f);
     }
 
     // feedback educacional curto da ultima decisao (#178), com placa de fundo
