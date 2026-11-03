@@ -670,27 +670,15 @@ void draw_scan_panel()
         al_draw_text(font, UI_TEXT, (float)text_x, (float)row_info, 0,
             "Chegue perto de outro agente.");
         al_draw_text(font, UI_DIM, (float)text_x, (float)row_action, 0,
-            "botão direito sobre o agente"
+            "botão direito sobre o agente");
         return;
     }
 
-// cabecalho: estado do scan a esquerda, o que apareceu a direita
-if (agents[target].layers == 0)
-{
-    state = "Alvo detectado";
-}
-else if (agents[target].layers < MAX_LAYERS)
-{
-    state = "Identificando...";
-}
-
-al_draw_text(font, UI_DIM, (float)(SCREEN_W - 16 - al_get_text_width(font, hint)),
-    (float)hud_y(2), 0, hint);
-
-al_draw_text(font, UI_TEXT, (float)text_x, (float)hud_y(3), 0,
-    layer_one_text(agents[target].name));
-
-if (agents[target].layers >= MAX_LAYERS)
+    if (agents[target].layers == 0)
+    {
+        state = "Alvo detectado";
+    }
+    else if (agents[target].layers < MAX_LAYERS)
     {
         state = "Leitura 1 de 2";
     }
@@ -717,9 +705,11 @@ if (agents[target].layers >= MAX_LAYERS)
     if (agents[target].layers < MAX_LAYERS)
     {
         al_draw_text(font, UI_TEXT, (float)text_x, (float)row_info, 0,
-            layer_one_text(agents[target].species));
+            layer_one_text(agents[target].name));
+
         al_draw_text(font, UI_DIM, (float)text_x, (float)row_action, 0,
             "clique de novo para revelar a estrutura");
+
         return;
     }
 
