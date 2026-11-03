@@ -64,3 +64,36 @@ O escopo da §4 mudou com o polimento de menus e HUD: agora **todas as telas nã
 - A ativação continua acontecendo no **pressionar** (down), preservando o passo 4 da §3; ainda não existe estado visual de "apertado" porque ele não chega a ser desenhado.
 - Hover, resize e `F11` usam uma conversão única (`to_logical_x/y`) e o cursor é guardado em pixel da janela, relido no resize e no fullscreen.
 - Continua valendo: clique fora de qualquer botão não produz efeito; no estado `GAME` nenhum clique tem ação.
+
+## 8. Atualização 03/11/2026 — mouse no jogo (#198)
+
+A §7 registrava que, no estado `GAME`, nenhum clique tinha ação. Esta revisão muda isso: o mouse passa a mirar, atirar, escanear e trocar o módulo dentro da fase; as regras de interface das §1–§7 continuam valendo fora do jogo.
+
+| Item | Onde |
+|---|---|
+| Clique esquerdo atira na direção do cursor | `handle_game_click()` em `src/main.c` |
+| Clique direito escaneia o agente sob o cursor | `scan_at()` em `src/gameplay/gameplay.c` |
+| Roda do mouse e `1`/`2` trocam o módulo | `toggle_module()` e `handle_key_down()` |
+| Janela → tela lógica → mundo | `to_logical_x/y` + `camera` |
+| Cursor escondido na fase e mira desenhada | `render()` e `draw_game()` |
+
+- A tolerância do scan é de 24 px entre o cursor e o centro do agente (`CURSOR_SCAN_TOLERANCE`); o alcance de 130 px continua medido do Nanobô (`SCAN_RANGE`).
+- Clique com y lógico ≥ `PLAY_H` (painel do HUD) não dispara nem escaneia.
+- `ESPAÇO` e `J` deixam de existir no gameplay: ataque e scan são só do mouse.
+- Cursor a menos de 8 px do Nanobô cai na direção do `facing` (`AIM_DEAD_ZONE`).
+- Clique no ícone do módulo no HUD **não** foi implementado nesta revisão; a troca é pela roda e por `1`/`2`.
+
+### 8.1 Verificação executada (03/11/2026)
+
+Debug x64, janela maximizada (cliente 1920×1080, escala inteira 3), capturas do cliente com foco, clique e roda sintéticos. Evidências em `docs/auditoria/evidencias/qa-m4-01-menu-controles.png` e `qa-m4-02-hud-modulo-mira.png`.
+
+| Passo | Esperado | Observado |
+|---|---|---|
+| 1. Entrar na fase e mover o cursor | a mira acompanha o cursor; o cursor do sistema some | **[OK]** mira ciano desenhada no ponto do cursor; o cursor do sistema não entra na captura, então "sumiu" não é verificável por imagem — a mira ocupa o lugar dele |
+| 2. Clique direito sobre uma bactéria a até 130 px | o painel mostra a leitura daquele alvo | **[PEND]** a tentativa com o agente em movimento não leu (ele saiu dos 24 px entre a captura e o clique); o caso fica para o QA manual da #107, com alvo parado |
+| 3. Clique esquerdo longe do Nanobô | o projétil sai na direção do clique | **[OK]** o HUD entra em `recarga` e a barra cai para 3/4; o projétil não aparece na captura (sai do quadro em menos de um segundo) |
+| 4. Roda do mouse e `1`/`2` | a letra do módulo no HUD troca entre A e B | **[OK]** roda: `A` → `B` com o ícone vermelho (qa-m4-02); `1`/`2` não verificado em runtime — teclado injetado não chega à janela nesta sessão |
+| 5. Clique no painel do HUD | nada é disparado | **[PEND]** não executado |
+| 6. `ESC` e `ESC` | pausa com o cursor de volta; volta ao jogo com a mira | **[PEND]** depende de teclado, que não chega por injeção nesta sessão |
+
+**Limite deste registro:** teclado sintético (`SendInput` e `PostMessage`) não chegou à janela do Allegro aqui; tudo que depende de tecla — `1`/`2`, `ESC`, o pulo do Game Over para a fase e a tecla `F` de QA — ficou para o QA manual da #107. O menu e a HUD que a captura mostra são evidência de desenho, não de entrada.
