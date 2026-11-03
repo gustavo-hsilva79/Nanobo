@@ -29,6 +29,7 @@ Este documento define o fluxo geral da máquina de estados previsto em #7/#98. A
 
 - `GAME OVER` é alcançado de verdade quando `player.health == 0`.
 - `RESULTS` é alcançado automaticamente quando a fase conclui (6 ameaças neutralizadas + Nanobô no destino, #26/#70); `VICTORY` vem de `RESULTS` por `ENTER`.
+- **Decisão de 03/11/2026 (D2.1, `decisoes.md`):** a conclusão passa a exigir também a identificação dos agentes. Até a mudança ser implementada, a regra em vigor é a de #26/#70 acima.
 - `VICTORY` e `GAME OVER` iniciam nova partida com reset completo (#74/#75).
 - `F`, `G` e `H` são teclas de QA e existem somente no build Debug; o Release não tem atalho de estado (#76).
 - Perder o foco da janela durante `GAME` entra em `PAUSE`; retomar é `ESC`.

@@ -216,6 +216,8 @@ O jogo terá pontuação, bônus por identificação e progressão. O hi-score d
 - **Feedback.** Cada decisão tem uma mensagem curta (até 2 linhas) que explica a pista ou a regra do jogo; o primeiro erro traz uma pergunta e o segundo explica o mecanismo, sem termos moleculares e sem recomendar tratamento.
 - **Resumo e contadores.** A tela de Resultados usa apenas contadores em memória (scans por grupo, decisões certas e erradas, ataques a células próprias), zerados em `reset_match()`; sem CSV nem telemetria no M4.
 - **Arquitetura.** Só os quatro arquivos compilados: briefing, HUD e resumo em `main.c`; regras, contadores e feedback em `gameplay.c`. Nenhum módulo `src/ui/`.
+- **D2.1 — a identificação é condição de conclusão (03/11/2026).** Vencer sem escanear **não é aceitável**: identificar os agentes deixa de ser apenas bônus e passa a ser exigência para concluir a fase. Substitui, por decisão da dupla, a regra de #26/#67, que concluíam com 0 identificações. A implementação depende de **D2.2** (em Pendências) e ainda não está no código.
+- **O menu não entrega a matriz módulo→grupo.** Com o pulso 2 nomeando o grupo (D2), o menu não pode afirmar `A parede (Gram+) · B camada extra (Gram-)`: isso entregaria antes do primeiro scan a informação que o scanner existe para produzir. A função do módulo continua no menu; a ligação com o grupo sai.
 - **Fora do M4.** Diário de Campo, zonas guiadas, registro de eventos, arte neutra (sem issue aberta) e calibração de trava/perseguição só voltam ao backlog depois do build e do QA manual; Fase 2/vírus continua pós-MVP.
 
 ## Pendências
@@ -223,6 +225,7 @@ O jogo terá pontuação, bônus por identificação e progressão. O hi-score d
 - Duração do pulso do scanner (0,75 s é valor inicial) e configuração de camadas por agente/fase no MVP.
 - Conteúdo biológico detalhado e validado de cada agente.
 - Relação final entre dados do scanner e escolha do módulo — o pulso 2 nomeia o grupo; validar no playtest se isso deixa a decisão trivial.
+- **D2.2 — destino de quem atira antes de escanear (bloqueia D2.1).** `pick_target()` ignora agente inativo, então neutralizar sem identificar remove aquele agente do scanner para sempre; com a identificação obrigatória, isso **travaria a partida** no contador `x/9`. Opções: **(a)** o projétil acerta mas não reduz a resistência até o agente ser identificado, com aviso na tela *(recomendada)*; **(b)** o scanner passa a aceitar agente neutralizado, como uma lâmina corada depois do fato; **(c)** neutralizar sem scan encerra a partida, o que transforma erro de leitura em fim de jogo.
 - Balanceamento de vida, dano, ataque, defesa, cooldowns e resistência (a regra de mitigação da defesa está fechada desde 16/10/2026; falta calibrar os números).
 - Regras de progressão entre fases.
 - Apresentação final das informações do scanner.

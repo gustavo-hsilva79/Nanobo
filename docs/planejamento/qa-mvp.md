@@ -163,7 +163,9 @@ Evidência (Debug|x64, árvore com a correção, ainda sem commit). Na abertura 
 
 ## 10. Roteiro do fluxo educativo (03/11/2026)
 
-**Estado:** nenhum passo executado. O fluxo depende das issues #103–#107 e #198–#200, que não estão no código em 03/11 — o scanner ainda lê por tecla, o raio ainda é roxo/vermelho por espécie e não existe cena de `BRIEFING`.
+**Estado (03/11/2026, manhã):** nenhum passo executado. O fluxo depende das issues #103–#107 e #198–#200, que não estão no código naquele momento — o scanner ainda lê por tecla e não existe cena de `BRIEFING`.
+
+**Atualização (03/11/2026, após o merge do PR #203):** o roteiro passou a ser executável em parte. #198, #105 e #200 estão em `master`, então E9–E12 (módulos, roda, teclas e clique no HUD) e a parte de controles de E15 podem ser rodados. Continuam bloqueados E1–E3 (briefing), E4 no que depende do **nome do grupo** no pulso 2 (D2.1, ainda não implementado), E13 (resumo por objetivo) e E14 na parte do resumo. Nenhum passo foi executado até esta atualização.
 
 **Como executar:** Debug e Release x64, a partir da raiz do repositório, com teclado e mouse físicos. Os passos 4–11 da §4 continuam válidos apenas para o controle antigo; com os controles novos, valem os passos abaixo.
 

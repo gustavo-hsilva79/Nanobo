@@ -99,7 +99,7 @@ A pontuação atual da Fase 1:
 | Identificação completa | **+15** | uma vez, na conclusão, se `identificados = 9/9` (#67) |
 | Placar máximo da fase | **75** | 6 ameaças + bônus |
 
-`9/9` é condição de bônus, não de vitória: a fase conclui com menos identificações (#26, #67). O hi-score deve ser persistente na versão final.
+`9/9` **era** condição apenas de bônus: a fase concluía com menos identificações (#26, #67). Em 03/11/2026 a dupla decidiu o contrário (D2.1, `decisoes.md`): a identificação dos agentes passa a ser **condição de conclusão**. A regra em vigor no código ainda é a de #26/#67 — a mudança depende de resolver o destino de quem atira antes de escanear (D2.2). O hi-score deve ser persistente na versão final.
 
 ## Interface e controles
 
@@ -116,7 +116,7 @@ O jogo usa teclado e mouse, com o mouse como forma de mirar, atirar e escanear:
 
 O ataque e o scanner **não têm tecla** no M4 (#198).
 
-> **Estado em 03/11/2026:** o build atual ainda usa `ESPAÇO` para escanear, `J` para atirar e o raio por cor; os controles por cursor, os módulos A/B e a cena de briefing são o alvo do M4 (#198, #105, #106).
+> **Estado em 03/11/2026, após o merge do PR #203:** os controles por cursor (#198) e os módulos A/B (#105) **estão implementados** e são o que o jogo faz hoje. Do M4 ainda faltam o briefing (#103, #106), o pulso 2 nomeando o grupo (#104) e a identificação como condição de conclusão (D2.1).
 
 O HUD ocupa o rodapé de 104 px: identificados x/9, ameaças restantes x/6, pontos, tempo, três corações, módulo selecionado com estado (`[pronto]`/`[recarga]`) e a leitura do alvo atual. O objetivo da fase aparece na segunda linha do painel; os controles ficam no menu e na pausa, para não competir com a leitura do jogo. A marca do destino aparece na borda da faixa visível quando ele está fora da câmera (#19).
 

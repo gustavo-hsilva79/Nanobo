@@ -206,8 +206,11 @@ Prioridade: **N** = Núcleo do M4 (04/11); **N¹** = decisão mantida, sem issue
 | RF-13 | N (feito) | Texto em português com acento: `/utf-8` no `Nanobo.vcxproj` e arquivos salvos em UTF-8. Sem `src/ui/`: os textos ficam em `main.c` e `gameplay.c`. | Nenhum "?" nem caractere estranho no Release — verificado em 30/10 (`qa-mvp.md` §9). |
 | RF-14 | F | Pós-M4 — Registro de eventos para o playtest (CSV local): tempo até o 1º pulso, releituras, erros por tipo, fonte de entrada. | O arquivo é gerado ao fim da partida. |
 | RF-15 | F | Fase 2 (vírus) com a mesma estrutura de ensino; 3ª classe; β-lactamase; barra de endotoxina se a dupla reabrir o `decisoes.md` de 25/10. | Fora do MVP. |
+| RF-16 | N | Identificação como condição de conclusão (D2.1, 03/11/2026): a fase só conclui quando todos os agentes foram identificados. A regra atual (#26/#67) aceita concluir com 0 identificações. | Só vale depois de resolvida D2.2 (`decisoes.md`): precisa existir sempre um caminho para concluir, inclusive para quem atirou antes de escanear. QA manual: partida com scan em todos conclui; sem scan não conclui. |
 
 ¹ Decisão de design mantida, mas sem issue no M4: não entra no critério de aceite de 04/11.
+
+**RF-16** entrou em 03/11/2026 por decisão da dupla (D2.1), depois da auditoria de clareza; no código continua valendo a regra de #26/#67 até D2.2 ser resolvida.
 
 ### Fora do M4 (03/11/2026)
 
