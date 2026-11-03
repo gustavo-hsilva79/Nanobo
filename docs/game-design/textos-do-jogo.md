@@ -22,15 +22,53 @@
 
 ## 2. Controles, HUD e dicas (`src/main.c`)
 
-| ID | Tela | Texto | Caracteres | Origem |
+| ID | Local | Texto | Caracteres | Origem |
 |---|---|---|---|---|
-| CT-01 | menu, linha 1 | `setas/wasd mover · cursor mira · x defender` | 43 | RF-11, RF-12 |
-| CT-02 | menu, linha 2 | `direito escanear` / `esquerdo atirar` / `1 A` / `2 B` / `roda troca` | 16 / 15 / 3 / 3 / 10 | RF-12 |
-| CT-03 | menu, linha 3 | `A parede (Gram+) · B camada extra (Gram-)` | 41 | spec, "Módulo A e B" |
-| CT-04 | HUD | letra `A` ou `B` ao lado do ícone do módulo | 1 | #198 |
-| CT-05 | painel do scanner, sem alvo | `chegue perto e clique com o botão direito` | 41 | #198 |
-| CT-06 | painel do scanner, alvo neutralizado | `chegue perto de outro alvo e clique com o botão direito` | 55 | #198 |
-| CT-07 | painel do scanner, dica de ação | `botão direito: escanear` / `botão direito: escanear de novo` | 23 / 31 | #198 |
-| CT-08 | painel do scanner, próxima camada | `botão direito: revelar a próxima camada` | 39 | #198 |
+| CT-01 | menu, título do painel | `Como jogar` | 10 | #201 |
+| CT-02 | menu, grupo 1 | `Movimentação` | 12 | #201 |
+| CT-03 | menu, grupo 1 | `setas ou WASD mover · cursor mirar` | 34 | #201 |
+| CT-04 | menu, grupo 2 | `Combate` | 7 | #201 |
+| CT-05 | menu, grupo 2 | `botão esquerdo atirar · botão direito escanear` | 46 | #201 |
+| CT-06 | menu, grupo 3 | `Equipamentos` | 12 | #201 |
+| CT-07 | menu, grupo 3 | `1 e 2 ou roda: módulo A/B` | 25 | #201 |
+| CT-08 | menu, nota do grupo 3 | `A age na parede · B age na camada externa` | 41 | #201 |
+| CT-09 | menu, painel do objetivo | `Objetivo da missão` | 18 | #201 |
+| CT-10 | menu, painel do objetivo | `neutralizar as %d bactérias e chegar ao destino` | 47 | #201 |
+| CT-11 | menu, painel do objetivo | `identificar os %d agentes vale +%d pontos` | 41 | #201 |
+| CT-12 | menu, rodapé | `enter ou clique para começar` | 28 | #201 |
+| CT-13 | menu, rodapé | `F11 tela cheia` | 14 | #201 |
+| CT-14 | HUD, linha 0 | `ameaças %d/%d` | 11 | #199 |
+| CT-15 | HUD, linha 1 | `identificados %d/%d` | 17 | #199 |
+| CT-16 | HUD, linha 0 | `pontos %d` | 9 | #199 |
+| CT-17 | HUD, linha 0 | `pronto` / `recarga` / `defesa` | 6 / 7 / 6 | #199 |
+| CT-18 | scanner, sem alvo | `Nenhum alvo` | 11 | #199 |
+| CT-19 | scanner, sem alvo | `Aproxime-se de um agente para escanear.` | 39 | #199 |
+| CT-20 | scanner, qualquer estado | `botão direito sobre o agente` | 28 | #199 |
+| CT-21 | scanner, alvo neutralizado | `Alvo neutralizado` / `Chegue perto de outro agente.` | 17 / 28 | #199 |
+| CT-22 | scanner, alvo no alcance | `Alvo detectado` | 14 | #199 |
+| CT-23 | scanner, alvo no alcance | `Clique com o botão direito para escanear.` | 41 | #199 |
+| CT-24 | scanner, alvo no alcance | `o scan revela a estrutura do agente` | 35 | #199 |
+| CT-25 | scanner, 1 camada | `Leitura 1 de 2` | 14 | #199 |
+| CT-26 | scanner, 1 camada | `clique de novo para revelar a estrutura` | 39 | #199 |
+| CT-27 | scanner, identificado | `Identificação concluída` | 23 | #199 |
+| CT-28 | scanner, identificado | `interprete os dados antes de atacar` | 35 | #199 |
+| CT-29 | scanner, cabeçalho | `célula` / `bactéria` | 6 / 7 | #199 |
+| CT-30 | resultados | `Fase 1 concluída` / `resumo da fase` | 16 / 14 | #202 |
+| CT-31 | resultados | `pontos` / `ameaças neutralizadas` | 6 / 21 | #202 |
+| CT-32 | resultados | `agentes identificados` / `bônus de identificação` | 21 / 22 | #202 |
+| CT-33 | resultados | `não obtido` | 10 | #202 |
+| CT-34 | resultados | `enter também continua` | 21 | #202 |
+| CT-35 | vitória | `Vitória` | 7 | #202 |
 
-**Limite:** a fonte embutida é 8×8, então o painel aceita ~70 caracteres por linha (640 px menos margens). Nenhuma linha acima passa de 57 caracteres.
+**Limite:** a fonte embutida é de **8 px por caractere** (medido com `al_get_text_width`, não estimado) e a área útil do painel do scanner é de 588 px. A linha mais longa desenhada na fase tem 47 caracteres (376 px); a mais longa de todas, `botão esquerdo atirar · botão direito escanear`, tem 46 caracteres em 536 px de painel.
+
+## 2.1 Regra de tipografia (medida em 03/11/2026)
+
+**Maiúscula acentuada não desenha.** A fonte embutida devolve glifo errado para `Í`, `Ç`, `Ã`, `Ó` maiúsculos — `FASE 1 CONCLUÍDA` saía `CONCLU f DA`, `MOVIMENTAÇÃO` saía `MOVIMENTAÇ%Ø` — enquanto as **minúsculas acentuadas saem corretas** (`ç`, `ã`, `ó`, `ê`, `í`).
+
+Regras que valem para todo texto novo:
+
+- Títulos e rótulos em **caixa de frase** (`Fase 1 concluída`, `Objetivo da missão`, `Identificação concluída`).
+- Caixa alta só em texto **sem acento** (`INICIAR`, `CONTINUAR`, `COMO JOGAR` quando não houver acento).
+- Nenhum texto desenhado pode ter maiúscula acentuada. `NANOBÔ` é exceção registrada: é o nome do jogo, desenhado em bitmap ampliado 3×, onde o glifo é legível mas não correto.
+- Antes de commitar texto novo, rodar `python -c "print([c for c in 'TEXTO' if ord(c) > 0xFF])"` (codepoint fora de Latin-1 vira `^` na tela).
