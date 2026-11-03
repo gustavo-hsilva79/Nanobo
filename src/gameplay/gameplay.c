@@ -10,6 +10,9 @@
 // a invulnerabilidade precisa existir para o dano nao virar por quadro
 _Static_assert(INVULNERABILITY_TIME > 0.0, "invulnerabilidade precisa ser positiva");
 
+// o texto do feedback diz "falta 1 acerto": a bacteria tem 2 de resistencia (#105)
+_Static_assert(BACTERIA_RESISTANCE == 2, "o feedback assume um acerto restante");
+
 // tempo da partida em segundos, so conta dentro do estado GAME
 double match_time = 0;
 
@@ -262,7 +265,14 @@ static void hit_projectiles()
                 // a mensagem so promete a vida perdida quando o dano aconteceu (#178)
                 if (damage_player())
                 {
-                    set_feedback("célula do organismo: atacar custa 1 de vida");
+                    if (projectiles[i].laser == LASER_GRAM_POSITIVE)
+                    {
+                        set_feedback("no jogo, o módulo A fere a célula própria: -1 vida");
+                    }
+                    else
+                    {
+                        set_feedback("no jogo, o módulo B fere a célula própria: -1 vida");
+                    }
                 }
             }
             else if (projectiles[i].laser == laser_for_species(agents[j].species))
@@ -281,23 +291,31 @@ static void hit_projectiles()
                         set_feedback("neutralizada sem identificar: o bônus de 9/9 se perdeu");
                     }
                 }
+                else if (agents[j].species == SPECIES_GRAM_POSITIVE)
+                {
+                    set_feedback("módulo A atingiu a parede: falta 1 acerto");
+                }
                 else
                 {
-                    set_feedback("acerto válido: a bactéria ainda resiste");
+                    set_feedback("módulo B atingiu a camada extra: falta 1 acerto");
                 }
             }
             else
             {
                 progress.wrong_decisions = progress.wrong_decisions + 1;
 
-                // raio errado: a mensagem diz qual parede barrou o disparo (#178)
-                if (agents[j].species == SPECIES_GRAM_POSITIVE)
+                // dica escalonada: pergunta no primeiro erro, mecanismo do segundo em diante (#105)
+                if (progress.wrong_decisions == 1)
                 {
-                    set_feedback("parede Gram+ espessa: o raio vermelho não penetra");
+                    set_feedback("que estrutura o scan mostrou? qual módulo tem esse alvo?");
+                }
+                else if (agents[j].species == SPECIES_GRAM_POSITIVE)
+                {
+                    set_feedback("no jogo, a Gram+ não tem a camada extra atingida por B");
                 }
                 else
                 {
-                    set_feedback("membrana externa da Gram-: o raio roxo não penetra");
+                    set_feedback("no jogo, a camada extra das Gram− dificulta a ação de A");
                 }
             }
 
