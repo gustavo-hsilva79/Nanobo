@@ -315,7 +315,7 @@ static void hit_projectiles()
                 }
                 else
                 {
-                    set_feedback("no jogo, a camada extra das Gram− dificulta a ação de A");
+                    set_feedback("no jogo, a camada extra das Gram- dificulta a ação de A");
                 }
             }
 

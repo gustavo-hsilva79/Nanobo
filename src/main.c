@@ -657,7 +657,7 @@ void draw_scan_panel()
     char line[128];
     int panel_y = hud_y(2) - 6;
     int text_x = 36;
-    const char* hint = "space: ler";
+    const char* hint = "botão direito: escanear";
 
     draw_panel(8.0f, (float)panel_y, (float)SCREEN_W - 16.0f,
         (float)(3 * HUD_LINE_H + 12), UI_PANEL, UI_FRAME);
@@ -668,7 +668,7 @@ void draw_scan_panel()
     {
         al_draw_text(font, UI_DIM, (float)text_x, (float)hud_y(2), 0, "nenhum alvo no alcance");
         al_draw_text(font, UI_DIM, (float)text_x, (float)hud_y(3), 0,
-            "chegue perto e aperte space");
+            "chegue perto e clique com o botão direito");
         snprintf(line, sizeof(line), "alcance do scanner: %d px", SCAN_RANGE);
         al_draw_text(font, UI_FRAME, (float)text_x, (float)hud_y(4), 0, line);
         return;
@@ -679,7 +679,7 @@ void draw_scan_panel()
         snprintf(line, sizeof(line), "alvo %d  neutralizado", agents[target].id);
         al_draw_text(font, UI_DIM, (float)text_x, (float)hud_y(2), 0, line);
         al_draw_text(font, UI_DIM, (float)text_x, (float)hud_y(3), 0,
-            "chegue perto de outro alvo e aperte space");
+            "chegue perto de outro alvo e clique com o botão direito");
         return;
     }
 
@@ -689,7 +689,7 @@ void draw_scan_panel()
     // a dica de acao fica na mesma linha do cabecalho
     if (agents[target].layers >= MAX_LAYERS)
     {
-        hint = "space: ler de novo";
+        hint = "botão direito: escanear de novo";
     }
 
     al_draw_text(font, UI_DIM, (float)(SCREEN_W - 16 - al_get_text_width(font, hint)),
@@ -706,7 +706,7 @@ void draw_scan_panel()
     else
     {
         al_draw_text(font, UI_DIM, (float)text_x, (float)hud_y(4), 0,
-            "space: revelar a próxima camada");
+            "botão direito: revelar a próxima camada");
     }
 }
 
@@ -774,7 +774,7 @@ void draw_menu()
     y = panel_y + 78.0f;
     al_draw_bitmap(defense_icon, col_x, y - 4.0f, 0);
     al_draw_text(font, UI_DIM, col_x + 20.0f, y, 0,
-        "A parede (Gram+) · B camada extra (Gram−)");
+        "A parede (Gram+) · B camada extra (Gram-)");
 
     draw_buttons(buttons, count);
 
