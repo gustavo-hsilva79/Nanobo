@@ -90,6 +90,8 @@ A proposta é que o jogador descubra informações, interprete dados do scanner 
 
 #### Controles de combate (16/10/2026)
 
+> **Substituída em 03/11/2026** para ataque e scanner: botão esquerdo atira para o cursor e botão direito escaneia o alvo sob o cursor; `ESPAÇO` e `J` saem. `X`, `1`/`2`, `ESC` e `ENTER` continuam valendo.
+
 - **`X` = defesa, `J` = ataque, `1` = raio roxo (Gram+), `2` = raio vermelho (Gram−), `ESPAÇO` = scanner.** O ataque usa a direção do `facing`.
 - A escolha do raio é direta (tecla 1 ou 2), não por ciclo: são duas opções e o jogador precisa saber qual está selecionada — o HUD mostra `raio: roxo (Gram+)` ou `raio: vermelho (Gram-)`.
 - `SHIFT` foi descartada: tocar SHIFT cinco vezes dispara o aviso de Teclas de Aderência do Windows — ruim para uma habilidade de toque repetido.
@@ -105,6 +107,8 @@ A proposta é que o jogador descubra informações, interprete dados do scanner 
 - A defesa ativa bloqueia o disparo; um projétil em voo não é cancelado.
 
 #### Célula própria (18/10/2026)
+
+> **Atualização 03/11/2026:** a regra de custo de vida vale para os dois módulos (D1); não existe módulo seguro contra a célula. O restante continua como registrado.
 
 - A célula saudável anda na metade da velocidade dos agentes (`CELL_SPEED 15`) e mantém direção aleatória; ela não persegue o Nanobô.
 - Atirar na célula não remove a célula nem altera resistência: tira **1** de vida do Nanobô, respeitando o 1 s de invulnerabilidade da #11.
@@ -187,16 +191,41 @@ O jogo terá pontuação, bônus por identificação e progressão. O hi-score d
 
 ### Texto do scanner e aprendizagem (26/10/2026)
 
+> **Substituída em 03/11/2026:** o pulso 2 passa a nomear o grupo e a paleta deixa de ligar cor da bactéria à cor do módulo (ver “Ensino integrado da Fase 1”).
+
 - A camada 2 descreve o envelope (parede espessa sem membrana externa / parede fina sob membrana externa) e **não nomeia Gram+ nem Gram−**.
 - A regra que liga a pista à classificação e ao laser é ensinada uma vez na tela inicial: parede espessa = Gram+ = raio roxo; parede fina com membrana externa = Gram− = raio vermelho.
 - O feedback posterior à ação pode nomear a classificação; o painel do scanner, não.
 - A troca da paleta das bactérias (cor deixa de coincidir com o laser) fica para o M5, condicionada a playtest.
 
+### Triagem de menus e HUD (28/10/2026)
+
+- **Feedback em uma cor.** `set_feedback` recebe só o texto e todas as mensagens saem em `UI_WARM`; a consequência está na frase ("ameaça neutralizada: +10 pontos" × "parede Gram+ espessa: o raio vermelho não penetra"), não na cor. Um `feedback_kind` atravessando `gameplay.c` não paga o custo. Reabrir se o playtest do M5 mostrar jogador confundindo ganho com perda.
+- **Botão com três estados.** Normal, foco e hover; não existe estado "pressionado" porque a ativação acontece no *down* e a tela troca no mesmo evento, então esse quadro nunca seria desenhado. Revisitar só se aparecer botão que não navega (um toggle de configuração).
+- **`main.c` sem extração por enquanto.** O arquivo concentra loop, eventos, kit de UI, desenho das seis telas e entrada; extrair `ui.c` mexeria no `<ClCompile>`, no `AGENTS.md` e no guia de módulos por ganho organizacional, não funcional. Gatilho objetivo para reavaliar: `main.c` acima de 2.000 linhas, uma terceira tela nova, conflito de merge recorrente no arquivo ou build perceptivelmente lento.
+- **Tile de fundo adiado na triagem.** O mundo era preto e a arte antiga (`fundo_microscopico.png`, 640×480) não cobria 1920×512 nem tiling. A decisão foi superada pela dupla: o commit `ca4845a` trouxe `mapa_fase1.png` (1920×512) e `load_resources()` passou a carregá-lo atrás de destino, agentes e Nanobô.
+- **Fonte embutida mantida; o que faltava era a acentuação.** Os textos agora são escritos em português correto em UTF-8 e o build usa `/utf-8` (ver `docs/planejamento/guia-refatoracao-modulos.md`); trocar a fonte por TTF ou bitmap continua fora do MVP.
+
+### Ensino integrado da Fase 1 (03/11/2026)
+
+- **Briefing.** Antes da Fase 1, três cartões puláveis: resultado da coloração; comparação das camadas externas; módulos como modelo do jogo e preservação da célula própria. ENTER, → ou clique avançam; ESC pula. Não há tutorial guiado depois, e o Diário de Campo fica fora do M4.
+- **D1 — célula própria.** No jogo, **os dois módulos ferem a célula própria** (−1 vida). É consequência de gameplay; não afirma nada sobre efeitos adversos de medicamentos reais. Substitui a proposta de 02/11 em que só o módulo B feria.
+- **D2 — scanner.** O pulso 1 mostra o resultado da coloração (roxo ou rosa); o pulso 2 mostra o **nome do grupo** (Gram+ / Gram−), a pista estrutural e o porquê, sem indicar o módulo. Substitui a decisão de 26/10, em que a camada 2 não nomeava o grupo.
+- **Módulos A e B.** A age sobre a parede e neutraliza Gram+; B age sobre a camada externa e neutraliza Gram−. A matriz é regra do jogo, não previsão de tratamento real. A e B não usam roxo nem rosa, para não recriar o atalho “cor com cor”.
+- **Mouse no jogo.** Botão esquerdo atira na direção do cursor; botão direito escaneia o agente sob o cursor (tolerância de 24 px, alcance de 130 px); roda do mouse e `1`/`2` trocam o módulo; clique no ícone do módulo no HUD. `ESPAÇO` e `J` deixam de ser ataque e scanner; o teclado fica com mover, defender, módulo, pausa e navegação.
+- **Feedback.** Cada decisão tem uma mensagem curta (até 2 linhas) que explica a pista ou a regra do jogo; o primeiro erro traz uma pergunta e o segundo explica o mecanismo, sem termos moleculares e sem recomendar tratamento.
+- **Resumo e contadores.** A tela de Resultados usa apenas contadores em memória (scans por grupo, decisões certas e erradas, ataques a células próprias), zerados em `reset_match()`; sem CSV nem telemetria no M4.
+- **Arquitetura.** Só os quatro arquivos compilados: briefing, HUD e resumo em `main.c`; regras, contadores e feedback em `gameplay.c`. Nenhum módulo `src/ui/`.
+- **D2.1 — a identificação é condição de conclusão (03/11/2026).** Vencer sem escanear **não é aceitável**: identificar os agentes deixa de ser apenas bônus e passa a ser exigência para concluir a fase. Substitui, por decisão da dupla, a regra de #26/#67, que concluíam com 0 identificações. A implementação depende de **D2.2** (em Pendências) e ainda não está no código.
+- **O menu não entrega a matriz módulo→grupo.** Com o pulso 2 nomeando o grupo (D2), o menu não pode afirmar `A parede (Gram+) · B camada extra (Gram-)`: isso entregaria antes do primeiro scan a informação que o scanner existe para produzir. A função do módulo continua no menu; a ligação com o grupo sai.
+- **Fora do M4.** Diário de Campo, zonas guiadas, registro de eventos, arte neutra (sem issue aberta) e calibração de trava/perseguição só voltam ao backlog depois do build e do QA manual; Fase 2/vírus continua pós-MVP.
+
 ## Pendências
 
-- Cooldown definitivo do scanner e configuração de camadas por agente/fase no MVP.
+- Duração do pulso do scanner (0,75 s é valor inicial) e configuração de camadas por agente/fase no MVP.
 - Conteúdo biológico detalhado e validado de cada agente.
-- Relação final entre dados do scanner e escolha do laser/ação — validar em playtest se a pista do envelope basta para classificar sem a resposta pronta.
+- Relação final entre dados do scanner e escolha do módulo — o pulso 2 nomeia o grupo; validar no playtest se isso deixa a decisão trivial.
+- **D2.2 — destino de quem atira antes de escanear (bloqueia D2.1).** `pick_target()` ignora agente inativo, então neutralizar sem identificar remove aquele agente do scanner para sempre; com a identificação obrigatória, isso **travaria a partida** no contador `x/9`. Opções: **(a)** o projétil acerta mas não reduz a resistência até o agente ser identificado, com aviso na tela *(recomendada)*; **(b)** o scanner passa a aceitar agente neutralizado, como uma lâmina corada depois do fato; **(c)** neutralizar sem scan encerra a partida, o que transforma erro de leitura em fim de jogo.
 - Balanceamento de vida, dano, ataque, defesa, cooldowns e resistência (a regra de mitigação da defesa está fechada desde 16/10/2026; falta calibrar os números).
 - Regras de progressão entre fases.
 - Apresentação final das informações do scanner.

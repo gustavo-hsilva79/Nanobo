@@ -10,11 +10,17 @@
 // a invulnerabilidade precisa existir para o dano nao virar por quadro
 _Static_assert(INVULNERABILITY_TIME > 0.0, "invulnerabilidade precisa ser positiva");
 
+// o texto do feedback diz "falta 1 acerto": a bacteria tem 2 de resistencia (#105)
+_Static_assert(BACTERIA_RESISTANCE == 2, "o feedback assume um acerto restante");
+
 // tempo da partida em segundos, so conta dentro do estado GAME
 double match_time = 0;
 
 // pontos da partida atual: so a neutralizacao de uma ameaca soma (#66)
 int score = 0;
+
+// contadores do resumo educativo: zerados no reset_match, so memoria (#200)
+MatchProgress progress = { 0 };
 
 // cooldown de invulnerabilidade
 static double invulnerability_timer = 0.0;
@@ -57,7 +63,7 @@ static float squared_distance(float ax, float ay, float bx, float by)
 // Retorna o nome científico do agente identificado
 const char* layer_one_text(const char* name)
 {
-    return name;
+return name;
 }
 
 
@@ -75,7 +81,7 @@ const char* layer_two_text(Species species)
         return "parede fina de peptidoglicano sob membrana externa";
     }
 
-    return "celula saudavel do proprio organismo: preserve-a";
+    return "célula saudável do próprio organismo: preserve-a";
 }
 
 // agente valido mais perto, -1 quando ninguem esta no alcance
@@ -250,41 +256,62 @@ static void hit_projectiles()
             // atacar a celula saudavel custa 1 de vida ao player (#14, #178)
             if (agents[j].species == SPECIES_CELL)
             {
+                progress.cell_attacks = progress.cell_attacks + 1;
+
                 // a mensagem so promete a vida perdida quando o dano aconteceu (#178)
                 if (damage_player())
                 {
-                    set_feedback("celula do organismo: atacar custa 1 de vida");
+                    if (projectiles[i].laser == LASER_GRAM_POSITIVE)
+                    {
+                        set_feedback("no jogo, o módulo A fere a célula própria: -1 vida");
+                    }
+                    else
+                    {
+                        set_feedback("no jogo, o módulo B fere a célula própria: -1 vida");
+                    }
                 }
             }
             else if (projectiles[i].laser == laser_for_species(agents[j].species))
             {
+                progress.correct_decisions = progress.correct_decisions + 1;
+
                 if (hit_agent(j))
                 {
                     // sem identificacao a ameaca sai da cena e o bonus de 9/9 fica impossivel
                     if (agents[j].identified)
                     {
-                        set_feedback("ameaca neutralizada: +10 pontos");
+                        set_feedback("ameaça neutralizada: +10 pontos");
                     }
                     else
                     {
-                        set_feedback("neutralizada sem identificar: o bonus de 9/9 se perdeu");
+                        set_feedback("neutralizada sem identificar: o bônus de 9/9 se perdeu");
                     }
+                }
+                else if (agents[j].species == SPECIES_GRAM_POSITIVE)
+                {
+                    set_feedback("módulo A atingiu a parede: falta 1 acerto");
                 }
                 else
                 {
-                    set_feedback("acerto valido: a bacteria ainda resiste");
+                    set_feedback("módulo B atingiu a camada extra: falta 1 acerto");
                 }
             }
             else
             {
-                // raio errado: a mensagem diz qual parede barrou o disparo (#178)
-                if (agents[j].species == SPECIES_GRAM_POSITIVE)
+                progress.wrong_decisions = progress.wrong_decisions + 1;
+
+                // dica escalonada: pergunta no primeiro erro, mecanismo do segundo em diante (#105)
+                if (progress.wrong_decisions == 1)
                 {
-                    set_feedback("parede Gram+ espessa: o raio vermelho nao penetra");
+                    set_feedback("que estrutura o scan mostrou? qual módulo tem esse alvo?");
+                }
+                else if (agents[j].species == SPECIES_GRAM_POSITIVE)
+                {
+                    set_feedback("no jogo, a Gram+ não tem a camada extra atingida por B");
                 }
                 else
                 {
-                    set_feedback("membrana externa da Gram-: o raio roxo nao penetra");
+                    set_feedback("no jogo, a camada extra das Gram- dificulta a ação de A");
                 }
             }
 
@@ -319,7 +346,35 @@ static void update_projectiles(double dt)
     hit_projectiles();
 }
 
-// um pulso do scanner, revela a proxima camada do alvo
+// revela a proxima camada do alvo e identifica quando as duas apareceram (#60, #61)
+static void reveal_layer(int index)
+{
+    // o painel do HUD relembra o ultimo alvo, mesmo depois de andar
+    scan_target = index;
+
+    if (agents[index].layers < MAX_LAYERS)
+    {
+        agents[index].layers = agents[index].layers + 1;
+    }
+
+    if (agents[index].layers == MAX_LAYERS && agents[index].identified == false)
+    {
+        agents[index].identified = true;
+        identified_count = identified_count + 1;
+
+        // o resumo conta leitura de agente Gram+ e Gram-, uma vez por agente (#200)
+        if (agents[index].species == SPECIES_GRAM_POSITIVE)
+        {
+            progress.scans_gram_positive = progress.scans_gram_positive + 1;
+        }
+        else if (agents[index].species == SPECIES_GRAM_NEGATIVE)
+        {
+            progress.scans_gram_negative = progress.scans_gram_negative + 1;
+        }
+    }
+}
+
+// um pulso do scanner a partir do nanobo, revela a proxima camada do alvo
 void use_scanner()
 {
     int target = pick_target(player.x, player.y);
@@ -329,19 +384,63 @@ void use_scanner()
         return;
     }
 
-    // o painel do HUD relembra o ultimo alvo, mesmo depois de andar
-    scan_target = target;
+    reveal_layer(target);
+}
 
-    if (agents[target].layers < MAX_LAYERS)
+// agente sob o cursor: tolerancia de 24 px do clique e alcance de 130 px do nanobo (#198)
+int pick_target_at(float x, float y)
+{
+    int target = -1;
+    int i;
+    float best = 0;
+
+    for (i = 0; i < NUM_AGENTES; i++)
     {
-        agents[target].layers = agents[target].layers + 1;
+        float dist_cursor;
+        float dist_player;
+
+        // agente neutralizado nao e candidato do scanner
+        if (!agents[i].active)
+        {
+            continue;
+        }
+
+        dist_cursor = squared_distance(agents[i].x, agents[i].y, x, y);
+
+        if (dist_cursor > CURSOR_SCAN_TOLERANCE * CURSOR_SCAN_TOLERANCE)
+        {
+            continue;
+        }
+
+        // o alcance continua sendo medido do nanobo, nao do cursor
+        dist_player = squared_distance(agents[i].x, agents[i].y, player.x, player.y);
+
+        if (dist_player > SCAN_RANGE * SCAN_RANGE)
+        {
+            continue;
+        }
+
+        if (target == -1 || dist_cursor < best)
+        {
+            best = dist_cursor;
+            target = i;
+        }
     }
 
-    if (agents[target].layers == MAX_LAYERS && agents[target].identified == false)
+    return target;
+}
+
+// escaneia o agente sob o ponto do mundo, nao o mais perto do nanobo (#198)
+void scan_at(float x, float y)
+{
+    int target = pick_target_at(x, y);
+
+    if (target == -1)
     {
-        agents[target].identified = true;
-        identified_count = identified_count + 1;
+        return;
     }
+
+    reveal_layer(target);
 }
 
 // ultimo alvo lido pelo scanner, -1 antes da primeira leitura
@@ -383,8 +482,8 @@ int defense_state()
     return 0;
 }
 
-// dispara um projetil na direcao do facing, respeitando defesa e cooldown (#63, #64)
-void shoot()
+// dispara um projetil na direcao (dx, dy) ja normalizada, respeitando defesa e cooldown (#63, #64)
+static void fire(float dx, float dy)
 {
     int i;
     int free_slot = -1;
@@ -423,34 +522,65 @@ void shoot()
 
     projectiles[free_slot].active = true;
     projectiles[free_slot].laser = player.laser;
-    projectiles[free_slot].x = player.x;
-    projectiles[free_slot].y = player.y;
-    projectiles[free_slot].dx = 0.0f;
-    projectiles[free_slot].dy = 0.0f;
 
     // nasce encostado no nanobo para nao parecer deslocado
+    projectiles[free_slot].x = player.x + dx * offset;
+    projectiles[free_slot].y = player.y + dy * offset;
+    projectiles[free_slot].dx = dx;
+    projectiles[free_slot].dy = dy;
+
+    attack_cooldown_timer = ATTACK_COOLDOWN;
+}
+
+// dispara na direcao do facing, o caminho que o teclado usava (#63, #64)
+void shoot()
+{
     if (player.facing == PLAYER_FACING_UP)
     {
-        projectiles[free_slot].y = player.y - offset;
-        projectiles[free_slot].dy = -1.0f;
+        fire(0.0f, -1.0f);
     }
     else if (player.facing == PLAYER_FACING_DOWN)
     {
-        projectiles[free_slot].y = player.y + offset;
-        projectiles[free_slot].dy = 1.0f;
+        fire(0.0f, 1.0f);
     }
     else if (player.facing == PLAYER_FACING_LEFT)
     {
-        projectiles[free_slot].x = player.x - offset;
-        projectiles[free_slot].dx = -1.0f;
+        fire(-1.0f, 0.0f);
     }
     else
     {
-        projectiles[free_slot].x = player.x + offset;
-        projectiles[free_slot].dx = 1.0f;
+        fire(1.0f, 0.0f);
+    }
+}
+
+// mira livre: dispara na direcao do ponto do mundo escolhido pelo cursor (#198)
+void shoot_toward(float x, float y)
+{
+    float dx = x - player.x;
+    float dy = y - player.y;
+    float dist = sqrtf(dx * dx + dy * dy);
+
+    // cursor colado no nanobo: usa a direcao em que ele olha
+    if (dist < AIM_DEAD_ZONE)
+    {
+        shoot();
+        return;
     }
 
-    attack_cooldown_timer = ATTACK_COOLDOWN;
+    fire(dx / dist, dy / dist);
+}
+
+// roda do mouse alterna os modulos A e B (#198)
+void toggle_module()
+{
+    if (player.laser == LASER_GRAM_POSITIVE)
+    {
+        player.laser = LASER_GRAM_NEGATIVE;
+    }
+    else
+    {
+        player.laser = LASER_GRAM_POSITIVE;
+    }
 }
 
 // pontos validos do cenario, a regra de cada um esta em docs/game-design/gdd.md
@@ -749,6 +879,14 @@ void reset_match()
 
     identified_count = 0;
     score = 0;
+
+    // contadores do resumo educativo voltam a zero (#200)
+    progress.scans_gram_positive = 0;
+    progress.scans_gram_negative = 0;
+    progress.correct_decisions = 0;
+    progress.wrong_decisions = 0;
+    progress.cell_attacks = 0;
+
     phase_finished = false;
     bonus_awarded = false;
     feedback = NULL;
@@ -946,7 +1084,7 @@ void update_match(double dt)
         // contato a cada quadro nao pode reescrever a mensagem sem dano novo (#178)
         if (damage_player())
         {
-            set_feedback("contato com bacteria: -1 de vida");
+            set_feedback("contato com bactéria: -1 de vida");
         }
     }
 
