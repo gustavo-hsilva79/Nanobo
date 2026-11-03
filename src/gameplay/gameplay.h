@@ -15,6 +15,9 @@ _Static_assert(__STDC_VERSION__ >= 201112L, "compilar com /std:c11 (ver Nanobo.v
 // alcance do scanner em pixels
 #define SCAN_RANGE 130
 
+// tolerancia do scan por clique: distancia do cursor ao centro do agente (#198)
+#define CURSOR_SCAN_TOLERANCE 24.0f
+
 // tela logica: o jogo desenha num bitmap deste tamanho e a janela amplia
 #define SCREEN_W 640
 #define SCREEN_H 360
@@ -47,6 +50,9 @@ _Static_assert(WORLD_W % 32 == 0 && WORLD_H % 32 == 0, "mundo precisa fechar no 
 
 // intervalo entre disparos (#64)
 #define ATTACK_COOLDOWN 1.0
+
+// cursor a menos disso do nanobo cai na direcao do facing (#198)
+#define AIM_DEAD_ZONE 8.0f
 
 // pontos por ameaca neutralizada, concedidos uma vez por agente (#66)
 #define SCORE_PER_THREAT 10
@@ -95,12 +101,20 @@ const char* layer_two_text(Species species);
 int pick_target(float x, float y);
 void use_scanner();
 
+// scan sob o cursor: alvo com tolerancia do clique e alcance do nanobo (#198)
+int pick_target_at(float x, float y);
+void scan_at(float x, float y);
+
 // defesa: ativa, estado pro anel do HUD e empurrao de quem encosta (#17)
 void activate_defense();
 int defense_state();
 
 // ataque: um projetil por aperto, respeitando o cooldown (#63, #64)
 void shoot();
+void shoot_toward(float x, float y);
+
+// modulo A e B: a roda do mouse alterna, 1 e 2 escolhem direto (#198)
+void toggle_module();
 
 // contato: index do agente que o nanobo esta encostando, -1 quando nenhum
 int touching_agent();

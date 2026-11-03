@@ -391,6 +391,62 @@ void use_scanner()
     reveal_layer(target);
 }
 
+// agente sob o cursor: tolerancia de 24 px do clique e alcance de 130 px do nanobo (#198)
+int pick_target_at(float x, float y)
+{
+    int target = -1;
+    int i;
+    float best = 0;
+
+    for (i = 0; i < NUM_AGENTES; i++)
+    {
+        float dist_cursor;
+        float dist_player;
+
+        // agente neutralizado nao e candidato do scanner
+        if (!agents[i].active)
+        {
+            continue;
+        }
+
+        dist_cursor = squared_distance(agents[i].x, agents[i].y, x, y);
+
+        if (dist_cursor > CURSOR_SCAN_TOLERANCE * CURSOR_SCAN_TOLERANCE)
+        {
+            continue;
+        }
+
+        // o alcance continua sendo medido do nanobo, nao do cursor
+        dist_player = squared_distance(agents[i].x, agents[i].y, player.x, player.y);
+
+        if (dist_player > SCAN_RANGE * SCAN_RANGE)
+        {
+            continue;
+        }
+
+        if (target == -1 || dist_cursor < best)
+        {
+            best = dist_cursor;
+            target = i;
+        }
+    }
+
+    return target;
+}
+
+// escaneia o agente sob o ponto do mundo, nao o mais perto do nanobo (#198)
+void scan_at(float x, float y)
+{
+    int target = pick_target_at(x, y);
+
+    if (target == -1)
+    {
+        return;
+    }
+
+    reveal_layer(target);
+}
+
 // ultimo alvo lido pelo scanner, -1 antes da primeira leitura
 int last_scan_target()
 {
@@ -430,8 +486,8 @@ int defense_state()
     return 0;
 }
 
-// dispara um projetil na direcao do facing, respeitando defesa e cooldown (#63, #64)
-void shoot()
+// dispara um projetil na direcao (dx, dy) ja normalizada, respeitando defesa e cooldown (#63, #64)
+static void fire(float dx, float dy)
 {
     int i;
     int free_slot = -1;
@@ -470,34 +526,65 @@ void shoot()
 
     projectiles[free_slot].active = true;
     projectiles[free_slot].laser = player.laser;
-    projectiles[free_slot].x = player.x;
-    projectiles[free_slot].y = player.y;
-    projectiles[free_slot].dx = 0.0f;
-    projectiles[free_slot].dy = 0.0f;
 
     // nasce encostado no nanobo para nao parecer deslocado
+    projectiles[free_slot].x = player.x + dx * offset;
+    projectiles[free_slot].y = player.y + dy * offset;
+    projectiles[free_slot].dx = dx;
+    projectiles[free_slot].dy = dy;
+
+    attack_cooldown_timer = ATTACK_COOLDOWN;
+}
+
+// dispara na direcao do facing, o caminho que o teclado usava (#63, #64)
+void shoot()
+{
     if (player.facing == PLAYER_FACING_UP)
     {
-        projectiles[free_slot].y = player.y - offset;
-        projectiles[free_slot].dy = -1.0f;
+        fire(0.0f, -1.0f);
     }
     else if (player.facing == PLAYER_FACING_DOWN)
     {
-        projectiles[free_slot].y = player.y + offset;
-        projectiles[free_slot].dy = 1.0f;
+        fire(0.0f, 1.0f);
     }
     else if (player.facing == PLAYER_FACING_LEFT)
     {
-        projectiles[free_slot].x = player.x - offset;
-        projectiles[free_slot].dx = -1.0f;
+        fire(-1.0f, 0.0f);
     }
     else
     {
-        projectiles[free_slot].x = player.x + offset;
-        projectiles[free_slot].dx = 1.0f;
+        fire(1.0f, 0.0f);
+    }
+}
+
+// mira livre: dispara na direcao do ponto do mundo escolhido pelo cursor (#198)
+void shoot_toward(float x, float y)
+{
+    float dx = x - player.x;
+    float dy = y - player.y;
+    float dist = sqrtf(dx * dx + dy * dy);
+
+    // cursor colado no nanobo: usa a direcao em que ele olha
+    if (dist < AIM_DEAD_ZONE)
+    {
+        shoot();
+        return;
     }
 
-    attack_cooldown_timer = ATTACK_COOLDOWN;
+    fire(dx / dist, dy / dist);
+}
+
+// roda do mouse alterna os modulos A e B (#198)
+void toggle_module()
+{
+    if (player.laser == LASER_GRAM_POSITIVE)
+    {
+        player.laser = LASER_GRAM_NEGATIVE;
+    }
+    else
+    {
+        player.laser = LASER_GRAM_POSITIVE;
+    }
 }
 
 // pontos validos do cenario, a regra de cada um esta em docs/game-design/gdd.md
