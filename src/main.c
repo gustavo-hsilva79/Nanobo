@@ -218,6 +218,12 @@ void toggle_fullscreen()
     al_acknowledge_resize(display);
     update_screen_fit();
     refresh_mouse();
+
+    // a troca de modo pode devolver o cursor do sistema: reaplica o estado da fase (#198)
+    if (game_get_scene() == GAME_SCENE_GAME)
+    {
+        al_hide_mouse_cursor(display);
+    }
 }
 
 // texto virado bitmap: o titulo amplia o mesmo glifo sem borrar
@@ -1219,6 +1225,16 @@ void render()
     {
         ui_last_scene = scene;
         ui_focus = 0;
+
+        // na fase o cursor do sistema vira mira; nas outras telas ele volta (#198)
+        if (scene == GAME_SCENE_GAME)
+        {
+            al_hide_mouse_cursor(display);
+        }
+        else
+        {
+            al_show_mouse_cursor(display);
+        }
     }
 
     update_screen_fit();
@@ -1318,17 +1334,9 @@ void handle_key_down(int key)
     {
         key_right = true;
     }
-    else if (key == ALLEGRO_KEY_SPACE)
-    {
-        use_scanner();
-    }
     else if (key == ALLEGRO_KEY_ESCAPE)
     {
         game_set_scene(GAME_SCENE_PAUSE);
-    }
-    else if (key == ALLEGRO_KEY_J)
-    {
-        shoot();
     }
     else if (key == ALLEGRO_KEY_X)
     {
@@ -1421,14 +1429,48 @@ void handle_key_up(int key)
     }
 }
 
+// clique na fase: esquerdo atira para o cursor, direito escaneia o alvo sob ele (#198)
+void handle_game_click(int button, float lx, float ly)
+{
+    float wx;
+    float wy;
+
+    // clique no painel do HUD nao e acao de mundo
+    if (ly < 0.0f || ly >= (float)PLAY_H)
+    {
+        return;
+    }
+
+    wx = lx + camera.x;
+    wy = ly + camera.y;
+
+    if (button == 1)
+    {
+        shoot_toward(wx, wy);
+    }
+    else if (button == 2)
+    {
+        scan_at(wx, wy);
+    }
+}
+
 // clique do mouse vem em pixel da janela: converte para pixel da tela logica
-void handle_mouse_click(float x, float y)
+void handle_mouse_click(int button, float x, float y)
 {
     float lx = to_logical_x(x);
     float ly = to_logical_y(y);
     int count;
-    const UiButton* buttons = screen_buttons(&count);
+    const UiButton* buttons;
     int i;
+
+    // na fase o clique e acao de jogo, nao botao de tela (#198)
+    if (game_get_scene() == GAME_SCENE_GAME)
+    {
+        handle_game_click(button, lx, ly);
+        return;
+    }
+
+    buttons = screen_buttons(&count);
 
     if (buttons == NULL)
     {
@@ -1564,13 +1606,19 @@ int main()
                 break;
 
             case ALLEGRO_EVENT_MOUSE_BUTTON_DOWN:
-                handle_mouse_click(event.mouse.x, event.mouse.y);
+                handle_mouse_click(event.mouse.button, event.mouse.x, event.mouse.y);
                 break;
 
             case ALLEGRO_EVENT_MOUSE_AXES:
                 // hover: guarda o pixel da janela, quem desenha converte
                 mouse_x = event.mouse.x;
                 mouse_y = event.mouse.y;
+
+                // roda do mouse troca o modulo dentro da fase (#198)
+                if (event.mouse.dz != 0 && game_get_scene() == GAME_SCENE_GAME)
+                {
+                    toggle_module();
+                }
                 break;
 
             case ALLEGRO_EVENT_DISPLAY_RESIZE:
