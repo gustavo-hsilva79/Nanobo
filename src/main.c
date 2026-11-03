@@ -501,7 +501,7 @@ const UiButton* screen_buttons(int* count)
         { 240.0f, 170.0f, 160.0f, 28.0f, "CONTINUAR" }
     };
     static const UiButton results_items[] = {
-        { 240.0f, 236.0f, 160.0f, 28.0f, "CONTINUAR" }
+        { 240.0f, 196.0f, 160.0f, 28.0f, "CONTINUAR" }
     };
     static const UiButton victory_items[] = {
         { 240.0f, 212.0f, 160.0f, 28.0f, "NOVA PARTIDA" }
@@ -1110,7 +1110,7 @@ void draw_pause()
 
 void draw_results()
 {
-    char line[96];
+    char line[128];
     char value[32];
     int count;
     const UiButton* buttons = screen_buttons(&count);
@@ -1119,20 +1119,24 @@ void draw_results()
     float right = (float)SCREEN_W - 152.0f;
     ALLEGRO_COLOR bonus_color;
 
-    al_draw_text(font, UI_TEXT, SCREEN_W / 2, 30, ALLEGRO_ALIGN_CENTRE, "FASE 1 CONCLUÍDA");
+    al_draw_text(font, UI_TEXT, SCREEN_W / 2, 30, ALLEGRO_ALIGN_CENTRE, "Fase 1 concluída");
     draw_rule((float)SCREEN_W / 2, 44.0f, 200.0f, UI_FRAME);
-    al_draw_text(font, UI_DIM, SCREEN_W / 2, 52, ALLEGRO_ALIGN_CENTRE, "resumo do encontro");
+    al_draw_text(font, UI_DIM, SCREEN_W / 2, 52, ALLEGRO_ALIGN_CENTRE, "resumo da fase");
 
-    draw_panel(140.0f, 72.0f, 360.0f, 96.0f, UI_INK, UI_FRAME);
+    // resultado principal: pontos e ameacas, o que fecha a fase
+    draw_panel(140.0f, 66.0f, 360.0f, 52.0f, UI_INK, UI_FRAME);
 
     snprintf(value, sizeof(value), "%d", score);
-    draw_stat(left, 82.0f, right, "pontos", value, UI_TEXT);
+    draw_stat(left, 76.0f, right, "pontos", value, UI_AMBER);
 
     snprintf(value, sizeof(value), "%d/%d", neutralized, threats_total());
-    draw_stat(left, 102.0f, right, "ameaças neutralizadas", value, UI_TEXT);
+    draw_stat(left, 94.0f, right, "ameaças neutralizadas", value, UI_TEXT);
+
+    // objetivos secundarios: identificacao e bonus
+    draw_panel(140.0f, 124.0f, 360.0f, 60.0f, UI_INK, UI_FRAME);
 
     snprintf(value, sizeof(value), "%d/%d", identified_count, NUM_AGENTES);
-    draw_stat(left, 122.0f, right, "agentes identificados", value, UI_TEXT);
+    draw_stat(left, 134.0f, right, "agentes identificados", value, UI_TEXT);
 
     if (identification_bonus_awarded())
     {
@@ -1141,16 +1145,20 @@ void draw_results()
     }
     else
     {
-        bonus_color = UI_AMBER;
+        bonus_color = UI_DIM;
         snprintf(value, sizeof(value), "não obtido");
     }
 
-    draw_stat(left, 142.0f, right, "bônus de identificação", value, bonus_color);
+    draw_stat(left, 152.0f, right, "bônus de identificação", value, bonus_color);
+
+    snprintf(line, sizeof(line), "identificar os %d agentes vale +%d pontos",
+        NUM_AGENTES, IDENTIFICATION_BONUS);
+    al_draw_text(font, UI_DIM, left, 170.0f, 0, line);
 
     draw_buttons(buttons, count);
 
-    snprintf(line, sizeof(line), "enter também continua");
-    al_draw_text(font, UI_DIM, SCREEN_W / 2, 276, ALLEGRO_ALIGN_CENTRE, line);
+    al_draw_text(font, UI_DIM, SCREEN_W / 2, 236, ALLEGRO_ALIGN_CENTRE,
+        "enter também continua");
 
 #ifdef _DEBUG
     // leitura temporaria dos contadores da #200: F1 liga e desliga (#202)
@@ -1174,7 +1182,7 @@ void draw_victory()
     float left = 152.0f;
     float right = (float)SCREEN_W - 152.0f;
 
-    al_draw_text(font, UI_TEXT, SCREEN_W / 2, 30, ALLEGRO_ALIGN_CENTRE, "VITÓRIA");
+    al_draw_text(font, UI_TEXT, SCREEN_W / 2, 30, ALLEGRO_ALIGN_CENTRE, "Vitória");
     draw_rule((float)SCREEN_W / 2, 44.0f, 200.0f, UI_FRAME);
     al_draw_text(font, UI_DIM, SCREEN_W / 2, 52, ALLEGRO_ALIGN_CENTRE,
         "você defendeu o organismo");
