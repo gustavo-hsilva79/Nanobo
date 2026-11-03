@@ -1050,19 +1050,6 @@ void draw_game()
         }
     }
 
-    // mira livre: o cursor do sistema some na fase e vira esta marca (#198)
-    aim_x = to_logical_x(mouse_x);
-    aim_y = to_logical_y(mouse_y);
-
-    if (aim_x >= 0.0f && aim_x < (float)SCREEN_W && aim_y >= 0.0f && aim_y < (float)PLAY_H)
-    {
-        al_draw_circle(aim_x, aim_y, 5.0f, UI_CYAN, 1.0f);
-        al_draw_line(aim_x - 9.0f, aim_y + 0.5f, aim_x - 3.0f, aim_y + 0.5f, UI_CYAN, 1.0f);
-        al_draw_line(aim_x + 3.0f, aim_y + 0.5f, aim_x + 9.0f, aim_y + 0.5f, UI_CYAN, 1.0f);
-        al_draw_line(aim_x + 0.5f, aim_y - 9.0f, aim_x + 0.5f, aim_y - 3.0f, UI_CYAN, 1.0f);
-        al_draw_line(aim_x + 0.5f, aim_y + 3.0f, aim_x + 0.5f, aim_y + 9.0f, UI_CYAN, 1.0f);
-    }
-
     // feedback educacional curto da ultima decisao (#178), com placa de fundo
     message = feedback_text();
 
@@ -1082,6 +1069,19 @@ void draw_game()
 
     // marca o destino quando ele esta fora da faixa visivel (#19)
     draw_destination_hint();
+
+    // mira livre: o cursor do sistema some na fase e vira esta marca (#198)
+    aim_x = to_logical_x(mouse_x);
+    aim_y = to_logical_y(mouse_y);
+
+    if (aim_x >= 0.0f && aim_x < (float)SCREEN_W && aim_y >= 0.0f && aim_y < (float)PLAY_H)
+    {
+        al_draw_circle(aim_x, aim_y, 5.0f, UI_CYAN, 1.0f);
+        al_draw_line(aim_x - 9.0f, aim_y + 0.5f, aim_x - 3.0f, aim_y + 0.5f, UI_CYAN, 1.0f);
+        al_draw_line(aim_x + 3.0f, aim_y + 0.5f, aim_x + 9.0f, aim_y + 0.5f, UI_CYAN, 1.0f);
+        al_draw_line(aim_x + 0.5f, aim_y - 9.0f, aim_x + 0.5f, aim_y - 3.0f, UI_CYAN, 1.0f);
+        al_draw_line(aim_x + 0.5f, aim_y + 3.0f, aim_x + 0.5f, aim_y + 9.0f, UI_CYAN, 1.0f);
+    }
 
     // o clip do painel nao pode intersectar o clip do mundo, senao o HUD some
     al_reset_clipping_rectangle();
