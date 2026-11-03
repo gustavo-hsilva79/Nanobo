@@ -641,60 +641,82 @@ void draw_stat(float x, float y, float right, const char* label, const char* val
 void draw_scan_panel()
 {
     int target = last_scan_target();
-    char line[128];
     int panel_y = hud_y(2) - 6;
     int text_x = 36;
-    const char* hint = "botão direito: escanear";
+    int row_state = hud_y(2);
+    int row_info = hud_y(3);
+    int row_action = hud_y(4);
+    const char* state;
+    const char* category;
 
     draw_panel(8.0f, (float)panel_y, (float)SCREEN_W - 16.0f,
         (float)(3 * HUD_LINE_H + 12), UI_PANEL, UI_FRAME);
 
-    al_draw_bitmap(scanner_icon, 14.0f, (float)(hud_y(2) - 4), 0);
+    al_draw_bitmap(scanner_icon, 14.0f, (float)(row_state - 4), 0);
 
     if (target == -1)
     {
-        al_draw_text(font, UI_DIM, (float)text_x, (float)hud_y(2), 0, "nenhum alvo no alcance");
-        al_draw_text(font, UI_DIM, (float)text_x, (float)hud_y(3), 0,
-            "chegue perto e clique com o botão direito");
-        snprintf(line, sizeof(line), "alcance do scanner: %d px", SCAN_RANGE);
-        al_draw_text(font, UI_FRAME, (float)text_x, (float)hud_y(4), 0, line);
+        al_draw_text(font, UI_AMBER, (float)text_x, (float)row_state, 0, "Nenhum alvo");
+        al_draw_text(font, UI_TEXT, (float)text_x, (float)row_info, 0,
+            "Aproxime-se de um agente para escanear.");
+        al_draw_text(font, UI_DIM, (float)text_x, (float)row_action, 0,
+            "botão direito sobre o agente");
         return;
     }
 
     if (!agents[target].active)
     {
-        snprintf(line, sizeof(line), "alvo %d  neutralizado", agents[target].id);
-        al_draw_text(font, UI_DIM, (float)text_x, (float)hud_y(2), 0, line);
-        al_draw_text(font, UI_DIM, (float)text_x, (float)hud_y(3), 0,
-            "chegue perto de outro alvo e clique com o botão direito");
+        al_draw_text(font, UI_DIM, (float)text_x, (float)row_state, 0, "Alvo neutralizado");
+        al_draw_text(font, UI_TEXT, (float)text_x, (float)row_info, 0,
+            "Chegue perto de outro agente.");
+        al_draw_text(font, UI_DIM, (float)text_x, (float)row_action, 0,
+            "botão direito sobre o agente");
         return;
     }
 
-    snprintf(line, sizeof(line), "alvo %d", agents[target].id);
-    al_draw_text(font, UI_AMBER, (float)text_x, (float)hud_y(2), 0, line);
-
-    // a dica de acao fica na mesma linha do cabecalho
-    if (agents[target].layers >= MAX_LAYERS)
+    // cabecalho: estado do scan a esquerda, o que apareceu a direita
+    if (agents[target].layers == 0)
     {
-        hint = "botão direito: escanear de novo";
+        state = "Alvo detectado";
     }
-
-    al_draw_text(font, UI_DIM, (float)(SCREEN_W - 16 - al_get_text_width(font, hint)),
-        (float)hud_y(2), 0, hint);
-
-    al_draw_text(font, UI_TEXT, (float)text_x, (float)hud_y(3), 0,
-        layer_one_text(agents[target].species));
-
-    if (agents[target].layers >= MAX_LAYERS)
+    else if (agents[target].layers < MAX_LAYERS)
     {
-        al_draw_text(font, UI_WARM, (float)text_x, (float)hud_y(4), 0,
-            layer_two_text(agents[target].species));
+        state = "Leitura 1 de 2";
     }
     else
     {
-        al_draw_text(font, UI_DIM, (float)text_x, (float)hud_y(4), 0,
-            "botão direito: revelar a próxima camada");
+        state = "Identificação concluída";
     }
+
+    category = agents[target].species == SPECIES_CELL ? "célula" : "bactéria";
+
+    al_draw_text(font, UI_AMBER, (float)text_x, (float)row_state, 0, state);
+    al_draw_text(font, UI_TEXT, (float)(SCREEN_W - 16), (float)row_state,
+        ALLEGRO_ALIGN_RIGHT, category);
+
+    if (agents[target].layers == 0)
+    {
+        al_draw_text(font, UI_TEXT, (float)text_x, (float)row_info, 0,
+            "Clique com o botão direito para escanear.");
+        al_draw_text(font, UI_DIM, (float)text_x, (float)row_action, 0,
+            "o scan revela a estrutura do agente");
+        return;
+    }
+
+    if (agents[target].layers < MAX_LAYERS)
+    {
+        al_draw_text(font, UI_TEXT, (float)text_x, (float)row_info, 0,
+            layer_one_text(agents[target].species));
+        al_draw_text(font, UI_DIM, (float)text_x, (float)row_action, 0,
+            "clique de novo para revelar a estrutura");
+        return;
+    }
+
+    // identificado: a estrutura e a informacao da decisao, a acao fecha a leitura
+    al_draw_text(font, UI_WARM, (float)text_x, (float)row_info, 0,
+        layer_two_text(agents[target].species));
+    al_draw_text(font, UI_WARM, (float)text_x, (float)row_action, 0,
+        "interprete os dados antes de atacar");
 }
 
 // ---------------------------------------------------------------
