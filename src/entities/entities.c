@@ -5,31 +5,48 @@
 // temporizador e devolve a resistencia cheia antes do primeiro quadro de jogo
 Agent agents[NUM_AGENTES] =
 {
-    { .id = 1, .resistance = BACTERIA_RESISTANCE, .x = 160.0f, .y = 96.0f, .dx = 1.0f, .dy = 0.0f,
+    { .name = "Staphylococcus aureus", 
+      .id = 1, .resistance = BACTERIA_RESISTANCE, .x = 160.0f, .y = 96.0f, .dx = 1.0f, .dy = 0.0f,
       .speed = AGENT_SPEED, .species = SPECIES_GRAM_POSITIVE, .layers = 0, .identified = false,
       .direction_timer = 1.0f, .impulse_timer = 0.0f, .active = true },
-    { .id = 2, .resistance = BACTERIA_RESISTANCE, .x = 480.0f, .y = 140.0f, .dx = 1.0f, .dy = 0.0f,
+
+    { .name = "Escherichia coli",
+      .id = 2, .resistance = BACTERIA_RESISTANCE, .x = 480.0f, .y = 140.0f, .dx = 1.0f, .dy = 0.0f,
       .speed = AGENT_SPEED, .species = SPECIES_GRAM_NEGATIVE, .layers = 0, .identified = false,
       .direction_timer = 1.0f, .impulse_timer = 0.0f, .active = true },
-    { .id = 3, .resistance = CELL_RESISTANCE, .x = 800.0f, .y = 96.0f, .dx = 1.0f, .dy = 0.0f,
+
+    { .name = "Célula epitelial",
+      .id = 3, .resistance = CELL_RESISTANCE, .x = 800.0f, .y = 96.0f, .dx = 1.0f, .dy = 0.0f,
       .speed = CELL_SPEED, .species = SPECIES_CELL, .layers = 0, .identified = false,
       .direction_timer = 1.0f, .impulse_timer = 0.0f, .active = true },
-    { .id = 4, .resistance = BACTERIA_RESISTANCE, .x = 1120.0f, .y = 140.0f, .dx = 1.0f, .dy = 0.0f,
+
+    { .name = "Streptococcus pneumoniae",
+      .id = 4, .resistance = BACTERIA_RESISTANCE, .x = 1120.0f, .y = 140.0f, .dx = 1.0f, .dy = 0.0f,
       .speed = AGENT_SPEED, .species = SPECIES_GRAM_POSITIVE, .layers = 0, .identified = false,
       .direction_timer = 1.0f, .impulse_timer = 0.0f, .active = true },
-    { .id = 5, .resistance = BACTERIA_RESISTANCE, .x = 1440.0f, .y = 96.0f, .dx = 1.0f, .dy = 0.0f,
+
+    { .name = "	Salmonella enterica",
+      .id = 5, .resistance = BACTERIA_RESISTANCE, .x = 1440.0f, .y = 96.0f, .dx = 1.0f, .dy = 0.0f,
       .speed = AGENT_SPEED, .species = SPECIES_GRAM_NEGATIVE, .layers = 0, .identified = false,
       .direction_timer = 1.0f, .impulse_timer = 0.0f, .active = true },
-    { .id = 6, .resistance = CELL_RESISTANCE, .x = 1760.0f, .y = 140.0f, .dx = 1.0f, .dy = 0.0f,
+
+    { .name = "Célula epitelial",
+      .id = 6, .resistance = CELL_RESISTANCE, .x = 1760.0f, .y = 140.0f, .dx = 1.0f, .dy = 0.0f,
       .speed = CELL_SPEED, .species = SPECIES_CELL, .layers = 0, .identified = false,
       .direction_timer = 1.0f, .impulse_timer = 0.0f, .active = true },
-    { .id = 7, .resistance = BACTERIA_RESISTANCE, .x = 160.0f, .y = 420.0f, .dx = 1.0f, .dy = 0.0f,
+
+    { .name = "Bacillus subtilis",
+      .id = 7, .resistance = BACTERIA_RESISTANCE, .x = 160.0f, .y = 420.0f, .dx = 1.0f, .dy = 0.0f,
       .speed = AGENT_SPEED, .species = SPECIES_GRAM_POSITIVE, .layers = 0, .identified = false,
       .direction_timer = 1.0f, .impulse_timer = 0.0f, .active = true },
-    { .id = 8, .resistance = BACTERIA_RESISTANCE, .x = 480.0f, .y = 380.0f, .dx = 1.0f, .dy = 0.0f,
+
+    { .name = "Pseudomonas aeruginosa",
+      .id = 8, .resistance = BACTERIA_RESISTANCE, .x = 480.0f, .y = 380.0f, .dx = 1.0f, .dy = 0.0f,
       .speed = AGENT_SPEED, .species = SPECIES_GRAM_NEGATIVE, .layers = 0, .identified = false,
       .direction_timer = 1.0f, .impulse_timer = 0.0f, .active = true },
-    { .id = 9, .resistance = CELL_RESISTANCE, .x = 800.0f, .y = 420.0f, .dx = 1.0f, .dy = 0.0f,
+
+    { .name = "Célula epitelial", 
+      .id = 9, .resistance = CELL_RESISTANCE, .x = 800.0f, .y = 420.0f, .dx = 1.0f, .dy = 0.0f,
       .speed = CELL_SPEED, .species = SPECIES_CELL, .layers = 0, .identified = false,
       .direction_timer = 1.0f, .impulse_timer = 0.0f, .active = true }
 };
