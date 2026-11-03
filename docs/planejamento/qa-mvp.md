@@ -5,6 +5,7 @@
 > **Data da execução parcial:** 26/10/2026
 > **Atualização:** 28/10/2026 — passo 3 (clique em `INICIAR`) executado e corrigido; evidência na §8.
 > **Atualização:** 30/10/2026 — textos da interface e do feedback acentuados (#194) e evidências datadas do polimento de menus e HUD (#196); ver §9.
+> **Atualização:** 03/11/2026 — roteiro do fluxo educativo (briefing, dois pulsos, módulos A/B, controles por cursor e resumo por objetivo) incorporado como §10; **nenhum passo executado**.
 > **Ambiente:** Windows 11, monitor 2560×1440, janela maximizada, executável a partir da raiz do repositório; Debug|x64 e Release|x64.
 
 ## 1. Como reproduzir
@@ -158,3 +159,30 @@ Evidência (Debug|x64, árvore com a correção, ainda sem commit). Na abertura 
 ### Harness de regras
 
 **83 casos, 83 passaram, 0 falharam** — mesmo total da medição de 28/10. Nove asserções de texto passaram a comparar a grafia acentuada; nenhum caso foi acrescentado ou removido.
+
+
+## 10. Roteiro do fluxo educativo (03/11/2026)
+
+**Estado:** nenhum passo executado. O fluxo depende das issues #103–#107 e #198–#200, que não estão no código em 03/11 — o scanner ainda lê por tecla, o raio ainda é roxo/vermelho por espécie e não existe cena de `BRIEFING`.
+
+**Como executar:** Debug e Release x64, a partir da raiz do repositório, com teclado e mouse físicos. Os passos 4–11 da §4 continuam válidos apenas para o controle antigo; com os controles novos, valem os passos abaixo.
+
+| # | Passo | Esperado | Status |
+|---|---|---|---|
+| E1 | Abrir o jogo e escolher `INICIAR` | Briefing com o primeiro cartão antes da fase | **[PEND]** |
+| E2 | Avançar com ENTER, → ou clique até o terceiro cartão | Três cartões, sem corte em 640×360 | **[PEND]** |
+| E3 | Sair do briefing com ESC e iniciar de novo | Vai direto para a fase; 3 corações, 0/9, 6/6, 0 pontos | **[PEND]** |
+| E4 | Escanear uma bactéria com o botão direito | Pulso 1 roxo ou rosa; pulso 2 com o nome do grupo e a camada; contador 1/9 | **[PEND]** |
+| E5 | Escanear a mesma bactéria de novo | Nada muda; contador continua 1/9 | **[PEND]** |
+| E6 | Escanear uma célula própria | Identificação registrada; o texto não recomenda ação | **[PEND]** |
+| E7 | Atirar com o módulo errado | Nenhum dano; mensagem em forma de pergunta; disparo travado | **[PEND]** |
+| E8 | Repetir o erro no mesmo grupo | Mensagem explica o mecanismo, sem PBP, LPS ou ligações cruzadas | **[PEND]** |
+| E9 | Atirar 2× com o módulo certo | +10; agente sai da cena | **[PEND]** |
+| E10 | Atirar na célula com A e com B | −1 vida em cada caso; célula intacta e ainda identificável | **[PEND]** |
+| E11 | Trocar o módulo pela roda e por `1`/`2` | HUD mostra o módulo ativo | **[PEND]** |
+| E12 | Clicar no ícone do módulo no HUD | Troca o módulo e não dispara | **[PEND]** |
+| E13 | Concluir a fase | Resultados com resumo por objetivo: scans por grupo, decisões certas e erradas, ataques a células | **[PEND]** |
+| E14 | Reiniciar por ENTER | Vida, score, identificação e contadores zerados | **[PEND]** |
+| E15 | Repetir o fluxo em Release | Mesmo comportamento, sem as teclas de QA | **[PEND]** |
+
+**Limite deste roteiro:** ele prova que o fluxo funciona, não que ensina. A aprendizagem é medida no pré/pós-teste P1–P4 do M5 (#134–#137), registrado em `qa-aprendizagem.md` (a criar).

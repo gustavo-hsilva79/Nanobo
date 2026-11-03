@@ -1,10 +1,10 @@
 # Nanobô — Regras do scanner e da identificação
 
-> **Estado:** regras fechadas pela dupla e consolidadas neste documento, que encerra o fluxo **Scanner → Informação → Interpretação → Decisão → Consequência** previsto na #3.
+> **Estado:** regras do M4 fechadas e consolidadas neste documento. A implementação do código ainda é a de 22/10 — o scanner lê por tecla e a camada 2 não nomeia o grupo; a #104 muda isso.
 >
-> **Última revisão:** 18/10/2026 (revisão de implementação).
+> **Última revisão:** 03/11/2026 (sincronização com a Spec de Ensino e Aprendizagem; #104 e #198).
 >
-> **Tarefas relacionadas:** #59 (seleção do alvo), #60 (pulsos e camadas), #61 (identificação única).
+> **Tarefas relacionadas:** #59 (seleção do alvo), #60 (pulsos e camadas), #61 (identificação única), #104 (pulsos com nome e estrutura), #198 (scan sob o cursor).
 
 As regras de seleção do alvo já estavam registradas em `docs/game-design/decisoes.md` (#59). Este documento acrescenta as regras de pulsos/camadas (#60) e de identificação única (#61), para que as três tarefas descrevam o mesmo fluxo, sem sobreposição de responsabilidade.
 
@@ -13,17 +13,19 @@ As regras de seleção do alvo já estavam registradas em `docs/game-design/deci
 ```text
 explorar o cenário
         ↓
-ativar o scanner          → nenhum alvo válido no alcance encerra aqui, sem efeito
+botão direito sobre o alvo → nenhum alvo válido sob o cursor encerra aqui, sem efeito
         ↓
-selecionar o alvo         → agente válido mais próximo (#59)
+selecionar o alvo          → agente válido sob o cursor, dentro do alcance (#59, #198)
         ↓
-revelar a próxima camada  → somente a próxima ainda não descoberta (#60)
+pulso 1                    → resultado da coloração: roxo ou rosa
         ↓
-registrar a identificação → quando a última camada do agente é revelada (#61)
+pulso 2                    → nome do grupo, pista estrutural e o porquê (#104)
+        ↓
+registrar a identificação  → quando a última camada do agente é revelada (#61)
         ↓
 o jogador interpreta a informação
         ↓
-o jogador escolhe a ação / laser
+o jogador escolhe o módulo e atira
         ↓
 consequência
 ```
@@ -32,45 +34,47 @@ O scanner entrega **dados**. A interpretação e a escolha da ação continuam s
 
 ## 2. Ativação
 
-- O scanner funciona em pulsos: cada ativação é independente e produz no máximo um efeito.
+- A ativação é o **botão direito do mouse** sobre o alvo; o teclado não tem tecla de scanner no M4 (#198).
+- O scanner funciona em pulsos: cada ativação válida dispara os dois pulsos, em sequência, e produz no máximo uma identificação.
+- A leitura tem **2 pulsos**; a duração de 0,75 s por pulso é valor inicial (proposta de 02/11, ainda não calibrada).
+- Durante os pulsos o Nanobô fica **parado e sem atirar**; dano de contato cancela o pulso.
 - A ativação só existe no estado `GAME`.
-- Sem candidato dentro do alcance, a ativação não inicia leitura, não revela camada e não identifica agente.
-- O cooldown definitivo permanece **[PENDÊNCIA]**. A estimativa registrada na #3 é de 1–2 s, a ser validada no PoC; nesta revisão não há controle de cooldown implementado.
+- Sem candidato sob o cursor e dentro do alcance, a ativação não inicia leitura, não revela camada e não identifica agente.
+- O intervalo entre leituras continua **[PENDÊNCIA]**: o pulso tem tempo, mas não há recarga própria implementada.
 
 ## 3. Seleção do alvo (#59)
 
 Regra já fechada, repetida aqui para que o fluxo fique em um único lugar:
 
-- São candidatos os agentes ativos e escaneáveis cuja distância ao Nanobô seja menor ou igual ao alcance do scanner.
-- A ativação seleciona no máximo um candidato: o de menor distância.
-- A comparação pode usar distância ao quadrado, sem alterar a regra geométrica.
-- Sem candidatos no alcance, a ativação não inicia uma leitura e não identifica nenhum agente.
+- São candidatos os agentes ativos e escaneáveis sob o cursor (tolerância de **24 px**) e dentro do alcance de **130 px** do Nanobô (#198).
+- A ativação seleciona no máximo um candidato: o mais próximo do cursor.
+- Sem candidato sob o cursor, a ativação não inicia uma leitura e não identifica nenhum agente.
 - Em empate exato, vence o agente com o menor identificador estável e único no encontro.
 
 ## 4. Pulsos e camadas (#60)
 
-- Cada ativação válida revela **somente a próxima camada ainda não descoberta** do alvo selecionado.
-- No contexto da PoC existem **2 camadas** por agente, verificáveis.
+- Cada ativação válida percorre as **2 camadas** do alvo selecionado, em sequência: pulso 1 (coloração) e pulso 2 (grupo e estrutura).
+- Existem **2 camadas** por agente, verificáveis.
 - Informação já revelada **permanece visível** durante o encontro; não é apagada ao trocar de alvo.
   > **Atualização 22/10/2026:** o painel passou a mostrar só a leitura do alvo atual; as camadas já reveladas continuam guardadas em cada agente e voltam a aparecer quando ele é lido de novo.
-- Depois que todas as camadas do agente foram reveladas, novas ativações sobre ele não revelam informação inexistente e não alteram o estado.
-- O conteúdo revelado descreve o agente e **não recomenda** qual ação ou laser o jogador deve escolher.
+- Depois que as duas camadas do agente foram reveladas, novas ativações sobre ele não revelam informação inexistente e não alteram o estado.
+- O conteúdo revelado descreve o agente e **não recomenda** qual módulo o jogador deve usar.
 
-### Conteúdo das camadas na PoC
+### Conteúdo das camadas no M4
 
-O texto da segunda camada é a informação curta de scanner já aprovada em `docs/game-design/conteudo-biologico.md`. A primeira camada identifica a classe do agente.
+O texto da segunda camada é a informação curta de scanner aprovada em `docs/game-design/conteudo-biologico.md`. A primeira camada é o resultado da coloração; a segunda nomeia o grupo e explica a estrutura (D2, 03/11).
 
 | Camada | Agente | Conteúdo revelado |
 |---:|---|---|
-| 1 | Bactéria (Gram+ ou Gram−) | “bactéria detectada” |
-| 2 | Bactéria Gram-positiva | “parede celular espessa e clara, sem membrana externa.” |
-| 2 | Bactéria Gram-negativa | “parede fina de peptidoglicano sob membrana externa.” |
+| 1 | Bactéria (Gram+ ou Gram−) | resultado da coloração: “roxo” (Gram+) ou “rosa” (Gram−) |
+| 2 | Bactéria Gram-positiva | “Gram+: parede celular mais espessa, rica em peptidoglicano.” |
+| 2 | Bactéria Gram-negativa | “Gram−: parede mais fina e uma camada externa extra.” |
 | 1 | Célula saudável própria | “célula do organismo detectada” |
 | 2 | Célula saudável própria | “célula saudável do próprio organismo: preserve-a.” |
 
-Nenhuma camada diz “use o laser roxo” ou “não atire”. A ligação entre a pista e a ação é do jogador, conforme a regra de combate da #16.
+Nenhuma camada diz “use o módulo A” ou “não atire”. A ligação entre a pista e a ação é do jogador.
 
-A camada 2 também **não nomeia a classificação**: “parede espessa, sem membrana externa” é a pista; concluir que se trata de Gram+ e escolher o raio roxo é a decisão. A regra parede → Gram → laser é ensinada uma vez na tela inicial do jogo, não repetida em cada leitura.
+A camada 2 **nomeia a classificação** desde 03/11: sem o nome, o jogo não ensinava o termo que o professor cobrou. O scanner continua sem recomendar módulo; a decisão é do jogador.
 
 **No MVP**, a estrutura deve permitir variar a quantidade e o conteúdo das camadas por agente ou por fase. A configuração final por agente/fase permanece **[PENDÊNCIA]** e não deve ser antecipada antes da revisão das regras da Fase 2 (#83/#87/#88).
 
@@ -91,22 +95,24 @@ O estado de identificação — identificações registradas, contador e camadas
 
 | Objetivo | Informação do scanner | Decisão do jogador | Evidência observável |
 |---|---|---|---|
-| Classificar bactérias pela pista do scanner | camada 2 com a descrição do envelope celular (Gram+ / Gram−) | escolher o laser correspondente | laser escolhido e resultado do ataque |
-| Preservar a célula própria saudável | camada 1 e camada 2 indicando célula do próprio organismo | não atacar | ação escolhida e integridade da célula |
+| OA1 — interpretar a coloração | camada 1 com roxo ou rosa | reconhecer o grupo sem inferir espécie ou doença | leitura do resultado e identificação do grupo |
+| OA2 — comparar as camadas externas | camada 2 com o nome do grupo, a parede e a camada externa | explicar a diferença em palavras próprias | descrição do jogador e reconhecimento do peptidoglicano na parede |
+| OA3 — relacionar estrutura e módulo | camada 2 com a pista estrutural, sem indicar o módulo | escolher A ou B segundo a regra do jogo | módulo escolhido e resultado do ataque |
+| OA4 — preservar a célula própria | camadas 1 e 2 indicando célula do próprio organismo | não atacar a célula | ação escolhida e integridade da célula |
 
 ## 8. O que o scanner não faz
 
-- Não recomenda ação, laser ou alvo a atacar.
+- Não recomenda ação, módulo ou alvo a atacar.
 - Não pontua e não dá bônus.
 - Não escolhe o alvo para o jogador além da seleção automática do mais próximo.
 - Não mantém informação entre encontros.
 
 ## 9. [PENDÊNCIA]
 
-- Cooldown definitivo do scanner.
+- Duração do pulso (0,75 s é valor inicial) e intervalo entre leituras.
 - Quantidade e conteúdo das camadas por agente/fase no MVP.
 - Pistas, decisão associada e consequências da Fase 2, que dependem de #83/#87/#88.
-- Apresentação final das informações do scanner na interface (#48).
+- Apresentação final das informações do scanner na interface (#199).
 - Espécies bacterianas finais representadas no jogo.
 
 ## 10. Implementação atual
@@ -120,6 +126,6 @@ O estado de identificação — identificações registradas, contador e camadas
 | Reinicialização da partida | `reset_match()` em `src/gameplay/gameplay.c` |
 | Agentes fora do scanner | agente com `active == false` não é candidato nem é desenhado |
 
-A posição usada na medição de distância é a do Nanobô (`Nanobo player`, `src/entities/entities.c`), alterada pelo teclado em `update_match()`. O encontro da Fase 1 tem **9 agentes** (3 Gram+, 3 Gram−, 3 células), embora a regra de camadas continue com 2 por agente. O roteiro de verificação está em `docs/planejamento/qa-poc.md`.
+A tabela acima descreve o código de 22/10. Desde 03/11 as regras mudaram em quatro pontos — ativação pelo botão direito, alvo sob o cursor, pulso 1 com a coloração e pulso 2 com o nome do grupo —, e é isso que a #104 e a #198 implementam. A posição usada na medição de distância continua sendo a do Nanobô (`Nanobo player`, `src/entities/entities.c`), alterada pelo teclado em `update_match()`. O encontro da Fase 1 tem **9 agentes** (3 Gram+, 3 Gram−, 3 células), embora a regra de camadas continue com 2 por agente. O roteiro de verificação está em `docs/planejamento/qa-poc.md`.
 
 As regras de conteúdo biológico continuam em `docs/game-design/conteudo-biologico.md`.
