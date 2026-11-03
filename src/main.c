@@ -690,7 +690,7 @@ void draw_scan_panel()
         (float)hud_y(2), 0, hint);
 
     al_draw_text(font, UI_TEXT, (float)text_x, (float)hud_y(3), 0,
-        layer_one_text(agents[target].species));
+        layer_one_text(agents[target].name));
 
     if (agents[target].layers >= MAX_LAYERS)
     {

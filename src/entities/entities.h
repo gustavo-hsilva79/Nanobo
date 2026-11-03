@@ -52,6 +52,7 @@ typedef enum
 // agente do encontro
 typedef struct
 {
+    const char* name;
     int id;
     int resistance; // quantos acertos validos ate neutralizar (#49)
     float x;
