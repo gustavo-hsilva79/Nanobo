@@ -1255,9 +1255,29 @@ void draw_game()
             continue;
         }
 
+        // bacteria sem leitura: disco cinza, sem forma nem cor que entregue o grupo (RF-03)
+        if (agents[i].species != SPECIES_CELL && agents[i].layers == 0)
+        {
+            al_draw_filled_circle(view_x(agents[i].x), view_y(agents[i].y),
+                (float)AGENT_RADIUS - 2.0f, UI_FRAME);
+            continue;
+        }
+
         al_draw_bitmap(species_sprite(agents[i].species),
             view_x(agents[i].x) - AGENT_RADIUS,
             view_y(agents[i].y) - AGENT_RADIUS, 0);
+
+        // anel da coloracao: fica no agente depois da camada 1, roxo ou vermelho
+        if (agents[i].species == SPECIES_GRAM_POSITIVE)
+        {
+            al_draw_circle(view_x(agents[i].x), view_y(agents[i].y),
+                (float)AGENT_RADIUS + 2.0f, UI_PURPLE, 1.0f);
+        }
+        else if (agents[i].species == SPECIES_GRAM_NEGATIVE)
+        {
+            al_draw_circle(view_x(agents[i].x), view_y(agents[i].y),
+                (float)AGENT_RADIUS + 2.0f, UI_RED, 1.0f);
+        }
     }
 
     // o nanobo e desenhado onde o mundo deixou ele, ja descontada a camera
