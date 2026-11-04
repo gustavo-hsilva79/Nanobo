@@ -2,7 +2,7 @@
 
 > **Criado em:** 03/11/2026. Fontes das regras: `docs/game-design/ensino-e-aprendizagem.md` (§"Feedback por situação" e §"Regras para qualquer texto"), `docs/game-design/decisoes.md` (armas, coloração e camada 1, 03/11 noite) e as issues #105, #198 e #200.
 > Todo texto novo entra aqui com ID, tela, limite de caracteres e de onde vem a regra. Nenhum texto usa PBP, transpeptidase, LPS ou ligações cruzadas.
-> **Atualizado em:** 04/11/2026 — todos os textos que o build de 04/11 desenha estão registrados aqui: briefing inteiro, marcador de origem da leitura, frases de revisão da camada 2 e o resumo por contadores. A tabela é espelho do código; o bloco **Drift conhecido** saiu porque não há mais divergência entre tabela e tela.
+> **Atualizado em:** 04/11/2026 — todos os textos que o build de 04/11 desenha estão registrados aqui: briefing inteiro, marcador de origem da leitura, frases de revisão da camada 2 e o resumo por contadores. A Fase 2 mínima e o recorde entraram na mesma data (RT-09–RT-11, CT-42–CT-47). A tabela é espelho do código; o bloco **Drift conhecido** saiu porque não há mais divergência entre tabela e tela.
 
 ## 1. Feedback da decisão (HUD da fase, `src/gameplay/gameplay.c`)
 
@@ -78,7 +78,6 @@ Desenhado **em toda partida** — `MENU → BRIEFING → GAME`, e também depois
 | CT-25 | scanner, 1 camada | `Leitura 1 de 2` | 14 | #199 |
 | CT-26 | scanner, 1 camada | `clique de novo para revelar o grupo` | 35 | #199, texto de 04/11 |
 | CT-27 | scanner, identificado | `Identificação concluída` | 23 | #199 |
-| CT-28 | scanner, identificado | `interprete os dados antes de atacar` | 35 | #199 |
 | CT-29 | scanner, cabeçalho | `célula` / `bactéria` | 6 / 7 | #199 |
 | CT-30 | resultados | `Fase 1 concluída` / `resumo da fase` | 16 / 14 | #202 |
 | CT-31 | resultados | `pontos` / `ameaças neutralizadas` | 6 / 21 | #202 |
@@ -88,10 +87,16 @@ Desenhado **em toda partida** — `MENU → BRIEFING → GAME`, e também depois
 | CT-35 | vitória | `Vitória` | 7 | #202 |
 | CT-36 | HUD, linha 0 | `Ruptura` / `Dissolução` | 7 / 10 | decisão 03/11 (noite) |
 | CT-37 | resultados, painel novo | `o que a partida mostrou` | 23 | #202, build de 04/11 |
-| CT-38 | resultados, painel novo | `bactérias lidas: %d Gram+ · %d Gram-` (`bactérias lidas: 1 Gram+ · 1 Gram-`) | 34 | #174/#202, build de 04/11 |
+| CT-38 | resultados, painel novo | `bactérias identificadas: %d Gram+ · %d Gram-` (`bactérias identificadas: 1 Gram+ · 1 Gram-`) | 44 | #174/#202, build de 04/11 |
 | CT-39 | resultados, painel novo | `acertos de arma: %d · erros: %d` (`acertos de arma: 1 · erros: 0`) | 29 | #174/#202, build de 04/11 |
 | CT-40 | resultados, painel novo | `ataques à célula: %d` (`ataques à célula: 0`) | 19 | #174/#202, build de 04/11 |
 | CT-41 | resultados, frase de revisão | `reveja a estrutura lida no scan` / `reveja: as duas armas ferem a célula` / `sem erro de arma nesta partida` | 31 / 36 / 30 | #174/#202, build de 04/11 |
+| CT-42 | HUD, linha 1, Fase 2 | `objetivo: neutralizar os vírus e chegar ao destino` | 50 | Fase 2 mínima (04/11) |
+| CT-43 | scanner, camada 1, vírus | `clique de novo para concluir a leitura` | 38 | Fase 2 mínima (04/11) |
+| CT-44 | scanner, categoria | `vírus` | 5 | Fase 2 mínima (04/11) |
+| CT-45 | resultados, título | `Fase %d concluída` | 17 | Fase 2 mínima (04/11) |
+| CT-46 | vitória / game over | `tempo total` / `recorde` | 11 / 7 | Recorde mínimo (04/11) |
+| CT-47 | menu, rodapé | `recorde %d` | 10 | Recorde mínimo (04/11) |
 
 ### Textos do scanner (`src/main.c` + `src/gameplay/gameplay.c`)
 
@@ -107,6 +112,9 @@ Desenhado **em toda partida** — `MENU → BRIEFING → GAME`, e também depois
 | RT-07 | scanner, camada 2, revisão Gram+ | `Essa parede mais espessa distingue este grupo.` | 46 | #104 |
 | RT-08 | scanner, camada 2, revisão Gram- | `A membrana externa adicional distingue este grupo.` | 50 | #104 |
 | RT-08b | scanner, camada 2, revisão célula | `preserve a célula: as duas armas ferem o próprio organismo` | 58 | D1 |
+| RT-09 | scanner, camada 1, vírus | `vírus · Vírus da fase` | 21 | Fase 2 mínima (04/11) |
+| RT-10 | scanner, camada 2, vírus | `Vírus precisa de uma célula hospedeira para se multiplicar` | 58 | Fase 2 mínima (04/11) |
+| RT-11 | scanner, camada 2, revisão, vírus | `a célula hospedeira é o que ele usa para se multiplicar` | 55 | Fase 2 mínima (04/11) |
 
 **Limite:** a fonte embutida é de **8 px por caractere** (medido com `al_get_text_width`, não estimado) e a área útil do painel do scanner é de 588 px. A linha mais longa desenhada na fase tem **58 caracteres** (464 px, `preserve a célula: as duas armas ferem o próprio organismo`); a mais longa do briefing tem 54 (432 px, dentro dos 548 px do painel) e a dos resultados, 36 (288 px). Nenhuma passa da área do painel em 640×360.
 

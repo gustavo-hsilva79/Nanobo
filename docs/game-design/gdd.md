@@ -31,7 +31,7 @@ A Fase 1 trabalha quatro objetivos, detalhados em [`ensino-e-aprendizagem.md`](e
 | OA3 | relacionar a estrutura observada ao alvo da arma dentro das regras do jogo |
 | OA4 | reconhecer e preservar uma célula saudável do organismo, distinguindo a regra do jogo de uma afirmação sobre medicamentos reais |
 
-O caminho do ensino é **briefing → scan → decisão → feedback → resumo**, e cada etapa retoma os mesmos quatro objetivos. A tela de Resultados apresenta os contadores da partida (bactérias lidas por grupo, acertos e erros de arma, ataques à célula); o resumo por objetivo — um texto por OA — ainda não está no build.
+O caminho do ensino é **briefing → scan → decisão → feedback → resumo**, e cada etapa retoma os mesmos quatro objetivos. A tela de Resultados apresenta os contadores da partida (bactérias identificadas por grupo, acertos e erros de arma, ataques à célula); o resumo por objetivo — um texto por OA — ainda não está no build.
 
 ## Protagonista
 
@@ -72,9 +72,9 @@ Os agentes nascem em pontos fixos do mundo, sorteados a cada partida sem repetir
 
 ### Fase 2 — vírus
 
-A segunda fase é objetivo pós-MVP e integra a entrega final planejada. O conteúdo previsto envolve os ciclos lítico e lisogênico e uma mecânica de multiplicação limitada.
+A Fase 2 mínima entrou no build de 04/11 para fechar o fluxo entre fases (#71/#76): **3 vírus e 3 células saudáveis**, no mesmo mapa e destino da Fase 1. O vírus tem **1 ponto de resistência** e **qualquer arma o neutraliza**; o contato tira vida e a defesa o empurra, como na bactéria.
 
-Foi definido um limite de referência de **3 vírus** para uma mecânica de desafio. As regras exatas dessa mecânica ainda precisam ser detalhadas e testadas.
+O ciclo lisogênico/lítico, a multiplicação de até 3 vírus e as consequências de combate do ciclo continuam no M5 (#83–#91); a Fase 2 completa do GDD é essa, não a mínima.
 
 ## Combate e consequências
 
@@ -123,7 +123,7 @@ O ataque e o scanner **não têm tecla** no M4 (#198).
 
 > **Estado em 04/11/2026:** os controles por cursor (#198), as armas **Ruptura**/**Dissolução** (#105), o conteúdo novo do scanner (#104), o briefing (#103/#106) e o resumo por contadores (#174/#202) **estão no build** e são o que o jogo faz. As duas bactérias usam **sprite neutro** até a camada 1 e ganham **anel colorido permanente** depois; "rosa" saiu da tela e fica como sinônimo nos documentos.
 >
-> **Ainda ausentes do build, no M5:** o pulso de 0,75 s com imobilização, a trava de 2 s com perseguição (RF-06), a identificação como condição de conclusão (D2.1/D2.2) e o ícone neutro das armas (o projétil já é neutro por forma). Ver `decisoes.md` e a Spec.
+> **Ainda ausentes do build, no M5:** o pulso de 0,75 s com imobilização, a trava de 2 s com perseguição (RF-06) e a identificação como condição de conclusão (D2.1/D2.2). Ver `decisoes.md` e a Spec.
 
 O HUD ocupa o rodapé de 104 px: identificados x/9, ameaças restantes x/6, pontos, tempo, três corações, arma selecionada com estado (`[pronto]`/`[recarga]`) e a leitura do alvo atual. O objetivo da fase aparece na segunda linha do painel; os controles ficam no menu e na pausa, para não competir com a leitura do jogo. A marca do destino aparece na borda da faixa visível quando ele está fora da câmera (#19).
 
@@ -135,7 +135,7 @@ O fluxo está implementado em `src/core/game.c` com sete estados — `MENU`, `BR
 
 ### Resultados e vitória
 
-A tela de Resultados apresenta os números reais da partida: pontos, ameaças neutralizadas/total, agentes identificados/total e se o bônus de +15 foi pago. O terceiro painel, `o que a partida mostrou`, traz `bactérias lidas: %d Gram+ · %d Gram-`, `acertos de arma: %d · erros: %d`, `ataques à célula: %d` e uma frase de revisão — tudo a partir de contadores em memória, sem CSV nem telemetria. É leitura por contador, não o resumo por objetivo (#174/RF-07): o texto por OA continua pendente. A tela de Vitória mostra a pontuação final e inicia nova partida.
+A tela de Resultados apresenta os números reais da partida: pontos, ameaças neutralizadas/total, agentes identificados/total e se o bônus de +15 foi pago. O terceiro painel, `o que a partida mostrou`, traz `bactérias identificadas: %d Gram+ · %d Gram-`, `acertos de arma: %d · erros: %d`, `ataques à célula: %d` e uma frase de revisão — tudo a partir de contadores em memória, sem CSV nem telemetria. É leitura por contador, não o resumo por objetivo (#174/RF-07): o texto por OA continua pendente. A tela de Vitória mostra a pontuação final e inicia nova partida. Com duas fases, CONTINUAR nos Resultados carrega a Fase 2 e preserva a pontuação; na última fase leva a VICTORY, que mostra o total da run, o tempo total e o recorde. O recorde é a melhor pontuação da run, gravada em nanobo_hiscore.txt.
 
 ## Áudio e arte
 
@@ -160,7 +160,7 @@ Uma terceira fase somente deve ser considerada se houver tempo e estabilidade su
 - Duração do pulso do scanner e intervalo entre leituras.
 - Calibração dos números já implementados de vida, dano, ataque, defesa e resistência.
 - Regras de progressão entre fases.
-- Ícone neutro das armas por forma (o projétil já está) e demais assets do M5.
+- Demais assets do M5: variação de sprites das bactérias, spritesheet e áudio.
 - Regras detalhadas da multiplicação limitada da Fase 2.
 
 Fora do M4: Diário de Campo, zonas guiadas, registro de eventos/telemetria e calibração de trava/perseguição; ver [`ensino-e-aprendizagem.md`](ensino-e-aprendizagem.md).
