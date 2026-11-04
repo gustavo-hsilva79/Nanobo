@@ -60,10 +60,21 @@ static float squared_distance(float ax, float ay, float bx, float by)
     return dx * dx + dy * dy;
 }
 
-// Retorna o nome científico do agente identificado
-const char* layer_one_text(const char* name)
+// camada 1: coloracao (roxo/vermelho) e nome do agente (#104)
+const char* layer_one_text(Species species, const char* name)
 {
-return name;
+    static char text[96];
+    const char* color;
+
+    if (species == SPECIES_CELL)
+    {
+        snprintf(text, sizeof(text), "célula do organismo · %s", name);
+        return text;
+    }
+
+    color = species == SPECIES_GRAM_POSITIVE ? "roxo" : "vermelho";
+    snprintf(text, sizeof(text), "%s · %s", color, name);
+    return text;
 }
 
 
@@ -73,15 +84,33 @@ const char* layer_two_text(Species species)
 {
     if (species == SPECIES_GRAM_POSITIVE)
     {
-        return "parede celular espessa e clara, sem membrana externa";
+        return "Gram+ · parede espessa, rica em peptidoglicano";
     }
 
     if (species == SPECIES_GRAM_NEGATIVE)
     {
-        return "parede fina de peptidoglicano sob membrana externa";
+        return "Gram- · parede fina sob membrana externa";
     }
 
     return "célula saudável do próprio organismo: preserve-a";
+}
+
+// o porque do grupo, na mesma linha de leitura da camada 2 (#104)
+// a frase repete o que o conteudo biologico validado ja traz: nenhuma
+// mecanica nova e nenhuma recomendacao de arma
+const char* layer_two_reason(Species species)
+{
+    if (species == SPECIES_GRAM_POSITIVE)
+    {
+        return "Essa parede mais espessa distingue este grupo.";
+    }
+
+    if (species == SPECIES_GRAM_NEGATIVE)
+    {
+        return "A membrana externa adicional distingue este grupo.";
+    }
+
+    return "preserve a célula: as duas armas ferem o próprio organismo";
 }
 
 // agente valido mais perto, -1 quando ninguem esta no alcance
