@@ -73,6 +73,7 @@ typedef struct
     Species species; // SPECIES_*
     int layers; // camadas que o scanner ja revelou
     bool identified;
+    bool alert; // persegue o nanobo depois de levar arma errada (RF-06)
     float direction_timer; // tempo ate a proxima mudanca de direcao
     float impulse_timer; // tempo restante do empurrao da defesa (#17)
     bool active;

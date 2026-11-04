@@ -51,6 +51,10 @@ _Static_assert(WORLD_W % 32 == 0 && WORLD_H % 32 == 0, "mundo precisa fechar no 
 // intervalo entre disparos (#64)
 #define ATTACK_COOLDOWN 1.0
 
+// arma errada: trava o disparo e poe a bacteria atingida atras do nanobo (RF-06)
+#define FIRE_LOCK_TIME 2.0
+#define CHASE_SPEED 60
+
 // cursor a menos disso do nanobo cai na direcao do facing (#198)
 #define AIM_DEAD_ZONE 8.0f
 
@@ -148,6 +152,10 @@ bool identification_bonus_awarded();
 
 // true quando o disparo esta liberado agora (#19)
 bool attack_ready();
+
+// trava do disparo depois de arma errada (RF-06); o HUD usa os dois
+bool fire_locked();
+float fire_lock_left();
 
 // fracao restante da recarga do ataque, 0 quando pronto (barra do HUD)
 float attack_cooldown_left();

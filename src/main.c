@@ -1301,6 +1301,10 @@ void draw_hud()
     {
         state_text = "defesa";
     }
+    else if (fire_locked())
+    {
+        state_text = "travado";
+    }
     else if (attack_ready())
     {
         state_text = "pronto";
@@ -1330,7 +1334,8 @@ void draw_hud()
     al_draw_text(font, UI_DIM, (float)x_time, (float)hud_y(0), 0, timer_text);
     al_draw_text(font, UI_TEXT, (float)x_weapon, (float)hud_y(0), 0, module_name);
     al_draw_bitmap(laser_icon, (float)x_icon, (float)(hud_y(0) - 4), 0);
-    draw_cooldown_bar((float)x_bar, (float)(hud_y(0) + 1), attack_cooldown_left());
+    draw_cooldown_bar((float)x_bar, (float)(hud_y(0) + 1),
+        fire_locked() ? fire_lock_left() : attack_cooldown_left());
     al_draw_text(font, UI_DIM, (float)x_word, (float)hud_y(0), 0, state_text);
 
     if (threats_left() > 0)
