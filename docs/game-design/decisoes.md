@@ -17,25 +17,31 @@ Corolários: um documento que descreve o que o código ainda não faz precisa di
 
 **Descartado por enquanto:** workflow automático de reconciliação documentação × código. A prevenção fica nesta seção, na varredura de cada decisão e no item de QA do fechamento.
 
-### Dívida de implementação (03/11/2026)
+### Dívida de implementação (03/11/2026, atualizada em 04/11/2026)
 
-O que está decidido e o código ainda não faz. Atualizar esta tabela quando uma regra entrar no build ou mudar de marco.
+O que está decidido e o código ainda não faz — ou já faz desde o build de 04/11. Atualizar esta tabela quando uma regra entrar no build ou mudar de marco.
 
-| Regra decidida | Onde está registrada | No build de 03/11 | Marco |
+| Regra decidida | Onde está registrada | No build de 04/11 | Marco |
 |---|---|---|---|
-| Camada 1 = coloração (roxo/vermelho) + nome do agente | D2; `scanner.md` §4 | mostra só o nome | M4 (#104) |
-| Camada 2 = grupo + estrutura + porquê | D2; `scanner.md` §4 | mostra a estrutura, sem o grupo | M4 (#104) |
-| Briefing de 3 cartões | `decisoes.md`; RF-01 | não existe cena nem texto | M4 (#103, #106) |
-| Armas com nome (Ruptura/Dissolução) | `decisoes.md`; `textos-do-jogo.md` | HUD mostra A/B | M4 |
-| Armas com cor neutra; ícone e projétil por forma | RF-04 | roxo/vermelho no ícone e no projétil | M4 (ícones no M5) |
-| Disco cinza até a camada 1; sprite + anel depois | RF-03; `decisoes.md` | sprite colorido desde o início | M4 |
+| Camada 1 = coloração (roxo/vermelho) + nome do agente | D2; `scanner.md` §4 | **feito** — amostra de cor + `<cor> · <nome>` | M4 (#104) |
+| Camada 2 = grupo + estrutura + porquê | D2; `scanner.md` §4 | **feito** — grupo, estrutura e a frase de revisão | M4 (#104) |
+| Briefing de 3 cartões | `decisoes.md`; RF-01 | **feito** — em toda partida, pulável com ESC | M4 (#103, #106) |
+| Armas com nome (Ruptura/Dissolução) | `decisoes.md`; `textos-do-jogo.md` | **feito** — menu, HUD e as 7 mensagens de feedback | M4 |
+| Armas com cor neutra; ícone e projétil por forma | RF-04 | **parcial** — projétil neutro (Ruptura quadrado, Dissolução círculo); o ícone do HUD ainda é o bitmap colorido | M4 (ícones no M5) |
+| Disco cinza até a camada 1; sprite + anel depois | RF-03; `decisoes.md` | **feito** — disco cinza, sprite e anel roxo/vermelho depois da leitura | M4 |
 | Variação de sprites por espécie | `decisoes.md` (03/11, noite) | um sprite por espécie | M5 |
 | Pulso de 0,75 s com imobilização e cancelamento | RF-02; Spec "Dificuldade" | scan instantâneo | M5 |
 | Trava de 2 s + perseguição após arma errada | RF-06 | inexistente | M5 |
 | Identificação condiciona a conclusão | D2.1 + D2.2 | conclui com 0 identificações | M5 |
-| Resumo por objetivo na tela de Resultados | RF-07 (#174) | quatro números | M4 |
+| Resumo por objetivo na tela de Resultados | RF-07 (#174) | **parcial** — contadores no painel `o que a partida mostrou` | M4 |
 | Bônus +15 por run perfeito (0 erro de arma + 0 tiro na célula) | `decisoes.md` (03/11, noite) | paga 9/9 | M5 |
 | SFX e animação | requisito final | inexistentes | M5 |
+
+**Cinco linhas de M4 fecharam no build de 04/11:** camada 1, camada 2, briefing, nomes das armas e disco cinza/anel. Duas ficaram parciais: o projétil já é neutro e se distingue pela forma, mas o ícone do HUD continua colorido (asset do M5); e o resumo mostra os contadores, não o texto por objetivo.
+
+**RF-07 completo segue pendente.** O painel `o que a partida mostrou` traz `leitura: %d Gram+ · %d Gram-`, `acertos de arma: %d · erros: %d`, `células feridas: %d` e uma frase de revisão — é leitura por contador, não o resumo por objetivo (um texto por OA). A tela de Resultados ainda não diz o que cada objetivo mostrou na partida.
+
+**O bônus continua 9/9 neste build.** O run perfeito só entra com D2.1/D2.2 no M5.
 
 ### Estrutura do MVP
 
