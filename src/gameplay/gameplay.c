@@ -50,6 +50,9 @@ static double defense_cooldown_timer = 0.0;
 // intervalo entre disparos (#64)
 static double attack_cooldown_timer = 0.0;
 
+// trava do disparo depois de arma errada (RF-06)
+static double fire_lock_timer = 0.0;
+
 // ultimo alvo lido pelo scanner: o painel do HUD mostra so ele
 static int scan_target = -1;
 
@@ -375,6 +378,10 @@ static void hit_projectiles()
             {
                 progress.wrong_decisions = progress.wrong_decisions + 1;
 
+                // arma errada custa caro: trava o disparo e poe so esta bacteria atras do nanobo (RF-06)
+                agents[j].alert = true;
+                fire_lock_timer = FIRE_LOCK_TIME;
+
                 // dica escalonada: pergunta no primeiro erro, mecanismo do segundo em diante (#105)
                 if (progress.wrong_decisions == 1)
                 {
@@ -576,6 +583,12 @@ static void fire(float dx, float dy)
         return;
     }
 
+    // arma errada trava o disparo, mesmo com a recarga pronta (RF-06)
+    if (fire_lock_timer > 0.0)
+    {
+        return;
+    }
+
     if (attack_cooldown_timer > 0.0)
     {
         return;
@@ -739,6 +752,23 @@ static void pick_new_direction(int index)
     agents[index].direction_timer = (float)(rand() % 5 + 1);
 }
 
+// aponta a bacteria alertada para o nanobo; no centro exato, sorteia uma direcao (RF-06)
+static void chase_player(int index)
+{
+    float dx = player.x - agents[index].x;
+    float dy = player.y - agents[index].y;
+    float dist = sqrtf(dx * dx + dy * dy);
+
+    if (dist < 0.001f)
+    {
+        pick_new_direction(index);
+        return;
+    }
+
+    agents[index].dx = dx / dist;
+    agents[index].dy = dy / dist;
+}
+
 // defesa ativa empurra a bacteria que encosta: direcao do nanobo para o agente (#17)
 static void repel_touching_agents()
 {
@@ -828,6 +858,7 @@ static void reset_agent(int index)
     agents[index].layers = 0;
     agents[index].identified = false;
     agents[index].impulse_timer = 0.0f;
+    agents[index].alert = false;
     pick_new_direction(index);
 }
 
@@ -879,6 +910,11 @@ bool attack_ready()
         return false;
     }
 
+    if (fire_lock_timer > 0.0)
+    {
+        return false;
+    }
+
     if (defense_timer > 0.0)
     {
         return false;
@@ -897,6 +933,23 @@ float attack_cooldown_left()
     }
 
     return (float)(attack_cooldown_timer / ATTACK_COOLDOWN);
+}
+
+// true enquanto a trava da arma errada segura o disparo (RF-06)
+bool fire_locked()
+{
+    return fire_lock_timer > 0.0;
+}
+
+// fracao restante da trava: 1 logo depois do erro, 0 quando o disparo volta
+float fire_lock_left()
+{
+    if (fire_lock_timer <= 0.0)
+    {
+        return 0.0f;
+    }
+
+    return (float)(fire_lock_timer / FIRE_LOCK_TIME);
 }
 
 // a fase ja foi concluida? a #70 le isso para entrar em Resultados (#26)
@@ -993,6 +1046,7 @@ static void start_phase(int index)
     defense_timer = 0.0;
     defense_cooldown_timer = 0.0;
     attack_cooldown_timer = 0.0;
+    fire_lock_timer = 0.0;
 
     // fase nova comeca sem projetil na tela
     for (i = 0; i < MAX_PROJECTILES; i++)
@@ -1143,6 +1197,7 @@ void update_match(double dt)
     for (int i = 0; i < agents_count; i++)
     {
         float speed_factor = 1.0f;
+        int move_speed = agents[i].speed;
 
         if (!agents[i].active)
             continue;
@@ -1156,8 +1211,19 @@ void update_match(double dt)
             if (agents[i].impulse_timer <= 0.0f)
             {
                 agents[i].impulse_timer = 0.0f;
-                pick_new_direction(i);
+
+                // o fim do empurrao nao pode apagar a perseguicao (RF-06)
+                if (!agents[i].alert)
+                {
+                    pick_new_direction(i);
+                }
             }
+        }
+        else if (agents[i].alert)
+        {
+            // so a bacteria que levou arma errada persegue, e ate ser neutralizada (RF-06)
+            chase_player(i);
+            move_speed = CHASE_SPEED;
         }
         else
         {
@@ -1170,8 +1236,8 @@ void update_match(double dt)
             }
         }
 
-        agents[i].x += (float)(agents[i].dx * agents[i].speed * speed_factor * dt);
-        agents[i].y += (float)(agents[i].dy * agents[i].speed * speed_factor * dt);
+        agents[i].x += (float)(agents[i].dx * move_speed * speed_factor * dt);
+        agents[i].y += (float)(agents[i].dy * move_speed * speed_factor * dt);
 
         bounce_agent_off_bounds(i);
     }
@@ -1218,6 +1284,17 @@ void update_match(double dt)
         if (attack_cooldown_timer < 0.0)
         {
             attack_cooldown_timer = 0.0;
+        }
+    }
+
+    // trava do disparo depois de arma errada (RF-06)
+    if (fire_lock_timer > 0.0)
+    {
+        fire_lock_timer -= dt;
+
+        if (fire_lock_timer < 0.0)
+        {
+            fire_lock_timer = 0.0;
         }
     }
 
