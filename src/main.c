@@ -638,9 +638,21 @@ void draw_stat(float x, float y, float right, const char* label, const char* val
 // painel do scanner: um instrumento, nao uma linha de log
 // ---------------------------------------------------------------
 
+void draw_scan_swatch(Species species, float x, float y)
+{
+    if (species == SPECIES_CELL)
+    {
+        return;
+    }
+
+    al_draw_filled_rectangle(x, y + 1.0f, x + 8.0f, y + 9.0f,
+        species == SPECIES_GRAM_POSITIVE ? UI_PURPLE : UI_RED);
+}
+
 void draw_scan_panel()
 {
-    int target = last_scan_target();
+    int target;
+    int hover;
     int panel_y = hud_y(2) - 6;
     int text_x = 36;
     int row_state = hud_y(2);
@@ -648,11 +660,21 @@ void draw_scan_panel()
     int row_action = hud_y(4);
     const char* state;
     const char* category;
+    const char* source;
+    ALLEGRO_COLOR source_color;
+    float world_x;
+    float world_y;
 
     draw_panel(8.0f, (float)panel_y, (float)SCREEN_W - 16.0f,
         (float)(3 * HUD_LINE_H + 12), UI_PANEL, UI_FRAME);
 
     al_draw_bitmap(scanner_icon, 14.0f, (float)(row_state - 4), 0);
+
+    // o painel segue o agente sob o cursor; sem alvo no cursor, fica a ultima leitura
+    world_x = to_logical_x(mouse_x) + camera.x;
+    world_y = to_logical_y(mouse_y) + camera.y;
+    hover = pick_target_at(world_x, world_y);
+    target = hover != -1 ? hover : last_scan_target();
 
     if (target == -1)
     {
@@ -664,9 +686,24 @@ void draw_scan_panel()
         return;
     }
 
+    // de onde vem a leitura: o cursor manda, a ultima leitura e o retorno (#199)
+    if (hover != -1)
+    {
+        source = " · alvo sob o cursor";
+        source_color = UI_CYAN;
+    }
+    else
+    {
+        source = " · última leitura";
+        source_color = UI_DIM;
+    }
+
     if (!agents[target].active)
     {
         al_draw_text(font, UI_DIM, (float)text_x, (float)row_state, 0, "Alvo neutralizado");
+        al_draw_text(font, source_color,
+            (float)(text_x + al_get_text_width(font, "Alvo neutralizado")),
+            (float)row_state, 0, source);
         al_draw_text(font, UI_TEXT, (float)text_x, (float)row_info, 0,
             "Chegue perto de outro agente.");
         al_draw_text(font, UI_DIM, (float)text_x, (float)row_action, 0,
@@ -690,6 +727,8 @@ void draw_scan_panel()
     category = agents[target].species == SPECIES_CELL ? "célula" : "bactéria";
 
     al_draw_text(font, UI_AMBER, (float)text_x, (float)row_state, 0, state);
+    al_draw_text(font, source_color, (float)(text_x + al_get_text_width(font, state)),
+        (float)row_state, 0, source);
     al_draw_text(font, UI_TEXT, (float)(SCREEN_W - 16), (float)row_state,
         ALLEGRO_ALIGN_RIGHT, category);
 
@@ -698,26 +737,27 @@ void draw_scan_panel()
         al_draw_text(font, UI_TEXT, (float)text_x, (float)row_info, 0,
             "Clique com o botão direito para escanear.");
         al_draw_text(font, UI_DIM, (float)text_x, (float)row_action, 0,
-            "o scan revela a estrutura do agente");
+            "o scan revela a coloração e a estrutura");
         return;
     }
 
+    // camada 1: amostra da cor + coloracao e nome do agente (#104)
     if (agents[target].layers < MAX_LAYERS)
     {
-        al_draw_text(font, UI_TEXT, (float)text_x, (float)row_info, 0,
-            layer_one_text(agents[target].name));
-
+        draw_scan_swatch(agents[target].species, (float)text_x, (float)row_info);
+        al_draw_text(font, UI_TEXT, (float)(text_x + 12), (float)row_info, 0,
+            layer_one_text(agents[target].species, agents[target].name));
         al_draw_text(font, UI_DIM, (float)text_x, (float)row_action, 0,
-            "clique de novo para revelar a estrutura");
-
+            "clique de novo para revelar o grupo");
         return;
     }
 
-    // identificado: a estrutura e a informacao da decisao, a acao fecha a leitura
-    al_draw_text(font, UI_WARM, (float)text_x, (float)row_info, 0,
+    // camada 2: grupo, pista estrutural e o porque, sem indicar a arma (#104)
+    draw_scan_swatch(agents[target].species, (float)text_x, (float)row_info);
+    al_draw_text(font, UI_WARM, (float)(text_x + 12), (float)row_info, 0,
         layer_two_text(agents[target].species));
     al_draw_text(font, UI_WARM, (float)text_x, (float)row_action, 0,
-        "interprete os dados antes de atacar");
+        layer_two_reason(agents[target].species));
 }
 
 // ---------------------------------------------------------------

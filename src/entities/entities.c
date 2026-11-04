@@ -25,7 +25,7 @@ Agent agents[NUM_AGENTES] =
       .speed = AGENT_SPEED, .species = SPECIES_GRAM_POSITIVE, .layers = 0, .identified = false,
       .direction_timer = 1.0f, .impulse_timer = 0.0f, .active = true },
 
-    { .name = "	Salmonella enterica",
+    { .name = "Salmonella enterica",
       .id = 5, .resistance = BACTERIA_RESISTANCE, .x = 1440.0f, .y = 96.0f, .dx = 1.0f, .dy = 0.0f,
       .speed = AGENT_SPEED, .species = SPECIES_GRAM_NEGATIVE, .layers = 0, .identified = false,
       .direction_timer = 1.0f, .impulse_timer = 0.0f, .active = true },
@@ -35,7 +35,7 @@ Agent agents[NUM_AGENTES] =
       .speed = CELL_SPEED, .species = SPECIES_CELL, .layers = 0, .identified = false,
       .direction_timer = 1.0f, .impulse_timer = 0.0f, .active = true },
 
-    { .name = "Bacillus subtilis",
+    { .name = "Streptococcus pyogenes",
       .id = 7, .resistance = BACTERIA_RESISTANCE, .x = 160.0f, .y = 420.0f, .dx = 1.0f, .dy = 0.0f,
       .speed = AGENT_SPEED, .species = SPECIES_GRAM_POSITIVE, .layers = 0, .identified = false,
       .direction_timer = 1.0f, .impulse_timer = 0.0f, .active = true },

@@ -95,9 +95,10 @@ extern bool key_down;
 extern bool key_left;
 extern bool key_right;
 
-// leitura do scanner
-const char* layer_one_text(const char* name);
+// leitura do scanner: camada 1 = coloracao + nome; camada 2 = grupo + estrutura
+const char* layer_one_text(Species species, const char* name);
 const char* layer_two_text(Species species);
+const char* layer_two_reason(Species species);
 int pick_target(float x, float y);
 void use_scanner();
 
