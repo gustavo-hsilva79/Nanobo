@@ -84,7 +84,7 @@ O combate está implementado no M3.5; as armas **Ruptura** e **Dissolução** en
 |---|---|---|
 | Vida do Nanobô | 3 corações; 1 de dano por contato com bactéria ou por acertar a célula; 1 s de invulnerabilidade | `entities.h`, `gameplay.c` |
 | Ataque | arma na direção do cursor, 1 disparo por segundo, até 4 projéteis na tela | `gameplay.c`, `main.c` |
-| Armas | **Ruptura** neutraliza Gram+ (alvo na parede); **Dissolução** neutraliza Gram− (alvo na camada externa); arma errada gasta o projétil e não tira resistência | `gameplay.c` |
+| Armas | **Ruptura** neutraliza Gram+ (alvo na parede); **Dissolução** neutraliza Gram− (alvo na camada externa); arma errada gasta o projétil, não tira resistência, trava o disparo por 2 s e põe a bactéria atingida atrás do Nanobô | `gameplay.c` |
 | Resistência | bactéria 2 acertos, célula 0 (não é destruída) | `entities.h` |
 | Defesa | 2 s de imunidade, 3 s de recarga; empurra bactéria a 2× a velocidade por 0,5 s | `gameplay.c` |
 | Consequência | resistência zerada neutraliza o agente, que sai da cena | `gameplay.c` |
@@ -123,9 +123,9 @@ O ataque e o scanner **não têm tecla** no M4 (#198).
 
 > **Estado em 04/11/2026:** os controles por cursor (#198), as armas **Ruptura**/**Dissolução** (#105), o conteúdo novo do scanner (#104), o briefing (#103/#106) e o resumo por contadores (#174/#202) **estão no build** e são o que o jogo faz. As duas bactérias usam **sprite neutro** até a camada 1 e ganham **anel colorido permanente** depois; "rosa" saiu da tela e fica como sinônimo nos documentos.
 >
-> **Ainda ausentes do build, no M5:** o pulso de 0,75 s com imobilização, a trava de 2 s com perseguição (RF-06) e a identificação como condição de conclusão (D2.1/D2.2). Ver `decisoes.md` e a Spec.
+> **Ainda ausentes do build, no M5:** o pulso de 0,75 s com imobilização e a identificação como condição de conclusão (D2.1/D2.2). A trava de 2 s com perseguição (RF-06) entrou no build de 04/11. Ver `decisoes.md` e a Spec.
 
-O HUD ocupa o rodapé de 104 px: identificados x/total de agentes da fase, ameaças restantes x/total de ameaças da fase (9 e 6 na Fase 1; 6 e 3 na Fase 2), pontos, tempo, três corações, arma selecionada com estado (`[pronto]`/`[recarga]`) e a leitura do alvo atual. O objetivo da fase aparece na segunda linha do painel; os controles ficam no menu e na pausa, para não competir com a leitura do jogo. A marca do destino aparece na borda da faixa visível quando ele está fora da câmera (#19).
+O HUD ocupa o rodapé de 104 px: identificados x/total de agentes da fase, ameaças restantes x/total de ameaças da fase (9 e 6 na Fase 1; 6 e 3 na Fase 2), pontos, tempo, três corações, arma selecionada com estado (`[pronto]`/`[recarga]`/`[travado]`) e a leitura do alvo atual. O objetivo da fase aparece na segunda linha do painel; os controles ficam no menu e na pausa, para não competir com a leitura do jogo. A marca do destino aparece na borda da faixa visível quando ele está fora da câmera (#19).
 
 ## Estados e fluxo
 
@@ -163,4 +163,4 @@ Uma terceira fase somente deve ser considerada se houver tempo e estabilidade su
 - Demais assets do M5: variação de sprites das bactérias, spritesheet e áudio.
 - Regras detalhadas da multiplicação limitada da Fase 2.
 
-Fora do M4: Diário de Campo, zonas guiadas, registro de eventos/telemetria e calibração de trava/perseguição; ver [`ensino-e-aprendizagem.md`](ensino-e-aprendizagem.md).
+Fora do M4: Diário de Campo, zonas guiadas e registro de eventos/telemetria; a calibração de trava/perseguição com pessoas fica no playtest do M5. Ver [`ensino-e-aprendizagem.md`](ensino-e-aprendizagem.md).

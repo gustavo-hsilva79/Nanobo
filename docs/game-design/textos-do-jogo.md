@@ -67,7 +67,7 @@ Desenhado **em toda partida** — `MENU → BRIEFING → GAME`, e também depois
 | CT-14 | HUD, linha 0 | `ameaças %d/%d` | 11 | #199 |
 | CT-15 | HUD, linha 1 | `identificados %d/%d` | 17 | #199 |
 | CT-16 | HUD, linha 0 | `pontos %d` | 9 | #199 |
-| CT-17 | HUD, linha 0 | `pronto` / `recarga` / `defesa` | 6 / 7 / 6 | #199 |
+| CT-17 | HUD, linha 0 | `pronto` / `recarga` / `travado` / `defesa` | 6 / 7 / 7 / 6 | #199; RF-06 |
 | CT-18 | scanner, sem alvo | `Nenhum alvo` | 11 | #199 |
 | CT-19 | scanner, sem alvo | `Aproxime-se de um agente para escanear.` | 39 | #199 |
 | CT-20 | scanner, qualquer estado | `botão direito sobre o agente` | 28 | #199 |

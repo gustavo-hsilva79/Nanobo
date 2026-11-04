@@ -204,7 +204,7 @@ A tabela de 03/11 acima fica como histórico do roteiro; esta é a execução qu
 | E4 | Escanear bactéria | [OK] no conteúdo: pulso 1 com coloração + nome, pulso 2 com grupo, estrutura e frase, contador 1/9. O clique direito em si ficou [PEND] (a leitura foi forçada pela rota `scan_at`) | `2026-11-04-scanner-camada1.png`, `2026-11-04-scanner-camada2.png` |
 | E5 | Escanear de novo | [OK] contador continuou 1/9 | `2026-11-04-scanner-camada2.png` |
 | E6 | Escanear célula | [PEND] não executado | — |
-| E7 | Arma errada: trava | [BLOCKED] a trava é RF-06, M5 | — |
+| E7 | Arma errada: trava e perseguição | [OK] mensagem em pergunta, HUD `travado` com a barra enchendo, agente persegue, disparo volta em 2 s | `2026-11-04-rf06-erro.png` |
 | E8 | Repetir o erro | [PEND] não executado | — |
 | E9 | 2 acertos certos | [PEND] não executado | — |
 | E10 | Atirar na célula | [PEND] não executado | — |
@@ -213,6 +213,9 @@ A tabela de 03/11 acima fica como histórico do roteiro; esta é a execução qu
 | E13 | Concluir a fase → resultados | [OK] no layout e nos contadores do resumo (leitura 1 Gram+, acertos 1, erros 0); a pontuação e o 6/6 vieram da tecla `F` de QA, então "6/6 por combate real" fica [PEND] | `2026-11-04-resultados.png` |
 | E14 | Reiniciar por ENTER | [OK] 3 corações, 0/6, 0/9, 0 pontos, tempo zerado | `2026-11-04-reinicio.png` |
 | E15 | Repetir em Release | [PEND] Release compilado 0 avisos/0 erros, não jogado | — |
+| E16 | Depois do erro, correr para longe (mais de 150 px) | [OK] a bactéria alertada continuou seguindo: partiu de 200 px e chegou ao contato | `2026-11-04-rf06-erro.png`, `2026-11-04-rf06-volta.png` |
+| E17 | Errar a arma e apertar `X` quando ela encosta | [OK] anel ciano, empurrão de 0,5 s; no fim do impulso ela voltou a perseguir | `2026-11-04-rf06-defesa.png`, `2026-11-04-rf06-volta.png` |
+| E18 | Reiniciar a partida | [OK] 3 corações, 0/6, 00:00, HUD `pronto`, nenhuma bactéria colada | `2026-11-04-rf06-reset.png` |
 
 **Notas desta rodada:**
 
@@ -235,10 +238,13 @@ A tabela de 03/11 acima fica como histórico do roteiro; esta é a execução qu
 | A4 | O scan é instantâneo e sem custo; a arma errada não trava, não tira vida nem ponto; não há perseguição | `gameplay.c:299-316`; nenhum símbolo `CHASE_*`/`FIRE_LOCK_*` |
 | A5 | As duas bactérias já chegam com a cor do grupo, e o HUD usa a mesma cor na arma | `main.c:998-1007`, `main.c:1144` |
 
+> **Atualização 04/11/2026:** a linha A4 descreve o build de 03/11. Desde o build de 04/11 existem trava de 2 s e perseguição (RF-06); o scan continua instantâneo.
+
 ### Consequência para os roteiros desta seção
 
 - **E4 muda:** o pulso 1 deve mostrar a coloração (roxo/vermelho) **e** o nome do agente.
 - **E7 muda:** no build atual não há trava nem perseguição; o passo só vale depois de RF-06.
+  > **Atualização 04/11/2026:** E7 passou a valer com o RF-06 no build; o roteiro executado é o da §10.
 - **Passos novos:** anel de coloração no agente (RF-03), amostra de cor no painel e nomes das armas no HUD e no feedback.
 
 **Limite:** esta rodada não executou E1–E15; todos continuam `[PEND]` até a implementação de #103/#104 e da RF-06.

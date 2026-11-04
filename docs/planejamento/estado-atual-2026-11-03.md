@@ -158,3 +158,5 @@ Onde a §2 e a §3 deste documento dizem "módulos A/B", "raio roxo/vermelho", "
 **QA de 04/11:** E1–E5 e E12–E14 [OK]; E6, E8–E11 e E15 [PEND]; E7 [BLOCKED] porque a trava é RF-06, do M5. O clique direito com mouse físico não foi exercitado — a leitura do scanner foi forçada pela rota `scan_at`. Detalhe em `qa-mvp.md` §10 e capturas em `docs/auditoria/evidencias/2026-11-04-*`.
 
 Continua fora do build, no M5: pulso de 0,75 s com imobilização, trava de 2 s com perseguição (RF-06), identificação como condição de conclusão (D2.1/D2.2), ícone neutro das armas e o resumo por objetivo completo (RF-07). O limite de 100 MB não foi medido nesta rodada.
+
+**Atualização 04/11/2026 (fim do dia):** RF-06 entrou no build — trava de 2 s e perseguição a 60 px/s em qualquer distância. Continuam fora: pulso de 0,75 s, D2.1/D2.2 e o ciclo viral.

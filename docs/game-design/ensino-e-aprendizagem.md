@@ -136,7 +136,7 @@ O jogador aprende na ordem briefing → scan → decisão → feedback → resum
 3. **Fase única.** Os 9 agentes entram juntos (3 Gram+, 3 Gram−, 3 células) e as duas armas ficam disponíveis desde o início. *O cartão rápido na primeira leitura de uma Gram− é proposta de 02/11, sem issue no M4: o briefing é o único texto obrigatório.*
 4. **Scan = coloração.** Dois pulsos com o Nanobô parado e sem poder atirar. Pulso 1 mostra a coloração (roxo ou vermelho) e o nome do agente; pulso 2 mostra o nome do grupo (Gram+ ou Gram−), a pista estrutural e o porquê, sem indicar a arma. Dano de contato cancela o pulso. *A duração de 0,75 s e a imobilização são valores iniciais propostos em 02/11; a auditoria de 03/11 não os decidiu (ver “Dificuldade e balanceamento”).*
 5. **Decisão.** O jogador escolhe a arma (1/2 ou roda do mouse) e mira com o mouse.
-6. **Consequência.** Acerto avança a resistência e explica em linguagem simples qual alvo do jogo foi atingido. Arma errada trava os disparos e a bactéria passa a perseguir. A mensagem começa com uma pergunta e, em erros repetidos, explica a pista sem termos moleculares. *A trava de 2 s e a perseguição são proposta de calibração, não critério do M4.*
+6. **Consequência.** Acerto avança a resistência e explica em linguagem simples qual alvo do jogo foi atingido. Arma errada trava os disparos e a bactéria passa a perseguir. A mensagem começa com uma pergunta e, em erros repetidos, explica a pista sem termos moleculares. *Trava de 2 s e perseguição a 60 px/s em qualquer distância: decisão de 04/11; a calibração com pessoas fica no playtest do M5.*
 7. **Célula própria.** No jogo, as duas armas ferem a célula (−1 vida, D1): não existe arma “segura”, então o jogador precisa mirar longe das células ao escolher o alvo.
 8. **Resumo.** A tela de Resultados mostra, por objetivo, o que foi descoberto, onde houve dificuldade e qual conteúdo rever, a partir dos contadores em memória (#200, #174). Um total geral não esconde um objetivo que ainda não foi aprendido. O bônus aparece com o critério explícito: 9/9 hoje; no M5, run perfeito (0 erro de arma e 0 tiro na célula).
 
@@ -196,7 +196,7 @@ Prioridade: **N** = Núcleo do M4 (04/11); **N¹** = decisão mantida, sem issue
 | RF-03 | N¹ | Arte neutra: Gram+ e Gram− usam o mesmo sprite até o pulso 1; depois ganham um anel (roxo ou vermelho) que permanece. A célula própria tem sprite próprio e maior. | Captura com 6 bactérias não permite separar os grupos (duas pessoas conferem). |
 | RF-04 | N | Armas Ruptura e Dissolução com a matriz de efeitos: Ruptura neutraliza Gram+; Dissolução neutraliza Gram−; arma errada não causa dano e trava; célula: as duas armas custam 1 vida (D1). Identidade própria: nome, ícone e cor neutra; ícone e projétil distintos pela forma. | Matriz arma × espécie conferida no QA manual. Cor do projétil neutra e diferente da cor do anel. |
 | RF-05 | N | Feedback explicativo conforme a tabela da seção "Como o jogo ensina", com dica escalonada (pergunta no 1º erro, mecanismo no 2º). | Toda linha da tabela tem texto e efeito testados. Nenhuma mensagem usa cor para dizer a arma certa. |
-| RF-06 | N¹ | Trava de disparo após arma errada e perseguição da bactéria (2 s; raio 150 px; 45–60 px/s). **Proposta de calibração**, sem issue no M4. | Metas da simulação (bot leitor ≥ 95%, humano 55–75%, chute ≤ 10%, parado ≤ 5%) — não é critério de aceite de 04/11. |
+| RF-06 | N¹ | Trava de disparo após arma errada e perseguição da bactéria (2 s; 60 px/s; em qualquer distância). **No build desde 04/11**, sem issue. | Metas da simulação (bot leitor ≥ 95%, humano 55–75%, chute ≤ 10%, parado ≤ 5%) — a verificação com pessoas fica no playtest do M5. |
 | RF-07 | N | Resumo na tela de Resultados (fecha #174): evidências separadas por OA, erros por tipo e uma frase de revisão para cada lacuna. | Cenários sem erro, Ruptura em Gram− e arma em célula geram resumos corretos; um acerto em um OA não mascara dificuldade em outro. |
 | RF-08 | F | Pós-M4 — Diário de Campo na pausa (TAB abre). Entradas desbloqueadas por evento; bloqueadas aparecem como “???”; cada entrada identifica o que é conteúdo essencial, simplificação do jogo ou “Para ir além”. Reabre o briefing. | Abre por teclado e mouse; a partida fica congelada; todas as entradas têm fonte registrada. |
 | RF-09 | F | Pós-M4 — Zonas guiadas (D3) e cartão da Zona 2. | Na Zona 1 não existe Gram−; ao cruzar x = 960 o cartão aparece uma única vez. |
@@ -216,7 +216,7 @@ Prioridade: **N** = Núcleo do M4 (04/11); **N¹** = decisão mantida, sem issue
 
 - Diário de Campo (RF-08), zonas guiadas (RF-09) e registro de eventos (RF-14) só voltam ao backlog depois do build e do QA manual aprovados.
 - Fase 2 (vírus), 3ª classe, β-lactamase e barra de endotoxina continuam fora do MVP (RF-15).
-- Arte neutra (RF-03) e calibração de trava/perseguição (RF-06) seguem como decisão e proposta de design, sem issue aberta.
+- Arte neutra (RF-03) segue como decisão de design, sem issue aberta; a trava e a perseguição (RF-06) entraram no build em 04/11 e falta a calibração com pessoas.
 - Varredura por arrasto e economia de amostras continuam adiadas.
 
 ### Validação do M4
@@ -269,9 +269,9 @@ As teclas F, G e H continuam sendo de QA e só existem no build Debug.
 
 ## Dificuldade e balanceamento
 
-> **Escopo:** esta seção é uma proposta de calibração da revisão de 02/11. A auditoria de 03/11 não a incluiu no M4: trava de disparo e perseguição não têm issue e não são critério de aceite de 04/11.
+> **Escopo:** esta seção é uma proposta de calibração da revisão de 02/11. A trava e a perseguição entraram no build de 04/11 por decisão da dupla (`decisoes.md` §"Trava e perseguição"); o pulso do scan continua fora.
 >
-> **Leia com a tabela de dívida:** os números abaixo vêm de uma cópia patchada do `gameplay.c`. Pulso de 0,75 s, trava e perseguição **não estão no build**; o estado de cada regra está em `decisoes.md` §"Dívida de implementação".
+> **Leia com a tabela de dívida:** os números abaixo vêm de uma cópia patchada do `gameplay.c`. Só o pulso de 0,75 s **não está no build**; o estado de cada regra está em `decisoes.md` §"Dívida de implementação".
 
 A dificuldade passa a vir do raciocínio e não do reflexo: o scan custa tempo parado, a arma errada trava o fogo e põe a bactéria em perseguição. Recalibrei essas regras com a mira livre (rodada de 01/11). Com perseguição de 150 px a 60 px/s, trava de 2 s e pulso de 0,75 s, o “humano” simulado vence de 61% a 72% das partidas, quem chuta a arma vence de 1% a 3% e o jogador ausente nunca vence. A meta que não fechou é a duração: o leitor termina a fase em 31 s.
 
@@ -320,9 +320,9 @@ O humano simulado muda pouco quando o perfil muda (vitórias do humano nas confi
 | Constante | Valor inicial | Observação |
 | --- | --- | --- |
 | `SCAN_PULSE_TIME` | 0,75 s por pulso, 1,5 s no total | Faixa a testar: 0,5 a 1,0 s. |
-| `FIRE_LOCK_TIME` | 2,0 s | Não descer de 2 s; 3 s não muda o resultado. |
-| `CHASE_RADIUS` | 150 px | O alcance do scan é 130 px: escanear de longe fica mais seguro. |
-| `CHASE_SPEED` | 60 px/s (testar de 45 a 60) | A mais sensível: 45 deixa o humano simulado em 94%, 60 em 72%. |
+| `FIRE_LOCK_TIME` | 2,0 s (no build desde 04/11) | Não descer de 2 s; 3 s não muda o resultado. |
+| Alcance da perseguição | qualquer distância (04/11) | Fugir não apaga o alerta; os 150 px da proposta foram descartados. |
+| `CHASE_SPEED` | 60 px/s (no build desde 04/11) | A mais sensível: 45 deixa o humano simulado em 94%, 60 em 72%; 45 é o recuo se o playtest mostrar frustração. |
 | Gatilho da perseguição | só depois de uma arma errada | A bactéria fica em alerta até ser neutralizada. Sem esse gatilho, o chute vence quase sempre. |
 | Recarga do disparo | 1,0 s (a de hoje) | Não muda. |
 
