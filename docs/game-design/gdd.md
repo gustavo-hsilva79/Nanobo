@@ -31,7 +31,7 @@ A Fase 1 trabalha quatro objetivos, detalhados em [`ensino-e-aprendizagem.md`](e
 | OA3 | relacionar a estrutura observada ao alvo da arma dentro das regras do jogo |
 | OA4 | reconhecer e preservar uma célula saudável do organismo, distinguindo a regra do jogo de uma afirmação sobre medicamentos reais |
 
-O caminho do ensino é **briefing → scan → decisão → feedback → resumo**, e cada etapa retoma os mesmos quatro objetivos. A tela de Resultados apresenta os contadores da partida (scans por grupo, acertos e erros de arma, células feridas); o resumo por objetivo — um texto por OA — ainda não está no build.
+O caminho do ensino é **briefing → scan → decisão → feedback → resumo**, e cada etapa retoma os mesmos quatro objetivos. A tela de Resultados apresenta os contadores da partida (bactérias lidas por grupo, acertos e erros de arma, ataques à célula); o resumo por objetivo — um texto por OA — ainda não está no build.
 
 ## Protagonista
 
@@ -48,7 +48,7 @@ O scanner é uma mecânica central de investigação.
 - A ativação é o **botão direito** sobre o agente sob o cursor (tolerância de 24 px, alcance de 130 px); o teclado não escaneia no M4.
 - A leitura ocorre em **dois pulsos**: o pulso 1 mostra a amostra de cor, a coloração (**roxo** ou **vermelho**) e o **nome do agente**; o pulso 2 mostra o nome do grupo (`Gram+`/`Gram-`), a pista estrutural e a frase que explica por que aquele grupo se distingue.
 - O painel marca a origem da leitura: ` · alvo sob o cursor` quando há agente sob o cursor, ` · última leitura` quando mostra o último alvo lido; com agente sob o cursor, o painel segue esse agente.
-- Durante os pulsos o Nanobô fica parado e sem atirar; dano de contato cancela o pulso.
+- **[Proposta para o M5]** durante os pulsos o Nanobô ficaria parado e sem atirar, e dano de contato cancelaria o pulso; no build de 04/11 o scan é instantâneo e não imobiliza o jogador.
 - Cada agente possui identificação única, para evitar que a mesma identificação seja contabilizada repetidamente.
 - As informações obtidas apoiam a interpretação do agente e a decisão do jogador; o scanner não recomenda arma.
 
@@ -135,7 +135,7 @@ O fluxo está implementado em `src/core/game.c` com sete estados — `MENU`, `BR
 
 ### Resultados e vitória
 
-A tela de Resultados apresenta os números reais da partida: pontos, ameaças neutralizadas/total, agentes identificados/total e se o bônus de +15 foi pago. O terceiro painel, `o que a partida mostrou`, traz `leitura: %d Gram+ · %d Gram-`, `acertos de arma: %d · erros: %d`, `células feridas: %d` e uma frase de revisão — tudo a partir de contadores em memória, sem CSV nem telemetria. É leitura por contador, não o resumo por objetivo (#174/RF-07): o texto por OA continua pendente. A tela de Vitória mostra a pontuação final e inicia nova partida.
+A tela de Resultados apresenta os números reais da partida: pontos, ameaças neutralizadas/total, agentes identificados/total e se o bônus de +15 foi pago. O terceiro painel, `o que a partida mostrou`, traz `bactérias lidas: %d Gram+ · %d Gram-`, `acertos de arma: %d · erros: %d`, `ataques à célula: %d` e uma frase de revisão — tudo a partir de contadores em memória, sem CSV nem telemetria. É leitura por contador, não o resumo por objetivo (#174/RF-07): o texto por OA continua pendente. A tela de Vitória mostra a pontuação final e inicia nova partida.
 
 ## Áudio e arte
 

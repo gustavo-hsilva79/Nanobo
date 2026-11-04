@@ -14,9 +14,9 @@ Este documento limita o conteúdo ao que apoia a decisão do jogador. Separa fat
 
 | Agente | Tipo no jogo | Resistência do jogo | Informação curta para o scanner |
 |---|---|---:|---|
-| Bactéria Gram-positiva do cenário | Ameaça no cenário da missão | 2 pontos de resistência | pulso 1: “roxo · Staphylococcus aureus” (nome do agente); pulso 2: “Gram+: parede celular mais espessa, rica em peptidoglicano.” |
-| Bactéria Gram-negativa do cenário | Ameaça no cenário da missão | 2 pontos de resistência | pulso 1: “vermelho · Escherichia coli”; pulso 2: “Gram−: parede mais fina e uma camada externa extra.” |
-| Célula saudável própria | Célula a preservar; não é alvo | Não se aplica; ataques não a destroem | pulso 1: “célula do organismo detectada · Célula epitelial”, sem coloração · pulso 2: “Célula saudável do próprio organismo: preserve-a.” |
+| Bactéria Gram-positiva do cenário | Ameaça no cenário da missão | 2 pontos de resistência | pulso 1: “roxo · Staphylococcus aureus” (nome do agente); pulso 2: “Gram+ · parede espessa, rica em peptidoglicano”, com a revisão “Essa parede mais espessa distingue este grupo.” |
+| Bactéria Gram-negativa do cenário | Ameaça no cenário da missão | 2 pontos de resistência | pulso 1: “vermelho · Escherichia coli”; pulso 2: “Gram- · parede fina sob membrana externa”, com a revisão “A membrana externa adicional distingue este grupo.” |
+| Célula saudável própria | Célula a preservar; não é alvo | Não se aplica; ataques não a destroem | pulso 1: “célula do organismo · Célula epitelial”, sem coloração; pulso 2: “célula saudável do próprio organismo: preserve-a”, com a revisão “preserve a célula: as duas armas ferem o próprio organismo” |
 
 Os textos do pulso 1 e do pulso 2 descrevem diferenças gerais do envelope celular: Gram− tem camada relativamente fina de peptidoglicano sob membrana externa; Gram+ tipicamente tem parede espessa e não possui essa membrana externa ([OpenStax Biology 2e](https://openstax.org/books/biology-2e/pages/22-2-structure-of-prokaryotes-bacteria-and-archaea)). Essas pistas apoiam a escolha da arma correspondente, conforme a regra do jogo registrada na #105.
 
