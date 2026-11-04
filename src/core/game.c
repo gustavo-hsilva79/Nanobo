@@ -23,6 +23,13 @@ void game_set_scene(GameScene scene)
     switch (currentScene)
     {
         case GAME_SCENE_MENU:
+            if (scene == GAME_SCENE_BRIEFING)
+            {
+                currentScene = scene;
+            }
+            break;
+
+        case GAME_SCENE_BRIEFING:
             if (scene == GAME_SCENE_GAME)
             {
                 currentScene = scene;
