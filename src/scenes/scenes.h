@@ -5,6 +5,7 @@
 typedef enum GameScene
 {
     GAME_SCENE_MENU,
+    GAME_SCENE_BRIEFING,
     GAME_SCENE_GAME,
     GAME_SCENE_PAUSE,
     GAME_SCENE_RESULTS,

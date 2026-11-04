@@ -37,6 +37,12 @@ _Static_assert(HUD_LINES * HUD_LINE_H + 2 * HUD_MARGIN <= PANEL_H, "HUD nao cabe
 #define UI_BAR_W (UI_BAR_SEGMENTS * UI_SEG_W + (UI_BAR_SEGMENTS - 1) * UI_SEG_GAP)
 #define TITLE_SCALE 3
 
+// cartoes do briefing de entrada (#103)
+#define BRIEFING_CARDS 3
+
+// linhas por cartao: o terceiro cartao usa quatro
+#define BRIEFING_LINES 4
+
 // paleta da interface: os mesmos hex do catalogo de recursos
 #define UI_INK       al_map_rgb(18, 26, 36)    // #121A24
 #define UI_PANEL     al_map_rgb(26, 38, 52)    // #1A2634
@@ -96,6 +102,7 @@ float mouse_y = 0.0f;
 
 // botao focado na tela atual e a ultima cena desenhada
 int ui_focus = 0;
+int briefing_card = 0;
 
 // overlay de depuracao da interface: F1 liga e desliga, so existe no Debug
 bool show_debug = false;
@@ -501,7 +508,11 @@ const UiButton* screen_buttons(int* count)
         { 240.0f, 170.0f, 160.0f, 28.0f, "CONTINUAR" }
     };
     static const UiButton results_items[] = {
-        { 240.0f, 196.0f, 160.0f, 28.0f, "CONTINUAR" }
+        { 240.0f, 256.0f, 160.0f, 28.0f, "CONTINUAR" }
+    };
+    static const UiButton briefing_items[] = {
+        { 180.0f, 198.0f, 140.0f, 28.0f, "AVANÇAR" },
+        { 330.0f, 198.0f, 140.0f, 28.0f, "PULAR" }
     };
     static const UiButton victory_items[] = {
         { 240.0f, 212.0f, 160.0f, 28.0f, "NOVA PARTIDA" }
@@ -516,6 +527,10 @@ const UiButton* screen_buttons(int* count)
     {
         case GAME_SCENE_MENU:
             return menu_items;
+
+        case GAME_SCENE_BRIEFING:
+            *count = 2;
+            return briefing_items;
 
         case GAME_SCENE_PAUSE:
             return pause_items;
@@ -589,7 +604,21 @@ void activate_button(int index)
     {
         case GAME_SCENE_MENU:
             reset_match();
-            game_set_scene(GAME_SCENE_GAME);
+            briefing_card = 0;
+            game_set_scene(GAME_SCENE_BRIEFING);
+            break;
+
+        case GAME_SCENE_BRIEFING:
+            // indice 0 avanca um cartao e entra na fase no ultimo; 1 pula o resto
+            if (index == 1 || briefing_card + 1 == BRIEFING_CARDS)
+            {
+                game_set_scene(GAME_SCENE_GAME);
+            }
+            else
+            {
+                briefing_card = briefing_card + 1;
+                ui_focus = 0;
+            }
             break;
 
         case GAME_SCENE_PAUSE:
@@ -775,6 +804,65 @@ void draw_scan_panel()
 // menu inicial
 // ---------------------------------------------------------------
 
+
+// textos do briefing aprovados pela dupla em 04/11; nada alem da spec (#103)
+static const char* briefing_titles[BRIEFING_CARDS] = {
+    "A coloração de Gram",
+    "Duas camadas externas",
+    "As armas e a célula própria"
+};
+
+static const char* briefing_lines[BRIEFING_CARDS][4] = {
+    { "A coloração separa as bactérias em dois grupos.",
+      "O resultado é roxo (Gram+) ou vermelho (Gram-).",
+      "A cor indica o grupo, não se a bactéria causa doença.",
+      NULL },
+    { "Gram+: parede espessa, rica em peptidoglicano.",
+      "Gram-: parede fina e uma membrana externa.",
+      "O peptidoglicano faz parte da parede da bactéria.",
+      NULL },
+    { "Ruptura age na parede; Dissolução, na camada extra.",
+      "As duas armas ferem a célula própria: mire longe dela.",
+      "Nem toda bactéria causa doença; neste cenário,",
+      "os agentes são tratados como ameaças do jogo." }
+};
+
+// briefing: tres cartoes pulaveis antes da fase (#103, #106)
+void draw_briefing()
+{
+    char step[32];
+    int count;
+    int i;
+    const UiButton* buttons = screen_buttons(&count);
+
+    al_draw_text(font, UI_TEXT, SCREEN_W / 2, 26, ALLEGRO_ALIGN_CENTRE,
+        "Antes de entrar na fase");
+    draw_rule((float)SCREEN_W / 2, 40.0f, 200.0f, UI_FRAME);
+
+    snprintf(step, sizeof(step), "cartão %d de %d", briefing_card + 1, BRIEFING_CARDS);
+    al_draw_text(font, UI_DIM, SCREEN_W / 2, 48, ALLEGRO_ALIGN_CENTRE, step);
+
+    draw_panel(40.0f, 70.0f, (float)SCREEN_W - 80.0f, 116.0f, UI_INK, UI_FRAME);
+
+    al_draw_text(font, UI_AMBER, 52.0f, 82.0f, 0, briefing_titles[briefing_card]);
+
+    for (i = 0; i < BRIEFING_LINES; i++)
+    {
+        // cartao com menos linhas termina no NULL
+        if (briefing_lines[briefing_card][i] == NULL)
+        {
+            continue;
+        }
+
+        al_draw_text(font, UI_TEXT, 52.0f, 106.0f + (float)i * 18.0f, 0,
+            briefing_lines[briefing_card][i]);
+    }
+
+    draw_buttons(buttons, count);
+
+    al_draw_text(font, UI_DIM, SCREEN_W / 2, 236, ALLEGRO_ALIGN_CENTRE,
+        "enter ou clique avança · esc pula");
+}
 
 void draw_menu()
 {
@@ -1535,6 +1623,10 @@ void render()
     {
         draw_menu();
     }
+    else if (scene == GAME_SCENE_BRIEFING)
+    {
+        draw_briefing();
+    }
     else if (scene == GAME_SCENE_GAME)
     {
         draw_game();
@@ -1598,6 +1690,19 @@ void handle_key_down(int key)
         if (key == ALLEGRO_KEY_DOWN || key == ALLEGRO_KEY_S)
         {
             ui_move_focus(1);
+            return;
+        }
+
+        // no briefing a seta avanca mesmo com o foco no PULAR (#103)
+        if (scene == GAME_SCENE_BRIEFING && key == ALLEGRO_KEY_RIGHT)
+        {
+            activate_button(0);
+            return;
+        }
+
+        if (scene == GAME_SCENE_BRIEFING && key == ALLEGRO_KEY_ESCAPE)
+        {
+            game_set_scene(GAME_SCENE_GAME);
             return;
         }
 
