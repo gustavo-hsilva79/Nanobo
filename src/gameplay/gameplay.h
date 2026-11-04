@@ -96,7 +96,7 @@ extern bool key_left;
 extern bool key_right;
 
 // leitura do scanner
-const char* layer_one_text(Species species);
+const char* layer_one_text(const char* name);
 const char* layer_two_text(Species species);
 int pick_target(float x, float y);
 void use_scanner();
