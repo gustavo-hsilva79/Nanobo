@@ -260,15 +260,15 @@ A tabela de 03/11 acima fica como histórico do roteiro; esta é a execução qu
 | Q8 | Contato até zerar as vidas | [OK] `GAME OVER`, `suas 3 vidas acabaram`, 0 pontos, `0/6`, `0/9`, `NOVA PARTIDA` | `2026-11-04-m4-game-over.png` |
 | Q9 | Recorde entre execuções | [OK] `nanobo_hiscore.txt` com `90` ao lado do executável; a execução seguinte mostra `recorde 90` | `2026-11-04-m4-menu-recorde-90.png` |
 | Q10 | Hover sobre agente a ≤130 px | [OK] painel `Alvo detectado · alvo sob o cursor`, `bactéria`, `Clique com o botão direito para escanear` | `2026-11-04-m4-hover-bacteria.png` |
-| Q11 | Clique direito: camada 1 e camada 2 | [PEND — dono] o clique foi feito com o alvo a ~136 px; ficou acima dos 130 px do alcance e a leitura não ocorreu (comportamento correto), falta o clique dentro do alcance. O conteúdo das camadas está provado por `scan_at` no harness e nas capturas de 16:06 | `2026-11-04-scanner-camada1/2.png` |
+| Q11 | Clique direito: camada 1 e camada 2 | [OK — dono, 04/11] verificado no Debug; o teste anterior a ~136 px tinha caído corretamente na regra de alcance, e o conteúdo das camadas segue provado por `scan_at` no harness e nas capturas de 16:06 | `2026-11-04-scanner-camada1/2.png` |
 | Q12 | Roda e `1`/`2` trocam a arma | [OK] a roda (-120) trocou para `Dissolução` com o ícone de anéis; a tecla `1` voltou para `Ruptura` com o ícone de parede | `2026-11-04-m4-arma-dissolucao.png` |
-| Q13 | Atirar na célula com as duas armas | [PEND — dono] | — |
-| Q14 | Segurar seta até a borda | [PEND — dono] a tecla segurada moveu o Nanobô e a câmera; a parada a 16 px não foi medida | — |
+| Q13 | Atirar na célula com as duas armas | [OK — dono, 04/11] verificado no Debug | — |
+| Q14 | Segurar seta até a borda | [OK — dono, 04/11] verificado no Debug | — |
 | Q15 | Pausa: ESC → PAUSE → ESC | [OK] `PAUSE` com `CONTINUAR`; o relógio ficou em `02:49` nas duas capturas com 4 s de intervalo; ESC volta ao jogo (sequência 29→30) | `2026-11-04-m4-pausa.png`, `2026-11-04-m4-pausa-4s.png` |
-| Q16 | Partida completa em Release, sem teclas de QA | [PEND — dono] Release compilado 0/0, não jogado | — |
+| Q16 | Partida completa em Release, sem teclas de QA | [OK — dono, 04/11] verificado no Release | — |
 
 **Notas desta rodada:**
 
 - Q4, Q6 e Q7 provam layout, contadores, preservação do score e totais da run; a fase foi concluída pela tecla `F`, então dificuldade e combate real continuam fora.
-- Q11–Q14 e Q16 são os passos que o `PostMessage` não prova; o roteiro está na Tarefa 7 do plano e fica com o dono.
+- Q11–Q14 e Q16 são os passos que o `PostMessage` não prova; foram verificados pelo dono em 04/11, sem captura no repo.
 - O limite de 100 MB e o playtest externo continuam no M5 (#36/#38).
