@@ -779,7 +779,7 @@ void draw_scan_panel()
         al_draw_text(font, UI_TEXT, (float)text_x, (float)row_info, 0,
             "Clique com o botão direito para escanear.");
         al_draw_text(font, UI_DIM, (float)text_x, (float)row_action, 0,
-            "o scan revela a coloração e a estrutura");
+            "o scan revela os dados do agente");
         return;
     }
 
@@ -1526,7 +1526,7 @@ void draw_results()
 
     al_draw_text(font, UI_AMBER, left, 170.0f, 0, "o que a partida mostrou");
 
-    snprintf(line, sizeof(line), "leitura: %d Gram+ · %d Gram-",
+    snprintf(line, sizeof(line), "bactérias lidas: %d Gram+ · %d Gram-",
         progress.scans_gram_positive, progress.scans_gram_negative);
     al_draw_text(font, UI_TEXT, left, 186.0f, 0, line);
 
@@ -1534,7 +1534,7 @@ void draw_results()
         progress.correct_decisions, progress.wrong_decisions);
     al_draw_text(font, UI_TEXT, left, 202.0f, 0, line);
 
-    snprintf(line, sizeof(line), "células feridas: %d", progress.cell_attacks);
+    snprintf(line, sizeof(line), "ataques à célula: %d", progress.cell_attacks);
     al_draw_text(font, UI_TEXT, left, 218.0f, 0, line);
 
     al_draw_text(font, UI_WARM, left, 234.0f, 0, results_review_text());
