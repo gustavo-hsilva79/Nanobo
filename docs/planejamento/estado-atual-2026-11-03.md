@@ -143,3 +143,18 @@ Nanobo.vcxproj
 A leitura de 03/11 dizia que o fluxo tem a cena `BRIEFING`; ela **não existe** no enum — `src/scenes/scenes.h` tem `MENU`, `GAME`, `PAUSE`, `RESULTS`, `VICTORY`, `GAME_OVER` e `EXIT`, e o menu vai direto para `GAME`. O briefing continua sendo o que o M4 precisa entregar (#103/#106).
 
 A mesma rodada renomeou as armas (**Ruptura** e **Dissolução**), fixou a coloração em **roxo/vermelho**, definiu a camada 1 com coloração + nome do agente e **descartou o clique no ícone do HUD** — a troca de arma é pela roda e por `1`/`2`. O texto de 03/11 acima, que fala em "módulos A/B" e "rosa", é anterior a essas decisões e fica como histórico.
+
+## 10. Correção de 04/11/2026
+
+O build de 04/11 fechou o que a correção de 03/11 (noite) listava como pendente:
+
+- **`BRIEFING` existe** no enum (`src/scenes/scenes.h`) e fica entre `MENU` e `GAME`. Aparece em toda partida — inclusive depois de `VITÓRIA` e de `GAME OVER` — e se pula com `ESC`; `ENTER`, `→` ou clique passam os três cartões.
+- **Scanner.** A camada 1 mostra a amostra de cor e `<cor> · <nome>` (`roxo · Staphylococcus aureus`); a camada 2 mostra `Gram+ · parede espessa, rica em peptidoglicano` ou `Gram- · parede fina sob membrana externa`, com a frase de revisão do grupo. A célula tem texto próprio. O painel marca a origem da leitura (` · alvo sob o cursor` / ` · última leitura`) e segue o agente sob o cursor.
+- **Armas.** `Ruptura` e `Dissolução` aparecem no menu, no HUD e nas sete mensagens de feedback; o projétil é neutro e se distingue pela forma (quadrado para Ruptura, círculo para Dissolução).
+- **Resultados.** O terceiro painel, `o que a partida mostrou`, traz leitura por grupo, acertos e erros de arma, células feridas e uma frase de revisão. O bônus continua 9/9.
+
+Onde a §2 e a §3 deste documento dizem "módulos A/B", "raio roxo/vermelho", "ícone do HUD" ou tratam o briefing como entrega futura, leia o estado acima: são o retrato de 03/11 e ficam como histórico, não como descrição do build.
+
+**QA de 04/11:** E1–E5 e E12–E14 [OK]; E6, E8–E11 e E15 [PEND]; E7 [BLOCKED] porque a trava é RF-06, do M5. O clique direito com mouse físico não foi exercitado — a leitura do scanner foi forçada pela rota `scan_at`. Detalhe em `qa-mvp.md` §10 e capturas em `docs/auditoria/evidencias/2026-11-04-*`.
+
+Continua fora do build, no M5: pulso de 0,75 s com imobilização, trava de 2 s com perseguição (RF-06), identificação como condição de conclusão (D2.1/D2.2), ícone neutro das armas e o resumo por objetivo completo (RF-07). O limite de 100 MB não foi medido nesta rodada.
