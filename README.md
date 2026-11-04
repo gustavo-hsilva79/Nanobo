@@ -26,15 +26,15 @@ O jogador deve interpretar as informações obtidas pelo scanner para decidir co
 >
 > **M4 — MVP (26/10/2026):** o fluxo da partida está fechado — a fase conclui em `RESULTS` sem tecla de teste, a tela de Resultados mostra pontos, ameaças neutralizadas, agentes identificados e o bônus, `RESULTS` leva a `VICTORY`, e `VICTORY`/`GAME OVER` reiniciam com reset completo. A HUD ganhou objetivo, `restam x/6`, estado do raio e marca do destino; o menu ganhou a instrução mínima (objetivo, controles e a regra Gram/laser); a camada 2 do scanner deixou de entregar a classificação pronta; perder o foco pausa a partida. Evidências em [QA do MVP](docs/planejamento/qa-mvp.md).
 >
-> **Decisões de 03/11 (noite), ainda não no build:** a camada 1 do scanner passa a mostrar a coloração (**roxo** ou **vermelho**) e o **nome do agente**; as armas passam a se chamar **Ruptura** e **Dissolução**, com cor neutra e ícones/projéteis distintos pela forma; as duas bactérias usam **sprite neutro** até a camada 1 e ganham **anel colorido permanente** depois. O pulso de 0,75 s, a trava de 2 s e a perseguição continuam especificados e ausentes do build (`docs/game-design/decisoes.md`).
+> **Build de 04/11:** a camada 1 do scanner mostra a coloração (**roxo** ou **vermelho**) e o **nome do agente**; a camada 2 mostra o grupo, a estrutura e a frase de revisão; as armas se chamam **Ruptura** e **Dissolução**, com projétil neutro distinguido pela forma; as bactérias usam **sprite neutro** até a camada 1 e ganham **anel colorido permanente** depois. O **briefing de três cartões** abre toda partida — inclusive depois de Vitória e Game Over — e se pula com `ESC`. Os resultados ganharam o painel `o que a partida mostrou`. O pulso de 0,75 s, a trava de 2 s e a perseguição continuam ausentes do build (`docs/game-design/decisoes.md`).
 
 ## Núcleo do jogo
 
 - Exploração de um ambiente microscópico.
-- Scanner com seleção do alvo válido mais próximo e leitura em pulsos/camadas.
+- Scanner com seleção do alvo sob o cursor, dentro do alcance, e leitura em pulsos/camadas.
 - Identificação única dos agentes encontrados.
 - Interpretação das informações do scanner para orientar a decisão do jogador.
-- Combate implementado: arma por espécie (hoje raio roxo/vermelho), projétil, resistência, defesa e vida.
+- Combate implementado: arma por grupo (Ruptura/Dissolução), projétil, resistência, defesa e vida.
 - Pontuação (+10 por ameaça) e bônus de identificação (+15 com 9/9) implementados; hi-score persistente *(planejado)*.
 - Progressão por fases *(planejada)*.
 
@@ -58,7 +58,7 @@ A segunda fase é planejada para a entrega final, após o MVP. O conteúdo envol
 | botão direito sobre o agente | escanear: revela a próxima camada do alvo sob o cursor |
 | `1` / `2` ou roda do mouse | trocar a arma (Ruptura/Dissolução) |
 | `X` | defesa: 2 s de imunidade e 3 s de recarga |
-| `ESC` | pausar / retomar |
+| `ESC` | pausar / retomar; no briefing, pular |
 | `ENTER` | iniciar partida, confirmar, nova partida |
 | clique em `INICIAR` | iniciar partida no menu |
 | `F11` | tela cheia |

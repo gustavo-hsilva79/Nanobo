@@ -1,8 +1,8 @@
 # Nanobô — Regras do scanner e da identificação
 
-> **Estado:** regras do M4 fechadas e consolidadas neste documento. O código de 03/11 já escaneia pelo botão direito, mas a camada 1 ainda mostra só o nome do agente e a camada 2 ainda não nomeia o grupo; a #104 muda as duas.
+> **Estado:** regras do M4 fechadas e consolidadas neste documento. O build de 04/11 mostra as duas camadas como este documento descreve: camada 1 com coloração e nome, camada 2 com grupo, estrutura e a frase de revisão; o painel também marca de onde vem a leitura (#104, #198, #199).
 >
-> **Última revisão:** 03/11/2026 (sincronização com a Spec de Ensino e Aprendizagem; #104 e #198).
+> **Última revisão:** 04/11/2026 (sincronização com o build de 04/11: textos dos pulsos, frase de revisão e marcador de origem da leitura).
 >
 > **Tarefas relacionadas:** #59 (seleção do alvo), #60 (pulsos e camadas), #61 (identificação única), #104 (pulsos com nome e estrutura), #198 (scan sob o cursor).
 
@@ -67,10 +67,14 @@ O texto da segunda camada é a informação curta de scanner aprovada em `docs/g
 | Camada | Agente | Conteúdo revelado |
 |---:|---|---|
 | 1 | Bactéria (Gram+ ou Gram−) | coloração e nome do agente: “roxo · Staphylococcus aureus” (Gram+) ou “vermelho · Escherichia coli” (Gram−) |
-| 2 | Bactéria Gram-positiva | “Gram+: parede celular mais espessa, rica em peptidoglicano.” |
-| 2 | Bactéria Gram-negativa | “Gram−: parede mais fina e uma camada externa extra.” |
-| 1 | Célula saudável própria | “célula do organismo detectada · Célula epitelial”, sem amostra de coloração |
-| 2 | Célula saudável própria | “célula saudável do próprio organismo: preserve-a.” |
+| 2 | Bactéria Gram-positiva | “Gram+ · parede espessa, rica em peptidoglicano” e a frase de revisão “Essa parede mais espessa distingue este grupo.” |
+| 2 | Bactéria Gram-negativa | “Gram- · parede fina sob membrana externa” e “A membrana externa adicional distingue este grupo.” |
+| 1 | Célula saudável própria | “célula do organismo · Célula epitelial”, sem amostra de coloração |
+| 2 | Célula saudável própria | “célula saudável do próprio organismo: preserve-a” e “preserve a célula: as duas armas ferem o próprio organismo” |
+
+O “Gram-” usa hífen ASCII (U+002D): a fonte embutida não tem o menos tipográfico (U+2212), que sai como `^` na tela.
+
+Na linha de estado, o painel mostra **de onde vem a leitura**: ` · alvo sob o cursor`, em ciano, quando existe um agente escaneável sob o cursor; ` · última leitura`, apagado, quando o painel está exibindo o último alvo lido. Com agente sob o cursor, o painel segue esse agente mesmo antes do primeiro clique — é o que permite conferir a coloração e a estrutura sem trocar de alvo.
 
 Nenhuma camada diz “use a Ruptura” ou “não atire”. A ligação entre a pista e a ação é do jogador.
 
@@ -119,13 +123,15 @@ O estado de identificação — identificações registradas, contador e camadas
 
 | Regra | Onde |
 |---|---|
-| Seleção do alvo mais próximo | `pick_target()`, chamado por `use_scanner()` com `player.x`/`player.y`, em `src/gameplay/gameplay.c` |
-| Pulsos e camadas | `use_scanner()` em `src/gameplay/gameplay.c`; desenho em `draw_scan_info()`, `src/main.c` |
-| Texto das camadas | `layer_one_text()` (hoje devolve só o nome) e `layer_two_text()` em `src/gameplay/gameplay.c`; a #104 acrescenta a coloração à camada 1 |
+| Seleção do alvo sob o cursor (24 px) e dentro do alcance (130 px) | `pick_target_at()`, chamado por `scan_at()` e pelo desenho do painel, em `src/gameplay/gameplay.c` |
+| Pulsos e camadas | `reveal_layer()`, por `scan_at()`; desenho em `draw_scan_panel()`, `src/main.c` |
+| Texto das camadas | `layer_one_text()`, `layer_two_text()` e `layer_two_reason()`, em `src/gameplay/gameplay.c` |
+| Amostra de cor e anel | `draw_scan_swatch()` em `src/main.c` no painel; anel desenhado no agente depois da camada 1 |
+| Marcador de origem da leitura | `draw_scan_panel()` em `src/main.c`: ` · alvo sob o cursor` / ` · última leitura` |
 | Identificação única | campos `identified` e `identified_count` em `src/entities/entities.c` |
 | Reinicialização da partida | `reset_match()` em `src/gameplay/gameplay.c` |
 | Agentes fora do scanner | agente com `active == false` não é candidato nem é desenhado |
 
-A tabela acima descreve o código de 22/10. Desde 03/11 as regras mudaram em quatro pontos — ativação pelo botão direito, alvo sob o cursor, pulso 1 com a coloração e pulso 2 com o nome do grupo —, e é isso que a #104 e a #198 implementam. A posição usada na medição de distância continua sendo a do Nanobô (`Nanobo player`, `src/entities/entities.c`), alterada pelo teclado em `update_match()`. O encontro da Fase 1 tem **9 agentes** (3 Gram+, 3 Gram−, 3 células), embora a regra de camadas continue com 2 por agente. O roteiro de verificação está em `docs/planejamento/qa-poc.md`.
+A tabela descreve o código de 04/11: a ativação é o **botão direito** sobre o agente sob o cursor (#198), o pulso 1 mostra a coloração e o nome e o pulso 2 mostra o grupo, a estrutura e a frase de revisão (#104). `use_scanner()`, a leitura pelo alvo mais próximo a partir do Nanobô, continua em `gameplay.c`, mas o `main.c` não a chama: o caminho do jogo é `scan_at()`. A posição usada na medição de distância continua sendo a do Nanobô (`Nanobo player`, `src/entities/entities.c`), alterada pelo teclado em `update_match()`. O encontro da Fase 1 tem **9 agentes** (3 Gram+, 3 Gram−, 3 células), embora a regra de camadas continue com 2 por agente. O roteiro de verificação está em `docs/planejamento/qa-mvp.md` §10.
 
 As regras de conteúdo biológico continuam em `docs/game-design/conteudo-biologico.md`.

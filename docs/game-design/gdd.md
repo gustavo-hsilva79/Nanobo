@@ -31,7 +31,7 @@ A Fase 1 trabalha quatro objetivos, detalhados em [`ensino-e-aprendizagem.md`](e
 | OA3 | relacionar a estrutura observada ao alvo da arma dentro das regras do jogo |
 | OA4 | reconhecer e preservar uma célula saudável do organismo, distinguindo a regra do jogo de uma afirmação sobre medicamentos reais |
 
-O caminho do ensino é **briefing → scan → decisão → feedback → resumo**, e cada etapa retoma os mesmos quatro objetivos. A tela de Resultados apresenta o resumo por objetivo, não só o total.
+O caminho do ensino é **briefing → scan → decisão → feedback → resumo**, e cada etapa retoma os mesmos quatro objetivos. A tela de Resultados apresenta os contadores da partida (scans por grupo, acertos e erros de arma, células feridas); o resumo por objetivo — um texto por OA — ainda não está no build.
 
 ## Protagonista
 
@@ -39,14 +39,15 @@ O jogador controla o **Nanobô**, um nanorrobô responsável por explorar o ambi
 
 ## Briefing
 
-Antes da Fase 1, três cartões puláveis apresentam o necessário para decidir: (1) o que a coloração de Gram revela e o limite da cor; (2) a comparação das camadas externas Gram+ e Gram−, com o peptidoglicano como parte da parede; (3) as armas como modelo do jogo e a regra de preservar a célula própria. ENTER, → ou clique avançam; ESC pula. Não há tutorial guiado depois, e o Diário de Campo — que reabriria o conteúdo no pause — ficou fora do M4 (#103, #106).
+Antes da Fase 1, três cartões puláveis apresentam o necessário para decidir: (1) o que a coloração de Gram revela e o limite da cor; (2) a comparação das camadas externas Gram+ e Gram−, com o peptidoglicano como parte da parede; (3) as armas como modelo do jogo e a regra de preservar a célula própria. ENTER, → ou clique avançam; ESC pula. O briefing aparece **em toda partida**, inclusive depois de `VITÓRIA` e de `GAME OVER`, e o terceiro cartão tem quatro linhas desde 04/11. Não há tutorial guiado depois, e o Diário de Campo — que reabriria o conteúdo no pause — ficou fora do M4 (#103, #106).
 
 ## Scanner
 
 O scanner é uma mecânica central de investigação.
 
 - A ativação é o **botão direito** sobre o agente sob o cursor (tolerância de 24 px, alcance de 130 px); o teclado não escaneia no M4.
-- A leitura ocorre em **dois pulsos**: o pulso 1 mostra a coloração (**roxo** ou **vermelho**) e o **nome do agente**; o pulso 2 mostra o nome do grupo, a pista estrutural e o porquê.
+- A leitura ocorre em **dois pulsos**: o pulso 1 mostra a amostra de cor, a coloração (**roxo** ou **vermelho**) e o **nome do agente**; o pulso 2 mostra o nome do grupo (`Gram+`/`Gram-`), a pista estrutural e a frase que explica por que aquele grupo se distingue.
+- O painel marca a origem da leitura: ` · alvo sob o cursor` quando há agente sob o cursor, ` · última leitura` quando mostra o último alvo lido; com agente sob o cursor, o painel segue esse agente.
 - Durante os pulsos o Nanobô fica parado e sem atirar; dano de contato cancela o pulso.
 - Cada agente possui identificação única, para evitar que a mesma identificação seja contabilizada repetidamente.
 - As informações obtidas apoiam a interpretação do agente e a decisão do jogador; o scanner não recomenda arma.
@@ -77,7 +78,7 @@ Foi definido um limite de referência de **3 vírus** para uma mecânica de desa
 
 ## Combate e consequências
 
-O combate está implementado no M3.5; as armas (então A/B, #105) entram no M4 e o build ainda usa o raio roxo/vermelho por espécie. Os números atuais são ponto de partida, não balanceamento final:
+O combate está implementado no M3.5; as armas **Ruptura** e **Dissolução** entraram no M4 e são o que o build de 04/11 usa, com projétil neutro distinguido pela forma. Os números atuais são ponto de partida, não balanceamento final:
 
 | Regra | Valor atual | Onde |
 |---|---|---|
@@ -120,21 +121,21 @@ O jogo usa teclado e mouse, com o mouse como forma de mirar, atirar e escanear:
 
 O ataque e o scanner **não têm tecla** no M4 (#198).
 
-> **Estado em 03/11/2026, após o merge do PR #203:** os controles por cursor (#198) e as armas (então A/B, #105) **estão implementados** e são o que o jogo faz hoje. Do M4 ainda faltam o briefing (#103, #106) e o conteúdo novo do scanner (#104).
+> **Estado em 04/11/2026:** os controles por cursor (#198), as armas **Ruptura**/**Dissolução** (#105), o conteúdo novo do scanner (#104), o briefing (#103/#106) e o resumo por contadores (#174/#202) **estão no build** e são o que o jogo faz. As duas bactérias usam **sprite neutro** até a camada 1 e ganham **anel colorido permanente** depois; "rosa" saiu da tela e fica como sinônimo nos documentos.
 >
-> **Decisões de 03/11 (noite), ainda não implementadas:** a camada 1 passa a mostrar coloração **roxo/vermelho** mais o **nome do agente**; as armas passam a se chamar **Ruptura** e **Dissolução**, com cor neutra e ícones/projéteis distintos pela forma; as duas bactérias usam **sprite neutro** até a camada 1 e ganham **anel colorido permanente** depois; "rosa" sai da tela e fica como sinônimo nos documentos. O pulso de 0,75 s, a trava de 2 s e a perseguição continuam especificados e ausentes do build (ver `decisoes.md` e a Spec).
+> **Ainda ausentes do build, no M5:** o pulso de 0,75 s com imobilização, a trava de 2 s com perseguição (RF-06), a identificação como condição de conclusão (D2.1/D2.2) e o ícone neutro das armas (o projétil já é neutro por forma). Ver `decisoes.md` e a Spec.
 
 O HUD ocupa o rodapé de 104 px: identificados x/9, ameaças restantes x/6, pontos, tempo, três corações, arma selecionada com estado (`[pronto]`/`[recarga]`) e a leitura do alvo atual. O objetivo da fase aparece na segunda linha do painel; os controles ficam no menu e na pausa, para não competir com a leitura do jogo. A marca do destino aparece na borda da faixa visível quando ele está fora da câmera (#19).
 
 ## Estados e fluxo
 
-O fluxo está implementado em `src/core/game.c` com seis estados — `MENU`, `GAME`, `PAUSE`, `RESULTS`, `VICTORY` e `GAME OVER` — e o M4 acrescenta `BRIEFING` entre o menu e a fase (#106). As transições permitidas e a regra de que só `GAME` atualiza a lógica estão em [Fluxo de estados](../planejamento/fluxo-estados.md).
+O fluxo está implementado em `src/core/game.c` com sete estados — `MENU`, `BRIEFING`, `GAME`, `PAUSE`, `RESULTS`, `VICTORY` e `GAME OVER` — e `BRIEFING` fica entre o menu e a fase, em toda partida (#106). As transições permitidas e a regra de que só `GAME` atualiza a lógica estão em [Fluxo de estados](../planejamento/fluxo-estados.md).
 
 `GAME OVER` é alcançado por vida zerada; `RESULTS` é alcançado automaticamente quando a fase conclui (6 ameaças neutralizadas + Nanobô no destino); `VICTORY` vem de `RESULTS`; `VICTORY` e `GAME OVER` iniciam nova partida com reset completo. `F`, `G` e `H` são teclas de QA e existem somente no build Debug (#70, #76).
 
 ### Resultados e vitória
 
-A tela de Resultados apresenta os números reais da partida: pontos, ameaças neutralizadas/total, agentes identificados/total e se o bônus de +15 foi pago. No M4 ela ganha o **resumo por objetivo** (#174): scans por grupo, decisões certas e erradas e ataques a células, a partir de contadores em memória — sem CSV nem telemetria. Um total geral não substitui a leitura de cada objetivo. A tela de Vitória mostra a pontuação final e inicia nova partida.
+A tela de Resultados apresenta os números reais da partida: pontos, ameaças neutralizadas/total, agentes identificados/total e se o bônus de +15 foi pago. O terceiro painel, `o que a partida mostrou`, traz `leitura: %d Gram+ · %d Gram-`, `acertos de arma: %d · erros: %d`, `células feridas: %d` e uma frase de revisão — tudo a partir de contadores em memória, sem CSV nem telemetria. É leitura por contador, não o resumo por objetivo (#174/RF-07): o texto por OA continua pendente. A tela de Vitória mostra a pontuação final e inicia nova partida.
 
 ## Áudio e arte
 
@@ -159,7 +160,7 @@ Uma terceira fase somente deve ser considerada se houver tempo e estabilidade su
 - Duração do pulso do scanner e intervalo entre leituras.
 - Calibração dos números já implementados de vida, dano, ataque, defesa e resistência.
 - Regras de progressão entre fases.
-- Apresentação final das informações do scanner (#199).
+- Ícone neutro das armas por forma (o projétil já está) e demais assets do M5.
 - Regras detalhadas da multiplicação limitada da Fase 2.
 
-Fora do M4: Diário de Campo, zonas guiadas, registro de eventos/telemetria, arte neutra e calibração de trava/perseguição; ver [`ensino-e-aprendizagem.md`](ensino-e-aprendizagem.md).
+Fora do M4: Diário de Campo, zonas guiadas, registro de eventos/telemetria e calibração de trava/perseguição; ver [`ensino-e-aprendizagem.md`](ensino-e-aprendizagem.md).
