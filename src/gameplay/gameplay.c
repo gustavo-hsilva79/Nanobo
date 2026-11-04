@@ -78,8 +78,7 @@ const char* layer_one_text(Species species, const char* name)
 }
 
 
-// segunda camada, a pista do envelope que o jogador interpreta (#3)
-// o texto descreve a parede e a membrana sem nomear Gram+: a classificacao e do jogador
+// segunda camada: grupo, pista do envelope e o porque; a interpretacao e do jogador (#104)
 const char* layer_two_text(Species species)
 {
     if (species == SPECIES_GRAM_POSITIVE)

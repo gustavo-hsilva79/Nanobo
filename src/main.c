@@ -662,6 +662,8 @@ void draw_scan_panel()
     const char* category;
     const char* source;
     ALLEGRO_COLOR source_color;
+    float lx;
+    float ly;
     float world_x;
     float world_y;
 
@@ -671,9 +673,18 @@ void draw_scan_panel()
     al_draw_bitmap(scanner_icon, 14.0f, (float)(row_state - 4), 0);
 
     // o painel segue o agente sob o cursor; sem alvo no cursor, fica a ultima leitura
-    world_x = to_logical_x(mouse_x) + camera.x;
-    world_y = to_logical_y(mouse_y) + camera.y;
-    hover = pick_target_at(world_x, world_y);
+    lx = to_logical_x(mouse_x);
+    ly = to_logical_y(mouse_y);
+    hover = -1;
+
+    // cursor sobre o painel do HUD nao tem alvo: o clique ali nao escaneia
+    if (lx >= 0.0f && lx < (float)SCREEN_W && ly >= 0.0f && ly < (float)PLAY_H)
+    {
+        world_x = lx + camera.x;
+        world_y = ly + camera.y;
+        hover = pick_target_at(world_x, world_y);
+    }
+
     target = hover != -1 ? hover : last_scan_target();
 
     if (target == -1)
