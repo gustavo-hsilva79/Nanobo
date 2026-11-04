@@ -39,7 +39,7 @@ O que está decidido e o código ainda não faz — ou já faz desde o build de 
 
 **Cinco linhas de M4 fecharam no build de 04/11:** camada 1, camada 2, briefing, nomes das armas e disco cinza/anel. Duas ficaram parciais: o projétil já é neutro e se distingue pela forma, mas o ícone do HUD continua colorido (asset do M5); e o resumo mostra os contadores, não o texto por objetivo.
 
-**RF-07 completo segue pendente.** O painel `o que a partida mostrou` traz `leitura: %d Gram+ · %d Gram-`, `acertos de arma: %d · erros: %d`, `células feridas: %d` e uma frase de revisão — é leitura por contador, não o resumo por objetivo (um texto por OA). A tela de Resultados ainda não diz o que cada objetivo mostrou na partida.
+**RF-07 completo segue pendente.** O painel `o que a partida mostrou` traz `bactérias lidas: %d Gram+ · %d Gram-`, `acertos de arma: %d · erros: %d`, `ataques à célula: %d` e uma frase de revisão — é leitura por contador, não o resumo por objetivo (um texto por OA). A tela de Resultados ainda não diz o que cada objetivo mostrou na partida.
 
 **O bônus continua 9/9 neste build.** O run perfeito só entra com D2.1/D2.2 no M5.
 

@@ -35,9 +35,9 @@ O scanner entrega **dados**. A interpretação e a escolha da ação continuam s
 ## 2. Ativação
 
 - A ativação é o **botão direito do mouse** sobre o alvo; o teclado não tem tecla de scanner no M4 (#198).
-- O scanner funciona em pulsos: cada ativação válida dispara os dois pulsos, em sequência, e produz no máximo uma identificação.
-- A leitura tem **2 pulsos**; a duração de 0,75 s por pulso é valor inicial (proposta de 02/11, ainda não calibrada).
-- Durante os pulsos o Nanobô fica **parado e sem atirar**; dano de contato cancela o pulso.
+- O scanner funciona em pulsos: cada ativação válida revela a próxima camada ainda não descoberta; são duas ativações para identificar o agente.
+- A leitura tem **2 pulsos**, um por ativação; a duração de 0,75 s por pulso é valor inicial (proposta de 02/11, ainda não calibrada) e entra no M5 junto com a imobilização.
+- **[Proposta para o M5]** durante os pulsos o Nanobô ficaria **parado e sem atirar**, e dano de contato cancelaria o pulso; o build de 04/11 é instantâneo e não imobiliza o jogador (`decisoes.md`, pulso de 0,75 s com imobilização no M5).
 - A ativação só existe no estado `GAME`.
 - Sem candidato sob o cursor e dentro do alcance, a ativação não inicia leitura, não revela camada e não identifica agente.
 - O intervalo entre leituras continua **[PENDÊNCIA]**: o pulso tem tempo, mas não há recarga própria implementada.
@@ -53,7 +53,7 @@ Regra já fechada, repetida aqui para que o fluxo fique em um único lugar:
 
 ## 4. Pulsos e camadas (#60)
 
-- Cada ativação válida percorre as **2 camadas** do alvo selecionado, em sequência: pulso 1 (coloração) e pulso 2 (grupo e estrutura).
+- Cada ativação válida revela **uma camada**: a próxima ainda não descoberta do alvo selecionado — a primeira traz a coloração, a segunda o grupo e a estrutura; são **duas ativações** para identificar um agente.
 - Existem **2 camadas** por agente, verificáveis.
 - Informação já revelada **permanece visível** durante o encontro; não é apagada ao trocar de alvo.
   > **Atualização 22/10/2026:** o painel passou a mostrar só a leitura do alvo atual; as camadas já reveladas continuam guardadas em cada agente e voltam a aparecer quando ele é lido de novo.
