@@ -242,3 +242,33 @@ A tabela de 03/11 acima fica como histórico do roteiro; esta é a execução qu
 - **Passos novos:** anel de coloração no agente (RF-03), amostra de cor no painel e nomes das armas no HUD e no feedback.
 
 **Limite:** esta rodada não executou E1–E15; todos continuam `[PEND]` até a implementação de #103/#104 e da RF-06.
+## 12. QA do build de 04/11/2026 — duas fases e recorde
+
+**Base:** branch `m4/fase-2-minima-e-recorde`, código em `f5b6322` (os commits seguintes são só documentação). Debug|x64 e Release|x64 compilados com **0 avisos e 0 erros**; o Debug foi jogado do menu à Vitória e ao Game Over; o Release não foi jogado. Capturas em `docs/auditoria/evidencias/` com o prefixo `2026-11-04-m4-`.
+
+**Método:** jogo iniciado da raiz do repo, teclas por `PostMessage` e captura por `qa_drive_nanobo.ps1`. A tecla `F` de QA conclui a fase sem combate; a coluna "observado" diz quando o número veio dela.
+
+| # | Passo | Resultado observado | Evidência |
+|---|---|---|---|
+| Q1 | Primeira execução, sem arquivo de recorde | [OK] `recorde 0`; objetivo 6 bactérias/9 agentes | `2026-11-04-m4-menu-recorde.png` |
+| Q2 | ENTER nos três cartões do briefing | [OK] três cartões, sem corte | `2026-11-04-m4-briefing-1/2/3.png` |
+| Q3 | ESC no briefing → Fase 1 | [OK] 3 corações, `ameaças 0/6`, `identificados 0/9`, objetivo `bactérias`, `Ruptura` com ícone neutro de parede | `2026-11-04-m4-fase1.png` |
+| Q4 | F → Resultados da Fase 1 | [OK] `Fase 1 concluída`, 60 pontos, `6/6`, `0/9`, bônus não obtido, `CONTINUAR` (fase concluída pela tecla de QA) | `2026-11-04-m4-resultados1.png` |
+| Q5 | ENTER → Fase 2 | [OK] `ameaças 0/3`, `identificados 0/6`, objetivo `vírus`, 60 pontos preservados | `2026-11-04-m4-fase2.png` |
+| Q6 | F → Resultados da Fase 2 | [OK] `Fase 2 concluída`, 90 pontos, `3/3`, `0/6`, **sem** `bactérias identificadas`, resumo começa em `acertos de arma` | `2026-11-04-m4-resultados2.png` |
+| Q7 | ENTER → Vitória | [OK] 90 pontos, `9/9` ameaças e `0/15` agentes (totais da run), tempo total, `recorde 90` | `2026-11-04-m4-vitoria.png` |
+| Q8 | Contato até zerar as vidas | [OK] `GAME OVER`, `suas 3 vidas acabaram`, 0 pontos, `0/6`, `0/9`, `NOVA PARTIDA` | `2026-11-04-m4-game-over.png` |
+| Q9 | Recorde entre execuções | [OK] `nanobo_hiscore.txt` com `90` ao lado do executável; a execução seguinte mostra `recorde 90` | `2026-11-04-m4-menu-recorde-90.png` |
+| Q10 | Hover sobre agente a ≤130 px | [OK] painel `Alvo detectado · alvo sob o cursor`, `bactéria`, `Clique com o botão direito para escanear` | `2026-11-04-m4-hover-bacteria.png` |
+| Q11 | Clique direito: camada 1 e camada 2 | [PEND — dono] o clique foi feito com o alvo a ~136 px; ficou acima dos 130 px do alcance e a leitura não ocorreu (comportamento correto), falta o clique dentro do alcance. O conteúdo das camadas está provado por `scan_at` no harness e nas capturas de 16:06 | `2026-11-04-scanner-camada1/2.png` |
+| Q12 | Roda e `1`/`2` trocam a arma | [OK] a roda (-120) trocou para `Dissolução` com o ícone de anéis; a tecla `1` voltou para `Ruptura` com o ícone de parede | `2026-11-04-m4-arma-dissolucao.png` |
+| Q13 | Atirar na célula com as duas armas | [PEND — dono] | — |
+| Q14 | Segurar seta até a borda | [PEND — dono] a tecla segurada moveu o Nanobô e a câmera; a parada a 16 px não foi medida | — |
+| Q15 | Pausa: ESC → PAUSE → ESC | [OK] `PAUSE` com `CONTINUAR`; o relógio ficou em `02:49` nas duas capturas com 4 s de intervalo; ESC volta ao jogo (sequência 29→30) | `2026-11-04-m4-pausa.png`, `2026-11-04-m4-pausa-4s.png` |
+| Q16 | Partida completa em Release, sem teclas de QA | [PEND — dono] Release compilado 0/0, não jogado | — |
+
+**Notas desta rodada:**
+
+- Q4, Q6 e Q7 provam layout, contadores, preservação do score e totais da run; a fase foi concluída pela tecla `F`, então dificuldade e combate real continuam fora.
+- Q11–Q14 e Q16 são os passos que o `PostMessage` não prova; o roteiro está na Tarefa 7 do plano e fica com o dono.
+- O limite de 100 MB e o playtest externo continuam no M5 (#36/#38).
