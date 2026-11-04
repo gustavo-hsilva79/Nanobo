@@ -7,6 +7,9 @@
 
 #include "../entities/entities.h"
 
+// arquivo do recorde, ao lado do executavel, sem pasta nova (#M4)
+#define HI_SCORE_FILE "nanobo_hiscore.txt"
+
 // a invulnerabilidade precisa existir para o dano nao virar por quadro
 _Static_assert(INVULNERABILITY_TIME > 0.0, "invulnerabilidade precisa ser positiva");
 
@@ -16,11 +19,26 @@ _Static_assert(BACTERIA_RESISTANCE == 2, "o feedback assume um acerto restante")
 // tempo da partida em segundos, so conta dentro do estado GAME
 double match_time = 0;
 
+// tempo somado da run, preservado entre fases (#M4)
+double run_time = 0;
+
 // pontos da partida atual: so a neutralizacao de uma ameaca soma (#66)
 int score = 0;
 
+// quantos agentes a fase atual colocou no mundo (#M4)
+static int agents_count = 0;
+
+// indice da fase corrente: 0 = Fase 1 (#M4)
+static int phase_index = 0;
+
+// melhor pontuacao entre execucoes, lida e gravada em arquivo (#M4)
+static int best_score = 0;
+
 // contadores do resumo educativo: zerados no reset_match, so memoria (#200)
 MatchProgress progress = { 0 };
+
+// totais da run inteira: pontuacao, tempo e estes contadores atravessam fases (#M4)
+RunProgress run_progress = { 0 };
 
 // cooldown de invulnerabilidade
 static double invulnerability_timer = 0.0;
@@ -72,6 +90,13 @@ const char* layer_one_text(Species species, const char* name)
         return text;
     }
 
+    // o virus nao tem coloracao de Gram: a camada 1 diz o que ele e (#M4)
+    if (species == SPECIES_VIRUS)
+    {
+        snprintf(text, sizeof(text), "vírus · %s", name);
+        return text;
+    }
+
     color = species == SPECIES_GRAM_POSITIVE ? "roxo" : "vermelho";
     snprintf(text, sizeof(text), "%s · %s", color, name);
     return text;
@@ -89,6 +114,11 @@ const char* layer_two_text(Species species)
     if (species == SPECIES_GRAM_NEGATIVE)
     {
         return "Gram- · parede fina sob membrana externa";
+    }
+
+    if (species == SPECIES_VIRUS)
+    {
+        return "Vírus precisa de uma célula hospedeira para se multiplicar";
     }
 
     return "célula saudável do próprio organismo: preserve-a";
@@ -109,6 +139,11 @@ const char* layer_two_reason(Species species)
         return "A membrana externa adicional distingue este grupo.";
     }
 
+    if (species == SPECIES_VIRUS)
+    {
+        return "a célula hospedeira é o que ele usa para se multiplicar";
+    }
+
     return "preserve a célula: as duas armas ferem o próprio organismo";
 }
 
@@ -119,7 +154,7 @@ int pick_target(float x, float y)
     int i;
     float best = 0;
 
-    for (i = 0; i < NUM_AGENTES; i++)
+    for (i = 0; i < agents_count; i++)
     {
         float dist;
 
@@ -153,7 +188,7 @@ int touching_agent()
     float reach = (float)(PLAYER_RADIUS + AGENT_RADIUS);
     int i;
 
-    for (i = 0; i < NUM_AGENTES; i++)
+    for (i = 0; i < agents_count; i++)
     {
         // agente neutralizado nao encosta mais no nanobo
         if (!agents[i].active)
@@ -181,11 +216,22 @@ static int laser_for_species(Species species)
     return LASER_GRAM_NEGATIVE;
 }
 
+// a arma atinge a especie? o virus da Fase 2 minima aceita as duas (#M4)
+static bool weapon_affects(Laser laser, Species species)
+{
+    if (species == SPECIES_VIRUS)
+    {
+        return true;
+    }
+
+    return (int)laser == laser_for_species(species);
+}
+
 // um acerto valido no agente tira 1 de resistencia e neutraliza quando ela zera
 // (#49); devolve true so no acerto que neutralizou, o evento unico que a #66 pontua
 bool hit_agent(int index)
 {
-    if (index < 0 || index >= NUM_AGENTES)
+    if (index < 0 || index >= MAX_AGENTS)
     {
         return false;
     }
@@ -210,6 +256,7 @@ bool hit_agent(int index)
 
         // o acerto que neutralizou e o unico evento que pontua (#66)
         score = score + SCORE_PER_THREAT;
+        run_progress.neutralized = run_progress.neutralized + 1;
 
         return true;
     }
@@ -269,7 +316,7 @@ static void hit_projectiles()
             continue;
         }
 
-        for (j = 0; j < NUM_AGENTES; j++)
+        for (j = 0; j < agents_count; j++)
         {
             if (!agents[j].active)
             {
@@ -299,7 +346,7 @@ static void hit_projectiles()
                     }
                 }
             }
-            else if (projectiles[i].laser == laser_for_species(agents[j].species))
+            else if (weapon_affects(projectiles[i].laser, agents[j].species))
             {
                 progress.correct_decisions = progress.correct_decisions + 1;
 
@@ -389,6 +436,7 @@ static void reveal_layer(int index)
     {
         agents[index].identified = true;
         identified_count = identified_count + 1;
+        run_progress.identified = run_progress.identified + 1;
 
         // o resumo conta leitura de agente Gram+ e Gram-, uma vez por agente (#200)
         if (agents[index].species == SPECIES_GRAM_POSITIVE)
@@ -422,7 +470,7 @@ int pick_target_at(float x, float y)
     int i;
     float best = 0;
 
-    for (i = 0; i < NUM_AGENTES; i++)
+    for (i = 0; i < agents_count; i++)
     {
         float dist_cursor;
         float dist_player;
@@ -628,7 +676,7 @@ _Static_assert(sizeof(valid_points) / sizeof(valid_points[0]) == NUM_VALID_POINT
     "valid_points precisa ter NUM_VALID_POINTS linhas");
 
 // cada agente precisa de um ponto de nascimento proprio
-_Static_assert(NUM_AGENTES <= NUM_VALID_POINTS, "faltam pontos para todos os agentes");
+_Static_assert(MAX_AGENTS <= NUM_VALID_POINTS, "faltam pontos para todos os agentes");
 
 // sorteia um ponto valido e diferente para cada agente da fase
 static void place_agents()
@@ -636,7 +684,7 @@ static void place_agents()
     int taken[NUM_VALID_POINTS] = { 0 };
     int i;
 
-    for (i = 0; i < NUM_AGENTES; i++)
+    for (i = 0; i < agents_count; i++)
     {
         int p = rand() % NUM_VALID_POINTS;
 
@@ -702,7 +750,7 @@ static void repel_touching_agents()
         return;
     }
 
-    for (i = 0; i < NUM_AGENTES; i++)
+    for (i = 0; i < agents_count; i++)
     {
         float dx;
         float dy;
@@ -751,6 +799,11 @@ static int species_resistance(Species species)
         return CELL_RESISTANCE;
     }
 
+    if (species == SPECIES_VIRUS)
+    {
+        return VIRUS_RESISTANCE;
+    }
+
     return BACTERIA_RESISTANCE;
 }
 
@@ -784,7 +837,7 @@ int threats_left()
     int i;
     int total = 0;
 
-    for (i = 0; i < NUM_AGENTES; i++)
+    for (i = 0; i < agents_count; i++)
     {
         if (agents[i].active && agents[i].species != SPECIES_CELL)
         {
@@ -801,7 +854,7 @@ int threats_total()
     int i;
     int total = 0;
 
-    for (i = 0; i < NUM_AGENTES; i++)
+    for (i = 0; i < agents_count; i++)
     {
         if (agents[i].species != SPECIES_CELL)
         {
@@ -875,7 +928,7 @@ static void conclude_phase_if_ready()
     phase_finished = true;
 
     // bonus de identificacao completa, so na conclusao e so uma vez (#67)
-    if (identified_count == NUM_AGENTES)
+    if (identified_count == agents_count)
     {
         score = score + IDENTIFICATION_BONUS;
         bonus_awarded = true;
@@ -883,15 +936,32 @@ static void conclude_phase_if_ready()
 }
 
 // comeca partida nova: o encontro e o nanobo voltam ao estado inicial
-void reset_match()
+// zera o estado transitorio de uma fase e coloca os agentes dela no mundo (#M4)
+static void start_phase(int index)
 {
     int i;
 
-    // cada agente volta ao estado inicial, inclusive resistencia e direcao
-    for (i = 0; i < NUM_AGENTES; i++)
+    phase_index = index;
+    agents_count = phases[index].count;
+
+    for (i = 0; i < MAX_AGENTS; i++)
     {
-        reset_agent(i);
+        if (i < agents_count)
+        {
+            agents[i].name = phases[index].members[i].name;
+            agents[i].id = phases[index].members[i].id;
+            agents[i].species = phases[index].members[i].species;
+            reset_agent(i);
+        }
+        else
+        {
+            agents[i].active = false;
+        }
     }
+
+    // a run soma o que cada fase acrescenta (#M4)
+    run_progress.threats = run_progress.threats + threats_total();
+    run_progress.agents = run_progress.agents + agents_count;
 
     player.x = (float)WORLD_W / 2.0f;
     player.y = (float)WORLD_H / 2.0f;
@@ -906,9 +976,8 @@ void reset_match()
     key_right = false;
 
     identified_count = 0;
-    score = 0;
 
-    // contadores do resumo educativo voltam a zero (#200)
+    // contadores do resumo educativo voltam a zero a cada fase (#200)
     progress.scans_gram_positive = 0;
     progress.scans_gram_negative = 0;
     progress.correct_decisions = 0;
@@ -925,7 +994,7 @@ void reset_match()
     defense_cooldown_timer = 0.0;
     attack_cooldown_timer = 0.0;
 
-    // partida nova comeca sem projetil na tela
+    // fase nova comeca sem projetil na tela
     for (i = 0; i < MAX_PROJECTILES; i++)
     {
         projectiles[i].active = false;
@@ -935,6 +1004,98 @@ void reset_match()
 
     // a camera ja nasce no lugar certo do mundo novo
     update_camera();
+}
+
+// comeca uma run nova na Fase 1: pontuacao e tempo da run zerados (#M4)
+void reset_match()
+{
+    score = 0;
+    run_time = 0;
+
+    run_progress.threats = 0;
+    run_progress.neutralized = 0;
+    run_progress.agents = 0;
+    run_progress.identified = 0;
+
+    start_phase(0);
+}
+
+// quantas fases a partida tem e em qual delas o jogo esta
+int phase_count()
+{
+    return PHASE_COUNT;
+}
+
+int current_phase()
+{
+    return phase_index + 1;
+}
+
+// agentes que a fase atual colocou no mundo: 9 na Fase 1, 6 na Fase 2 (#M4)
+int agents_total()
+{
+    return agents_count;
+}
+
+// true quando os Resultados devem carregar outra fase (#M4)
+bool has_next_phase()
+{
+    return phase_index + 1 < PHASE_COUNT;
+}
+
+// Resultados -> proxima fase: a pontuacao da run continua (#M4)
+void start_next_phase()
+{
+    if (has_next_phase())
+    {
+        start_phase(phase_index + 1);
+    }
+}
+
+// melhor pontuacao ja feita, lida do arquivo no inicio do jogo (#M4)
+int hi_score()
+{
+    return best_score;
+}
+
+// le o recorde do disco; arquivo ausente ou invalido vale zero
+void load_hi_score()
+{
+    FILE* file = NULL;
+    int value = 0;
+
+    if (fopen_s(&file, HI_SCORE_FILE, "r") == 0 && file != NULL)
+    {
+        if (fscanf_s(file, "%d", &value) != 1 || value < 0)
+        {
+            value = 0;
+        }
+
+        fclose(file);
+    }
+
+    best_score = value;
+}
+
+// grava a melhor pontuacao quando a run termina; sem arquivo, so memoria
+void finish_run()
+{
+    FILE* file = NULL;
+
+    if (score <= best_score)
+    {
+        return;
+    }
+
+    best_score = score;
+
+    if (fopen_s(&file, HI_SCORE_FILE, "w") != 0 || file == NULL)
+    {
+        return;
+    }
+
+    fprintf(file, "%d\n", best_score);
+    fclose(file);
 }
 
 // mantem um valor dentro do mundo, respeitando o raio do nanobo
@@ -979,7 +1140,7 @@ void update_match(double dt)
 {
     float step = (float)(player.speed * dt);
 
-    for (int i = 0; i < NUM_AGENTES; i++)
+    for (int i = 0; i < agents_count; i++)
     {
         float speed_factor = 1.0f;
 
@@ -1016,6 +1177,7 @@ void update_match(double dt)
     }
 
     match_time = match_time + dt;
+    run_time = run_time + dt;
 
     if (invulnerability_timer > 0.0)
     {
