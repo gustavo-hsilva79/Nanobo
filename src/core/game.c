@@ -58,14 +58,16 @@ void game_set_scene(GameScene scene)
             break;
 
         case GAME_SCENE_VICTORY:
-            if (scene == GAME_SCENE_GAME)
+            // briefing antes de toda partida, pulavel com ESC
+            if (scene == GAME_SCENE_BRIEFING)
             {
                 currentScene = scene;
             }
             break;
 
         case GAME_SCENE_GAME_OVER:
-            if (scene == GAME_SCENE_GAME)
+            // mesma regra: toda partida passa pelo briefing
+            if (scene == GAME_SCENE_BRIEFING)
             {
                 currentScene = scene;
             }

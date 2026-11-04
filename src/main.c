@@ -511,7 +511,7 @@ const UiButton* screen_buttons(int* count)
         { 240.0f, 256.0f, 160.0f, 28.0f, "CONTINUAR" }
     };
     static const UiButton briefing_items[] = {
-        { 180.0f, 198.0f, 140.0f, 28.0f, "AVANÇAR" },
+        { 180.0f, 198.0f, 140.0f, 28.0f, "SEGUIR" },
         { 330.0f, 198.0f, 140.0f, 28.0f, "PULAR" }
     };
     static const UiButton victory_items[] = {
@@ -631,8 +631,10 @@ void activate_button(int index)
 
         case GAME_SCENE_VICTORY:
         case GAME_SCENE_GAME_OVER:
+            // briefing antes de toda partida, pulavel com ESC
             reset_match();
-            game_set_scene(GAME_SCENE_GAME);
+            briefing_card = 0;
+            game_set_scene(GAME_SCENE_BRIEFING);
             break;
 
         default:
