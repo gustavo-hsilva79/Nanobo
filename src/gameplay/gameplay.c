@@ -291,11 +291,11 @@ static void hit_projectiles()
                 {
                     if (projectiles[i].laser == LASER_GRAM_POSITIVE)
                     {
-                        set_feedback("no jogo, o módulo A fere a célula própria: -1 vida");
+                        set_feedback("no jogo, a Ruptura fere a célula própria: -1 vida");
                     }
                     else
                     {
-                        set_feedback("no jogo, o módulo B fere a célula própria: -1 vida");
+                        set_feedback("no jogo, a Dissolução fere a célula própria: -1 vida");
                     }
                 }
             }
@@ -317,11 +317,11 @@ static void hit_projectiles()
                 }
                 else if (agents[j].species == SPECIES_GRAM_POSITIVE)
                 {
-                    set_feedback("módulo A atingiu a parede: falta 1 acerto");
+                    set_feedback("Ruptura atingiu a parede: falta 1 acerto");
                 }
                 else
                 {
-                    set_feedback("módulo B atingiu a camada extra: falta 1 acerto");
+                    set_feedback("Dissolução atingiu a camada extra: falta 1 acerto");
                 }
             }
             else
@@ -331,15 +331,15 @@ static void hit_projectiles()
                 // dica escalonada: pergunta no primeiro erro, mecanismo do segundo em diante (#105)
                 if (progress.wrong_decisions == 1)
                 {
-                    set_feedback("que estrutura o scan mostrou? qual módulo tem esse alvo?");
+                    set_feedback("que estrutura o scan mostrou? qual arma tem esse alvo?");
                 }
                 else if (agents[j].species == SPECIES_GRAM_POSITIVE)
                 {
-                    set_feedback("no jogo, a Gram+ não tem a camada extra atingida por B");
+                    set_feedback("no jogo, a Gram+ não tem a camada extra atingida pela Dissolução");
                 }
                 else
                 {
-                    set_feedback("no jogo, a camada extra das Gram- dificulta a ação de A");
+                    set_feedback("no jogo, a camada extra das Gram- dificulta a ação da Ruptura");
                 }
             }
 
