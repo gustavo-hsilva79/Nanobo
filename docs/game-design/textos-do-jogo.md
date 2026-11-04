@@ -2,6 +2,7 @@
 
 > **Criado em:** 03/11/2026. Fontes das regras: `docs/game-design/ensino-e-aprendizagem.md` (§"Feedback por situação" e §"Regras para qualquer texto"), `docs/game-design/decisoes.md` (armas, coloração e camada 1, 03/11 noite) e as issues #105, #198 e #200.
 > Todo texto novo entra aqui com ID, tela, limite de caracteres e de onde vem a regra. Nenhum texto usa PBP, transpeptidase, LPS ou ligações cruzadas.
+> **Atualizado em:** 04/11/2026 — todos os textos que o build de 04/11 desenha estão registrados aqui: briefing inteiro, marcador de origem da leitura, frases de revisão da camada 2 e o resumo por contadores. A tabela é espelho do código; o bloco **Drift conhecido** saiu porque não há mais divergência entre tabela e tela.
 
 ## 1. Feedback da decisão (HUD da fase, `src/gameplay/gameplay.c`)
 
@@ -20,11 +21,30 @@
 
 **Hífen, não menos tipográfico.** "Gram-" usa hífen ASCII (U+002D). O "−" (U+2212) que a spec traz não existe na fonte embutida (Latin-1): na tela ele saía como `^`, visto no QA de 03/11 e corrigido no commit `5e7cc75`. Ao editar estes textos, não reintroduza U+2212.
 
-## 1.1 Briefing (cena `BRIEFING`, #103)
+## 1.1 Briefing (cena `BRIEFING`, #103, #106)
+
+Desenhado **em toda partida** — `MENU → BRIEFING → GAME`, e também depois de `VITÓRIA` e de `GAME OVER`. São três cartões; `ENTER`, `→` ou clique avançam, e `ESC` pula direto para a fase. O cartão 3 tem **quatro linhas** desde 04/11: a frase aprovada em 03/11 foi quebrada em duas (BR-18 e BR-19) para caber em 640×360. A BR-01 antiga (`nem toda bactéria causa doença: aqui são ameaças do cenário`) não é mais desenhada.
 
 | ID | Local | Texto | Caracteres | Origem |
 |---|---|---|---|---|
-| BR-01 | briefing, cartão 3 | `nem toda bactéria causa doença: aqui são ameaças do cenário` | 58 | decisão 03/11 (noite) |
+| BR-02 | briefing, cabeçalho | `Antes de entrar na fase` | 23 | #103, texto aprovado em 04/11 |
+| BR-03 | briefing, passo | `cartão %d de %d` (`cartão 1 de 3`) | 13 | #103 |
+| BR-04 | briefing, rodapé | `enter ou clique avança · esc pula` | 33 | #103 |
+| BR-05 | briefing, botão | `SEGUIR` | 6 | #103 |
+| BR-06 | briefing, botão | `PULAR` | 5 | #103 |
+| BR-07 | briefing, cartão 1, título | `A coloração de Gram` | 19 | #103 |
+| BR-08 | briefing, cartão 1, linha 1 | `A coloração separa as bactérias em dois grupos.` | 47 | #103 |
+| BR-09 | briefing, cartão 1, linha 2 | `O resultado é roxo (Gram+) ou vermelho (Gram-).` | 47 | #103 |
+| BR-10 | briefing, cartão 1, linha 3 | `A cor indica o grupo, não se a bactéria causa doença.` | 53 | #103 |
+| BR-11 | briefing, cartão 2, título | `Duas camadas externas` | 21 | #103 |
+| BR-12 | briefing, cartão 2, linha 1 | `Gram+: parede espessa, rica em peptidoglicano.` | 46 | #103 |
+| BR-13 | briefing, cartão 2, linha 2 | `Gram-: parede fina e uma membrana externa.` | 42 | #103 |
+| BR-14 | briefing, cartão 2, linha 3 | `O peptidoglicano faz parte da parede da bactéria.` | 49 | #103 |
+| BR-15 | briefing, cartão 3, título | `As armas e a célula própria` | 27 | #103 |
+| BR-16 | briefing, cartão 3, linha 1 | `Ruptura age na parede; Dissolução, na camada extra.` | 51 | #103; decisão 03/11 |
+| BR-17 | briefing, cartão 3, linha 2 | `As duas armas ferem a célula própria: mire longe dela.` | 54 | #103; D1 |
+| BR-18 | briefing, cartão 3, linha 3 | `Nem toda bactéria causa doença; neste cenário,` | 46 | decisão 03/11, quebrada em 04/11 |
+| BR-19 | briefing, cartão 3, linha 4 | `os agentes são tratados como ameaças do jogo.` | 45 | decisão 03/11, quebrada em 04/11 |
 
 ## 2. Controles, HUD e dicas (`src/main.c`)
 
@@ -54,9 +74,9 @@
 | CT-21 | scanner, alvo neutralizado | `Alvo neutralizado` / `Chegue perto de outro agente.` | 17 / 28 | #199 |
 | CT-22 | scanner, alvo no alcance | `Alvo detectado` | 14 | #199 |
 | CT-23 | scanner, alvo no alcance | `Clique com o botão direito para escanear.` | 41 | #199 |
-| CT-24 | scanner, alvo no alcance | `o scan revela a estrutura do agente` | 35 | #199 |
+| CT-24 | scanner, alvo no alcance | `o scan revela a coloração e a estrutura` | 39 | #199, texto de 04/11 |
 | CT-25 | scanner, 1 camada | `Leitura 1 de 2` | 14 | #199 |
-| CT-26 | scanner, 1 camada | `clique de novo para revelar a estrutura` | 39 | #199 |
+| CT-26 | scanner, 1 camada | `clique de novo para revelar o grupo` | 35 | #199, texto de 04/11 |
 | CT-27 | scanner, identificado | `Identificação concluída` | 23 | #199 |
 | CT-28 | scanner, identificado | `interprete os dados antes de atacar` | 35 | #199 |
 | CT-29 | scanner, cabeçalho | `célula` / `bactéria` | 6 / 7 | #199 |
@@ -66,14 +86,29 @@
 | CT-33 | resultados | `não obtido` | 10 | #202 |
 | CT-34 | resultados | `enter também continua` | 21 | #202 |
 | CT-35 | vitória | `Vitória` | 7 | #202 |
-
 | CT-36 | HUD, linha 0 | `Ruptura` / `Dissolução` | 7 / 10 | decisão 03/11 (noite) |
-| RT-01 | scanner, camada 1, bactéria | `roxo · Staphylococcus aureus` | 28 | decisão 03/11 (noite) |
-| RT-02 | scanner, camada 1, bactéria | `vermelho · Escherichia coli` | 28 | decisão 03/11 (noite) |
-| RT-03 | scanner, camada 1, célula | `célula do organismo detectada · Célula epitelial` | 49 | decisão 03/11 (noite) |
-**Drift conhecido:** o menu do build de 03/11 (PR #204) usa outras strings — `MOVIMENTAÇÃO`, `setas/WASD: mover; cursor: mirar`, `1: modulo A - atua na parede celular`, `roda do mouse: alternar entre A e B` — diferentes das CT-01..CT-13 desta tabela. A reescrita das armas alinha as duas; até lá, a tabela é o alvo, não o espelho.
+| CT-37 | resultados, painel novo | `o que a partida mostrou` | 23 | #202, build de 04/11 |
+| CT-38 | resultados, painel novo | `leitura: %d Gram+ · %d Gram-` (`leitura: 1 Gram+ · 1 Gram-`) | 26 | #174/#202, build de 04/11 |
+| CT-39 | resultados, painel novo | `acertos de arma: %d · erros: %d` (`acertos de arma: 1 · erros: 0`) | 29 | #174/#202, build de 04/11 |
+| CT-40 | resultados, painel novo | `células feridas: %d` (`células feridas: 0`) | 18 | #174/#202, build de 04/11 |
+| CT-41 | resultados, frase de revisão | `reveja a estrutura lida no scan` / `reveja: as duas armas ferem a célula` / `sem erro de arma nesta partida` | 31 / 36 / 30 | #174/#202, build de 04/11 |
 
-**Limite:** a fonte embutida é de **8 px por caractere** (medido com `al_get_text_width`, não estimado) e a área útil do painel do scanner é de 588 px. A linha mais longa desenhada na fase tem 47 caracteres (376 px); a mais longa de todas, `botão esquerdo atirar · botão direito escanear`, tem 46 caracteres em 536 px de painel.
+### Textos do scanner (`src/main.c` + `src/gameplay/gameplay.c`)
+
+| ID | Local | Texto | Caracteres | Origem |
+|---|---|---|---|---|
+| RT-01 | scanner, camada 1, bactéria | `roxo · Staphylococcus aureus` | 28 | decisão 03/11 (noite) |
+| RT-02 | scanner, camada 1, bactéria | `vermelho · Escherichia coli` | 27 | decisão 03/11 (noite) |
+| RT-03 | scanner, camada 1, célula | `célula do organismo · Célula epitelial` (sem amostra de cor) | 38 | decisão 03/11 (noite) |
+| RT-04 | scanner, camada 2, Gram+ | `Gram+ · parede espessa, rica em peptidoglicano` | 46 | #104 |
+| RT-05 | scanner, camada 2, Gram- | `Gram- · parede fina sob membrana externa` | 40 | #104 |
+| RT-05b | scanner, camada 2, célula | `célula saudável do próprio organismo: preserve-a` | 48 | D1 |
+| RT-06 | scanner, linha de estado | ` · alvo sob o cursor` (ciano) / ` · última leitura` (apagado) | 20 / 17 | #199, build de 04/11 |
+| RT-07 | scanner, camada 2, revisão Gram+ | `Essa parede mais espessa distingue este grupo.` | 46 | #104 |
+| RT-08 | scanner, camada 2, revisão Gram- | `A membrana externa adicional distingue este grupo.` | 50 | #104 |
+| RT-08b | scanner, camada 2, revisão célula | `preserve a célula: as duas armas ferem o próprio organismo` | 58 | D1 |
+
+**Limite:** a fonte embutida é de **8 px por caractere** (medido com `al_get_text_width`, não estimado) e a área útil do painel do scanner é de 588 px. A linha mais longa desenhada na fase tem **58 caracteres** (464 px, `preserve a célula: as duas armas ferem o próprio organismo`); a mais longa do briefing tem 54 (432 px, dentro dos 548 px do painel) e a dos resultados, 36 (288 px). Nenhuma passa da área do painel em 640×360.
 
 ## 2.1 Regra de tipografia (medida em 03/11/2026)
 
