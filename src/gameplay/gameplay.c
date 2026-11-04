@@ -821,6 +821,8 @@ static void repel_touching_agents()
     }
 }
 
+
+
 // resistencia de combate que cada especie precisa para ser neutralizada (#49)
 static int species_resistance(Species species)
 {
@@ -1189,6 +1191,115 @@ static void bounce_agent_off_bounds(int index)
     }
 }
 
+// separa agentes sobrepostos entre si e do nanobo
+static void collide_agents()
+{
+    int i;
+    int j;
+    float min_dist = (float)(AGENT_RADIUS * 2);
+    float player_reach = (float)(PLAYER_RADIUS + AGENT_RADIUS);
+
+    for (i = 0; i < agents_count; i++)
+    {
+        float dx;
+        float dy;
+        float dist;
+        float nx;
+        float ny;
+
+        if (!agents[i].active)
+        {
+            continue;
+        }
+
+        // agente x nanobo: o nanobo e fixo, o agente recua a sobreposicao inteira
+        dx = agents[i].x - player.x;
+        dy = agents[i].y - player.y;
+
+        if (dx * dx + dy * dy < player_reach * player_reach)
+        {
+            dist = sqrtf(dx * dx + dy * dy);
+
+            if (dist < 0.001f)
+            {
+                nx = 1.0f;
+                ny = 0.0f;
+            }
+            else
+            {
+                nx = dx / dist;
+                ny = dy / dist;
+            }
+
+            agents[i].x += nx * (player_reach - dist);
+            agents[i].y += ny * (player_reach - dist);
+
+            // quem persegue ou esta no empurrao da defesa mantem a direcao (RF-06, #17)
+            if (!agents[i].alert && agents[i].impulse_timer <= 0.0f)
+            {
+                agents[i].dx = nx;
+                agents[i].dy = ny;
+            }
+
+            bounce_agent_off_bounds(i);
+        }
+
+        // agente x agente
+        for (j = i + 1; j < agents_count; j++)
+        {
+            float push;
+
+            if (!agents[j].active)
+            {
+                continue;
+            }
+
+            dx = agents[j].x - agents[i].x;
+            dy = agents[j].y - agents[i].y;
+
+            if (dx * dx + dy * dy >= min_dist * min_dist)
+            {
+                continue;
+            }
+
+            dist = sqrtf(dx * dx + dy * dy);
+
+            if (dist < 0.001f)
+            {
+                nx = 1.0f;
+                ny = 0.0f;
+            }
+            else
+            {
+                nx = dx / dist;
+                ny = dy / dist;
+            }
+
+            push = (min_dist - dist) / 2.0f;
+
+            agents[i].x -= nx * push;
+            agents[i].y -= ny * push;
+            agents[j].x += nx * push;
+            agents[j].y += ny * push;
+
+            if (!agents[i].alert && agents[i].impulse_timer <= 0.0f)
+            {
+                agents[i].dx = -nx;
+                agents[i].dy = -ny;
+            }
+
+            if (!agents[j].alert && agents[j].impulse_timer <= 0.0f)
+            {
+                agents[j].dx = nx;
+                agents[j].dy = ny;
+            }
+
+            bounce_agent_off_bounds(i);
+            bounce_agent_off_bounds(j);
+        }
+    }
+}
+
 // a partida so anda no estado GAME; o mundo vem das constantes
 void update_match(double dt)
 {
@@ -1354,6 +1465,8 @@ void update_match(double dt)
             set_feedback("contato com bactéria: -1 de vida");
         }
     }
+
+    collide_agents();
 
     conclude_phase_if_ready();
 }
