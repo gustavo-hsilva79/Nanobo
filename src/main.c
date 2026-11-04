@@ -1526,7 +1526,7 @@ void draw_results()
 
     al_draw_text(font, UI_AMBER, left, 170.0f, 0, "o que a partida mostrou");
 
-    snprintf(line, sizeof(line), "bactérias lidas: %d Gram+ · %d Gram-",
+    snprintf(line, sizeof(line), "bactérias identificadas: %d Gram+ · %d Gram-",
         progress.scans_gram_positive, progress.scans_gram_negative);
     al_draw_text(font, UI_TEXT, left, 186.0f, 0, line);
 
