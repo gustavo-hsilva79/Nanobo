@@ -26,9 +26,9 @@ A Fase 1 trabalha quatro objetivos, detalhados em [`ensino-e-aprendizagem.md`](e
 
 | OA | O jogador será capaz de… |
 |---|---|
-| OA1 | interpretar o que o resultado roxo ou rosa da coloração de Gram indica |
+| OA1 | interpretar o que o resultado roxo ou vermelho (rosa) da coloração de Gram indica |
 | OA2 | comparar as camadas externas: Gram+ tem parede mais espessa; Gram− tem parede mais fina e uma camada externa extra |
-| OA3 | relacionar a estrutura observada ao alvo do módulo dentro das regras do jogo |
+| OA3 | relacionar a estrutura observada ao alvo da arma dentro das regras do jogo |
 | OA4 | reconhecer e preservar uma célula saudável do organismo, distinguindo a regra do jogo de uma afirmação sobre medicamentos reais |
 
 O caminho do ensino é **briefing → scan → decisão → feedback → resumo**, e cada etapa retoma os mesmos quatro objetivos. A tela de Resultados apresenta o resumo por objetivo, não só o total.
@@ -39,23 +39,25 @@ O jogador controla o **Nanobô**, um nanorrobô responsável por explorar o ambi
 
 ## Briefing
 
-Antes da Fase 1, três cartões puláveis apresentam o necessário para decidir: (1) o que a coloração de Gram revela e o limite da cor; (2) a comparação das camadas externas Gram+ e Gram−, com o peptidoglicano como parte da parede; (3) os módulos como modelo do jogo e a regra de preservar a célula própria. ENTER, → ou clique avançam; ESC pula. Não há tutorial guiado depois, e o Diário de Campo — que reabriria o conteúdo no pause — ficou fora do M4 (#103, #106).
+Antes da Fase 1, três cartões puláveis apresentam o necessário para decidir: (1) o que a coloração de Gram revela e o limite da cor; (2) a comparação das camadas externas Gram+ e Gram−, com o peptidoglicano como parte da parede; (3) as armas como modelo do jogo e a regra de preservar a célula própria. ENTER, → ou clique avançam; ESC pula. Não há tutorial guiado depois, e o Diário de Campo — que reabriria o conteúdo no pause — ficou fora do M4 (#103, #106).
 
 ## Scanner
 
 O scanner é uma mecânica central de investigação.
 
 - A ativação é o **botão direito** sobre o agente sob o cursor (tolerância de 24 px, alcance de 130 px); o teclado não escaneia no M4.
-- A leitura ocorre em **dois pulsos**: o pulso 1 mostra o resultado da coloração (roxo ou rosa) e o pulso 2 mostra o nome do grupo, a pista estrutural e o porquê.
+- A leitura ocorre em **dois pulsos**: o pulso 1 mostra a coloração (**roxo** ou **vermelho**) e o **nome do agente**; o pulso 2 mostra o nome do grupo, a pista estrutural e o porquê.
 - Durante os pulsos o Nanobô fica parado e sem atirar; dano de contato cancela o pulso.
 - Cada agente possui identificação única, para evitar que a mesma identificação seja contabilizada repetidamente.
-- As informações obtidas apoiam a interpretação do agente e a decisão do jogador; o scanner não recomenda módulo.
+- As informações obtidas apoiam a interpretação do agente e a decisão do jogador; o scanner não recomenda arma.
 
 ## Agentes e conteúdo
 
 ### Fase 1 — bactérias e células saudáveis
 
 A primeira fase é o núcleo do MVP. Ela trabalha a diferenciação entre bactérias e células saudáveis, incluindo a distinção entre bactérias Gram-positivas e Gram-negativas.
+
+Os seis binômios do cenário são **identificação do agente**, não alegação de patogenicidade: *Staphylococcus aureus*, *Streptococcus pneumoniae*, *Streptococcus pyogenes* (Gram+), *Escherichia coli*, *Salmonella enterica* e *Pseudomonas aeruginosa* (Gram−). Cada espécie pode ter mais de um sprite, sorteado por agente, e a variante só aparece depois da camada 1 (ver `decisoes.md`).
 
 O jogador deve usar as informações do scanner para interpretar o agente encontrado e escolher a ação correspondente.
 
@@ -75,17 +77,17 @@ Foi definido um limite de referência de **3 vírus** para uma mecânica de desa
 
 ## Combate e consequências
 
-O combate está implementado no M3.5; os módulos A/B entram no M4 (#105) e até lá o build ainda usa o raio roxo/vermelho por espécie. Os números atuais são ponto de partida, não balanceamento final:
+O combate está implementado no M3.5; as armas (então A/B, #105) entram no M4 e o build ainda usa o raio roxo/vermelho por espécie. Os números atuais são ponto de partida, não balanceamento final:
 
 | Regra | Valor atual | Onde |
 |---|---|---|
 | Vida do Nanobô | 3 corações; 1 de dano por contato com bactéria ou por acertar a célula; 1 s de invulnerabilidade | `entities.h`, `gameplay.c` |
-| Ataque | módulo na direção do cursor, 1 disparo por segundo, até 4 projéteis na tela | `gameplay.c`, `main.c` |
-| Módulos | A neutraliza Gram+ (alvo na parede); B neutraliza Gram− (alvo na camada externa); módulo errado gasta o projétil e não tira resistência | `gameplay.c` |
+| Ataque | arma na direção do cursor, 1 disparo por segundo, até 4 projéteis na tela | `gameplay.c`, `main.c` |
+| Armas | **Ruptura** neutraliza Gram+ (alvo na parede); **Dissolução** neutraliza Gram− (alvo na camada externa); arma errada gasta o projétil e não tira resistência | `gameplay.c` |
 | Resistência | bactéria 2 acertos, célula 0 (não é destruída) | `entities.h` |
 | Defesa | 2 s de imunidade, 3 s de recarga; empurra bactéria a 2× a velocidade por 0,5 s | `gameplay.c` |
 | Consequência | resistência zerada neutraliza o agente, que sai da cena | `gameplay.c` |
-| Célula atacada | tiro na célula tira 1 de vida do Nanobô, **com qualquer módulo** (D1), e não remove a célula; ela continua identificável | `gameplay.c` |
+| Célula atacada | tiro na célula tira 1 de vida do Nanobô, **com qualquer arma** (D1), e não remove a célula; ela continua identificável | `gameplay.c` |
 
 O balanceamento de dano, cooldowns e resistência continua **[PENDÊNCIA]**; a regra fechada está em `docs/game-design/decisoes.md`.
 
@@ -99,7 +101,9 @@ A pontuação atual da Fase 1:
 | Identificação completa | **+15** | uma vez, na conclusão, se `identificados = 9/9` (#67) |
 | Placar máximo da fase | **75** | 6 ameaças + bônus |
 
-`9/9` **era** condição apenas de bônus: a fase concluía com menos identificações (#26, #67). Em 03/11/2026 a dupla decidiu o contrário (D2.1, `decisoes.md`): a identificação dos agentes passa a ser **condição de conclusão**. A regra em vigor no código ainda é a de #26/#67 — a mudança depende de resolver o destino de quem atira antes de escanear (D2.2). O hi-score deve ser persistente na versão final.
+Em 03/11 (noite) a dupla decidiu que, quando a identificação virar obrigatória (M5, D2.1), o **+15 passa a exigir run perfeito**: nenhum erro de arma e nenhum tiro na célula. A regra do build até lá continua 9/9.
+
+`9/9` **era** condição apenas de bônus: a fase concluía com menos identificações (#26, #67). Em 03/11/2026 a dupla decidiu o contrário (D2.1, `decisoes.md`): a identificação dos agentes passa a ser **condição de conclusão**. A regra em vigor no código ainda é a de #26/#67 — a mudança depende de resolver o destino de quem atira antes de escanear (D2.2). **Entrega decidida em 03/11 (noite):** o M4 mantém #26; D2.1 e D2.2 entram no M5. O hi-score deve ser persistente na versão final.
 
 ## Interface e controles
 
@@ -108,7 +112,7 @@ O jogo usa teclado e mouse, com o mouse como forma de mirar, atirar e escanear:
 - setas ou `WASD`: mover o Nanobô;
 - mover o cursor: mirar; **botão esquerdo**: atirar na direção do cursor;
 - **botão direito** sobre o agente: escanear;
-- `1`/`2` ou roda do mouse: trocar o módulo A/B; clique no ícone do módulo no HUD também troca;
+- `1`/`2` ou roda do mouse: trocar a arma (Ruptura/Dissolução); o clique no ícone do HUD foi descartado;
 - `X`: defesa;
 - `ESC`: pausa; `ENTER`: confirmar/iniciar;
 - `F11`: tela cheia, escala inteira quando o encaixe der 1x ou mais; janela menor que 640×360 encolhe proporcionalmente;
@@ -116,9 +120,11 @@ O jogo usa teclado e mouse, com o mouse como forma de mirar, atirar e escanear:
 
 O ataque e o scanner **não têm tecla** no M4 (#198).
 
-> **Estado em 03/11/2026, após o merge do PR #203:** os controles por cursor (#198) e os módulos A/B (#105) **estão implementados** e são o que o jogo faz hoje. Do M4 ainda faltam o briefing (#103, #106), o pulso 2 nomeando o grupo (#104) e a identificação como condição de conclusão (D2.1).
+> **Estado em 03/11/2026, após o merge do PR #203:** os controles por cursor (#198) e as armas (então A/B, #105) **estão implementados** e são o que o jogo faz hoje. Do M4 ainda faltam o briefing (#103, #106) e o conteúdo novo do scanner (#104).
+>
+> **Decisões de 03/11 (noite), ainda não implementadas:** a camada 1 passa a mostrar coloração **roxo/vermelho** mais o **nome do agente**; as armas passam a se chamar **Ruptura** e **Dissolução**, com cor neutra e ícones/projéteis distintos pela forma; as duas bactérias usam **sprite neutro** até a camada 1 e ganham **anel colorido permanente** depois; "rosa" sai da tela e fica como sinônimo nos documentos. O pulso de 0,75 s, a trava de 2 s e a perseguição continuam especificados e ausentes do build (ver `decisoes.md` e a Spec).
 
-O HUD ocupa o rodapé de 104 px: identificados x/9, ameaças restantes x/6, pontos, tempo, três corações, módulo selecionado com estado (`[pronto]`/`[recarga]`) e a leitura do alvo atual. O objetivo da fase aparece na segunda linha do painel; os controles ficam no menu e na pausa, para não competir com a leitura do jogo. A marca do destino aparece na borda da faixa visível quando ele está fora da câmera (#19).
+O HUD ocupa o rodapé de 104 px: identificados x/9, ameaças restantes x/6, pontos, tempo, três corações, arma selecionada com estado (`[pronto]`/`[recarga]`) e a leitura do alvo atual. O objetivo da fase aparece na segunda linha do painel; os controles ficam no menu e na pausa, para não competir com a leitura do jogo. A marca do destino aparece na borda da faixa visível quando ele está fora da câmera (#19).
 
 ## Estados e fluxo
 

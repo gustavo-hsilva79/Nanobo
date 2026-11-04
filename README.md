@@ -25,6 +25,8 @@ O jogador deve interpretar as informações obtidas pelo scanner para decidir co
 > **M3.5 — core gameplay (concluído, 18/10/2026):** o combate está no código — ataque com laser, projétil, resistência e neutralização, defesa com cooldown, vida em corações, dano por contato e Game Over por vida zerada. O encontro tem **9 agentes** (3 Gram+, 3 Gram− e 3 células), num mundo de 1920×512 que rola com a câmera: a tela lógica é **640×360**, ampliada na janela por escala inteira. A célula própria anda mais devagar e atacar uma célula custa 1 de vida ao Nanobô. Menu, pausa e tela de Game Over também estão prontos. A pontuação e a conclusão da fase foram implementadas em 23–25/10 (#18/#26). Os roteiros estão em [Registro da PoC](docs/planejamento/qa-poc.md) e no [QA do MVP](docs/planejamento/qa-mvp.md).
 >
 > **M4 — MVP (26/10/2026):** o fluxo da partida está fechado — a fase conclui em `RESULTS` sem tecla de teste, a tela de Resultados mostra pontos, ameaças neutralizadas, agentes identificados e o bônus, `RESULTS` leva a `VICTORY`, e `VICTORY`/`GAME OVER` reiniciam com reset completo. A HUD ganhou objetivo, `restam x/6`, estado do raio e marca do destino; o menu ganhou a instrução mínima (objetivo, controles e a regra Gram/laser); a camada 2 do scanner deixou de entregar a classificação pronta; perder o foco pausa a partida. Evidências em [QA do MVP](docs/planejamento/qa-mvp.md).
+>
+> **Decisões de 03/11 (noite), ainda não no build:** a camada 1 do scanner passa a mostrar a coloração (**roxo** ou **vermelho**) e o **nome do agente**; as armas passam a se chamar **Ruptura** e **Dissolução**, com cor neutra e ícones/projéteis distintos pela forma; as duas bactérias usam **sprite neutro** até a camada 1 e ganham **anel colorido permanente** depois. O pulso de 0,75 s, a trava de 2 s e a perseguição continuam especificados e ausentes do build (`docs/game-design/decisoes.md`).
 
 ## Núcleo do jogo
 
@@ -32,7 +34,7 @@ O jogador deve interpretar as informações obtidas pelo scanner para decidir co
 - Scanner com seleção do alvo válido mais próximo e leitura em pulsos/camadas.
 - Identificação única dos agentes encontrados.
 - Interpretação das informações do scanner para orientar a decisão do jogador.
-- Combate implementado: laser por espécie, projétil, resistência, defesa e vida.
+- Combate implementado: arma por espécie (hoje raio roxo/vermelho), projétil, resistência, defesa e vida.
 - Pontuação (+10 por ameaça) e bônus de identificação (+15 com 9/9) implementados; hi-score persistente *(planejado)*.
 - Progressão por fases *(planejada)*.
 
@@ -54,14 +56,14 @@ A segunda fase é planejada para a entrega final, após o MVP. O conteúdo envol
 | cursor | mirar; dentro da fase o cursor do sistema vira a mira desenhada |
 | botão esquerdo | atirar na direção do cursor |
 | botão direito sobre o agente | escanear: revela a próxima camada do alvo sob o cursor |
-| `1` / `2`, roda do mouse ou clique no ícone do módulo | trocar o módulo A/B |
+| `1` / `2` ou roda do mouse | trocar a arma (Ruptura/Dissolução) |
 | `X` | defesa: 2 s de imunidade e 3 s de recarga |
 | `ESC` | pausar / retomar |
 | `ENTER` | iniciar partida, confirmar, nova partida |
 | clique em `INICIAR` | iniciar partida no menu |
 | `F11` | tela cheia |
 
-> `ESPAÇO` e `J` **não são mais** ataque e scanner desde #198: o mouse controla mira, ataque e scanner, e o teclado fica com movimento, defesa, módulo, pausa e navegação.
+> `ESPAÇO` e `J` **não são mais** ataque e scanner desde #198: o mouse controla mira, ataque e scanner, e o teclado fica com movimento, defesa, troca de arma, pausa e navegação.
 
 > `F`, `G` e `H` são teclas de QA e existem apenas no build Debug (concluir a fase com/sem bônus e forçar Game Over). O Release não permite saltar estados.
 

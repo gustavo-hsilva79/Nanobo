@@ -4,6 +4,39 @@ Este arquivo registra decisões já tomadas pela dupla. Quando uma decisão impo
 
 ## Decisões atuais
 
+### Precedência entre fontes (03/11/2026)
+
+Quando documento e código divergem, vale nesta ordem:
+
+1. **Decisão registrada neste arquivo** — é o contrato da dupla.
+2. **Corpo da issue**, quando ele foi revisado depois da decisão (o corpo é o contrato operacional que a dupla assinou).
+3. **Spec de ensino e demais documentos descritivos** — são a explicação das regras.
+4. **Código** — nunca é fonte de verdade; é dívida. Um comportamento no build que contradiz 1–3 não vence por estar rodando.
+
+Corolários: um documento que descreve o que o código ainda não faz precisa dizer **onde** e **quando** aquilo entra (marco), senão vira promessa; e toda decisão nova exige a varredura dos documentos que citam a regra antiga no mesmo commit.
+
+**Descartado por enquanto:** workflow automático de reconciliação documentação × código. A prevenção fica nesta seção, na varredura de cada decisão e no item de QA do fechamento.
+
+### Dívida de implementação (03/11/2026)
+
+O que está decidido e o código ainda não faz. Atualizar esta tabela quando uma regra entrar no build ou mudar de marco.
+
+| Regra decidida | Onde está registrada | No build de 03/11 | Marco |
+|---|---|---|---|
+| Camada 1 = coloração (roxo/vermelho) + nome do agente | D2; `scanner.md` §4 | mostra só o nome | M4 (#104) |
+| Camada 2 = grupo + estrutura + porquê | D2; `scanner.md` §4 | mostra a estrutura, sem o grupo | M4 (#104) |
+| Briefing de 3 cartões | `decisoes.md`; RF-01 | não existe cena nem texto | M4 (#103, #106) |
+| Armas com nome (Ruptura/Dissolução) | `decisoes.md`; `textos-do-jogo.md` | HUD mostra A/B | M4 |
+| Armas com cor neutra; ícone e projétil por forma | RF-04 | roxo/vermelho no ícone e no projétil | M4 (ícones no M5) |
+| Disco cinza até a camada 1; sprite + anel depois | RF-03; `decisoes.md` | sprite colorido desde o início | M4 |
+| Variação de sprites por espécie | `decisoes.md` (03/11, noite) | um sprite por espécie | M5 |
+| Pulso de 0,75 s com imobilização e cancelamento | RF-02; Spec "Dificuldade" | scan instantâneo | M5 |
+| Trava de 2 s + perseguição após arma errada | RF-06 | inexistente | M5 |
+| Identificação condiciona a conclusão | D2.1 + D2.2 | conclui com 0 identificações | M5 |
+| Resumo por objetivo na tela de Resultados | RF-07 (#174) | quatro números | M4 |
+| Bônus +15 por run perfeito (0 erro de arma + 0 tiro na célula) | `decisoes.md` (03/11, noite) | paga 9/9 | M5 |
+| SFX e animação | requisito final | inexistentes | M5 |
+
 ### Estrutura do MVP
 
 O MVP permanece centrado em **uma fase**, garantindo uma partida completa e jogável antes da expansão do conteúdo.
@@ -108,7 +141,7 @@ A proposta é que o jogador descubra informações, interprete dados do scanner 
 
 #### Célula própria (18/10/2026)
 
-> **Atualização 03/11/2026:** a regra de custo de vida vale para os dois módulos (D1); não existe módulo seguro contra a célula. O restante continua como registrado.
+> **Atualização 03/11/2026:** a regra de custo de vida vale para as duas armas (D1); não existe arma segura contra a célula. O restante continua como registrado.
 
 - A célula saudável anda na metade da velocidade dos agentes (`CELL_SPEED 15`) e mantém direção aleatória; ela não persegue o Nanobô.
 - Atirar na célula não remove a célula nem altera resistência: tira **1** de vida do Nanobô, respeitando o 1 s de invulnerabilidade da #11.
@@ -208,25 +241,31 @@ O jogo terá pontuação, bônus por identificação e progressão. O hi-score d
 
 ### Ensino integrado da Fase 1 (03/11/2026)
 
-- **Briefing.** Antes da Fase 1, três cartões puláveis: resultado da coloração; comparação das camadas externas; módulos como modelo do jogo e preservação da célula própria. ENTER, → ou clique avançam; ESC pula. Não há tutorial guiado depois, e o Diário de Campo fica fora do M4.
-- **D1 — célula própria.** No jogo, **os dois módulos ferem a célula própria** (−1 vida). É consequência de gameplay; não afirma nada sobre efeitos adversos de medicamentos reais. Substitui a proposta de 02/11 em que só o módulo B feria.
-- **D2 — scanner.** O pulso 1 mostra o resultado da coloração (roxo ou rosa); o pulso 2 mostra o **nome do grupo** (Gram+ / Gram−), a pista estrutural e o porquê, sem indicar o módulo. Substitui a decisão de 26/10, em que a camada 2 não nomeava o grupo.
-- **Módulos A e B.** A age sobre a parede e neutraliza Gram+; B age sobre a camada externa e neutraliza Gram−. A matriz é regra do jogo, não previsão de tratamento real. A e B não usam roxo nem rosa, para não recriar o atalho “cor com cor”.
-- **Mouse no jogo.** Botão esquerdo atira na direção do cursor; botão direito escaneia o agente sob o cursor (tolerância de 24 px, alcance de 130 px); roda do mouse e `1`/`2` trocam o módulo; clique no ícone do módulo no HUD. `ESPAÇO` e `J` deixam de ser ataque e scanner; o teclado fica com mover, defender, módulo, pausa e navegação.
+- **Briefing.** Antes da Fase 1, três cartões puláveis: resultado da coloração; comparação das camadas externas; armas como modelo do jogo e preservação da célula própria. ENTER, → ou clique avançam; ESC pula. Não há tutorial guiado depois, e o Diário de Campo fica fora do M4.
+- **D1 — célula própria.** No jogo, **as duas armas ferem a célula própria** (−1 vida). É consequência de gameplay; não afirma nada sobre efeitos adversos de medicamentos reais. Substitui a proposta de 02/11 em que só a Dissolução feria.
+- **D2 — scanner.** O pulso 1 mostra o resultado da coloração (**roxo** ou **vermelho**) e o **nome do agente** (`Staphylococcus aureus`); o pulso 2 mostra o **nome do grupo** (Gram+ / Gram−), a pista estrutural e o porquê, sem indicar a arma. O nome do agente é identificação, não classificação: não diz o grupo nem a arma. Substitui a decisão de 26/10 (camada 2 sem nome) e a leitura de 22/10 (camada 1 só com o nome).
+- **Armas Ruptura e Dissolução.** A **Ruptura** age sobre a parede e neutraliza Gram+; a **Dissolução** age sobre a camada externa e neutraliza Gram−. São nomes de efeito, não de medicamentos; a matriz é regra do jogo, não previsão de tratamento real. As duas armas usam **cor neutra**, e ícone e projétil se distinguem pela **forma**, não pela cor. Substituem os rótulos A/B e a paleta roxo/vermelho da #16. No código, `Laser` e `LASER_*` continuam: renomear identificador não muda nada para o jogador.
+- **Coloração: roxo e vermelho.** O resultado é **roxo** (Gram+) e **vermelho** (Gram−). "rosa" fica como sinônimo nos documentos de ensino, nunca na tela: o destaque do Gram− é `#F05A5A`, e escrever "rosa" ao lado de um vermelho recriaria a divergência que esta rodada fecha.
+- **Arte neutra e anel de coloração.** Até a camada 1, as duas bactérias são um **disco cinza** desenhado por primitiva, sem forma nem cor que entreguem o grupo. Depois da leitura, o agente recebe o **sprite da espécie** (com a variante sorteada) e um **anel colorido permanente** (roxo ou vermelho). A célula própria mantém sprite próprio, maior, desde o início.
+- **Variação de sprites (03/11, noite).** Cada espécie pode ter **mais de um sprite**, sorteado por agente no nascimento, para variar o cenário. Regras: o **mesmo número de variantes por grupo** (senão a variante vira pista), 32×32, a mesma hitbox (`AGENT_RADIUS`), e a variante só aparece **depois** da camada 1 — antes dela todos são o mesmo disco cinza. A quantidade fica para o M5; a regra fica decidida.
+- **Espécies do cenário (03/11, noite).** Os seis binômios são **agentes do cenário**, não uma alegação de que a espécie cause doença. *Bacillus subtilis* sai (não é patogênico) e entra *Streptococcus pyogenes* (Gram+); *Escherichia coli* fica como exemplo canônico de Gram−. O briefing carrega a linha "os agentes desta missão são ameaças do cenário; nem toda bactéria causa doença".
+- **Camada 1 mantém o nome do agente.** Decisão de 03/11 (noite): o nome científico é a identidade do agente e continua na camada 1, junto da coloração. O jogo pode nomear espécies; o que ele não faz é inferir patogenicidade, tratamento ou classificação clínica a partir do nome.
+- **Mouse no jogo.** Botão esquerdo atira na direção do cursor; botão direito escaneia o agente sob o cursor (tolerância de 24 px, alcance de 130 px); roda do mouse e `1`/`2` trocam a arma — o clique no ícone do HUD foi **descartado** em 03/11 (noite). `ESPAÇO` e `J` deixam de ser ataque e scanner; o teclado fica com mover, defender, arma, pausa e navegação.
 - **Feedback.** Cada decisão tem uma mensagem curta (até 2 linhas) que explica a pista ou a regra do jogo; o primeiro erro traz uma pergunta e o segundo explica o mecanismo, sem termos moleculares e sem recomendar tratamento.
 - **Resumo e contadores.** A tela de Resultados usa apenas contadores em memória (scans por grupo, decisões certas e erradas, ataques a células próprias), zerados em `reset_match()`; sem CSV nem telemetria no M4.
+- **Bônus de identificação no M5.** Com a identificação obrigatória (D2.1), o +15 deixa de pagar 9/9 — paga **run perfeito**: `wrong_decisions == 0` **e** `cell_attacks == 0`. O resumo diz por que o bônus não foi pago. A regra do build até o M5 continua 9/9.
 - **Arquitetura.** Só os quatro arquivos compilados: briefing, HUD e resumo em `main.c`; regras, contadores e feedback em `gameplay.c`. Nenhum módulo `src/ui/`.
-- **D2.1 — a identificação é condição de conclusão (03/11/2026).** Vencer sem escanear **não é aceitável**: identificar os agentes deixa de ser apenas bônus e passa a ser exigência para concluir a fase. Substitui, por decisão da dupla, a regra de #26/#67, que concluíam com 0 identificações. A implementação depende de **D2.2** (em Pendências) e ainda não está no código.
-- **O menu não entrega a matriz módulo→grupo.** Com o pulso 2 nomeando o grupo (D2), o menu não pode afirmar `A parede (Gram+) · B camada extra (Gram-)`: isso entregaria antes do primeiro scan a informação que o scanner existe para produzir. A função do módulo continua no menu; a ligação com o grupo sai.
-- **Fora do M4.** Diário de Campo, zonas guiadas, registro de eventos, arte neutra (sem issue aberta) e calibração de trava/perseguição só voltam ao backlog depois do build e do QA manual; Fase 2/vírus continua pós-MVP.
+- **D2.1 — a identificação é condição de conclusão (03/11/2026).** Vencer sem escanear **não é aceitável**: identificar os agentes deixa de ser apenas bônus e passa a ser exigência para concluir a fase. Substitui, por decisão da dupla, a regra de #26/#67, que concluíam com 0 identificações. A implementação depende de **D2.2** (em Pendências) e ainda não está no código. **Entrega:** o M4 de 04/11 mantém a regra atual (#26, conclui com 0 identificações); D2.1 e D2.2 ficam para o M5.
+- **O menu não entrega a matriz arma→grupo.** Com o pulso 2 nomeando o grupo (D2), o menu pode dizer a função (`1: Ruptura - age na parede celular`), mas não pode afirmar `Ruptura (Gram+) · Dissolução (Gram-)`: isso entregaria antes do primeiro scan a informação que o scanner existe para produzir. A função da arma continua no menu; a ligação com o grupo sai.
+- **Fora do M4.** Diário de Campo, zonas guiadas, registro de eventos e calibração de trava/perseguição só voltam ao backlog depois do build e do QA manual. A arte neutra, o anel de coloração e os nomes das armas estão decididos; os assets entram conforme o escopo do marco (ver Pendências). Fase 2/vírus continua pós-MVP.
 
 ## Pendências
 
 - Duração do pulso do scanner (0,75 s é valor inicial) e configuração de camadas por agente/fase no MVP.
 - Conteúdo biológico detalhado e validado de cada agente.
-- Relação final entre dados do scanner e escolha do módulo — o pulso 2 nomeia o grupo; validar no playtest se isso deixa a decisão trivial.
-- **D2.2 — destino de quem atira antes de escanear (bloqueia D2.1).** `pick_target()` ignora agente inativo, então neutralizar sem identificar remove aquele agente do scanner para sempre; com a identificação obrigatória, isso **travaria a partida** no contador `x/9`. Opções: **(a)** o projétil acerta mas não reduz a resistência até o agente ser identificado, com aviso na tela *(recomendada)*; **(b)** o scanner passa a aceitar agente neutralizado, como uma lâmina corada depois do fato; **(c)** neutralizar sem scan encerra a partida, o que transforma erro de leitura em fim de jogo.
+- Relação final entre dados do scanner e escolha da arma — o pulso 2 nomeia o grupo; validar no playtest se isso deixa a decisão trivial.
+- **D2.2 — destino de quem atira antes de escanear (bloqueia D2.1; alvo: M5).** `pick_target()` ignora agente inativo, então neutralizar sem identificar remove aquele agente do scanner para sempre; com a identificação obrigatória, isso **travaria a partida** no contador `x/9`. Opções: **(a)** o projétil acerta mas não reduz a resistência até o agente ser identificado, com aviso na tela *(recomendada)*; **(b)** o scanner passa a aceitar agente neutralizado, como uma lâmina corada depois do fato; **(c)** neutralizar sem scan encerra a partida, o que transforma erro de leitura em fim de jogo.
 - Balanceamento de vida, dano, ataque, defesa, cooldowns e resistência (a regra de mitigação da defesa está fechada desde 16/10/2026; falta calibrar os números).
 - Regras de progressão entre fases.
-- Apresentação final das informações do scanner.
+- Sprite neutro das bactérias, ícones das armas (distintos pela forma) e projéteis por forma: assets a criar. A apresentação das camadas está decidida (amostra de cor no painel + anel no agente).
 - Regras detalhadas da multiplicação limitada da Fase 2.
