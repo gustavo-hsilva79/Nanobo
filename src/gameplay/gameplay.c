@@ -60,16 +60,12 @@ static float squared_distance(float ax, float ay, float bx, float by)
     return dx * dx + dy * dy;
 }
 
-// primeira camada, so diz o que apareceu
-const char* layer_one_text(Species species)
+// Retorna o nome científico do agente identificado
+const char* layer_one_text(const char* name)
 {
-    if (species == SPECIES_CELL)
-    {
-        return "célula do organismo detectada";
-    }
-
-    return "bactéria detectada";
+return name;
 }
+
 
 // segunda camada, a pista do envelope que o jogador interpreta (#3)
 // o texto descreve a parede e a membrana sem nomear Gram+: a classificacao e do jogador

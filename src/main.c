@@ -14,7 +14,7 @@
 #include "gameplay/gameplay.h"
 
 #define BUTTON_X 240
-#define BUTTON_Y 210
+#define BUTTON_Y 266
 #define BUTTON_W 160
 #define BUTTON_H 28
 
@@ -674,7 +674,6 @@ void draw_scan_panel()
         return;
     }
 
-    // cabecalho: estado do scan a esquerda, o que apareceu a direita
     if (agents[target].layers == 0)
     {
         state = "Alvo detectado";
@@ -706,9 +705,11 @@ void draw_scan_panel()
     if (agents[target].layers < MAX_LAYERS)
     {
         al_draw_text(font, UI_TEXT, (float)text_x, (float)row_info, 0,
-            layer_one_text(agents[target].species));
+            layer_one_text(agents[target].name));
+
         al_draw_text(font, UI_DIM, (float)text_x, (float)row_action, 0,
             "clique de novo para revelar a estrutura");
+
         return;
     }
 
@@ -723,70 +724,274 @@ void draw_scan_panel()
 // menu inicial
 // ---------------------------------------------------------------
 
+
 void draw_menu()
 {
     char objective[96];
     char bonus[96];
     int count;
+
     const UiButton* buttons = screen_buttons(&count);
+
     float panel_x = 40.0f;
     float panel_w = (float)SCREEN_W - 80.0f;
     float col_x = panel_x + 12.0f;
+
+    /*
+     Menu organizado para acomodar:
+     - movimentacao;
+     - combate;
+     - scanner;
+     - equipamentos;
+     - objetivo dinamico.
+    */
     float controls_y = 66.0f;
-    float controls_h = 84.0f;
-    float goal_y = 156.0f;
+    float controls_h = 136.0f;
+
+    float goal_y = 208.0f;
     float goal_h = 48.0f;
 
-    // titulo em bitmap ampliado: o mesmo pixel, com peso de titulo
+    /* Titulo */
     if (title_bitmap)
     {
         int tw = al_get_bitmap_width(title_bitmap);
         int th = al_get_bitmap_height(title_bitmap);
 
-        al_draw_scaled_bitmap(title_bitmap, 0.0f, 0.0f, (float)tw, (float)th,
-            floorf(((float)SCREEN_W - (float)(tw * TITLE_SCALE)) / 2.0f), 26.0f,
-            (float)(tw * TITLE_SCALE), (float)(th * TITLE_SCALE), 0);
+        al_draw_scaled_bitmap(
+            title_bitmap,
+            0.0f,
+            0.0f,
+            (float)tw,
+            (float)th,
+            floorf(
+                ((float)SCREEN_W -
+                    (float)(tw * TITLE_SCALE)) / 2.0f
+            ),
+            26.0f,
+            (float)(tw * TITLE_SCALE),
+            (float)(th * TITLE_SCALE),
+            0
+        );
     }
 
-    al_draw_text(font, UI_DIM, SCREEN_W / 2, 52, ALLEGRO_ALIGN_CENTRE, "defenda o organismo");
+    al_draw_text(
+        font,
+        UI_DIM,
+        SCREEN_W / 2,
+        52,
+        ALLEGRO_ALIGN_CENTRE,
+        "DEFENDA O ORGANISMO"
+    );
 
-    // controles em tres grupos: movimentacao, combate e equipamentos (#201)
-    draw_panel(panel_x, controls_y, panel_w, controls_h, UI_INK, UI_FRAME);
-    al_draw_text(font, UI_AMBER, col_x, controls_y + 8.0f, 0, "Como jogar");
+    /* =========================================
+       CONTROLES
+       ========================================= */
 
-    al_draw_text(font, UI_AMBER, col_x, controls_y + 22.0f, 0, "Movimentação");
-    al_draw_text(font, UI_TEXT, col_x + 104.0f, controls_y + 22.0f, 0,
-        "setas ou WASD mover · cursor mirar");
+    draw_panel(
+        panel_x,
+        controls_y,
+        panel_w,
+        controls_h,
+        UI_INK,
+        UI_FRAME
+    );
 
-    al_draw_text(font, UI_AMBER, col_x, controls_y + 38.0f, 0, "Combate");
-    al_draw_text(font, UI_TEXT, col_x + 104.0f, controls_y + 38.0f, 0,
-        "botão esquerdo atirar · botão direito escanear");
+    al_draw_text(
+        font,
+        UI_AMBER,
+        col_x,
+        controls_y + 8.0f,
+        0,
+        "COMO JOGAR"
+    );
 
-    al_draw_text(font, UI_AMBER, col_x, controls_y + 54.0f, 0, "Equipamentos");
-    al_draw_text(font, UI_TEXT, col_x + 104.0f, controls_y + 54.0f, 0,
-        "1 e 2 ou roda: módulo A/B");
+    /* Movimentacao */
 
-    al_draw_text(font, UI_DIM, col_x, controls_y + 70.0f, 0,
-        "A age na parede · B age na camada externa");
+    al_draw_text(
+        font,
+        UI_AMBER,
+        col_x,
+        controls_y + 22.0f,
+        0,
+        "MOVIMENTAÇÃO"
+    );
 
-    // objetivo da missao em painel proprio, com os numeros da fase (#201)
-    draw_panel(panel_x, goal_y, panel_w, goal_h, UI_INK, UI_FRAME);
-    al_draw_text(font, UI_AMBER, col_x, goal_y + 8.0f, 0, "Objetivo da missão");
+    al_draw_text(
+        font,
+        UI_TEXT,
+        col_x + 104.0f,
+        controls_y + 22.0f,
+        0,
+        "setas/WASD: mover; cursor: mirar"
+    );
 
-    snprintf(objective, sizeof(objective), "neutralizar as %d bactérias e chegar ao destino",
-        threats_total());
-    al_draw_text(font, UI_TEXT, col_x, goal_y + 22.0f, 0, objective);
+    /* Combate */
 
-    snprintf(bonus, sizeof(bonus), "identificar os %d agentes vale +%d pontos",
-        NUM_AGENTES, IDENTIFICATION_BONUS);
-    al_draw_text(font, UI_DIM, col_x, goal_y + 34.0f, 0, bonus);
+    al_draw_text(
+        font,
+        UI_AMBER,
+        col_x,
+        controls_y + 38.0f,
+        0,
+        "COMBATE"
+    );
+
+    al_draw_text(
+        font,
+        UI_TEXT,
+        col_x + 104.0f,
+        controls_y + 38.0f,
+        0,
+        "botao esquerdo: atirar"
+    );
+
+    /* Scanner */
+
+    al_draw_text(
+        font,
+        UI_AMBER,
+        col_x,
+        controls_y + 54.0f,
+        0,
+        "SCANNER"
+    );
+
+    al_draw_text(
+        font,
+        UI_TEXT,
+        col_x + 104.0f,
+        controls_y + 54.0f,
+        0,
+        "botão direito sobre um agente: escanear"
+    );
+
+    /* Equipamentos */
+
+    al_draw_text(
+        font,
+        UI_AMBER,
+        col_x,
+        controls_y + 70.0f,
+        0,
+        "EQUIPAMENTOS"
+    );
+
+    al_draw_text(
+        font,
+        UI_TEXT,
+        col_x + 104.0f,
+        controls_y + 70.0f,
+        0,
+        "1: modulo A - atua na parede celular"
+    );
+
+    al_draw_text(
+        font,
+        UI_TEXT,
+        col_x + 104.0f,
+        controls_y + 86.0f,
+        0,
+        "2: modulo B - atua na camada externa"
+    );
+
+    al_draw_text(
+        font,
+        UI_DIM,
+        col_x,
+        controls_y + 102.0f,
+        0,
+        "roda do mouse: alternar entre A e B"
+    );
+
+    al_draw_text(
+        font,
+        UI_DIM,
+        col_x,
+        controls_y + 118.0f,
+        0,
+        "interprete as informações do scanner antes de atacar"
+    );
+
+    /* =========================================
+       OBJETIVO DA MISSAO
+       ========================================= */
+
+    draw_panel(
+        panel_x,
+        goal_y,
+        panel_w,
+        goal_h,
+        UI_INK,
+        UI_FRAME
+    );
+
+    al_draw_text(
+        font,
+        UI_AMBER,
+        col_x,
+        goal_y + 8.0f,
+        0,
+        "OBJETIVOS"
+    );
+
+    snprintf(
+        objective,
+        sizeof(objective),
+        "neutralizar as %d bactérias e chegar ao destino",
+        threats_total()
+    );
+
+    al_draw_text(
+        font,
+        UI_TEXT,
+        col_x,
+        goal_y + 22.0f,
+        0,
+        objective
+    );
+
+    snprintf(
+        bonus,
+        sizeof(bonus),
+        "identificar os %d agentes vale +%d pontos",
+        NUM_AGENTES,
+        IDENTIFICATION_BONUS
+    );
+
+    al_draw_text(
+        font,
+        UI_DIM,
+        col_x,
+        goal_y + 34.0f,
+        0,
+        bonus
+    );
+
+    /* =========================================
+       BOTAO E INSTRUCOES
+       ========================================= */
 
     draw_buttons(buttons, count);
 
-    al_draw_text(font, UI_DIM, SCREEN_W / 2, 246, ALLEGRO_ALIGN_CENTRE,
-        "enter ou clique para começar");
-    al_draw_text(font, UI_DIM, SCREEN_W - HUD_MARGIN, 336, ALLEGRO_ALIGN_RIGHT, "F11 tela cheia");
+    al_draw_text(
+        font,
+        UI_DIM,
+        SCREEN_W / 2,
+        BUTTON_Y + 36,
+        ALLEGRO_ALIGN_CENTRE,
+        "enter ou clique para comecar"
+    );
+
+    al_draw_text(
+        font,
+        UI_DIM,
+        SCREEN_W - HUD_MARGIN,
+        336,
+        ALLEGRO_ALIGN_RIGHT,
+        "F11 tela cheia"
+    );
 }
+
 
 // sprite de cada especie, alinhado com as constantes do entities.h
 ALLEGRO_BITMAP* species_sprite(Species species)
