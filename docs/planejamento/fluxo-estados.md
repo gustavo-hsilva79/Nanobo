@@ -6,8 +6,9 @@ Este documento define o fluxo geral da máquina de estados previsto em #7/#98. A
 
 | Estado | Entrada | Saída permitida |
 |---|---|---|
-| `MENU` | Inicialização do jogo ou retorno por reinício, quando essa opção for integrada | Iniciar uma nova partida → `GAME` |
-| `GAME` | Nova partida ou retomada de `PAUSE`; avanço para a próxima fase vindo de `RESULTS` | Solicitar pausa → `PAUSE`; concluir fase → `RESULTS`; perder toda a vida → `GAME OVER` |
+| `MENU` | Inicialização do jogo ou retorno por reinício, quando essa opção for integrada | Iniciar uma nova partida → `BRIEFING` |
+| `BRIEFING` | Início de partida vindo de `MENU` (**M4, #103/#106**) | Pular ou terminar os 3 cartões → `GAME` |
+| `GAME` | Fim do briefing, retomada de `PAUSE` ou avanço vindo de `RESULTS` | Solicitar pausa → `PAUSE`; concluir fase → `RESULTS`; perder toda a vida → `GAME OVER` |
 | `PAUSE` | Solicitação de pausa durante `GAME` | Retomar → `GAME` |
 | `RESULTS` | Conclusão de uma fase em `GAME` | Há próxima fase → `GAME`; última fase concluída → `VICTORY` |
 | `VICTORY` | Conclusão da última fase em `RESULTS` | Iniciar nova partida → `GAME` |
@@ -23,9 +24,11 @@ Este documento define o fluxo geral da máquina de estados previsto em #7/#98. A
 - Estados terminais e `PAUSE` não atualizam a lógica da partida; apenas `GAME` executa a atualização do gameplay.
 - Fechar a janela encerra o processo, sem exigir uma transição para outro estado.
 
-## Implementação atual (26/10/2026)
+## Implementação atual (03/11/2026)
 
-`src/core/game.c` implementa exatamente a tabela de transições acima; qualquer par fora dela é ignorado.
+`src/core/game.c` implementa as transições acima **sem** `BRIEFING`: o enum `GameScene` tem `MENU`, `GAME`, `PAUSE`, `RESULTS`, `VICTORY`, `GAME_OVER` e `EXIT`, e `MENU` vai direto para `GAME`. `BRIEFING` entra no M4 pela #106 (cena, enum e transições); até lá, a tabela vale como alvo, não como espelho.
+
+Qualquer par fora da tabela é ignorado pela máquina de estados.
 
 - `GAME OVER` é alcançado de verdade quando `player.health == 0`.
 - `RESULTS` é alcançado automaticamente quando a fase conclui (6 ameaças neutralizadas + Nanobô no destino, #26/#70); `VICTORY` vem de `RESULTS` por `ENTER`.

@@ -137,3 +137,9 @@ Nanobo.vcxproj
 - Divergências entre GDD, decisões recentes, código e QA devem ser resolvidas pela dupla e registradas; este documento não transforma pendências em decisões.
 
 **Confiança geral:** 0,88 para o resumo do estado documentado; menor para o estado efetivamente executado em runtime, pois não houve build/teste independente.
+
+## 9. Correção de 03/11/2026 (noite)
+
+A leitura de 03/11 dizia que o fluxo tem a cena `BRIEFING`; ela **não existe** no enum — `src/scenes/scenes.h` tem `MENU`, `GAME`, `PAUSE`, `RESULTS`, `VICTORY`, `GAME_OVER` e `EXIT`, e o menu vai direto para `GAME`. O briefing continua sendo o que o M4 precisa entregar (#103/#106).
+
+A mesma rodada renomeou as armas (**Ruptura** e **Dissolução**), fixou a coloração em **roxo/vermelho**, definiu a camada 1 com coloração + nome do agente e **descartou o clique no ícone do HUD** — a troca de arma é pela roda e por `1`/`2`. O texto de 03/11 acima, que fala em "módulos A/B" e "rosa", é anterior a essas decisões e fica como histórico.

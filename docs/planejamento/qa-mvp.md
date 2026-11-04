@@ -138,7 +138,7 @@ Evidência (Debug|x64, árvore com a correção, ainda sem commit). Na abertura 
 ### O que foi observado
 
 | # | Passo | Resultado | Evidência |
-|---|---|---|---|---|
+|---|---|---|---|
 | 21 | Abrir o jogo | Menu com `NANOBÔ`, `enter ou clique para começar` e `objetivo: neutralizar as 6 bactérias e chegar ao destino` | `qa-mvp-12-menu-acentos.png` |
 | 22 | `ENTER` inicia a partida | HUD `identificados 0/9  ameaças`, `pontos 0`, `00:01`, raio roxo e `pronto`; objetivo `neutralizar as bactérias` | `qa-mvp-13-jogo-acentos.png` |
 | 23 | `ESC` pausa | `PAUSE`, botão `CONTINUAR` e `esc para voltar` sobre o mundo escurecido | `qa-mvp-14-pausa-acentos.png` |
@@ -174,7 +174,7 @@ Evidência (Debug|x64, árvore com a correção, ainda sem commit). Na abertura 
 | E1 | Abrir o jogo e escolher `INICIAR` | Briefing com o primeiro cartão antes da fase | **[PEND]** |
 | E2 | Avançar com ENTER, → ou clique até o terceiro cartão | Três cartões, sem corte em 640×360 | **[PEND]** |
 | E3 | Sair do briefing com ESC e iniciar de novo | Vai direto para a fase; 3 corações, 0/9, 6/6, 0 pontos | **[PEND]** |
-| E4 | Escanear uma bactéria com o botão direito | Pulso 1 roxo ou rosa; pulso 2 com o nome do grupo e a camada; contador 1/9 | **[PEND]** |
+| E4 | Escanear uma bactéria com o botão direito | Pulso 1 com a coloração (roxo/vermelho) e o nome do agente; pulso 2 com o grupo e a camada; contador 1/9 | **[PEND]** |
 | E5 | Escanear a mesma bactéria de novo | Nada muda; contador continua 1/9 | **[PEND]** |
 | E6 | Escanear uma célula própria | Identificação registrada; o texto não recomenda ação | **[PEND]** |
 | E7 | Atirar com o módulo errado | Nenhum dano; mensagem em forma de pergunta; disparo travado | **[PEND]** |
@@ -182,9 +182,31 @@ Evidência (Debug|x64, árvore com a correção, ainda sem commit). Na abertura 
 | E9 | Atirar 2× com o módulo certo | +10; agente sai da cena | **[PEND]** |
 | E10 | Atirar na célula com A e com B | −1 vida em cada caso; célula intacta e ainda identificável | **[PEND]** |
 | E11 | Trocar o módulo pela roda e por `1`/`2` | HUD mostra o módulo ativo | **[PEND]** |
-| E12 | Clicar no ícone do módulo no HUD | Troca o módulo e não dispara | **[PEND]** |
+| E12 | Trocar a arma pela roda do mouse e por `1`/`2` | O HUD mostra a arma ativa em ambos os caminhos; o clique no ícone do HUD não existe (descartado em 03/11) | **[PEND]** |
 | E13 | Concluir a fase | Resultados com resumo por objetivo: scans por grupo, decisões certas e erradas, ataques a células | **[PEND]** |
 | E14 | Reiniciar por ENTER | Vida, score, identificação e contadores zerados | **[PEND]** |
 | E15 | Repetir o fluxo em Release | Mesmo comportamento, sem as teclas de QA | **[PEND]** |
 
 **Limite deste roteiro:** ele prova que o fluxo funciona, não que ensina. A aprendizagem é medida no pré/pós-teste P1–P4 do M5 (#134–#137), registrado em `qa-aprendizagem.md` (a criar).
+
+## 11. Auditoria de 03/11/2026 (noite) — dificuldade, desafio e aprendizagem
+
+**Base:** `master` em `a4084bc` mais uma alteração local em `src/main.c` (quebra de linha, sem efeito). Build Debug x64: 0 avisos, 0 erros. O jogo foi executado; o painel do scanner e as duas telas de resultado foram capturados numa cópia scratch do commit com uma tecla de QA temporária (teleporte + scan), removida ao fim.
+
+### O que foi observado
+
+| # | Observação | Evidência |
+|---|---|---|
+| A1 | O menu exibe `MOVIMENTAÇÃO` com Ç/Ã quebrados (maiúscula acentuada), contra a regra da §2.1 de `textos-do-jogo.md` | captura do menu |
+| A2 | A fase conclui com **0 identificações**: 60 pontos, 0/9, bônus não obtido | tecla `F` de QA; a regra #26 não consulta `identified_count` |
+| A3 | A camada 1 mostra o nome científico, não a coloração; a camada 2 mostra a estrutura sem nomear o grupo | `gameplay.c:64-85` |
+| A4 | O scan é instantâneo e sem custo; a arma errada não trava, não tira vida nem ponto; não há perseguição | `gameplay.c:299-316`; nenhum símbolo `CHASE_*`/`FIRE_LOCK_*` |
+| A5 | As duas bactérias já chegam com a cor do grupo, e o HUD usa a mesma cor na arma | `main.c:998-1007`, `main.c:1144` |
+
+### Consequência para os roteiros desta seção
+
+- **E4 muda:** o pulso 1 deve mostrar a coloração (roxo/vermelho) **e** o nome do agente.
+- **E7 muda:** no build atual não há trava nem perseguição; o passo só vale depois de RF-06.
+- **Passos novos:** anel de coloração no agente (RF-03), amostra de cor no painel e nomes das armas no HUD e no feedback.
+
+**Limite:** esta rodada não executou E1–E15; todos continuam `[PEND]` até a implementação de #103/#104 e da RF-06.

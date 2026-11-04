@@ -82,7 +82,7 @@ A §7 registrava que, no estado `GAME`, nenhum clique tinha ação. Esta revisã
 - Clique com y lógico ≥ `PLAY_H` (painel do HUD) não dispara nem escaneia.
 - `ESPAÇO` e `J` deixam de existir no gameplay: ataque e scan são só do mouse.
 - Cursor a menos de 8 px do Nanobô cai na direção do `facing` (`AIM_DEAD_ZONE`).
-- Clique no ícone do módulo no HUD **não** foi implementado nesta revisão; a troca é pela roda e por `1`/`2`.
+- Clique no ícone do módulo no HUD **não** foi implementado nesta revisão e foi **descartado** em 03/11 (noite): a troca é pela roda e por `1`/`2`. O `handle_game_click()` retorna antes de olhar o painel (`ly >= PLAY_H`), e essa é a regra.
 
 ### 8.1 Verificação executada (03/11/2026)
 
