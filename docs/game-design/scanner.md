@@ -71,6 +71,10 @@ O texto da segunda camada é a informação curta de scanner aprovada em `docs/g
 | 2 | Bactéria Gram-negativa | “Gram- · parede fina sob membrana externa” e “A membrana externa adicional distingue este grupo.” |
 | 1 | Célula saudável própria | “célula do organismo · Célula epitelial”, sem amostra de coloração |
 | 2 | Célula saudável própria | “célula saudável do próprio organismo: preserve-a” e “preserve a célula: as duas armas ferem o próprio organismo” |
+| 1 | Vírus da Fase 2 | “vírus · Vírus da fase”, sem amostra de coloração |
+| 2 | Vírus da Fase 2 | “Vírus precisa de uma célula hospedeira para se multiplicar” e “a célula hospedeira é o que ele usa para se multiplicar” |
+
+O vírus não tem coloração de Gram: sem amostra e sem anel; a categoria do painel é vírus.
 
 O “Gram-” usa hífen ASCII (U+002D): a fonte embutida não tem o menos tipográfico (U+2212), que sai como `^` na tela.
 

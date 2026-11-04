@@ -27,21 +27,24 @@ O que está decidido e o código ainda não faz — ou já faz desde o build de 
 | Camada 2 = grupo + estrutura + porquê | D2; `scanner.md` §4 | **feito** — grupo, estrutura e a frase de revisão | M4 (#104) |
 | Briefing de 3 cartões | `decisoes.md`; RF-01 | **feito** — em toda partida, pulável com ESC | M4 (#103, #106) |
 | Armas com nome (Ruptura/Dissolução) | `decisoes.md`; `textos-do-jogo.md` | **feito** — menu, HUD e as 7 mensagens de feedback | M4 |
-| Armas com cor neutra; ícone e projétil por forma | RF-04 | **parcial** — projétil neutro (Ruptura quadrado, Dissolução círculo); o ícone do HUD ainda é o bitmap colorido | M4 (ícones no M5) |
+| Armas com cor neutra; ícone e projétil por forma | RF-04 | **feito** — ícones neutros próprios (parede/anéis) e projétil por forma | M4 |
 | Disco cinza até a camada 1; sprite + anel depois | RF-03; `decisoes.md` | **feito** — disco cinza, sprite e anel roxo/vermelho depois da leitura | M4 |
 | Variação de sprites por espécie | `decisoes.md` (03/11, noite) | um sprite por espécie | M5 |
 | Pulso de 0,75 s com imobilização e cancelamento | RF-02; Spec "Dificuldade" | scan instantâneo | M5 |
 | Trava de 2 s + perseguição após arma errada | RF-06 | inexistente | M5 |
 | Identificação condiciona a conclusão | D2.1 + D2.2 | conclui com 0 identificações | M5 |
-| Resumo por objetivo na tela de Resultados | RF-07 (#174) | **parcial** — contadores no painel `o que a partida mostrou` | M4 |
+| Resumo por objetivo na tela de Resultados | RF-07 (#174) | **parcial** — contadores no painel; o texto por OA fica no M5 | M5 |
+| Fase 2 mínima (3 vírus + 3 células, 1 resistência, qualquer arma) | `decisoes.md` (04/11) | **feito** | M4 (#76) |
+| Ciclo lisogênico/lítico e multiplicação limitada | #83–#86 | inexistente | M5 |
+| Recorde persistente mínimo (melhor pontuação) | `decisoes.md` (04/11) | **feito** — menu e Vitória | M4 (Top 10 e nome no M5) |
 | Bônus +15 por run perfeito (0 erro de arma + 0 tiro na célula) | `decisoes.md` (03/11, noite) | paga 9/9 | M5 |
 | SFX e animação | requisito final | inexistentes | M5 |
 
-**Cinco linhas de M4 fecharam no build de 04/11:** camada 1, camada 2, briefing, nomes das armas e disco cinza/anel. Duas ficaram parciais: o projétil já é neutro e se distingue pela forma, mas o ícone do HUD continua colorido (asset do M5); e o resumo mostra os contadores, não o texto por objetivo.
+**Oito linhas de M4 fecharam no build de 04/11:** camada 1, camada 2, briefing, nomes das armas, disco cinza/anel, ícones neutros, Fase 2 mínima e recorde. Uma ficou parcial: o resumo mostra os contadores, não o texto por objetivo.
 
-**RF-07 completo segue pendente.** O painel `o que a partida mostrou` traz `bactérias lidas: %d Gram+ · %d Gram-`, `acertos de arma: %d · erros: %d`, `ataques à célula: %d` e uma frase de revisão — é leitura por contador, não o resumo por objetivo (um texto por OA). A tela de Resultados ainda não diz o que cada objetivo mostrou na partida.
+**RF-07 completo segue pendente.** O painel `o que a partida mostrou` traz `bactérias identificadas: %d Gram+ · %d Gram-`, `acertos de arma: %d · erros: %d`, `ataques à célula: %d` e uma frase de revisão — é leitura por contador, não o resumo por objetivo (um texto por OA). A tela de Resultados ainda não diz o que cada objetivo mostrou na partida. Fica para o M5 por decisão de 04/11.
 
-**O bônus continua 9/9 neste build.** O run perfeito só entra com D2.1/D2.2 no M5.
+**O bônus é por fase:** +15 com 9/9 na Fase 1 e 6/6 na Fase 2. O run perfeito (0 erro de arma + 0 tiro na célula) só entra com D2.1/D2.2 no M5.
 
 ### Estrutura do MVP
 
@@ -265,6 +268,22 @@ O jogo terá pontuação, bônus por identificação e progressão. O hi-score d
 - **O menu não entrega a matriz arma→grupo.** Com o pulso 2 nomeando o grupo (D2), o menu pode dizer a função (`1: Ruptura - age na parede celular`), mas não pode afirmar `Ruptura (Gram+) · Dissolução (Gram-)`: isso entregaria antes do primeiro scan a informação que o scanner existe para produzir. A função da arma continua no menu; a ligação com o grupo sai.
 - **Fora do M4.** Diário de Campo, zonas guiadas, registro de eventos e calibração de trava/perseguição só voltam ao backlog depois do build e do QA manual. A arte neutra, o anel de coloração e os nomes das armas estão decididos; os assets entram conforme o escopo do marco (ver Pendências). Fase 2/vírus continua pós-MVP.
 
+### Fase 2 mínima e recorde (04/11/2026)
+
+O M4 continua centrado na Fase 1; a **Fase 2 mínima** existe para fechar o fluxo entre fases (#71/#76) e não substitui a Fase 2 do M5.
+
+- **Composição:** 3 vírus e 3 células saudáveis, no mesmo mapa e destino da Fase 1; a tabela de fases vive em `src/entities/entities.c`.
+- **Vírus:** 1 ponto de resistência; **qualquer arma** o neutraliza. O ciclo lisogênico/lítico, a multiplicação de até 3 e as consequências de combate continuam no M5 (#83–#91).
+- **Scanner do vírus:** camada 1 = `vírus · Vírus da fase`; camada 2 = “Vírus precisa de uma célula hospedeira para se multiplicar” + “a célula hospedeira é o que ele usa para se multiplicar”. Sem amostra de cor e sem anel: não há coloração de Gram.
+- **Contato e defesa:** o vírus fere por contato e é empurrado pela defesa, como a bactéria.
+- **Vida entre fases:** cada fase começa com 3 vidas.
+- **Bônus por fase:** +15 quando todos os agentes **daquela fase** foram identificados (9/9 na Fase 1, 6/6 na Fase 2); a pontuação da run atravessa as fases.
+- **Resumo por fase:** os contadores zeram a cada fase; a linha de Gram só aparece na Fase 1.
+- **Resultados → próxima fase:** `CONTINUAR` carrega a Fase 2 e preserva a pontuação; na última fase leva a `VICTORY`.
+- **Recorde mínimo:** a melhor pontuação da run fica em `nanobo_hiscore.txt`, ao lado do executável, e aparece no menu e na Vitória. Sem nome (#81) e sem Top 10 (#77–#82), que ficam no M5; arquivo ausente ou inválido vale zero.
+- **RF-07 completo (texto por objetivo) fica no M5:** o M4 entrega o resumo por contadores (#174, #202); a tela de 640×360 não comporta quatro blocos por OA sem refazer o layout.
+- **Ícones das armas:** `icone_ruptura.png` (parede de tijolos) e `icone_dissolucao.png` (anéis concêntricos), 16×16, cor neutra, forma própria; o projétil continua quadrado/círculo. Os ícones roxo/vermelho saem do `load_resources()` e ficam no disco como histórico.
+
 ## Pendências
 
 - Duração do pulso do scanner (0,75 s é valor inicial) e configuração de camadas por agente/fase no MVP.
@@ -273,5 +292,5 @@ O jogo terá pontuação, bônus por identificação e progressão. O hi-score d
 - **D2.2 — destino de quem atira antes de escanear (bloqueia D2.1; alvo: M5).** `pick_target()` ignora agente inativo, então neutralizar sem identificar remove aquele agente do scanner para sempre; com a identificação obrigatória, isso **travaria a partida** no contador `x/9`. Opções: **(a)** o projétil acerta mas não reduz a resistência até o agente ser identificado, com aviso na tela *(recomendada)*; **(b)** o scanner passa a aceitar agente neutralizado, como uma lâmina corada depois do fato; **(c)** neutralizar sem scan encerra a partida, o que transforma erro de leitura em fim de jogo.
 - Balanceamento de vida, dano, ataque, defesa, cooldowns e resistência (a regra de mitigação da defesa está fechada desde 16/10/2026; falta calibrar os números).
 - Regras de progressão entre fases.
-- Sprite neutro das bactérias, ícones das armas (distintos pela forma) e projéteis por forma: assets a criar. A apresentação das camadas está decidida (amostra de cor no painel + anel no agente).
+- Variação de sprites das bactérias (regra decidida em 03/11; quantidade no M5).
 - Regras detalhadas da multiplicação limitada da Fase 2.
