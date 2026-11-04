@@ -42,7 +42,7 @@ Este marco existe para que o escopo do M3 fique honesto: a PoC provou a investig
 
 ### M4 — MVP
 
-Entregar uma partida completa centrada na Fase 1, com exploração, scanner, interpretação/identificação, pontuação e consequências, condições de vitória e derrota, além do fluxo das telas necessário para jogar e reiniciar. Combate, vida, menu, pausa e Game Over já estão prontos desde o M3.5.
+Entregar uma partida completa centrada na Fase 1, com exploração, scanner, interpretação/identificação, pontuação e consequências, condições de vitória e derrota, além do fluxo das telas necessário para jogar e reiniciar. Combate, vida, menu, pausa e Game Over já estão prontos desde o M3.5. O M4 fecha com a Fase 1 completa e o fluxo entre duas fases (Fase 2 mínima); a Fase 2 completa é M5.
 
 ### M5 — Release Candidate
 
