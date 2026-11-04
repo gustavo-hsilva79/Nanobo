@@ -1,24 +1,30 @@
 # Nanobô — textos do jogo (M4)
 
-> **Criado em:** 03/11/2026. Fontes das regras: `docs/game-design/ensino-e-aprendizagem.md` (§"Feedback por situação" e §"Regras para qualquer texto") e as issues #105, #198 e #200.
+> **Criado em:** 03/11/2026. Fontes das regras: `docs/game-design/ensino-e-aprendizagem.md` (§"Feedback por situação" e §"Regras para qualquer texto"), `docs/game-design/decisoes.md` (armas, coloração e camada 1, 03/11 noite) e as issues #105, #198 e #200.
 > Todo texto novo entra aqui com ID, tela, limite de caracteres e de onde vem a regra. Nenhum texto usa PBP, transpeptidase, LPS ou ligações cruzadas.
 
 ## 1. Feedback da decisão (HUD da fase, `src/gameplay/gameplay.c`)
 
 | ID | Situação | Texto | Caracteres | Origem |
 |---|---|---|---|---|
-| FB-01 | módulo A acerta Gram+, primeiro acerto | `módulo A atingiu a parede: falta 1 acerto` | 41 | spec, tabela de feedback |
-| FB-02 | módulo B acerta Gram-, primeiro acerto | `módulo B atingiu a camada extra: falta 1 acerto` | 47 | spec, tabela de feedback |
+| FB-01 | Ruptura acerta Gram+, primeiro acerto | `Ruptura atingiu a parede: falta 1 acerto` | 40 | spec, tabela de feedback |
+| FB-02 | Dissolução acerta Gram-, primeiro acerto | `Dissolução atingiu a camada extra: falta 1 acerto` | 49 | spec, tabela de feedback |
 | FB-03 | acerto que neutraliza, agente identificado | `ameaça neutralizada: +10 pontos` | 31 | já existia (#66) |
 | FB-04 | acerto que neutraliza sem identificação | `neutralizada sem identificar: o bônus de 9/9 se perdeu` | 54 | já existia (#67) |
-| FB-05 | primeiro erro de módulo | `que estrutura o scan mostrou? qual módulo tem esse alvo?` | 56 | spec, dica escalonada |
-| FB-06 | segundo erro, B em Gram+ | `no jogo, a Gram+ não tem a camada extra atingida por B` | 54 | spec, dica escalonada |
-| FB-07 | segundo erro, A em Gram- | `no jogo, a camada extra das Gram- dificulta a ação de A` | 55 | spec, dica escalonada |
-| FB-08 | célula própria ferida pelo A | `no jogo, o módulo A fere a célula própria: -1 vida` | 50 | spec + D1 |
-| FB-09 | célula própria ferida pelo B | `no jogo, o módulo B fere a célula própria: -1 vida` | 50 | spec + D1 |
+| FB-05 | primeiro erro de arma | `que estrutura o scan mostrou? qual arma tem esse alvo?` | 54 | spec, dica escalonada |
+| FB-06 | segundo erro, Dissolução em Gram+ | `no jogo, a Gram+ não tem a camada extra atingida pela Dissolução` | 64 | spec, dica escalonada |
+| FB-07 | segundo erro, Ruptura em Gram- | `no jogo, a camada extra das Gram- dificulta a ação da Ruptura` | 61 | spec, dica escalonada |
+| FB-08 | célula própria ferida pela Ruptura | `no jogo, a Ruptura fere a célula própria: -1 vida` | 49 | spec + D1 |
+| FB-09 | célula própria ferida pela Dissolução | `no jogo, a Dissolução fere a célula própria: -1 vida` | 52 | spec + D1 |
 | FB-10 | contato com bactéria | `contato com bactéria: -1 de vida` | 32 | já existia (#11) |
 
 **Hífen, não menos tipográfico.** "Gram-" usa hífen ASCII (U+002D). O "−" (U+2212) que a spec traz não existe na fonte embutida (Latin-1): na tela ele saía como `^`, visto no QA de 03/11 e corrigido no commit `5e7cc75`. Ao editar estes textos, não reintroduza U+2212.
+
+## 1.1 Briefing (cena `BRIEFING`, #103)
+
+| ID | Local | Texto | Caracteres | Origem |
+|---|---|---|---|---|
+| BR-01 | briefing, cartão 3 | `nem toda bactéria causa doença: aqui são ameaças do cenário` | 58 | decisão 03/11 (noite) |
 
 ## 2. Controles, HUD e dicas (`src/main.c`)
 
@@ -30,8 +36,9 @@
 | CT-04 | menu, grupo 2 | `Combate` | 7 | #201 |
 | CT-05 | menu, grupo 2 | `botão esquerdo atirar · botão direito escanear` | 46 | #201 |
 | CT-06 | menu, grupo 3 | `Equipamentos` | 12 | #201 |
-| CT-07 | menu, grupo 3 | `1 e 2 ou roda: módulo A/B` | 25 | #201 |
-| CT-08 | menu, nota do grupo 3 | `A age na parede · B age na camada externa` | 41 | #201 |
+| CT-07 | menu, grupo 3 | `1 e 2 ou roda: trocar de arma` | 29 | #201 + decisão 03/11 |
+| CT-08 | menu, grupo 3 | `1: Ruptura - age na parede celular` | 34 | decisão 03/11 (noite) |
+| CT-08b | menu, grupo 3 | `2: Dissolução - age na camada externa` | 36 | decisão 03/11 (noite) |
 | CT-09 | menu, painel do objetivo | `Objetivo da missão` | 18 | #201 |
 | CT-10 | menu, painel do objetivo | `neutralizar as %d bactérias e chegar ao destino` | 47 | #201 |
 | CT-11 | menu, painel do objetivo | `identificar os %d agentes vale +%d pontos` | 41 | #201 |
@@ -59,6 +66,12 @@
 | CT-33 | resultados | `não obtido` | 10 | #202 |
 | CT-34 | resultados | `enter também continua` | 21 | #202 |
 | CT-35 | vitória | `Vitória` | 7 | #202 |
+
+| CT-36 | HUD, linha 0 | `Ruptura` / `Dissolução` | 7 / 10 | decisão 03/11 (noite) |
+| RT-01 | scanner, camada 1, bactéria | `roxo · Staphylococcus aureus` | 28 | decisão 03/11 (noite) |
+| RT-02 | scanner, camada 1, bactéria | `vermelho · Escherichia coli` | 28 | decisão 03/11 (noite) |
+| RT-03 | scanner, camada 1, célula | `célula do organismo detectada · Célula epitelial` | 49 | decisão 03/11 (noite) |
+**Drift conhecido:** o menu do build de 03/11 (PR #204) usa outras strings — `MOVIMENTAÇÃO`, `setas/WASD: mover; cursor: mirar`, `1: modulo A - atua na parede celular`, `roda do mouse: alternar entre A e B` — diferentes das CT-01..CT-13 desta tabela. A reescrita das armas alinha as duas; até lá, a tabela é o alvo, não o espelho.
 
 **Limite:** a fonte embutida é de **8 px por caractere** (medido com `al_get_text_width`, não estimado) e a área útil do painel do scanner é de 588 px. A linha mais longa desenhada na fase tem 47 caracteres (376 px); a mais longa de todas, `botão esquerdo atirar · botão direito escanear`, tem 46 caracteres em 536 px de painel.
 

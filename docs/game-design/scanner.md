@@ -1,6 +1,6 @@
 # Nanobô — Regras do scanner e da identificação
 
-> **Estado:** regras do M4 fechadas e consolidadas neste documento. A implementação do código ainda é a de 22/10 — o scanner lê por tecla e a camada 2 não nomeia o grupo; a #104 muda isso.
+> **Estado:** regras do M4 fechadas e consolidadas neste documento. O código de 03/11 já escaneia pelo botão direito, mas a camada 1 ainda mostra só o nome do agente e a camada 2 ainda não nomeia o grupo; a #104 muda as duas.
 >
 > **Última revisão:** 03/11/2026 (sincronização com a Spec de Ensino e Aprendizagem; #104 e #198).
 >
@@ -17,7 +17,7 @@ botão direito sobre o alvo → nenhum alvo válido sob o cursor encerra aqui, s
         ↓
 selecionar o alvo          → agente válido sob o cursor, dentro do alcance (#59, #198)
         ↓
-pulso 1                    → resultado da coloração: roxo ou rosa
+pulso 1                    → coloração (roxo ou vermelho) e nome do agente
         ↓
 pulso 2                    → nome do grupo, pista estrutural e o porquê (#104)
         ↓
@@ -25,7 +25,7 @@ registrar a identificação  → quando a última camada do agente é revelada (
         ↓
 o jogador interpreta a informação
         ↓
-o jogador escolhe o módulo e atira
+o jogador escolhe a arma e atira
         ↓
 consequência
 ```
@@ -58,23 +58,23 @@ Regra já fechada, repetida aqui para que o fluxo fique em um único lugar:
 - Informação já revelada **permanece visível** durante o encontro; não é apagada ao trocar de alvo.
   > **Atualização 22/10/2026:** o painel passou a mostrar só a leitura do alvo atual; as camadas já reveladas continuam guardadas em cada agente e voltam a aparecer quando ele é lido de novo.
 - Depois que as duas camadas do agente foram reveladas, novas ativações sobre ele não revelam informação inexistente e não alteram o estado.
-- O conteúdo revelado descreve o agente e **não recomenda** qual módulo o jogador deve usar.
+- O conteúdo revelado descreve o agente e **não recomenda** qual arma o jogador deve usar.
 
 ### Conteúdo das camadas no M4
 
-O texto da segunda camada é a informação curta de scanner aprovada em `docs/game-design/conteudo-biologico.md`. A primeira camada é o resultado da coloração; a segunda nomeia o grupo e explica a estrutura (D2, 03/11).
+O texto da segunda camada é a informação curta de scanner aprovada em `docs/game-design/conteudo-biologico.md`. A primeira camada é o resultado da coloração **e o nome do agente**; a segunda nomeia o grupo e explica a estrutura (D2, 03/11). A coloração aparece de duas formas que se reforçam: uma **amostra de cor** antes do nome, no painel, e um **anel colorido permanente** no agente, no mundo.
 
 | Camada | Agente | Conteúdo revelado |
 |---:|---|---|
-| 1 | Bactéria (Gram+ ou Gram−) | resultado da coloração: “roxo” (Gram+) ou “rosa” (Gram−) |
+| 1 | Bactéria (Gram+ ou Gram−) | coloração e nome do agente: “roxo · Staphylococcus aureus” (Gram+) ou “vermelho · Escherichia coli” (Gram−) |
 | 2 | Bactéria Gram-positiva | “Gram+: parede celular mais espessa, rica em peptidoglicano.” |
 | 2 | Bactéria Gram-negativa | “Gram−: parede mais fina e uma camada externa extra.” |
-| 1 | Célula saudável própria | “célula do organismo detectada” |
+| 1 | Célula saudável própria | “célula do organismo detectada · Célula epitelial”, sem amostra de coloração |
 | 2 | Célula saudável própria | “célula saudável do próprio organismo: preserve-a.” |
 
-Nenhuma camada diz “use o módulo A” ou “não atire”. A ligação entre a pista e a ação é do jogador.
+Nenhuma camada diz “use a Ruptura” ou “não atire”. A ligação entre a pista e a ação é do jogador.
 
-A camada 2 **nomeia a classificação** desde 03/11: sem o nome, o jogo não ensinava o termo que o professor cobrou. O scanner continua sem recomendar módulo; a decisão é do jogador.
+A camada 2 **nomeia a classificação** desde 03/11: sem o nome, o jogo não ensinava o termo que o professor cobrou. O scanner continua sem recomendar arma; a decisão é do jogador.
 
 **No MVP**, a estrutura deve permitir variar a quantidade e o conteúdo das camadas por agente ou por fase. A configuração final por agente/fase permanece **[PENDÊNCIA]** e não deve ser antecipada antes da revisão das regras da Fase 2 (#83/#87/#88).
 
@@ -95,14 +95,14 @@ O estado de identificação — identificações registradas, contador e camadas
 
 | Objetivo | Informação do scanner | Decisão do jogador | Evidência observável |
 |---|---|---|---|
-| OA1 — interpretar a coloração | camada 1 com roxo ou rosa | reconhecer o grupo sem inferir espécie ou doença | leitura do resultado e identificação do grupo |
+| OA1 — interpretar a coloração | camada 1 com roxo ou vermelho e o nome do agente | reconhecer o grupo sem inferir doença ou tratamento a partir do nome | leitura do resultado e identificação do grupo |
 | OA2 — comparar as camadas externas | camada 2 com o nome do grupo, a parede e a camada externa | explicar a diferença em palavras próprias | descrição do jogador e reconhecimento do peptidoglicano na parede |
-| OA3 — relacionar estrutura e módulo | camada 2 com a pista estrutural, sem indicar o módulo | escolher A ou B segundo a regra do jogo | módulo escolhido e resultado do ataque |
+| OA3 — relacionar estrutura e arma | camada 2 com a pista estrutural, sem indicar a arma | escolher Ruptura ou Dissolução segundo a regra do jogo | arma escolhida e resultado do ataque |
 | OA4 — preservar a célula própria | camadas 1 e 2 indicando célula do próprio organismo | não atacar a célula | ação escolhida e integridade da célula |
 
 ## 8. O que o scanner não faz
 
-- Não recomenda ação, módulo ou alvo a atacar.
+- Não recomenda ação, arma ou alvo a atacar.
 - Não pontua e não dá bônus.
 - Não escolhe o alvo para o jogador além da seleção automática do mais próximo.
 - Não mantém informação entre encontros.
@@ -110,9 +110,9 @@ O estado de identificação — identificações registradas, contador e camadas
 ## 9. [PENDÊNCIA]
 
 - Duração do pulso (0,75 s é valor inicial) e intervalo entre leituras.
-- Quantidade e conteúdo das camadas por agente/fase no MVP.
+- Quantidade e conteúdo das camadas por agente/fase nas fases seguintes (a Fase 1 está decidida: 2 camadas, com os textos acima).
 - Pistas, decisão associada e consequências da Fase 2, que dependem de #83/#87/#88.
-- Apresentação final das informações do scanner na interface (#199).
+- Apresentação das camadas decidida em 03/11 (amostra de cor no painel e anel no agente); resta o desenho final, na #199.
 - Espécies bacterianas finais representadas no jogo.
 
 ## 10. Implementação atual
@@ -121,7 +121,7 @@ O estado de identificação — identificações registradas, contador e camadas
 |---|---|
 | Seleção do alvo mais próximo | `pick_target()`, chamado por `use_scanner()` com `player.x`/`player.y`, em `src/gameplay/gameplay.c` |
 | Pulsos e camadas | `use_scanner()` em `src/gameplay/gameplay.c`; desenho em `draw_scan_info()`, `src/main.c` |
-| Texto das camadas | `layer_one_text()` e `layer_two_text()` em `src/gameplay/gameplay.c` |
+| Texto das camadas | `layer_one_text()` (hoje devolve só o nome) e `layer_two_text()` em `src/gameplay/gameplay.c`; a #104 acrescenta a coloração à camada 1 |
 | Identificação única | campos `identified` e `identified_count` em `src/entities/entities.c` |
 | Reinicialização da partida | `reset_match()` em `src/gameplay/gameplay.c` |
 | Agentes fora do scanner | agente com `active == false` não é candidato nem é desenhado |

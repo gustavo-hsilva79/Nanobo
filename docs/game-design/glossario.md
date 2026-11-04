@@ -17,8 +17,12 @@ Cada ser do cenário que o Nanobô encontra, escaneia e decide sobre. São bact�
 _Evitar_: inimigo, NPC, micróbio (a célula saudável não é um micróbio hostil)
 
 **Espécie**:
-O tipo biológico de um agente: Gram-positiva, Gram-negativa ou célula saudável própria.
-_Evitar_: tipo, variante
+A categoria do agente no jogo: Gram-positiva, Gram-negativa ou célula saudável própria.
+_Evitar_: tipo, variante, nome científico
+
+**Nome do agente**:
+O nome exibido na camada 1 do scanner (ex.: `Staphylococcus aureus`). Identifica o agente do cenário; não informa o grupo Gram, não indica doença nem tratamento.
+_Evitar_: espécie (para o grupo do jogo)
 
 **Fase**:
 A unidade de conteúdo do jogo; a Fase 1 tem 3 bactérias Gram+, 3 Gram− e 3 células saudáveis.
@@ -38,6 +42,10 @@ _Evitar_: raio de colisão
 
 ## Scanner
 
+**Coloração (resultado de Gram)**:
+O resultado do exame no scanner: **roxo** (Gram+) ou **vermelho** (Gram−). "Rosa" é sinônimo de vermelho nos documentos de ensino, nunca na tela.
+_Evitar_: cor da bactéria, rosa (na tela)
+
 **Pulso**:
 Um acionamento do scanner que revela exatamente a próxima camada não descoberta do alvo.
 _Evitar_: scan, leitura (a leitura é o resultado)
@@ -56,11 +64,13 @@ _Evitar_: descoberta, conclusão
 
 ## Combate
 
-**Laser**:
-A arma que o jogador escolhe conforme a pista do scanner; há um para Gram-positiva (roxo) e um para Gram-negativa (vermelho).
-_Evitar_: raio, tiro, projétil (o projétil é o corpo que viaja)
+**Arma**:
+O recurso que o jogador escolhe conforme a pista do scanner. São duas: **Ruptura**, que age na parede e neutraliza Gram+, e **Dissolução**, que age na camada externa e neutraliza Gram−. A escolha é regra do jogo, não recomendação de tratamento.
+_Evitar_: laser, raio, tiro, módulo A/B
 
-> O HUD ainda escreve `raio: roxo (Gram+)` / `raio: vermelho (Gram-)`. A troca dessa string para `laser` é tarefa de código separada; os documentos usam **laser**.
+**Projétil**:
+O corpo que viaja depois do disparo. Existe um por arma, e os dois se distinguem pela forma, não pela cor.
+_Evitar_: tiro, laser
 
 **Resistência**:
 Quantos acertos válidos um agente suporta antes de ser neutralizado: 2 para bactéria, 0 para célula.

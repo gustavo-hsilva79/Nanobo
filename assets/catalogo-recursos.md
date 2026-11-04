@@ -12,13 +12,13 @@ Inventário dos recursos necessários à execução atual, para orientar o carre
 | Célula saudável própria (32×32) | Agente `SPECIES_CELL` | `assets/sprites/celula_propria.png`; idem |
 | Ícone de coração (16×16) | HUD de vida | `assets/sprites/icone_coracao.png`; idem |
 | Ícone de scanner (16×16) | Cabeçalho do painel do scanner e bloco "como jogar" do menu | `assets/sprites/icone_scanner.png`; idem |
-| Ícone de laser roxo (16×16) | Indicador de raio da HUD e regra do menu | `assets/sprites/icone_laser_roxo.png`; idem |
-| Ícone de laser vermelho (16×16) | Indicador de raio da HUD e regra do menu | `assets/sprites/icone_laser_vermelho.png`; idem |
+| Ícone da arma Ruptura (16×16) | Indicador da arma na HUD (hoje é o ícone de laser roxo); **a redesenhar com forma própria e cor neutra** | `assets/sprites/icone_laser_roxo.png`; idem |
+| Ícone da arma Dissolução (16×16) | Indicador da arma na HUD (hoje é o ícone de laser vermelho); **a redesenhar com forma própria e cor neutra** | `assets/sprites/icone_laser_vermelho.png`; idem |
 | Ícone de defesa (16×16) | Linha de controles do menu | `assets/sprites/icone_defesa.png`; idem |
 | Fonte embutida do Allegro | Todo o texto da interface: HUD, painel do scanner, menu, pausa e telas de fim | `al_create_builtin_font()` em `src/main.c`; não há arquivo de fonte |
 | Mapa do mundo da Fase 1 (1920×512) | Fundo do mundo, desenhado atrás de destino, agentes e Nanobô | `assets/backgrounds/mapa_fase1.png`; idem |
 
-`free_resources()` libera os dez bitmaps na ordem inversa e depois a fonte. O título do menu (`NANOBÔ`) é um bitmap montado em tempo de carregamento a partir da fonte (`make_text_bitmap`), também liberado ali. O projétil é desenhado com `al_draw_filled_circle()` (primitivas), sem bitmap.
+`free_resources()` libera os dez bitmaps na ordem inversa e depois a fonte. O título do menu (`NANOBÔ`) é um bitmap montado em tempo de carregamento a partir da fonte (`make_text_bitmap`), também liberado ali. O projétil é desenhado com primitivas do Allegro, sem bitmap; com a cor neutra, os dois projéteis passam a se distinguir pela **forma** (dardo × orbe) — desenho a definir na #199.
 
 ## Arte final criada
 
@@ -34,7 +34,9 @@ Todos os sprites usam a mesma paleta, o mesmo tamanho de pixel e a mesma direç�
 | `assets/sprites/bacteria_gram_negativa.png` | Bactéria Gram-negativa | vermelho | bacilo (bastonete) | membrana externa fina, separada do corpo |
 | `assets/sprites/celula_propria.png` | Célula saudável própria | verde | célula maior e arredondada | núcleo delimitado com nucléolo e mitocôndrias |
 
-As cores seguem a regra da #16: **roxo para Gram+** e **vermelho para Gram−**; a célula própria é verde. O HUD usa o mesmo roxo e vermelho nos projéteis, e o coração é carmim para não competir com o laser vermelho.
+Cada espécie pode ter **mais de um sprite** para variar o cenário: mesmo número de variantes por grupo (senão a variante vira pista), 32×32, a mesma hitbox, e a variante só aparece **depois** da camada 1 — antes dela todas as bactérias são o mesmo disco cinza. A quantidade de variantes fica para o M5.
+
+As cores da **coloração** são **roxo para Gram+** e **vermelho para Gram−**; a célula própria é verde. Desde 03/11 (noite) o HUD **não** usa roxo/vermelho para a arma: as armas Ruptura e Dissolução têm cor neutra, e ícone e projétil se distinguem pela forma. O coração continua carmim.
 
 A forma e o tamanho também separam os agentes: as bactérias são pequenas e simples (sem organelas), enquanto a célula própria é maior e tem núcleo delimitado — a diferença procarioto/eucarioto.
 
@@ -87,9 +89,9 @@ O fundo é escuro e de baixo contraste de propósito: os sprites precisam contin
 
 | Tipo | Recursos necessários | Local definido | Estado |
 |---|---|---|---|
-| Sprites e animações | Arte final dos agentes e spritesheet animado do Nanobô | `assets/sprites/` | Agentes carregados; spritesheet criado e não carregado |
+| Sprites e animações | Arte final dos agentes, **sprite neutro das bactérias** e spritesheet animado do Nanobô | `assets/sprites/` | Agentes carregados; spritesheet criado e não carregado; **sprite neutro pendente** (decisão de 03/11: as duas bactérias usam o mesmo sprite até a camada 1) |
 | Cenários | Mapa do mundo da Fase 1, 1920×512 | `assets/backgrounds/` | Criado e carregado (`ca4845a`) |
-| Ícones de interface | Laser, scanner, vida e defesa | `assets/sprites/` | Criados e carregados (os quatro ícones e o coração) |
+| Ícones de interface | Armas (Ruptura/Dissolução), scanner, vida e defesa | `assets/sprites/` | Scanner, vida e defesa prontos; **ícones das armas a redesenhar** com forma própria e cor neutra |
 | Fontes | Tipografia final da interface | `assets/fonts/` | [PENDÊNCIA] Fonte ainda não escolhida; a fonte embutida atual é provisória |
 | Música | Trilha da partida | `assets/audio/music/` | [PENDÊNCIA] Arquivo ainda não definido |
 | Efeitos sonoros | Feedback de ações e eventos | `assets/audio/sfx/` | [PENDÊNCIA] Arquivos ainda não definidos |
