@@ -792,7 +792,6 @@ void draw_menu()
      Menu organizado para acomodar:
      - movimentacao;
      - combate;
-     - scanner;
      - equipamentos;
      - objetivo dinamico.
     */
@@ -853,7 +852,7 @@ void draw_menu()
         col_x,
         controls_y + 8.0f,
         0,
-        "COMO JOGAR"
+        "Como jogar"
     );
 
     /* Movimentacao */
@@ -864,16 +863,16 @@ void draw_menu()
         col_x,
         controls_y + 22.0f,
         0,
-        "MOVIMENTAÇÃO"
+        "Movimentação"
     );
 
     al_draw_text(
         font,
         UI_TEXT,
-        col_x + 104.0f,
+        col_x + 120.0f,
         controls_y + 22.0f,
         0,
-        "setas/WASD: mover; cursor: mirar"
+        "setas ou WASD mover · cursor mirar"
     );
 
     /* Combate */
@@ -884,36 +883,16 @@ void draw_menu()
         col_x,
         controls_y + 38.0f,
         0,
-        "COMBATE"
+        "Combate"
     );
 
     al_draw_text(
         font,
         UI_TEXT,
-        col_x + 104.0f,
+        col_x + 120.0f,
         controls_y + 38.0f,
         0,
-        "botao esquerdo: atirar"
-    );
-
-    /* Scanner */
-
-    al_draw_text(
-        font,
-        UI_AMBER,
-        col_x,
-        controls_y + 54.0f,
-        0,
-        "SCANNER"
-    );
-
-    al_draw_text(
-        font,
-        UI_TEXT,
-        col_x + 104.0f,
-        controls_y + 54.0f,
-        0,
-        "botão direito sobre um agente: escanear"
+        "botão esquerdo atirar · botão direito escanear"
     );
 
     /* Equipamentos */
@@ -922,27 +901,27 @@ void draw_menu()
         font,
         UI_AMBER,
         col_x,
-        controls_y + 70.0f,
+        controls_y + 54.0f,
         0,
-        "EQUIPAMENTOS"
+        "Equipamentos"
     );
 
     al_draw_text(
         font,
         UI_TEXT,
-        col_x + 104.0f,
+        col_x + 120.0f,
         controls_y + 70.0f,
         0,
-        "1: modulo A - atua na parede celular"
+        "1: Ruptura - age na parede celular"
     );
 
     al_draw_text(
         font,
         UI_TEXT,
-        col_x + 104.0f,
+        col_x + 120.0f,
         controls_y + 86.0f,
         0,
-        "2: modulo B - atua na camada externa"
+        "2: Dissolução - age na camada externa"
     );
 
     al_draw_text(
@@ -951,7 +930,7 @@ void draw_menu()
         col_x,
         controls_y + 102.0f,
         0,
-        "roda do mouse: alternar entre A e B"
+        "1 e 2 ou roda: trocar de arma"
     );
 
     al_draw_text(
@@ -982,7 +961,7 @@ void draw_menu()
         col_x,
         goal_y + 8.0f,
         0,
-        "OBJETIVOS"
+        "Objetivo da missão"
     );
 
     snprintf(
@@ -1030,7 +1009,7 @@ void draw_menu()
         SCREEN_W / 2,
         BUTTON_Y + 36,
         ALLEGRO_ALIGN_CENTRE,
-        "enter ou clique para comecar"
+        "enter ou clique para começar"
     );
 
     al_draw_text(
@@ -1137,7 +1116,7 @@ void draw_hud()
     int total_seconds;
     int x_score;
     int x_time;
-    int x_letter;
+    int x_weapon;
     int x_icon;
     int x_bar;
     int x_word;
@@ -1145,7 +1124,7 @@ void draw_hud()
     char score_text[32];
     char timer_text[16];
     const char* state_text;
-    const char* module_letter;
+    const char* module_name;
     ALLEGRO_BITMAP* laser_icon;
 
     al_draw_filled_rectangle(0.0f, (float)SCAN_PANEL_Y, (float)SCREEN_W, (float)SCREEN_H, UI_INK);
@@ -1195,8 +1174,8 @@ void draw_hud()
 
     laser_icon = player.laser == LASER_GRAM_POSITIVE ? laser_purple_icon : laser_red_icon;
 
-    // o HUD diz qual modulo esta ativo, nao so a cor (#198)
-    module_letter = player.laser == LASER_GRAM_POSITIVE ? "A" : "B";
+    // o HUD diz qual arma esta ativa pelo nome, nao so a cor (#199)
+    module_name = player.laser == LASER_GRAM_POSITIVE ? "Ruptura" : "Dissolução";
 
     total_seconds = (int)match_time;
     snprintf(timer_text, sizeof(timer_text), "%02d:%02d", total_seconds / 60, total_seconds % 60);
@@ -1205,13 +1184,13 @@ void draw_hud()
     x_word = SCREEN_W - HUD_MARGIN - al_get_text_width(font, state_text);
     x_bar = x_word - 6 - UI_BAR_W;
     x_icon = x_bar - 4 - al_get_bitmap_width(laser_icon);
-    x_letter = x_icon - 4 - al_get_text_width(font, module_letter);
-    x_time = x_letter - UI_GAP - al_get_text_width(font, timer_text);
+    x_weapon = x_icon - 4 - al_get_text_width(font, module_name);
+    x_time = x_weapon - UI_GAP - al_get_text_width(font, timer_text);
     x_score = x_time - UI_GAP - al_get_text_width(font, score_text);
 
     al_draw_text(font, UI_TEXT, (float)x_score, (float)hud_y(0), 0, score_text);
     al_draw_text(font, UI_DIM, (float)x_time, (float)hud_y(0), 0, timer_text);
-    al_draw_text(font, UI_AMBER, (float)x_letter, (float)hud_y(0), 0, module_letter);
+    al_draw_text(font, UI_TEXT, (float)x_weapon, (float)hud_y(0), 0, module_name);
     al_draw_bitmap(laser_icon, (float)x_icon, (float)(hud_y(0) - 4), 0);
     draw_cooldown_bar((float)x_bar, (float)(hud_y(0) + 1), attack_cooldown_left());
     al_draw_text(font, UI_DIM, (float)x_word, (float)hud_y(0), 0, state_text);
@@ -1243,6 +1222,8 @@ void draw_game()
     const char* message;
     float aim_x;
     float aim_y;
+    float px;
+    float py;
 
     // o mundo para na faixa jogavel: sprite nenhum entra no painel
     al_set_clipping_rectangle(0, 0, SCREEN_W, PLAY_H);
@@ -1306,7 +1287,7 @@ void draw_game()
             UI_FRAME, 2);
     }
 
-    // projetil na cor do raio escolhido no disparo (#63)
+    // projetil de cor neutra: Ruptura e quadrado, Dissolucao e circulo (RF-04)
     for (i = 0; i < MAX_PROJECTILES; i++)
     {
         if (!projectiles[i].active)
@@ -1314,15 +1295,19 @@ void draw_game()
             continue;
         }
 
+        px = view_x(projectiles[i].x);
+        py = view_y(projectiles[i].y);
+
         if (projectiles[i].laser == LASER_GRAM_POSITIVE)
         {
-            al_draw_filled_circle(view_x(projectiles[i].x), view_y(projectiles[i].y),
-                PROJECTILE_RADIUS, UI_PURPLE);
+            al_draw_filled_rectangle(px - (float)PROJECTILE_RADIUS,
+                py - (float)PROJECTILE_RADIUS,
+                px + (float)PROJECTILE_RADIUS,
+                py + (float)PROJECTILE_RADIUS, UI_TEXT);
         }
         else
         {
-            al_draw_filled_circle(view_x(projectiles[i].x), view_y(projectiles[i].y),
-                PROJECTILE_RADIUS, UI_RED);
+            al_draw_filled_circle(px, py, (float)PROJECTILE_RADIUS, UI_TEXT);
         }
     }
 
