@@ -3,8 +3,14 @@
 
 #include <stdbool.h>
 
-// quantos agentes o encontro tem: 3 bacterias Gram+, 3 Gram- e 3 celulas
+// quantos agentes o encontro da Fase 1 tem: 3 bacterias Gram+, 3 Gram- e 3 celulas
 #define NUM_AGENTES 9
+
+// capacidade do array de agentes: a maior fase define o tamanho (#M4)
+#define MAX_AGENTS 9
+
+// quantas fases a partida tem hoje (#M4: Fase 1 e a Fase 2 minima de virus)
+#define PHASE_COUNT 2
 
 // tamanho total do mundo em pixels: 3 telas de 640 por 2 faixas de 256
 #define WORLD_W 1920
@@ -24,7 +30,8 @@ typedef enum
 {
     SPECIES_GRAM_POSITIVE = 0,
     SPECIES_GRAM_NEGATIVE = 1,
-    SPECIES_CELL = 2
+    SPECIES_CELL = 2,
+    SPECIES_VIRUS = 3
 } Species;
 
 // resistencia de combate dos agentes: quantos acertos validos ate neutralizar (#49)
@@ -32,6 +39,9 @@ typedef enum
 
 // celula saudavel nao tem resistencia de combate: nenhum acerto a remove (#14)
 #define CELL_RESISTANCE 0
+
+// virus da Fase 2 minima: um acerto de qualquer arma neutraliza (#M4)
+#define VIRUS_RESISTANCE 1
 
 // raio escolhido pelo jogador: roxo para Gram+, vermelho para Gram- (#62)
 typedef enum
@@ -68,7 +78,25 @@ typedef struct
     bool active;
 } Agent;
 
-extern Agent agents[NUM_AGENTES];
+// composicao de uma fase: uma linha por agente que ela coloca no mundo (#M4)
+typedef struct
+{
+    Species species;
+    const char* name;
+    int id;
+} PhaseAgent;
+
+// fase jogavel: titulo, composicao e quantos agentes ela tem
+typedef struct
+{
+    const char* title;
+    const PhaseAgent* members;
+    int count;
+} Phase;
+
+extern const Phase phases[PHASE_COUNT];
+
+extern Agent agents[MAX_AGENTS];
 extern int identified_count;
 
 // raio de colisao do nanobo em pixels (metade do sprite de 32x32)

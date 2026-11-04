@@ -1,55 +1,39 @@
 #include "entities.h"
 
-// composicao fixa da Fase 1: 3 bacterias Gram+, 3 Gram- e 3 celulas saudaveis
-// estes sao os valores de partida: o reset_match re-sorteia posicao, direcao e
-// temporizador e devolve a resistencia cheia antes do primeiro quadro de jogo
-Agent agents[NUM_AGENTES] =
+// composicao da Fase 1: 3 bacterias Gram+, 3 Gram- e 3 celulas saudaveis
+static const PhaseAgent phase_one_agents[] =
 {
-    { .name = "Staphylococcus aureus", 
-      .id = 1, .resistance = BACTERIA_RESISTANCE, .x = 160.0f, .y = 96.0f, .dx = 1.0f, .dy = 0.0f,
-      .speed = AGENT_SPEED, .species = SPECIES_GRAM_POSITIVE, .layers = 0, .identified = false,
-      .direction_timer = 1.0f, .impulse_timer = 0.0f, .active = true },
-
-    { .name = "Escherichia coli",
-      .id = 2, .resistance = BACTERIA_RESISTANCE, .x = 480.0f, .y = 140.0f, .dx = 1.0f, .dy = 0.0f,
-      .speed = AGENT_SPEED, .species = SPECIES_GRAM_NEGATIVE, .layers = 0, .identified = false,
-      .direction_timer = 1.0f, .impulse_timer = 0.0f, .active = true },
-
-    { .name = "Célula epitelial",
-      .id = 3, .resistance = CELL_RESISTANCE, .x = 800.0f, .y = 96.0f, .dx = 1.0f, .dy = 0.0f,
-      .speed = CELL_SPEED, .species = SPECIES_CELL, .layers = 0, .identified = false,
-      .direction_timer = 1.0f, .impulse_timer = 0.0f, .active = true },
-
-    { .name = "Streptococcus pneumoniae",
-      .id = 4, .resistance = BACTERIA_RESISTANCE, .x = 1120.0f, .y = 140.0f, .dx = 1.0f, .dy = 0.0f,
-      .speed = AGENT_SPEED, .species = SPECIES_GRAM_POSITIVE, .layers = 0, .identified = false,
-      .direction_timer = 1.0f, .impulse_timer = 0.0f, .active = true },
-
-    { .name = "Salmonella enterica",
-      .id = 5, .resistance = BACTERIA_RESISTANCE, .x = 1440.0f, .y = 96.0f, .dx = 1.0f, .dy = 0.0f,
-      .speed = AGENT_SPEED, .species = SPECIES_GRAM_NEGATIVE, .layers = 0, .identified = false,
-      .direction_timer = 1.0f, .impulse_timer = 0.0f, .active = true },
-
-    { .name = "Célula epitelial",
-      .id = 6, .resistance = CELL_RESISTANCE, .x = 1760.0f, .y = 140.0f, .dx = 1.0f, .dy = 0.0f,
-      .speed = CELL_SPEED, .species = SPECIES_CELL, .layers = 0, .identified = false,
-      .direction_timer = 1.0f, .impulse_timer = 0.0f, .active = true },
-
-    { .name = "Streptococcus pyogenes",
-      .id = 7, .resistance = BACTERIA_RESISTANCE, .x = 160.0f, .y = 420.0f, .dx = 1.0f, .dy = 0.0f,
-      .speed = AGENT_SPEED, .species = SPECIES_GRAM_POSITIVE, .layers = 0, .identified = false,
-      .direction_timer = 1.0f, .impulse_timer = 0.0f, .active = true },
-
-    { .name = "Pseudomonas aeruginosa",
-      .id = 8, .resistance = BACTERIA_RESISTANCE, .x = 480.0f, .y = 380.0f, .dx = 1.0f, .dy = 0.0f,
-      .speed = AGENT_SPEED, .species = SPECIES_GRAM_NEGATIVE, .layers = 0, .identified = false,
-      .direction_timer = 1.0f, .impulse_timer = 0.0f, .active = true },
-
-    { .name = "Célula epitelial", 
-      .id = 9, .resistance = CELL_RESISTANCE, .x = 800.0f, .y = 420.0f, .dx = 1.0f, .dy = 0.0f,
-      .speed = CELL_SPEED, .species = SPECIES_CELL, .layers = 0, .identified = false,
-      .direction_timer = 1.0f, .impulse_timer = 0.0f, .active = true }
+    { SPECIES_GRAM_POSITIVE, "Staphylococcus aureus", 1 },
+    { SPECIES_GRAM_NEGATIVE, "Escherichia coli", 2 },
+    { SPECIES_CELL, "Célula epitelial", 3 },
+    { SPECIES_GRAM_POSITIVE, "Streptococcus pneumoniae", 4 },
+    { SPECIES_GRAM_NEGATIVE, "Salmonella enterica", 5 },
+    { SPECIES_CELL, "Célula epitelial", 6 },
+    { SPECIES_GRAM_POSITIVE, "Streptococcus pyogenes", 7 },
+    { SPECIES_GRAM_NEGATIVE, "Pseudomonas aeruginosa", 8 },
+    { SPECIES_CELL, "Célula epitelial", 9 }
 };
+
+// Fase 2 minima: os tres virus e as celulas que eles precisam preservar (#M4)
+static const PhaseAgent phase_two_agents[] =
+{
+    { SPECIES_VIRUS, "Vírus da fase", 1 },
+    { SPECIES_VIRUS, "Vírus da fase", 2 },
+    { SPECIES_VIRUS, "Vírus da fase", 3 },
+    { SPECIES_CELL, "Célula epitelial", 4 },
+    { SPECIES_CELL, "Célula epitelial", 5 },
+    { SPECIES_CELL, "Célula epitelial", 6 }
+};
+
+// a ordem das fases e a ordem do jogo: a run comeca na primeira
+const Phase phases[PHASE_COUNT] =
+{
+    { "Fase 1", phase_one_agents, NUM_AGENTES },
+    { "Fase 2", phase_two_agents, 6 }
+};
+
+// o array nasce vazio: start_phase() preenche os slots da fase em cada run
+Agent agents[MAX_AGENTS];
 
 int identified_count = 0;
 

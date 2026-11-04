@@ -72,10 +72,10 @@ ALLEGRO_BITMAP* nanobo = NULL;
 // coracao do HUD de vida (#19)
 ALLEGRO_BITMAP* heart_icon = NULL;
 
-// icones da interface: scanner, os dois raios e a defesa
+// icones da interface: scanner, as duas armas e a defesa
 ALLEGRO_BITMAP* scanner_icon = NULL;
-ALLEGRO_BITMAP* laser_purple_icon = NULL;
-ALLEGRO_BITMAP* laser_red_icon = NULL;
+ALLEGRO_BITMAP* ruptura_icon = NULL;
+ALLEGRO_BITMAP* dissolucao_icon = NULL;
 ALLEGRO_BITMAP* defense_icon = NULL;
 
 // titulo do menu montado a partir da fonte, desenhado ampliado
@@ -85,6 +85,7 @@ ALLEGRO_BITMAP* title_bitmap = NULL;
 ALLEGRO_BITMAP* gram_positive = NULL;
 ALLEGRO_BITMAP* gram_negative = NULL;
 ALLEGRO_BITMAP* cell_sprite = NULL;
+ALLEGRO_BITMAP* virus_sprite = NULL;
 
 // mapa do mundo inteiro da Fase 1 (1920x512), sempre atras do resto
 ALLEGRO_BITMAP* world_map = NULL;
@@ -299,6 +300,13 @@ bool load_resources()
         return false;
     }
 
+    virus_sprite = al_load_bitmap("assets/sprites/virus_fase2.png");
+    if (!virus_sprite)
+    {
+        printf("couldn't load virus\n");
+        return false;
+    }
+
     heart_icon = al_load_bitmap("assets/sprites/icone_coracao.png");
     if (!heart_icon)
     {
@@ -313,17 +321,17 @@ bool load_resources()
         return false;
     }
 
-    laser_purple_icon = al_load_bitmap("assets/sprites/icone_laser_roxo.png");
-    if (!laser_purple_icon)
+    ruptura_icon = al_load_bitmap("assets/sprites/icone_ruptura.png");
+    if (!ruptura_icon)
     {
-        printf("couldn't load purple laser icon\n");
+        printf("couldn't load ruptura icon\n");
         return false;
     }
 
-    laser_red_icon = al_load_bitmap("assets/sprites/icone_laser_vermelho.png");
-    if (!laser_red_icon)
+    dissolucao_icon = al_load_bitmap("assets/sprites/icone_dissolucao.png");
+    if (!dissolucao_icon)
     {
-        printf("couldn't load red laser icon\n");
+        printf("couldn't load dissolucao icon\n");
         return false;
     }
 
@@ -378,6 +386,12 @@ void free_resources()
         cell_sprite = NULL;
     }
 
+    if (virus_sprite)
+    {
+        al_destroy_bitmap(virus_sprite);
+        virus_sprite = NULL;
+    }
+
     if (heart_icon)
     {
         al_destroy_bitmap(heart_icon);
@@ -390,16 +404,16 @@ void free_resources()
         defense_icon = NULL;
     }
 
-    if (laser_red_icon)
+    if (dissolucao_icon)
     {
-        al_destroy_bitmap(laser_red_icon);
-        laser_red_icon = NULL;
+        al_destroy_bitmap(dissolucao_icon);
+        dissolucao_icon = NULL;
     }
 
-    if (laser_purple_icon)
+    if (ruptura_icon)
     {
-        al_destroy_bitmap(laser_purple_icon);
-        laser_purple_icon = NULL;
+        al_destroy_bitmap(ruptura_icon);
+        ruptura_icon = NULL;
     }
 
     if (scanner_icon)
@@ -626,7 +640,17 @@ void activate_button(int index)
             break;
 
         case GAME_SCENE_RESULTS:
-            game_set_scene(GAME_SCENE_VICTORY);
+            // com duas fases, continuar avança; na última, conclui a run (#M4)
+            if (has_next_phase())
+            {
+                start_next_phase();
+                game_set_scene(GAME_SCENE_GAME);
+            }
+            else
+            {
+                finish_run();
+                game_set_scene(GAME_SCENE_VICTORY);
+            }
             break;
 
         case GAME_SCENE_VICTORY:
@@ -671,7 +695,8 @@ void draw_stat(float x, float y, float right, const char* label, const char* val
 
 void draw_scan_swatch(Species species, float x, float y)
 {
-    if (species == SPECIES_CELL)
+    // célula e vírus não têm coloração de Gram: sem amostra (#M4)
+    if (species == SPECIES_CELL || species == SPECIES_VIRUS)
     {
         return;
     }
@@ -766,7 +791,18 @@ void draw_scan_panel()
         state = "Identificação concluída";
     }
 
-    category = agents[target].species == SPECIES_CELL ? "célula" : "bactéria";
+    if (agents[target].species == SPECIES_CELL)
+    {
+        category = "célula";
+    }
+    else if (agents[target].species == SPECIES_VIRUS)
+    {
+        category = "vírus";
+    }
+    else
+    {
+        category = "bactéria";
+    }
 
     al_draw_text(font, UI_AMBER, (float)text_x, (float)row_state, 0, state);
     al_draw_text(font, source_color, (float)(text_x + al_get_text_width(font, state)),
@@ -790,7 +826,9 @@ void draw_scan_panel()
         al_draw_text(font, UI_TEXT, (float)(text_x + 12), (float)row_info, 0,
             layer_one_text(agents[target].species, agents[target].name));
         al_draw_text(font, UI_DIM, (float)text_x, (float)row_action, 0,
-            "clique de novo para revelar o grupo");
+            agents[target].species == SPECIES_VIRUS
+                ? "clique de novo para concluir a leitura"
+                : "clique de novo para revelar o grupo");
         return;
     }
 
@@ -870,6 +908,7 @@ void draw_menu()
 {
     char objective[96];
     char bonus[96];
+    char record[32];
     int count;
 
     const UiButton* buttons = screen_buttons(&count);
@@ -1074,7 +1113,7 @@ void draw_menu()
         bonus,
         sizeof(bonus),
         "identificar os %d agentes vale +%d pontos",
-        NUM_AGENTES,
+        agents_total(),
         IDENTIFICATION_BONUS
     );
 
@@ -1102,6 +1141,10 @@ void draw_menu()
         "enter ou clique para começar"
     );
 
+    // recorde lido do arquivo no inicio do jogo (#M4)
+    snprintf(record, sizeof(record), "recorde %d", hi_score());
+    al_draw_text(font, UI_DIM, SCREEN_W / 2, BUTTON_Y + 52, ALLEGRO_ALIGN_CENTRE, record);
+
     al_draw_text(
         font,
         UI_DIM,
@@ -1124,6 +1167,11 @@ ALLEGRO_BITMAP* species_sprite(Species species)
     if (species == SPECIES_GRAM_NEGATIVE)
     {
         return gram_negative;
+    }
+
+    if (species == SPECIES_VIRUS)
+    {
+        return virus_sprite;
     }
 
     return cell_sprite;
@@ -1262,7 +1310,7 @@ void draw_hud()
         state_text = "recarga";
     }
 
-    laser_icon = player.laser == LASER_GRAM_POSITIVE ? laser_purple_icon : laser_red_icon;
+    laser_icon = player.laser == LASER_GRAM_POSITIVE ? ruptura_icon : dissolucao_icon;
 
     // o HUD diz qual arma esta ativa pelo nome, nao so a cor (#199)
     module_name = player.laser == LASER_GRAM_POSITIVE ? "Ruptura" : "Dissolução";
@@ -1287,8 +1335,17 @@ void draw_hud()
 
     if (threats_left() > 0)
     {
-        al_draw_text(font, UI_AMBER, HUD_MARGIN, hud_y(1), 0,
-            "objetivo: neutralizar as bactérias e chegar ao destino");
+        // a Fase 2 tem vírus, não bactéria: a frase acompanha a fase (#M4)
+        if (current_phase() == 1)
+        {
+            al_draw_text(font, UI_AMBER, HUD_MARGIN, hud_y(1), 0,
+                "objetivo: neutralizar as bactérias e chegar ao destino");
+        }
+        else
+        {
+            al_draw_text(font, UI_AMBER, HUD_MARGIN, hud_y(1), 0,
+                "objetivo: neutralizar os vírus e chegar ao destino");
+        }
     }
     else
     {
@@ -1296,7 +1353,7 @@ void draw_hud()
     }
 
     // identificados fica na linha do objetivo: e progresso do bonus, nao do combate
-    snprintf(line, sizeof(line), "identificados %d/%d", identified_count, NUM_AGENTES);
+    snprintf(line, sizeof(line), "identificados %d/%d", identified_count, agents_total());
     al_draw_text(font, UI_DIM, (float)(SCREEN_W - HUD_MARGIN), (float)hud_y(1),
         ALLEGRO_ALIGN_RIGHT, line);
 
@@ -1329,7 +1386,7 @@ void draw_game()
     al_draw_text(font, UI_AMBER, view_x(DESTINATION_X),
         view_y(DESTINATION_Y) - 40, ALLEGRO_ALIGN_CENTRE, "destino");
 
-    for (i = 0; i < NUM_AGENTES; i++)
+    for (i = 0; i < agents_total(); i++)
     {
         // agente neutralizado sai do desenho
         if (!agents[i].active)
@@ -1483,9 +1540,11 @@ void draw_results()
     int neutralized = threats_total() - threats_left();
     float left = 152.0f;
     float right = (float)SCREEN_W - 152.0f;
+    float row;
     ALLEGRO_COLOR bonus_color;
 
-    al_draw_text(font, UI_TEXT, SCREEN_W / 2, 24, ALLEGRO_ALIGN_CENTRE, "Fase 1 concluída");
+    snprintf(line, sizeof(line), "Fase %d concluída", current_phase());
+    al_draw_text(font, UI_TEXT, SCREEN_W / 2, 24, ALLEGRO_ALIGN_CENTRE, line);
     draw_rule((float)SCREEN_W / 2, 38.0f, 200.0f, UI_FRAME);
     al_draw_text(font, UI_DIM, SCREEN_W / 2, 46, ALLEGRO_ALIGN_CENTRE, "resumo da fase");
 
@@ -1501,7 +1560,7 @@ void draw_results()
     // objetivos secundarios: identificacao e bonus
     draw_panel(140.0f, 106.0f, 360.0f, 52.0f, UI_INK, UI_FRAME);
 
-    snprintf(value, sizeof(value), "%d/%d", identified_count, NUM_AGENTES);
+    snprintf(value, sizeof(value), "%d/%d", identified_count, agents_total());
     draw_stat(left, 114.0f, right, "agentes identificados", value, UI_TEXT);
 
     if (identification_bonus_awarded())
@@ -1518,7 +1577,7 @@ void draw_results()
     draw_stat(left, 130.0f, right, "bônus de identificação", value, bonus_color);
 
     snprintf(line, sizeof(line), "identificar os %d agentes vale +%d pontos",
-        NUM_AGENTES, IDENTIFICATION_BONUS);
+        agents_total(), IDENTIFICATION_BONUS);
     al_draw_text(font, UI_DIM, left, 146.0f, 0, line);
 
     // resumo educativo: so contadores da partida atual (#174, #202)
@@ -1526,18 +1585,27 @@ void draw_results()
 
     al_draw_text(font, UI_AMBER, left, 170.0f, 0, "o que a partida mostrou");
 
-    snprintf(line, sizeof(line), "bactérias identificadas: %d Gram+ · %d Gram-",
-        progress.scans_gram_positive, progress.scans_gram_negative);
-    al_draw_text(font, UI_TEXT, left, 186.0f, 0, line);
+    // a Fase 2 não tem bactéria: a linha de Gram só aparece onde há Gram (#M4)
+    row = 186.0f;
+
+    if (current_phase() == 1)
+    {
+        snprintf(line, sizeof(line), "bactérias identificadas: %d Gram+ · %d Gram-",
+            progress.scans_gram_positive, progress.scans_gram_negative);
+        al_draw_text(font, UI_TEXT, left, row, 0, line);
+        row = row + 16.0f;
+    }
 
     snprintf(line, sizeof(line), "acertos de arma: %d · erros: %d",
         progress.correct_decisions, progress.wrong_decisions);
-    al_draw_text(font, UI_TEXT, left, 202.0f, 0, line);
+    al_draw_text(font, UI_TEXT, left, row, 0, line);
+    row = row + 16.0f;
 
     snprintf(line, sizeof(line), "ataques à célula: %d", progress.cell_attacks);
-    al_draw_text(font, UI_TEXT, left, 218.0f, 0, line);
+    al_draw_text(font, UI_TEXT, left, row, 0, line);
+    row = row + 16.0f;
 
-    al_draw_text(font, UI_WARM, left, 234.0f, 0, results_review_text());
+    al_draw_text(font, UI_WARM, left, row, 0, results_review_text());
 
     draw_buttons(buttons, count);
 
@@ -1560,7 +1628,7 @@ void draw_victory()
 {
     char value[32];
     char timer_text[16];
-    int total_seconds = (int)match_time;
+    int total_seconds = (int)run_time;
     int count;
     const UiButton* buttons = screen_buttons(&count);
     float left = 152.0f;
@@ -1571,20 +1639,23 @@ void draw_victory()
     al_draw_text(font, UI_DIM, SCREEN_W / 2, 52, ALLEGRO_ALIGN_CENTRE,
         "você defendeu o organismo");
 
-    draw_panel(140.0f, 72.0f, 360.0f, 96.0f, UI_INK, UI_FRAME);
+    draw_panel(140.0f, 72.0f, 360.0f, 116.0f, UI_INK, UI_FRAME);
 
     snprintf(value, sizeof(value), "%d", score);
     draw_stat(left, 82.0f, right, "pontuação final", value, UI_AMBER);
 
-    snprintf(value, sizeof(value), "%d/%d", threats_total() - threats_left(), threats_total());
+    snprintf(value, sizeof(value), "%d/%d", run_progress.neutralized, run_progress.threats);
     draw_stat(left, 102.0f, right, "ameaças neutralizadas", value, UI_TEXT);
 
-    snprintf(value, sizeof(value), "%d/%d", identified_count, NUM_AGENTES);
+    snprintf(value, sizeof(value), "%d/%d", run_progress.identified, run_progress.agents);
     draw_stat(left, 122.0f, right, "agentes identificados", value, UI_TEXT);
 
     snprintf(timer_text, sizeof(timer_text), "%02d:%02d", total_seconds / 60,
         total_seconds % 60);
-    draw_stat(left, 142.0f, right, "tempo de partida", timer_text, UI_TEXT);
+    draw_stat(left, 142.0f, right, "tempo total", timer_text, UI_TEXT);
+
+    snprintf(value, sizeof(value), "%d", hi_score());
+    draw_stat(left, 162.0f, right, "recorde", value, UI_AMBER);
 
     draw_buttons(buttons, count);
 
@@ -1596,7 +1667,7 @@ void draw_game_over()
 {
     char value[32];
     char timer_text[16];
-    int total_seconds = (int)match_time;
+    int total_seconds = (int)run_time;
     int count;
     const UiButton* buttons = screen_buttons(&count);
     float left = 152.0f;
@@ -1612,15 +1683,15 @@ void draw_game_over()
     snprintf(value, sizeof(value), "%d", score);
     draw_stat(left, 82.0f, right, "pontos", value, UI_TEXT);
 
-    snprintf(value, sizeof(value), "%d/%d", threats_total() - threats_left(), threats_total());
+    snprintf(value, sizeof(value), "%d/%d", run_progress.neutralized, run_progress.threats);
     draw_stat(left, 102.0f, right, "ameaças neutralizadas", value, UI_TEXT);
 
-    snprintf(value, sizeof(value), "%d/%d", identified_count, NUM_AGENTES);
+    snprintf(value, sizeof(value), "%d/%d", run_progress.identified, run_progress.agents);
     draw_stat(left, 122.0f, right, "agentes identificados", value, UI_TEXT);
 
     snprintf(timer_text, sizeof(timer_text), "%02d:%02d", total_seconds / 60,
         total_seconds % 60);
-    draw_stat(left, 142.0f, right, "tempo de partida", timer_text, UI_TEXT);
+    draw_stat(left, 142.0f, right, "tempo total", timer_text, UI_TEXT);
 
     draw_buttons(buttons, count);
 
@@ -1794,7 +1865,7 @@ void handle_key_down(int key)
     {
         int i;
 
-        for (i = 0; i < NUM_AGENTES; i++)
+        for (i = 0; i < agents_total(); i++)
         {
             if (agents[i].species != SPECIES_CELL)
             {
@@ -1817,15 +1888,15 @@ void handle_key_down(int key)
     {
         int i;
 
-        for (i = 0; i < NUM_AGENTES; i++)
+        for (i = 0; i < agents_total(); i++)
         {
             agents[i].layers = MAX_LAYERS;
             agents[i].identified = true;
         }
 
-        identified_count = NUM_AGENTES;
+        identified_count = agents_total();
 
-        for (i = 0; i < NUM_AGENTES; i++)
+        for (i = 0; i < agents_total(); i++)
         {
             if (agents[i].species != SPECIES_CELL)
             {
@@ -1994,6 +2065,9 @@ int main()
         return 1;
     }
 
+    // o recorde é lido uma vez, antes do primeiro desenho do menu (#M4)
+    load_hi_score();
+
     al_register_event_source(queue, al_get_mouse_event_source());
     al_register_event_source(queue, al_get_keyboard_event_source());
     al_register_event_source(queue, al_get_display_event_source(display));
@@ -2007,6 +2081,9 @@ int main()
     // semente do sorteio, uma vez por execucao: o relogio em segundos se repete
     // entre duas aberturas no mesmo segundo, entao o relogio do allegro entra junto
     srand((unsigned int)time(NULL) * 1000u + (unsigned int)(al_get_time() * 1000.0));
+
+    // o menu mostra ameaças e agentes da fase: a Fase 1 nasce antes do loop (#M4)
+    reset_match();
 
     al_start_timer(timer);
     while (1)
@@ -2023,6 +2100,7 @@ int main()
 
                     if (player.health == 0)
                     {
+                        finish_run();
                         game_set_scene(GAME_SCENE_GAME_OVER);
                     }
                     // fase cumprida entra em Resultados sozinha (#70)

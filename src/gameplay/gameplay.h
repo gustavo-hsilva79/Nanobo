@@ -74,6 +74,9 @@ _Static_assert(WORLD_W % 32 == 0 && WORLD_H % 32 == 0, "mundo precisa fechar no 
 // tempo da partida em segundos, so conta dentro do estado GAME
 extern double match_time;
 
+// tempo somado da run, atravessa as fases (#M4)
+extern double run_time;
+
 // progresso da partida para o resumo educativo (#200): so memoria, sem arquivo
 typedef struct
 {
@@ -85,6 +88,17 @@ typedef struct
 } MatchProgress;
 
 extern MatchProgress progress;
+
+// totais acumulados da run, para as telas de Vitoria e Game Over (#M4)
+typedef struct
+{
+    int threats;     // ameacas das fases ja jogadas
+    int neutralized; // ameacas neutralizadas na run
+    int agents;      // agentes das fases ja jogadas
+    int identified;  // agentes identificados na run
+} RunProgress;
+
+extern RunProgress run_progress;
 
 // pontos da partida atual: a neutralizacao de uma ameaca soma (#66)
 extern int score;
@@ -145,6 +159,18 @@ bool phase_completed();
 // partida: o tamanho do mundo vem das constantes, nao do main
 void reset_match();
 void update_match(double dt);
+
+// fases: a run comeca na Fase 1 e os Resultados avancam para a proxima (#M4)
+int phase_count(void);
+int current_phase(void);
+int agents_total(void);
+bool has_next_phase(void);
+void start_next_phase(void);
+
+// fim da run: grava o recorde quando a pontuacao supera o melhor (#M4)
+void finish_run(void);
+int hi_score(void);
+void load_hi_score(void);
 
 // ultimo alvo lido pelo scanner, -1 antes da primeira leitura
 int last_scan_target();
