@@ -7,6 +7,8 @@
 > **Status das listas:** conferido no GitHub em **03/11/2026** (o bloco do M4 foi reconferido depois da auditoria de escopo; os demais blocos seguem a leitura de 18/10). A fonte operacional continua sendo o GitHub Project; este arquivo é a leitura escrita daquele dia e deve ser reconferido antes de ser citado como atual.
 >
 > **Snapshot de 04/11/2026:** as issues **#103, #104, #106, #174, #199 e #202** estão implementadas no código da branch `feat/ux-m4-scanner-briefing` e aguardam revisão/fechamento. A contagem do GitHub não foi reconferida nesta data; as listas abaixo continuam sendo o retrato de 03/11, com essas seis anotadas.
+>
+> **Fechamento de 04/11/2026:** as 13 issues abertas do M4 fecharam com a Fase 2 mínima, os ícones neutros e o recorde; o M4 fica com 0 abertas e #71/#175 seguem no M5.
 
 ## Entregas acadêmicas (Plano de Ensino)
 

@@ -12,17 +12,18 @@ Inventário dos recursos necessários à execução atual, para orientar o carre
 | Célula saudável própria (32×32) | Agente `SPECIES_CELL` | `assets/sprites/celula_propria.png`; idem |
 | Ícone de coração (16×16) | HUD de vida | `assets/sprites/icone_coracao.png`; idem |
 | Ícone de scanner (16×16) | Cabeçalho do painel do scanner e bloco "como jogar" do menu | `assets/sprites/icone_scanner.png`; idem |
-| Ícone da arma Ruptura (16×16) | Indicador da arma na HUD (hoje é o ícone de laser roxo); **a redesenhar com forma própria e cor neutra** | `assets/sprites/icone_laser_roxo.png`; idem |
-| Ícone da arma Dissolução (16×16) | Indicador da arma na HUD (hoje é o ícone de laser vermelho); **a redesenhar com forma própria e cor neutra** | `assets/sprites/icone_laser_vermelho.png`; idem |
+| Ícone da arma Ruptura (16×16) | Indicador da arma na HUD: parede de tijolos, cor neutra e forma própria (04/11) | `assets/sprites/icone_ruptura.png` |
+| Ícone da arma Dissolução (16×16) | Indicador da arma na HUD: anéis concêntricos, cor neutra e forma própria (04/11) | `assets/sprites/icone_dissolucao.png` |
+| Vírus da Fase 2 (32×32) | Agente `SPECIES_VIRUS`: corpo laranja com espinhos e núcleo | `assets/sprites/virus_fase2.png` |
 | Ícone de defesa (16×16) | Linha de controles do menu | `assets/sprites/icone_defesa.png`; idem |
 | Fonte embutida do Allegro | Todo o texto da interface: HUD, painel do scanner, menu, pausa e telas de fim | `al_create_builtin_font()` em `src/main.c`; não há arquivo de fonte |
 | Mapa do mundo da Fase 1 (1920×512) | Fundo do mundo, desenhado atrás de destino, agentes e Nanobô | `assets/backgrounds/mapa_fase1.png`; idem |
 
-`free_resources()` libera os dez bitmaps na ordem inversa e depois a fonte. O título do menu (`NANOBÔ`) é um bitmap montado em tempo de carregamento a partir da fonte (`make_text_bitmap`), também liberado ali. O projétil é desenhado com primitivas do Allegro, sem bitmap; com a cor neutra, os dois projéteis passam a se distinguir pela **forma** (dardo × orbe) — desenho a definir na #199.
+`free_resources()` libera os onze bitmaps na ordem inversa e depois a fonte. O título do menu (`NANOBÔ`) é um bitmap montado em tempo de carregamento a partir da fonte (`make_text_bitmap`), também liberado ali. O projétil é desenhado com primitivas do Allegro, sem bitmap; com a cor neutra, os dois projéteis se distinguem pela **forma**: quadrado na Ruptura, círculo na Dissolução. Os ícones `icone_laser_roxo.png` e `icone_laser_vermelho.png` saíram do `load_resources()` e continuam no disco como histórico.
 
 ## Arte final criada
 
-Os três sprites de agente, o coração, os quatro ícones de interface e o mapa do mundo são carregados pelo jogo. A tira de quadros do Nanobô ainda não é; a arte antiga de fundo (`fundo_microscopico.png`) ficou como referência. Cada recurso tem a fonte `.aseprite` editável ao lado do `.png` exportado; o `.png` é o arquivo que o jogo deve carregar.
+Os quatro sprites de agente (três da Fase 1 e o vírus da Fase 2), o coração, os quatro ícones de interface e o mapa do mundo são carregados pelo jogo. A tira de quadros do Nanobô ainda não é; a arte antiga de fundo (`fundo_microscopico.png`) ficou como referência. Cada recurso tem a fonte `.aseprite` editável ao lado do `.png` exportado; o `.png` é o arquivo que o jogo deve carregar.
 
 Todos os sprites usam a mesma paleta, o mesmo tamanho de pixel e a mesma direção de luz (cima-esquerda), para manter a coesão visual.
 
@@ -36,7 +37,7 @@ Todos os sprites usam a mesma paleta, o mesmo tamanho de pixel e a mesma direç�
 
 Cada espécie pode ter **mais de um sprite** para variar o cenário: mesmo número de variantes por grupo (senão a variante vira pista), 32×32, a mesma hitbox, e a variante só aparece **depois** da camada 1 — antes dela todas as bactérias são o mesmo disco cinza. A quantidade de variantes fica para o M5.
 
-As cores da **coloração** são **roxo para Gram+** e **vermelho para Gram−**; a célula própria é verde. Desde 03/11 (noite) o HUD **não** usa roxo/vermelho para a arma: as armas Ruptura e Dissolução têm cor neutra, e ícone e projétil se distinguem pela forma. O coração continua carmim.
+As cores da **coloração** são **roxo para Gram+** e **vermelho para Gram−**; a célula própria é verde. Desde 03/11 (noite) o HUD **não** usa roxo/vermelho para a arma: as armas Ruptura e Dissolução têm cor neutra, e ícone e projétil se distinguem pela forma. O coração continua carmim. Desde 04/11 os ícones neutros (parede/anéis) são os que o HUD desenha.
 
 A forma e o tamanho também separam os agentes: as bactérias são pequenas e simples (sem organelas), enquanto a célula própria é maior e tem núcleo delimitado — a diferença procarioto/eucarioto.
 
@@ -78,8 +79,8 @@ O fundo é escuro e de baixo contraste de propósito: os sprites precisam contin
 
 | Arquivo | Uso sugerido |
 |---|---|
-| `assets/sprites/icone_laser_roxo.png` | Laser correspondente à Gram+ (#16) |
-| `assets/sprites/icone_laser_vermelho.png` | Laser correspondente à Gram− (#16) |
+| `assets/sprites/icone_laser_roxo.png` | Histórico: laser da Gram+ (#16), substituído pelo ícone neutro da Ruptura |
+| `assets/sprites/icone_laser_vermelho.png` | Histórico: laser da Gram− (#16), substituído pelo ícone neutro da Dissolução |
 | `assets/sprites/icone_scanner.png` | Lupa, para indicar a ação de escanear |
 | `assets/sprites/icone_coracao.png` | Vida, para o HUD |
 
@@ -91,7 +92,7 @@ O fundo é escuro e de baixo contraste de propósito: os sprites precisam contin
 |---|---|---|---|
 | Sprites e animações | Arte final dos agentes, **sprite neutro das bactérias** e spritesheet animado do Nanobô | `assets/sprites/` | Agentes carregados; spritesheet criado e não carregado; **sprite neutro pendente** (decisão de 03/11: as duas bactérias usam o mesmo sprite até a camada 1) |
 | Cenários | Mapa do mundo da Fase 1, 1920×512 | `assets/backgrounds/` | Criado e carregado (`ca4845a`) |
-| Ícones de interface | Armas (Ruptura/Dissolução), scanner, vida e defesa | `assets/sprites/` | Scanner, vida e defesa prontos; **ícones das armas a redesenhar** com forma própria e cor neutra |
+| Ícones de interface | Armas (Ruptura/Dissolução), scanner, vida e defesa | `assets/sprites/` | Scanner, vida, defesa e as duas armas prontos; o HUD desenha `icone_ruptura.png` e `icone_dissolucao.png` |
 | Fontes | Tipografia final da interface | `assets/fonts/` | [PENDÊNCIA] Fonte ainda não escolhida; a fonte embutida atual é provisória |
 | Música | Trilha da partida | `assets/audio/music/` | [PENDÊNCIA] Arquivo ainda não definido |
 | Efeitos sonoros | Feedback de ações e eventos | `assets/audio/sfx/` | [PENDÊNCIA] Arquivos ainda não definidos |

@@ -31,7 +31,8 @@ Este documento define o fluxo geral da máquina de estados previsto em #7/#98. A
 - `MENU → BRIEFING → GAME` é o caminho de toda partida; `VICTORY → BRIEFING` e `GAME OVER → BRIEFING` fazem a partida nova passar pelo briefing outra vez.
 - No briefing, `ENTER`, `→` ou clique avançam o cartão; no terceiro, `SEGUIR` entra na fase. `ESC` e `PULAR` vão direto para `GAME`. O cartão corrente volta a zero a cada entrada na cena.
 - `GAME OVER` é alcançado de verdade quando `player.health == 0`.
-- `RESULTS` é alcançado automaticamente quando a fase conclui (6 ameaças neutralizadas + Nanobô no destino, #26/#70); `VICTORY` vem de `RESULTS` por `ENTER`.
+- `RESULTS` é alcançado automaticamente quando a fase conclui (6 ameaças neutralizadas + Nanobô no destino na Fase 1; 3 vírus na Fase 2, #26/#70); `CONTINUAR` carrega a Fase 2 quando `has_next_phase()` e, na última fase, leva a `VICTORY`.
+- A Fase 2 do build é a mínima (vírus + células); a Fase 2 completa é M5.
 - **Decisão de 03/11/2026 (D2.1, `decisoes.md`):** a conclusão passa a exigir também a identificação dos agentes. Até a mudança ser implementada, a regra em vigor é a de #26/#70 acima; D2.1 e D2.2 ficam para o M5.
 - `VICTORY` e `GAME OVER` iniciam nova partida com reset completo (#74/#75) e briefing.
 - `F`, `G` e `H` são teclas de QA e existem somente no build Debug; o Release não tem atalho de estado (#76).
