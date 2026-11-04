@@ -5,6 +5,8 @@
 > Este documento é a visão de planejamento. O **GitHub Project** é a fonte operacional do status de cada Issue e os **Milestones** do repositório são a fonte das datas. As listas abaixo reproduzem o agrupamento por milestone; em caso de divergência, vale o GitHub.
 
 > **Status das listas:** conferido no GitHub em **03/11/2026** (o bloco do M4 foi reconferido depois da auditoria de escopo; os demais blocos seguem a leitura de 18/10). A fonte operacional continua sendo o GitHub Project; este arquivo é a leitura escrita daquele dia e deve ser reconferido antes de ser citado como atual.
+>
+> **Snapshot de 04/11/2026:** as issues **#103, #104, #106, #174, #199 e #202** estão implementadas no código da branch `feat/ux-m4-scanner-briefing` e aguardam revisão/fechamento. A contagem do GitHub não foi reconferida nesta data; as listas abaixo continuam sendo o retrato de 03/11, com essas seis anotadas.
 
 ## Entregas acadêmicas (Plano de Ensino)
 
@@ -82,17 +84,17 @@ A tabela de marcos — data, tipo e objetivo de cada um — fica em **[milestone
 **Abertas (14):**
 
 - #58 Revisar e integrar o ensino da Fase 1 (M4) `[G]` *(pai)*
-  - #103 Briefing pulável: três cards de Gram e decisão `[E]`
-  - #104 Scanner em dois pulsos: coloração, nome e estrutura `[E]`
-  - #106 Integrar fluxo Menu → Briefing → Fase 1 `[E]`
+  - #103 Briefing pulável: três cards de Gram e decisão `[E]` *(no código em 04/11, aguardando revisão)*
+  - #104 Scanner em dois pulsos: coloração, nome e estrutura `[E]` *(no código em 04/11, aguardando revisão)*
+  - #106 Integrar fluxo Menu → Briefing → Fase 1 `[E]` *(no código em 04/11, aguardando revisão)*
   - #107 QA manual do fluxo educativo da Fase 1 `[G]`
   - #129 QA cruzado: scanner, identificação e controles `[E]`
-  - #199 HUD e sinais visuais didáticos do scanner e das armas `[E]`
+  - #199 HUD e sinais visuais didáticos do scanner e das armas `[E]` *(no código em 04/11, aguardando revisão)*
   - #201 Refatorar menu inicial: controles, equipamentos e objetivo `[G]`
 - #57 Resultados e evidência de aprendizagem da Fase 1 `[E]` *(pai)*
-  - #174 Resumo educativo personalizado por contadores em memória `[E]`
+  - #174 Resumo educativo personalizado por contadores em memória `[E]` *(no código em 04/11, aguardando revisão; RF-07 completo pendente)*
   - #176 QA dos resultados, resumo educativo e preservação do score `[G]`
-  - #202 Refatorar tela de resultados: desempenho, bônus e resumo biológico `[G]`
+  - #202 Refatorar tela de resultados: desempenho, bônus e resumo biológico `[G]` *(no código em 04/11, aguardando revisão)*
 - #20 Integrar fluxo das telas e progressão das fases `[E]`
 - #76 Validar fluxo completo entre telas e fases `[E]`
 
@@ -101,6 +103,8 @@ A tabela de marcos — data, tipo e objetivo de cada um — fica em **[milestone
 > A HUD, a pontuação, a camada 2 do scanner e o feedback foram mesclados no PR #193. O **ensino integrado** (`#58` e filhas) substitui o tutorial antigo da Fase 1: briefing de três cards, scanner em dois pulsos, módulos A/B, controles por cursor, contadores em memória e resumo por objetivo.
 >
 > **Atualização de 03/11/2026, após o merge do PR #203:** os controles por cursor, os módulos A/B com letra no HUD, a mira própria e os contadores em memória **estão em `master`** (#198, #105 e #200 fechadas). Continuam faltando em código: a cena de `BRIEFING` (#103/#106), o pulso 2 nomeando o grupo (#104, D2), a identificação como condição de conclusão (D2.1) e a cor dos módulos fora de roxo/rosa (D2 em `decisoes.md`).
+>
+> **04/11/2026:** briefing, pulso 2 com o grupo e armas Ruptura/Dissolução com projétil neutro entraram no código da branch `feat/ux-m4-scanner-briefing`; D2.1, a trava (RF-06) e o resumo por objetivo completo (RF-07) continuam fora.
 >
 > Diário de Campo, zonas guiadas e registro de eventos **não estão no M4**: voltam ao backlog depois do build e do QA manual aprovados.
 
@@ -179,3 +183,4 @@ Uma Issue só deve ir para **Done** quando:
 - **03/11/2026** — Auditoria de escopo da Spec de ensino. #58 virou o épico “Ensino integrado da Fase 1” e voltou ao M4 com #103–#107, #129 e #150; a #57 voltou ao M4 com #174 e #176; nasceram #198 (controles por cursor), #199 (HUD e sinais) e #200 (progresso em memória); #179 segue no M5. O M4 fica com 16 abertas e 26 fechadas.
 - **03/11/2026 (noite)** — PR #203 mesclado em `master` (`56d47c0`): controles por cursor, módulos A/B, mira e contadores entram no jogo. M4 reconferido no GitHub: **14 abertas e 29 fechadas**; #105, #198 e #200 fecharam. #150 foi apagada e saiu da lista de abertas. Três decisões registradas em `decisoes.md`: o pulso 2 nomeia o grupo (D2), a identificação passa a ser condição de conclusão (D2.1) e o briefing fica no M4.
 - **03/11/2026 (noite, depois da auditoria)** — decisões de dificuldade, coloração e armas registradas em `decisoes.md`: camada 1 com coloração e nome, armas Ruptura/Dissolução com cor neutra, disco cinza até a camada 1 e anel depois, variação de sprites, espécies revistas. #104 e #199 foram reescritas com os novos títulos acima; os documentos vivos foram varridos na mesma data.
+- **04/11/2026** — snapshot do build de 04/11: briefing em toda partida, scanner com coloração/grupo/origem da leitura, armas Ruptura/Dissolução no menu, no HUD e no feedback, e o painel `o que a partida mostrou` nos resultados. #103, #104, #106, #174, #199 e #202 estão no código e aguardam revisão/fechamento; o QA da rodada está em `qa-mvp.md` §10.
