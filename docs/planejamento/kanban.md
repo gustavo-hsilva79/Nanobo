@@ -83,11 +83,11 @@ A tabela de marcos — data, tipo e objetivo de cada um — fica em **[milestone
 
 - #58 Revisar e integrar o ensino da Fase 1 (M4) `[G]` *(pai)*
   - #103 Briefing pulável: três cards de Gram e decisão `[E]`
-  - #104 Scanner em dois pulsos: nome e estrutura `[E]`
+  - #104 Scanner em dois pulsos: coloração, nome e estrutura `[E]`
   - #106 Integrar fluxo Menu → Briefing → Fase 1 `[E]`
   - #107 QA manual do fluxo educativo da Fase 1 `[G]`
   - #129 QA cruzado: scanner, identificação e controles `[E]`
-  - #199 HUD e sinais visuais didáticos do scanner e módulos `[E]`
+  - #199 HUD e sinais visuais didáticos do scanner e das armas `[E]`
   - #201 Refatorar menu inicial: controles, equipamentos e objetivo `[G]`
 - #57 Resultados e evidência de aprendizagem da Fase 1 `[E]` *(pai)*
   - #174 Resumo educativo personalizado por contadores em memória `[E]`
@@ -178,3 +178,4 @@ Uma Issue só deve ir para **Done** quando:
 - **26/10/2026** — Auditoria completa e execução do caminho crítico do MVP. #18, #26, #66, #67, #178 e #191 fecharam; o fluxo Resultados → Vitória → reinício, a HUD com objetivo e o texto da camada 2 do scanner foram implementados na branch `feat/mvp-fluxo-e-hud` e aguardam revisão. Propostas registradas em `docs/auditoria/execucao-correcoes-2026-10.md`: #58/#103–#107 e #179 para o M5, #184 para *not planned*, consolidação das 80 Issues do M5.
 - **03/11/2026** — Auditoria de escopo da Spec de ensino. #58 virou o épico “Ensino integrado da Fase 1” e voltou ao M4 com #103–#107, #129 e #150; a #57 voltou ao M4 com #174 e #176; nasceram #198 (controles por cursor), #199 (HUD e sinais) e #200 (progresso em memória); #179 segue no M5. O M4 fica com 16 abertas e 26 fechadas.
 - **03/11/2026 (noite)** — PR #203 mesclado em `master` (`56d47c0`): controles por cursor, módulos A/B, mira e contadores entram no jogo. M4 reconferido no GitHub: **14 abertas e 29 fechadas**; #105, #198 e #200 fecharam. #150 foi apagada e saiu da lista de abertas. Três decisões registradas em `decisoes.md`: o pulso 2 nomeia o grupo (D2), a identificação passa a ser condição de conclusão (D2.1) e o briefing fica no M4.
+- **03/11/2026 (noite, depois da auditoria)** — decisões de dificuldade, coloração e armas registradas em `decisoes.md`: camada 1 com coloração e nome, armas Ruptura/Dissolução com cor neutra, disco cinza até a camada 1 e anel depois, variação de sprites, espécies revistas. #104 e #199 foram reescritas com os novos títulos acima; os documentos vivos foram varridos na mesma data.
