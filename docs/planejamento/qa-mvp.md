@@ -6,6 +6,7 @@
 > **Atualização:** 28/10/2026 — passo 3 (clique em `INICIAR`) executado e corrigido; evidência na §8.
 > **Atualização:** 30/10/2026 — textos da interface e do feedback acentuados (#194) e evidências datadas do polimento de menus e HUD (#196); ver §9.
 > **Atualização:** 03/11/2026 — roteiro do fluxo educativo (briefing, dois pulsos, módulos A/B, controles por cursor e resumo por objetivo) incorporado como §10; **nenhum passo executado**.
+> **Atualização:** 04/11/2026 — QA da refatoração de interface executado em parte (E1–E5, E12–E14); briefing, scanner de duas camadas e resumo por contadores conferidos em captura; ver §10.
 > **Ambiente:** Windows 11, monitor 2560×1440, janela maximizada, executável a partir da raiz do repositório; Debug|x64 e Release|x64.
 
 ## 1. Como reproduzir
@@ -188,6 +189,37 @@ Evidência (Debug|x64, árvore com a correção, ainda sem commit). Na abertura 
 | E15 | Repetir o fluxo em Release | Mesmo comportamento, sem as teclas de QA | **[PEND]** |
 
 **Limite deste roteiro:** ele prova que o fluxo funciona, não que ensina. A aprendizagem é medida no pré/pós-teste P1–P4 do M5 (#134–#137), registrado em `qa-aprendizagem.md` (a criar).
+
+### Atualização 04/11/2026 — QA da refatoração de interface
+
+**Base:** branch `feat/ux-m4-scanner-briefing`, commit `d33063e`. Debug|x64 e Release|x64 compilados com **0 avisos e 0 erros**; o Debug foi jogado, o Release não. As capturas estão em `docs/auditoria/evidencias/` com o prefixo `2026-11-04-`.
+
+A tabela de 03/11 acima fica como histórico do roteiro; esta é a execução que vale para o build de 04/11.
+
+| # | Passo | Resultado observado | Evidência |
+|---|---|---|---|
+| E1 | INICIAR → briefing cartão 1 de 3 | [OK] | `2026-11-04-briefing-1.png` |
+| E2 | ENTER até o terceiro cartão | [OK] três cartões, sem corte em 640×360 | `2026-11-04-briefing-2.png`, `2026-11-04-briefing-3.png` |
+| E3 | ESC no briefing | [OK] entra na fase com 3 corações, 0/6, 0/9, 0 pontos | `2026-11-04-briefing-esc-fase.png` |
+| E4 | Escanear bactéria | [OK] no conteúdo: pulso 1 com coloração + nome, pulso 2 com grupo, estrutura e frase, contador 1/9. O clique direito em si ficou [PEND] (a leitura foi forçada pela rota `scan_at`) | `2026-11-04-scanner-camada1.png`, `2026-11-04-scanner-camada2.png` |
+| E5 | Escanear de novo | [OK] contador continuou 1/9 | `2026-11-04-scanner-camada2.png` |
+| E6 | Escanear célula | [PEND] não executado | — |
+| E7 | Arma errada: trava | [BLOCKED] a trava é RF-06, M5 | — |
+| E8 | Repetir o erro | [PEND] não executado | — |
+| E9 | 2 acertos certos | [PEND] não executado | — |
+| E10 | Atirar na célula | [PEND] não executado | — |
+| E11 | Trocar arma pela roda e por 1/2 | [PEND] não executado | — |
+| E12 | HUD mostra a arma ativa | [OK] `Ruptura` na linha 0 | `2026-11-04-menu.png`, `2026-11-04-fase-disco.png` |
+| E13 | Concluir a fase → resultados | [OK] no layout e nos contadores do resumo (leitura 1 Gram+, acertos 1, erros 0); a pontuação e o 6/6 vieram da tecla `F` de QA, então "6/6 por combate real" fica [PEND] | `2026-11-04-resultados.png` |
+| E14 | Reiniciar por ENTER | [OK] 3 corações, 0/6, 0/9, 0 pontos, tempo zerado | `2026-11-04-reinicio.png` |
+| E15 | Repetir em Release | [PEND] Release compilado 0 avisos/0 erros, não jogado | — |
+
+**Notas desta rodada:**
+
+- Limite de 100 MB não validado nesta rodada.
+- Oito casos de painel da §6.3 do plano: 3 verificados em captura (camada 1, camada 2, última leitura), 5 [PEND] — exigem hover de mouse físico.
+- E4 prova o conteúdo das duas camadas, não o clique direito: a leitura foi forçada pela rota `scan_at`, sem mouse físico sobre o agente. O caminho do clique continua [PEND].
+- E13 prova o layout e os contadores do terceiro painel com uma leitura só; o combate completo (6/6 sem tecla de QA) continua [PEND].
 
 ## 11. Auditoria de 03/11/2026 (noite) — dificuldade, desafio e aprendizagem
 
