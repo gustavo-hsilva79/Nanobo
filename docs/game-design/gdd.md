@@ -125,7 +125,7 @@ O ataque e o scanner **não têm tecla** no M4 (#198).
 >
 > **Ainda ausentes do build, no M5:** o pulso de 0,75 s com imobilização, a trava de 2 s com perseguição (RF-06) e a identificação como condição de conclusão (D2.1/D2.2). Ver `decisoes.md` e a Spec.
 
-O HUD ocupa o rodapé de 104 px: identificados x/9, ameaças restantes x/6, pontos, tempo, três corações, arma selecionada com estado (`[pronto]`/`[recarga]`) e a leitura do alvo atual. O objetivo da fase aparece na segunda linha do painel; os controles ficam no menu e na pausa, para não competir com a leitura do jogo. A marca do destino aparece na borda da faixa visível quando ele está fora da câmera (#19).
+O HUD ocupa o rodapé de 104 px: identificados x/total de agentes da fase, ameaças restantes x/total de ameaças da fase (9 e 6 na Fase 1; 6 e 3 na Fase 2), pontos, tempo, três corações, arma selecionada com estado (`[pronto]`/`[recarga]`) e a leitura do alvo atual. O objetivo da fase aparece na segunda linha do painel; os controles ficam no menu e na pausa, para não competir com a leitura do jogo. A marca do destino aparece na borda da faixa visível quando ele está fora da câmera (#19).
 
 ## Estados e fluxo
 

@@ -23,7 +23,7 @@ Inventário dos recursos necessários à execução atual, para orientar o carre
 
 ## Arte final criada
 
-Os quatro sprites de agente (três da Fase 1 e o vírus da Fase 2), o coração, os quatro ícones de interface e o mapa do mundo são carregados pelo jogo. A tira de quadros do Nanobô ainda não é; a arte antiga de fundo (`fundo_microscopico.png`) ficou como referência. Cada recurso tem a fonte `.aseprite` editável ao lado do `.png` exportado; o `.png` é o arquivo que o jogo deve carregar.
+Os quatro sprites de agente (três da Fase 1 e o vírus da Fase 2), o coração, os quatro ícones de interface e o mapa do mundo são carregados pelo jogo. A tira de quadros do Nanobô ainda não é; a arte antiga de fundo (`fundo_microscopico.png`) ficou como referência. Os recursos anteriores a 04/11 têm a fonte `.aseprite` editável ao lado do `.png`; os três novos (ícones neutros e vírus) foram gerados por script e ainda não têm `.aseprite` (pendência de arte). O `.png` é o arquivo que o jogo carrega.
 
 Todos os sprites usam a mesma paleta, o mesmo tamanho de pixel e a mesma direção de luz (cima-esquerda), para manter a coesão visual.
 
@@ -90,7 +90,7 @@ O fundo é escuro e de baixo contraste de propósito: os sprites precisam contin
 
 | Tipo | Recursos necessários | Local definido | Estado |
 |---|---|---|---|
-| Sprites e animações | Arte final dos agentes, **sprite neutro das bactérias** e spritesheet animado do Nanobô | `assets/sprites/` | Agentes carregados; spritesheet criado e não carregado; **sprite neutro pendente** (decisão de 03/11: as duas bactérias usam o mesmo sprite até a camada 1) |
+| Sprites e animações | Arte final dos agentes, **sprite neutro das bactérias** e spritesheet animado do Nanobô | `assets/sprites/` | Agentes carregados; spritesheet criado e não carregado; o disco cinza até a camada 1 é desenhado por primitiva, sem asset novo |
 | Cenários | Mapa do mundo da Fase 1, 1920×512 | `assets/backgrounds/` | Criado e carregado (`ca4845a`) |
 | Ícones de interface | Armas (Ruptura/Dissolução), scanner, vida e defesa | `assets/sprites/` | Scanner, vida, defesa e as duas armas prontos; o HUD desenha `icone_ruptura.png` e `icone_dissolucao.png` |
 | Fontes | Tipografia final da interface | `assets/fonts/` | [PENDÊNCIA] Fonte ainda não escolhida; a fonte embutida atual é provisória |

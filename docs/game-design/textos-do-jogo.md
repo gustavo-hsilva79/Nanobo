@@ -79,7 +79,7 @@ Desenhado **em toda partida** — `MENU → BRIEFING → GAME`, e também depois
 | CT-26 | scanner, 1 camada | `clique de novo para revelar o grupo` | 35 | #199, texto de 04/11 |
 | CT-27 | scanner, identificado | `Identificação concluída` | 23 | #199 |
 | CT-29 | scanner, cabeçalho | `célula` / `bactéria` | 6 / 7 | #199 |
-| CT-30 | resultados | `Fase 1 concluída` / `resumo da fase` | 16 / 14 | #202 |
+| CT-30 | resultados | `resumo da fase` | 14 | #202 |
 | CT-31 | resultados | `pontos` / `ameaças neutralizadas` | 6 / 21 | #202 |
 | CT-32 | resultados | `agentes identificados` / `bônus de identificação` | 21 / 22 | #202 |
 | CT-33 | resultados | `não obtido` | 10 | #202 |
@@ -87,7 +87,7 @@ Desenhado **em toda partida** — `MENU → BRIEFING → GAME`, e também depois
 | CT-35 | vitória | `Vitória` | 7 | #202 |
 | CT-36 | HUD, linha 0 | `Ruptura` / `Dissolução` | 7 / 10 | decisão 03/11 (noite) |
 | CT-37 | resultados, painel novo | `o que a partida mostrou` | 23 | #202, build de 04/11 |
-| CT-38 | resultados, painel novo | `bactérias identificadas: %d Gram+ · %d Gram-` (`bactérias identificadas: 1 Gram+ · 1 Gram-`) | 44 | #174/#202, build de 04/11 |
+| CT-38 | resultados, painel novo | `bactérias identificadas: %d Gram+ · %d Gram-` (`bactérias identificadas: 1 Gram+ · 1 Gram-`) | 42 | #174/#202, build de 04/11 |
 | CT-39 | resultados, painel novo | `acertos de arma: %d · erros: %d` (`acertos de arma: 1 · erros: 0`) | 29 | #174/#202, build de 04/11 |
 | CT-40 | resultados, painel novo | `ataques à célula: %d` (`ataques à célula: 0`) | 19 | #174/#202, build de 04/11 |
 | CT-41 | resultados, frase de revisão | `reveja a estrutura lida no scan` / `reveja: as duas armas ferem a célula` / `sem erro de arma nesta partida` | 31 / 36 / 30 | #174/#202, build de 04/11 |
