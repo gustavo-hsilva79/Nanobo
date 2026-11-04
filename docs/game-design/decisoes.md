@@ -31,7 +31,7 @@ O que está decidido e o código ainda não faz — ou já faz desde o build de 
 | Disco cinza até a camada 1; sprite + anel depois | RF-03; `decisoes.md` | **feito** — disco cinza, sprite e anel roxo/vermelho depois da leitura | M4 |
 | Variação de sprites por espécie | `decisoes.md` (03/11, noite) | um sprite por espécie | M5 |
 | Pulso de 0,75 s com imobilização e cancelamento | RF-02; Spec "Dificuldade" | scan instantâneo | M5 |
-| Trava de 2 s + perseguição após arma errada | RF-06 | inexistente | M5 |
+| Trava de 2 s + perseguição após arma errada | RF-06 | **feito** — trava de 2 s e perseguição a 60 px/s, em qualquer distância | M5 (antecipado no build de 04/11) |
 | Identificação condiciona a conclusão | D2.1 + D2.2 | conclui com 0 identificações | M5 |
 | Resumo por objetivo na tela de Resultados | RF-07 (#174) | **parcial** — contadores no painel; o texto por OA fica no M5 | M5 |
 | Fase 2 mínima (3 vírus + 3 células, 1 resistência, qualquer arma) | `decisoes.md` (04/11) | **feito** | M4 (#76) |
@@ -147,6 +147,15 @@ A proposta é que o jogador descubra informações, interprete dados do scanner 
 - Acerto com o laser certo tira **1** de resistência: bactéria tem **2**, célula tem **0**; ao zerar, o agente é neutralizado e sai da cena (#49).
 - Laser errado gasta o projétil e não altera a resistência; a célula saudável nunca é destruída por ataque.
 - A defesa ativa bloqueia o disparo; um projétil em voo não é cancelado.
+
+#### Trava e perseguição (04/11/2026)
+
+- Arma errada em uma bactéria **trava o disparo por 2 s** e liga o **alerta** só naquele agente: ele persegue o Nanobô a **60 px/s** até ser neutralizado.
+- A perseguição **não tem raio**: fugir não apaga o alerta. O raio de 150 px da proposta de 02/11 foi descartado.
+- O empurrão da defesa continua valendo durante a perseguição; o fim do impulso não sorteia direção nova para quem está alertado.
+- Trava e alerta zeram em `reset_match`/`start_phase` e no `reset_agent`.
+- `DEFENSE_COOLDOWN` continua **3 s**; a calibração com pessoas fica no playtest do M5.
+- O pulso de scan de 0,75 s (RF-02) e a identificação obrigatória (D2.1/D2.2) **continuam no M5**: esta rodada muda uma alavanca por vez.
 
 #### Célula própria (18/10/2026)
 
