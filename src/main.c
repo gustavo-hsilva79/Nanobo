@@ -1457,6 +1457,21 @@ void draw_pause()
 // fim de fase: resultados, vitoria e game over
 // ---------------------------------------------------------------
 
+const char* results_review_text()
+{
+    if (progress.wrong_decisions > 0)
+    {
+        return "reveja a estrutura lida no scan";
+    }
+
+    if (progress.cell_attacks > 0)
+    {
+        return "reveja: as duas armas ferem a célula";
+    }
+
+    return "sem erro de arma nesta partida";
+}
+
 void draw_results()
 {
     char line[128];
@@ -1468,24 +1483,24 @@ void draw_results()
     float right = (float)SCREEN_W - 152.0f;
     ALLEGRO_COLOR bonus_color;
 
-    al_draw_text(font, UI_TEXT, SCREEN_W / 2, 30, ALLEGRO_ALIGN_CENTRE, "Fase 1 concluída");
-    draw_rule((float)SCREEN_W / 2, 44.0f, 200.0f, UI_FRAME);
-    al_draw_text(font, UI_DIM, SCREEN_W / 2, 52, ALLEGRO_ALIGN_CENTRE, "resumo da fase");
+    al_draw_text(font, UI_TEXT, SCREEN_W / 2, 24, ALLEGRO_ALIGN_CENTRE, "Fase 1 concluída");
+    draw_rule((float)SCREEN_W / 2, 38.0f, 200.0f, UI_FRAME);
+    al_draw_text(font, UI_DIM, SCREEN_W / 2, 46, ALLEGRO_ALIGN_CENTRE, "resumo da fase");
 
     // resultado principal: pontos e ameacas, o que fecha a fase
-    draw_panel(140.0f, 66.0f, 360.0f, 52.0f, UI_INK, UI_FRAME);
+    draw_panel(140.0f, 58.0f, 360.0f, 44.0f, UI_INK, UI_FRAME);
 
     snprintf(value, sizeof(value), "%d", score);
-    draw_stat(left, 76.0f, right, "pontos", value, UI_AMBER);
+    draw_stat(left, 66.0f, right, "pontos", value, UI_AMBER);
 
     snprintf(value, sizeof(value), "%d/%d", neutralized, threats_total());
-    draw_stat(left, 94.0f, right, "ameaças neutralizadas", value, UI_TEXT);
+    draw_stat(left, 82.0f, right, "ameaças neutralizadas", value, UI_TEXT);
 
     // objetivos secundarios: identificacao e bonus
-    draw_panel(140.0f, 124.0f, 360.0f, 60.0f, UI_INK, UI_FRAME);
+    draw_panel(140.0f, 106.0f, 360.0f, 52.0f, UI_INK, UI_FRAME);
 
     snprintf(value, sizeof(value), "%d/%d", identified_count, NUM_AGENTES);
-    draw_stat(left, 134.0f, right, "agentes identificados", value, UI_TEXT);
+    draw_stat(left, 114.0f, right, "agentes identificados", value, UI_TEXT);
 
     if (identification_bonus_awarded())
     {
@@ -1498,19 +1513,37 @@ void draw_results()
         snprintf(value, sizeof(value), "não obtido");
     }
 
-    draw_stat(left, 152.0f, right, "bônus de identificação", value, bonus_color);
+    draw_stat(left, 130.0f, right, "bônus de identificação", value, bonus_color);
 
     snprintf(line, sizeof(line), "identificar os %d agentes vale +%d pontos",
         NUM_AGENTES, IDENTIFICATION_BONUS);
-    al_draw_text(font, UI_DIM, left, 170.0f, 0, line);
+    al_draw_text(font, UI_DIM, left, 146.0f, 0, line);
+
+    // resumo educativo: so contadores da partida atual (#174, #202)
+    draw_panel(140.0f, 162.0f, 360.0f, 84.0f, UI_INK, UI_FRAME);
+
+    al_draw_text(font, UI_AMBER, left, 170.0f, 0, "o que a partida mostrou");
+
+    snprintf(line, sizeof(line), "leitura: %d Gram+ · %d Gram-",
+        progress.scans_gram_positive, progress.scans_gram_negative);
+    al_draw_text(font, UI_TEXT, left, 186.0f, 0, line);
+
+    snprintf(line, sizeof(line), "acertos de arma: %d · erros: %d",
+        progress.correct_decisions, progress.wrong_decisions);
+    al_draw_text(font, UI_TEXT, left, 202.0f, 0, line);
+
+    snprintf(line, sizeof(line), "células feridas: %d", progress.cell_attacks);
+    al_draw_text(font, UI_TEXT, left, 218.0f, 0, line);
+
+    al_draw_text(font, UI_WARM, left, 234.0f, 0, results_review_text());
 
     draw_buttons(buttons, count);
 
-    al_draw_text(font, UI_DIM, SCREEN_W / 2, 236, ALLEGRO_ALIGN_CENTRE,
+    al_draw_text(font, UI_DIM, SCREEN_W / 2, 296, ALLEGRO_ALIGN_CENTRE,
         "enter também continua");
 
 #ifdef _DEBUG
-    // leitura temporaria dos contadores da #200: F1 liga e desliga (#202)
+    // contadores da #200 fora da interface normal: F1 liga e desliga (#202)
     if (show_debug)
     {
         snprintf(line, sizeof(line), "QA scans %d/%d decisoes %d/%d celulas %d",
