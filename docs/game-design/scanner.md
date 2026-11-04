@@ -116,7 +116,7 @@ O estado de identificação — identificações registradas, contador e camadas
 - Duração do pulso (0,75 s é valor inicial) e intervalo entre leituras.
 - Quantidade e conteúdo das camadas por agente/fase nas fases seguintes (a Fase 1 está decidida: 2 camadas, com os textos acima).
 - Pistas, decisão associada e consequências da Fase 2, que dependem de #83/#87/#88.
-- Apresentação das camadas decidida em 03/11 (amostra de cor no painel e anel no agente); resta o desenho final, na #199.
+- Apresentação das camadas (amostra de cor no painel e anel no agente): implementada em 04/11 (#199).
 - Espécies bacterianas finais representadas no jogo.
 
 ## 10. Implementação atual
