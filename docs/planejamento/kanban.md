@@ -8,7 +8,9 @@
 >
 > **Snapshot de 04/11/2026:** as issues **#103, #104, #106, #174, #199 e #202** estão implementadas no código da branch `feat/ux-m4-scanner-briefing` e aguardam revisão/fechamento. A contagem do GitHub não foi reconferida nesta data; as listas abaixo continuam sendo o retrato de 03/11, com essas seis anotadas. (histórico; ver o fechamento abaixo)
 >
-> **Fechamento de 04/11/2026:** as 13 issues abertas do M4 fecharam com a Fase 2 mínima, os ícones neutros e o recorde; #58, #107 e #129 fecharam depois do QA manual do dono. #71 e #175 seguem no M5.
+> **Fechamento de 04/11/2026:** as 13 issues abertas do M4 fecharam com a Fase 2 mínima, os ícones neutros e o recorde; #58, #107 e #129 fecharam depois do QA manual do dono. #71 e #175 fecharam em 05/11 (a #175 como duplicata da #71).
+>
+> **Auditoria de 05/11/2026:** 5 entregues fecharam (#33, #35, #71, #90 e #175) e 7 dívidas decididas entraram (#206–#212: D2.2, D2.1, bônus de run perfeito, pulso de 0,75 s, RF-07, variação de sprites e registro de textos). O M5 fica com **85 abertas e 228 SP brutos** (195 SP sem as oito agrupadoras); #185, #195 e #197 ganharam responsável. O retrato completo está no relatório de auditoria de 05/11/2026, em `Nanobo-auditoria/` (fora do repositório).
 
 ## Entregas acadêmicas (Plano de Ensino)
 
@@ -114,12 +116,15 @@ A tabela de marcos — data, tipo e objetivo de cada um — fica em **[milestone
 - #186 Resolução 640x360, escala inteira e câmera de mundo maior `[G]` *(fechada em 22/10; está no M5)*
 
 ### M5 — Polimento, Estabilização e Release Candidate
+
+> **Retrato de 05/11/2026:** 85 abertas. A lista abaixo é a de 18/10 com as correções desta data; as issues novas estão em #206–#212.
+
 - #30 Spritesheet e animação `[G]`
 - #31 Efeitos sonoros `[G]`
 - #32 Música `[G]`
-- #33 Suporte a múltiplas fases `[G]`
+- #33 Suporte a múltiplas fases `[G]` *(fechada em 05/11)*
 - #34 Hi-score persistente `[G]` *(agrupadora)*
-- #35 Liberação de recursos `[G]`
+- #35 Liberação de recursos `[G]` *(fechada em 05/11)*
 - #36 Validação de memória < 100 MB `[G]`
 - #37 Testes de regressão `[E]`
 - #38 Teste com pessoa externa `[G]`
@@ -128,13 +133,17 @@ A tabela de marcos — data, tipo e objetivo de cada um — fica em **[milestone
 - #41 Revisão do One Sheet/GDD `[E]`
 - #42 Build Release `[E]`
 - #55 Segunda fase jogável `[G]` *(agrupadora)*
-- #65 Identificação única na Fase 1 `[G]` *(fechada; o GitHub ainda a mantém no M6)*
+- #65 Identificação única na Fase 1 `[G]` *(fechada; está no M4)*
 - #77–#82 Formato, leitura, gravação e validação do hi-score `[E]`
-- #83–#91 Estados, multiplicação e integração da Fase 2 — `[G]` #83–#90 · `[E]` #91
+- #83–#91 Estados, multiplicação e integração da Fase 2 — `[G]` #83–#90 · `[E]` #91 *(#90 fechada em 05/11)*
 - #114–#119 Medição de memória `[G]`
 - #127–#143 QA, regressão, teste externo e correção de bugs — `[G]` #127 e #134–#138 · `[E]` #128–#133 e #139–#143
 - #144–#158 Documentação final e build Release — `[G]` #144–#146 · `[E]` #147–#158
 - #159–#170 Instalador, teste em máquina limpa e ensaio da apresentação — `[E]` #159–#164 · `[G]` #165–#170
+- #185 Sinalizar risco de contato `[G]`
+- #195 Voltar ao menu `[E]`
+- #197 Exibir Top 10 `[E]`
+- #206–#212 Dívidas decididas (D2.2, D2.1, bônus, pulso, RF-07, variantes, textos) — `[G]` #206–#209 e #211 · `[E]` #210 e #212
 
 ### M6 — Entrega Final e Apresentação
 - #43 Criar e testar instalador para Windows `[E]`

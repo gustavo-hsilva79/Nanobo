@@ -27,7 +27,7 @@ Guarde o estado atual com um commit simples antes de mexer:
 
 ```
 git add .
-git commit -m "separei os arquivos do codigo e arrumei a documentacao"
+git commit -m "refactor: separa os arquivos do código e atualiza a documentação"
 ```
 
 ## Passo 1 — entidades (feito)
@@ -142,9 +142,9 @@ Um commit simples, no fim, com tudo junto:
 
 ```
 git add .
-git commit -m "passei os agentes e as regras de gameplay pros arquivos novos"
+git commit -m "refactor: move os agentes e as regras para os módulos"
 ```
 
-Mensagem curta, em português, minúscula, sem `feat:`, sem número de issue e sem ponto no fim. Vale a pena conferir `git status` antes do `git add .` para não levar junto arquivo de build.
+Mensagem no formato **Conventional Commits**: `type(scope): descrição` — type em inglês (`feat`, `fix`, `docs`, `refactor`, `test`, `chore`...), descrição em português, minúscula, imperativa, sem número de issue e sem ponto no fim. Vale a pena conferir `git status` antes do `git add .` para não levar junto arquivo de build.
 
 Não faça `push` sem combinar com o Eric: ele pode ter trabalho local em cima do `main.c`, e aí o conflito vira problema dos dois.

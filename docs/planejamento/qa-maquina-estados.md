@@ -1,6 +1,8 @@
 # Nanobô — Validação da infraestrutura da máquina de estados (#102)
 
 > Atualização 22/10/2026: os números deste registro (6 agentes, janela 640x480) descrevem a build da época. O estado atual — 9 agentes, tela lógica 640x360 com escala inteira, mundo 1920x512 — está em docs/game-design/decisoes.md e docs/game-design/gdd.md.
+>
+> **Atualização 05/11/2026:** o build atual tem `BRIEFING` entre `MENU` e `GAME`, mouse no ataque e no scanner, 9 agentes na Fase 1 e duas fases (Fase 2 mínima). A tabela das §2–§3 é o retrato de 07/10 e não descreve o build atual; a versão viva está em `fluxo-estados.md` e `gdd.md`.
 
 > **Última revisão:** 07/10/2026.
 >

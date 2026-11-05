@@ -29,22 +29,22 @@ O que está decidido e o código ainda não faz — ou já faz desde o build de 
 | Armas com nome (Ruptura/Dissolução) | `decisoes.md`; `textos-do-jogo.md` | **feito** — menu, HUD e as 7 mensagens de feedback | M4 |
 | Armas com cor neutra; ícone e projétil por forma | RF-04 | **feito** — ícones neutros próprios (parede/anéis) e projétil por forma | M4 |
 | Disco cinza até a camada 1; sprite + anel depois | RF-03; `decisoes.md` | **feito** — disco cinza, sprite e anel roxo/vermelho depois da leitura | M4 |
-| Variação de sprites por espécie | `decisoes.md` (03/11, noite) | um sprite por espécie | M5 |
-| Pulso de 0,75 s com imobilização e cancelamento | RF-02; Spec "Dificuldade" | scan instantâneo | M5 |
+| Variação de sprites por espécie | `decisoes.md` (03/11, noite) | um sprite por espécie — #211 | M5 |
+| Pulso de 0,75 s com imobilização e cancelamento | RF-02; Spec "Dificuldade" | scan instantâneo — #209 | M5 |
 | Trava de 2 s + perseguição após arma errada | RF-06 | **feito** — trava de 2 s e perseguição a 60 px/s, em qualquer distância | M5 (antecipado no build de 04/11) |
-| Identificação condiciona a conclusão | D2.1 + D2.2 | conclui com 0 identificações | M5 |
-| Resumo por objetivo na tela de Resultados | RF-07 (#174) | **parcial** — contadores no painel; o texto por OA fica no M5 | M5 |
+| Identificação condiciona a conclusão | D2.1 + D2.2 | ausente — #206 (trava) e #207 (9/9; 6/6 na Fase 2) no M5 | M5 |
+| Resumo por objetivo na tela de Resultados | RF-07 (#174) | **parcial** — contadores no painel; o texto por OA fica no M5 (#210) | M5 |
 | Fase 2 mínima (3 vírus + 3 células, 1 resistência, qualquer arma) | `decisoes.md` (04/11) | **feito** | M4 (#76) |
 | Ciclo lisogênico/lítico e multiplicação limitada | #83–#86 | inexistente | M5 |
-| Recorde persistente mínimo (melhor pontuação) | `decisoes.md` (04/11) | **feito** — menu e Vitória | M4 (Top 10 e nome no M5) |
-| Bônus +15 por run perfeito (0 erro de arma + 0 tiro na célula) | `decisoes.md` (03/11, noite) | paga 9/9 | M5 |
+| Recorde persistente mínimo (melhor pontuação) | `decisoes.md` (04/11) | **feito** — menu e Vitória; decisão de 05/11: só Vitória grava, o build de 04/11 ainda grava no Game Over (#34/#82) | M4 (Top 10 e nome no M5) |
+| Bônus +15 por run perfeito (0 erro de arma + 0 tiro na célula) | `decisoes.md` (03/11, noite) | paga 9/9 — #208 troca para run perfeito | M5 |
 | SFX e animação | requisito final | inexistentes | M5 |
 
 **Oito linhas de M4 fecharam no build de 04/11:** camada 1, camada 2, briefing, nomes das armas, disco cinza/anel, ícones neutros, Fase 2 mínima e recorde. Uma ficou parcial: o resumo mostra os contadores, não o texto por objetivo.
 
 **RF-07 completo segue pendente.** O painel `o que a partida mostrou` traz `bactérias identificadas: %d Gram+ · %d Gram-`, `acertos de arma: %d · erros: %d`, `ataques à célula: %d` e uma frase de revisão — é leitura por contador, não o resumo por objetivo (um texto por OA). A tela de Resultados ainda não diz o que cada objetivo mostrou na partida. Fica para o M5 por decisão de 04/11.
 
-**O bônus é por fase:** +15 com 9/9 na Fase 1 e 6/6 na Fase 2. O run perfeito (0 erro de arma + 0 tiro na célula) só entra com D2.1/D2.2 no M5.
+**O bônus é por fase:** +15 com 9/9 na Fase 1 e 6/6 na Fase 2. O run perfeito (0 erro de arma + 0 tiro na célula) entra com D2.1/D2.2 no M5 (#208).
 
 ### Estrutura do MVP
 
@@ -293,13 +293,20 @@ O M4 continua centrado na Fase 1; a **Fase 2 mínima** existe para fechar o flux
 - **RF-07 completo (texto por objetivo) fica no M5:** o M4 entrega o resumo por contadores (#174, #202); a tela de 640×360 não comporta quatro blocos por OA sem refazer o layout.
 - **Ícones das armas:** `icone_ruptura.png` (parede de tijolos) e `icone_dissolucao.png` (anéis concêntricos), 16×16, cor neutra, forma própria; o projétil continua quadrado/círculo. Os ícones roxo/vermelho saem do `load_resources()` e ficam no disco como histórico.
 
+### D2.2 e elegibilidade do recorde (05/11/2026)
+
+- **D2.2 — opção (a), decidida em 05/11/2026.** Quem atira antes de escanear não reduz a resistência do agente: o projétil acerta, gasta o disparo e a tela avisa, mas o agente continua ativo e escaneável. Nenhum agente pode ser neutralizado sem identificação. Implementação em #206.
+- **D2.1 segue decidida (03/11).** A fase só conclui com todos os agentes identificados: 9/9 na Fase 1 e 6/6 na Fase 2. Entra junto com D2.2 (#207).
+- **Recorde só na Vitória.** A melhor pontuação é a de uma execução vencida. Game Over não grava recorde; abandonar pelo menu também não. `finish_run()` deixa de ser chamado no Game Over (`src/main.c:2108`) — pendente no build de 04/11, que ainda grava. Vale para o recorde mínimo e para o Top 10 (#34, #82).
+- **Sem corte de escopo em 05/11.** A Fase 2 completa (#55/#83–#88/#91) e o Top 10 (#34/#77–#82/#197) continuam no M5. O marco fica com 85 issues e 228 SP brutos; 195 SP sem as oito agrupadoras.
+
 ## Pendências
 
-- Duração do pulso do scanner (0,75 s é valor inicial) e configuração de camadas por agente/fase no MVP.
+- Duração do pulso do scanner (0,75 s é valor inicial; implementação #209) e configuração de camadas por agente/fase no MVP.
 - Conteúdo biológico detalhado e validado de cada agente.
 - Relação final entre dados do scanner e escolha da arma — o pulso 2 nomeia o grupo; validar no playtest se isso deixa a decisão trivial.
-- **D2.2 — destino de quem atira antes de escanear (bloqueia D2.1; alvo: M5).** `pick_target()` ignora agente inativo, então neutralizar sem identificar remove aquele agente do scanner para sempre; com a identificação obrigatória, isso **travaria a partida** no contador `x/9`. Opções: **(a)** o projétil acerta mas não reduz a resistência até o agente ser identificado, com aviso na tela *(recomendada)*; **(b)** o scanner passa a aceitar agente neutralizado, como uma lâmina corada depois do fato; **(c)** neutralizar sem scan encerra a partida, o que transforma erro de leitura em fim de jogo.
+- **D2.2 — resolvida em 05/11/2026: opção (a).** O projétil acerta mas não reduz a resistência até o agente ser identificado; a tela avisa e o agente continua escaneável (#206). As opções (b) e (c) foram descartadas.
 - Balanceamento de vida, dano, ataque, defesa, cooldowns e resistência (a regra de mitigação da defesa está fechada desde 16/10/2026; falta calibrar os números).
 - Regras de progressão entre fases.
-- Variação de sprites das bactérias (regra decidida em 03/11; quantidade no M5).
+- Variação de sprites das bactérias (regra decidida em 03/11; quantidade no M5, #211).
 - Regras detalhadas da multiplicação limitada da Fase 2.

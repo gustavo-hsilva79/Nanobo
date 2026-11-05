@@ -58,7 +58,7 @@ O scanner é uma mecânica central de investigação.
 
 A primeira fase é o núcleo do MVP. Ela trabalha a diferenciação entre bactérias e células saudáveis, incluindo a distinção entre bactérias Gram-positivas e Gram-negativas.
 
-Os seis binômios do cenário são **identificação do agente**, não alegação de patogenicidade: *Staphylococcus aureus*, *Streptococcus pneumoniae*, *Streptococcus pyogenes* (Gram+), *Escherichia coli*, *Salmonella enterica* e *Pseudomonas aeruginosa* (Gram−). Cada espécie pode ter mais de um sprite, sorteado por agente, e a variante só aparece depois da camada 1 (ver `decisoes.md`).
+Os seis binômios do cenário são **identificação do agente**, não alegação de patogenicidade: *Staphylococcus aureus*, *Streptococcus pneumoniae*, *Streptococcus pyogenes* (Gram+), *Escherichia coli*, *Salmonella enterica* e *Pseudomonas aeruginosa* (Gram−). Cada espécie poderá ter mais de um sprite no M5 (#211), sorteado por agente; a variante só aparece depois da camada 1 (ver `decisoes.md`).
 
 O jogador deve usar as informações do scanner para interpretar o agente encontrado e escolher a ação correspondente.
 
@@ -102,9 +102,9 @@ A pontuação atual da Fase 1:
 | Identificação completa | **+15** | uma vez, na conclusão, se `identificados = 9/9` (#67) |
 | Placar máximo da fase | **75** | 6 ameaças + bônus |
 
-Em 03/11 (noite) a dupla decidiu que, quando a identificação virar obrigatória (M5, D2.1), o **+15 passa a exigir run perfeito**: nenhum erro de arma e nenhum tiro na célula. A regra do build até lá continua 9/9.
+Em 03/11 (noite) a dupla decidiu que, quando a identificação virar obrigatória (M5, D2.1), o **+15 passa a exigir run perfeito**: nenhum erro de arma e nenhum tiro na célula (#208). A regra do build até lá continua 9/9.
 
-`9/9` **era** condição apenas de bônus: a fase concluía com menos identificações (#26, #67). Em 03/11/2026 a dupla decidiu o contrário (D2.1, `decisoes.md`): a identificação dos agentes passa a ser **condição de conclusão**. A regra em vigor no código ainda é a de #26/#67 — a mudança depende de resolver o destino de quem atira antes de escanear (D2.2). **Entrega decidida em 03/11 (noite):** o M4 mantém #26; D2.1 e D2.2 entram no M5. O hi-score deve ser persistente na versão final.
+`9/9` **era** condição apenas de bônus: a fase concluía com menos identificações (#26, #67). Em 03/11/2026 a dupla decidiu o contrário (D2.1, `decisoes.md`): a identificação dos agentes passa a ser **condição de conclusão**. A regra em vigor no código ainda é a de #26/#67. D2.2 foi resolvida em 05/11/2026 (opção a: o projétil não reduz resistência até a identificação) e D2.1 entra com ela (#206/#207). **Entrega decidida em 03/11 (noite):** o M4 mantém #26; D2.1 e D2.2 entram no M5. O hi-score deve ser persistente na versão final.
 
 ## Interface e controles
 
@@ -123,7 +123,7 @@ O ataque e o scanner **não têm tecla** no M4 (#198).
 
 > **Estado em 04/11/2026:** os controles por cursor (#198), as armas **Ruptura**/**Dissolução** (#105), o conteúdo novo do scanner (#104), o briefing (#103/#106) e o resumo por contadores (#174/#202) **estão no build** e são o que o jogo faz. As duas bactérias usam **sprite neutro** até a camada 1 e ganham **anel colorido permanente** depois; "rosa" saiu da tela e fica como sinônimo nos documentos.
 >
-> **Ainda ausentes do build, no M5:** o pulso de 0,75 s com imobilização e a identificação como condição de conclusão (D2.1/D2.2). A trava de 2 s com perseguição (RF-06) entrou no build de 04/11. Ver `decisoes.md` e a Spec.
+> **Ainda ausentes do build, no M5:** o pulso de 0,75 s com imobilização (#209) e a identificação como condição de conclusão (D2.1/D2.2, #206/#207). A trava de 2 s com perseguição (RF-06) entrou no build de 04/11. Ver `decisoes.md` e a Spec.
 
 O HUD ocupa o rodapé de 104 px: identificados x/total de agentes da fase, ameaças restantes x/total de ameaças da fase (9 e 6 na Fase 1; 6 e 3 na Fase 2), pontos, tempo, três corações, arma selecionada com estado (`[pronto]`/`[recarga]`/`[travado]`) e a leitura do alvo atual. O objetivo da fase aparece na segunda linha do painel; os controles ficam no menu e na pausa, para não competir com a leitura do jogo. A marca do destino aparece na borda da faixa visível quando ele está fora da câmera (#19).
 
@@ -135,7 +135,7 @@ O fluxo está implementado em `src/core/game.c` com sete estados — `MENU`, `BR
 
 ### Resultados e vitória
 
-A tela de Resultados apresenta os números reais da partida: pontos, ameaças neutralizadas/total, agentes identificados/total e se o bônus de +15 foi pago. O terceiro painel, `o que a partida mostrou`, traz `bactérias identificadas: %d Gram+ · %d Gram-`, `acertos de arma: %d · erros: %d`, `ataques à célula: %d` e uma frase de revisão — tudo a partir de contadores em memória, sem CSV nem telemetria. É leitura por contador, não o resumo por objetivo (#174/RF-07): o texto por OA continua pendente. A tela de Vitória mostra a pontuação final e inicia nova partida. Com duas fases, CONTINUAR nos Resultados carrega a Fase 2 e preserva a pontuação; na última fase leva a VICTORY, que mostra o total da run, o tempo total e o recorde. O recorde é a melhor pontuação da run, gravada em nanobo_hiscore.txt.
+A tela de Resultados apresenta os números reais da partida: pontos, ameaças neutralizadas/total, agentes identificados/total e se o bônus de +15 foi pago. O terceiro painel, `o que a partida mostrou`, traz `bactérias identificadas: %d Gram+ · %d Gram-`, `acertos de arma: %d · erros: %d`, `ataques à célula: %d` e uma frase de revisão — tudo a partir de contadores em memória, sem CSV nem telemetria. É leitura por contador, não o resumo por objetivo (#174/RF-07): o texto por OA continua pendente. A tela de Vitória mostra a pontuação final e inicia nova partida. Com duas fases, CONTINUAR nos Resultados carrega a Fase 2 e preserva a pontuação; na última fase leva a VICTORY, que mostra o total da run, o tempo total e o recorde. O recorde é a melhor pontuação da run, gravada em nanobo_hiscore.txt; a decisão de 05/11 é que só a Vitória grave, e o build de 04/11 ainda grava no Game Over (#34/#82).
 
 ## Áudio e arte
 
@@ -150,7 +150,7 @@ Os assets são organizados em `assets/`, separados por tipo.
 
 ## Escopo de desenvolvimento
 
-O MVP permanece centrado em uma fase para garantir uma partida completa e jogável antes da expansão do conteúdo. A segunda fase fica como objetivo pós-MVP e integra a entrega final planejada.
+O MVP foi centrado na Fase 1 para garantir uma partida completa e jogável antes da expansão do conteúdo. A Fase 2 mínima entrou em 04/11 para fechar o fluxo entre fases; a completa é M5.
 
 Uma terceira fase somente deve ser considerada se houver tempo e estabilidade suficientes.
 

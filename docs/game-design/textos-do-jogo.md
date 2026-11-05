@@ -2,7 +2,7 @@
 
 > **Criado em:** 03/11/2026. Fontes das regras: `docs/game-design/ensino-e-aprendizagem.md` (§"Feedback por situação" e §"Regras para qualquer texto"), `docs/game-design/decisoes.md` (armas, coloração e camada 1, 03/11 noite) e as issues #105, #198 e #200.
 > Todo texto novo entra aqui com ID, tela, limite de caracteres e de onde vem a regra. Nenhum texto usa PBP, transpeptidase, LPS ou ligações cruzadas.
-> **Atualizado em:** 04/11/2026 — todos os textos que o build de 04/11 desenha estão registrados aqui: briefing inteiro, marcador de origem da leitura, frases de revisão da camada 2 e o resumo por contadores. A Fase 2 mínima e o recorde entraram na mesma data (RT-09–RT-11, CT-42–CT-47). A tabela é espelho do código; o bloco **Drift conhecido** saiu porque não há mais divergência entre tabela e tela.
+> **Atualizado em:** 05/11/2026 — varredura completa contra `src/main.c` e `src/gameplay/gameplay.c`: 16 strings que faltavam entraram (CT-48–CT-63) e a tabela voltou a espelhar o código. Texto novo entra aqui no mesmo commit; a conferência está no fim da seção 2.
 
 ## 1. Feedback da decisão (HUD da fase, `src/gameplay/gameplay.c`)
 
@@ -61,7 +61,7 @@ Desenhado **em toda partida** — `MENU → BRIEFING → GAME`, e também depois
 | CT-08b | menu, grupo 3 | `2: Dissolução - age na camada externa` | 36 | decisão 03/11 (noite) |
 | CT-09 | menu, painel do objetivo | `Objetivo da missão` | 18 | #201 |
 | CT-10 | menu, painel do objetivo | `neutralizar as %d bactérias e chegar ao destino` | 47 | #201 |
-| CT-11 | menu, painel do objetivo | `identificar os %d agentes vale +%d pontos` | 41 | #201 |
+| CT-11 | menu, painel do objetivo; resultados | `identificar os %d agentes vale +%d pontos` | 41 | #201 |
 | CT-12 | menu, rodapé | `enter ou clique para começar` | 28 | #201 |
 | CT-13 | menu, rodapé | `F11 tela cheia` | 14 | #201 |
 | CT-14 | HUD, linha 0 | `ameaças %d/%d` | 11 | #199 |
@@ -97,6 +97,24 @@ Desenhado **em toda partida** — `MENU → BRIEFING → GAME`, e também depois
 | CT-45 | resultados, título | `Fase %d concluída` | 17 | Fase 2 mínima (04/11) |
 | CT-46 | vitória / game over | `tempo total` / `recorde` | 11 / 7 | Recorde mínimo (04/11) |
 | CT-47 | menu, rodapé | `recorde %d` | 10 | Recorde mínimo (04/11) |
+| CT-48 | menu, subtítulo | `DEFENDA O ORGANISMO` | 19 | varredura de 05/11 |
+| CT-49 | menu, rodapé do painel de controles | `interprete as informações do scanner antes de atacar` | 52 | varredura de 05/11 |
+| CT-50 | HUD, linha 1, Fase 1 | `objetivo: neutralizar as bactérias e chegar ao destino` | 54 | varredura de 05/11 |
+| CT-51 | HUD, linha 1, sem ameaças | `objetivo: vá ao destino` | 23 | varredura de 05/11 |
+| CT-52 | mundo / marca de destino | `destino` | 7 | varredura de 05/11 |
+| CT-53 | pausa, título | `PAUSE` | 5 | varredura de 05/11 |
+| CT-54 | pausa, rodapé | `esc para voltar` | 15 | varredura de 05/11 |
+| CT-55 | menu, botão | `INICIAR` | 7 | varredura de 05/11 |
+| CT-56 | pausa/resultados, botão | `CONTINUAR` | 9 | varredura de 05/11 |
+| CT-57 | vitória/game over, botão | `NOVA PARTIDA` | 12 | varredura de 05/11 |
+| CT-58 | vitória, subtítulo | `você defendeu o organismo` | 25 | varredura de 05/11 |
+| CT-59 | vitória, linha de estatística | `pontuação final` | 15 | varredura de 05/11 |
+| CT-60 | vitória, rodapé | `enter também começa de novo` | 27 | varredura de 05/11 |
+| CT-61 | game over, título | `GAME OVER` | 9 | varredura de 05/11 |
+| CT-62 | game over, subtítulo | `suas 3 vidas acabaram` | 21 | varredura de 05/11 |
+| CT-63 | game over, rodapé | `enter também reinicia` | 21 | varredura de 05/11 |
+
+**Conferência de 05/11/2026.** A varredura cobriu os literais passados a `al_draw_text` em `src/main.c` e as mensagens de `set_feedback` em `src/gameplay/gameplay.c`. Os 16 que faltavam estão em CT-48–CT-63. O título `NANOBÔ` é o caso especial da §2.1 (bitmap montado por `make_text_bitmap`) e as linhas de QA sob `#ifdef _DEBUG` não entram na tabela.
 
 ### Textos do scanner (`src/main.c` + `src/gameplay/gameplay.c`)
 

@@ -70,3 +70,7 @@ O `load_resources()` atual carrega, nesta ordem: `nanobo.png`, `bacteria_gram_po
 - A falha de qualquer um dos cinco bitmaps imprime `couldn't load <recurso>` e encerra com código 1, como descrito na seção 3.
 - Fundo, spritesheet, ícones de laser/scanner, áudio e fonte de arquivo continuam fora do carregador.
 - A tabela da seção 1 é o retrato de 07/10; o inventário corrente é `assets/catalogo-recursos.md`.
+
+## 9. Atualização de 05/11/2026
+
+O `load_resources()` atual carrega **11 PNGs**: `nanobo.png`, `bacteria_gram_positiva.png`, `bacteria_gram_negativa.png`, `celula_propria.png`, `virus_fase2.png`, `icone_coracao.png`, `icone_scanner.png`, `icone_ruptura.png`, `icone_dissolucao.png`, `icone_defesa.png` e `backgrounds/mapa_fase1.png`, além da fonte embutida e do bitmap do título. O `free_resources()` libera os 11, o título e a fonte. Spritesheet, áudio e fonte de arquivo continuam fora do carregador. As tabelas das §1 e §8 são o retrato de 07/10 e 17/10, preservado como registro; o inventário corrente é `assets/catalogo-recursos.md`.
