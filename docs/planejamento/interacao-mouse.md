@@ -6,6 +6,8 @@
 
 A #23 pedia que a interação de mouse fosse escolhida pela dupla antes da implementação, preferencialmente em uma ação de interface **já prevista**, para não criar mecânica artificial só para cumprir requisito.
 
+> **Atualização 05/11/2026:** o fluxo passou a ser `MENU → BRIEFING → GAME` (#106) e o mouse ataca e escaneia no gameplay (§8). As coordenadas da §1 e da §7 são registros de 07/10 e 28/10; a tabela atual está na §9.
+
 ## 1. Interação definida
 
 **Clique com o botão esquerdo sobre o botão `INICIAR` na tela de `MENU` inicia a partida** (`MENU → GAME`).
@@ -98,3 +100,19 @@ Debug x64, janela maximizada (cliente 1920×1080, escala inteira 3), capturas do
 | 6. `ESC` e `ESC` | pausa com o cursor de volta; volta ao jogo com a mira | **[PEND]** depende de teclado, que não chega por injeção nesta sessão |
 
 **Limite deste registro:** teclado sintético (`SendInput` e `PostMessage`) não chegou à janela do Allegro aqui; tudo que depende de tecla — `1`/`2`, `ESC`, o pulo do Game Over para a fase e a tecla `F` de QA — ficou para o QA manual da #107. O menu e a HUD que a captura mostra são evidência de desenho, não de entrada.
+
+## 9. Coordenadas atuais dos botões (05/11/2026)
+
+Lidas de `screen_buttons()` em `src/main.c`; a área clicável é a mesma que a desenhada.
+
+| Tela | Botão | Retângulo (x1..x2 × y1..y2) |
+|---|---|---|
+| `MENU` | `INICIAR` | 240..400 × 266..294 |
+| `BRIEFING` | `SEGUIR` | 180..320 × 198..226 |
+| `BRIEFING` | `PULAR` | 330..470 × 198..226 |
+| `PAUSE` | `CONTINUAR` | 240..400 × 170..198 |
+| `RESULTS` | `CONTINUAR` | 240..400 × 256..284 |
+| `VICTORY` | `NOVA PARTIDA` | 240..400 × 212..240 |
+| `GAME OVER` | `NOVA PARTIDA` | 240..400 × 204..232 |
+
+A `PAUSE` hoje tem só `CONTINUAR`; a volta ao menu é a #195.

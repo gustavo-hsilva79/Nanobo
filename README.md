@@ -26,7 +26,7 @@ O jogador deve interpretar as informações obtidas pelo scanner para decidir co
 >
 > **M4 — MVP (26/10/2026):** o fluxo da partida está fechado — cada fase conclui em `RESULTS` sem tecla de teste, a tela de Resultados mostra pontos, ameaças neutralizadas, agentes identificados e o bônus, `RESULTS` leva à próxima fase quando ela existe e a `VICTORY` na última, e `VICTORY`/`GAME OVER` reiniciam com reset completo. A HUD ganhou objetivo, `restam x/6`, estado do raio e marca do destino; o menu ganhou a instrução mínima (objetivo, controles e a regra Gram/laser); a camada 2 do scanner deixou de entregar a classificação pronta; perder o foco pausa a partida. Evidências em [QA do MVP](docs/planejamento/qa-mvp.md).
 >
-> **Build de 04/11:** a camada 1 do scanner mostra a coloração (**roxo** ou **vermelho**) e o **nome do agente**; a camada 2 mostra o grupo, a estrutura e a frase de revisão; as armas se chamam **Ruptura** e **Dissolução**, com projétil neutro distinguido pela forma; as bactérias usam **sprite neutro** até a camada 1 e ganham **anel colorido permanente** depois. O **briefing de três cartões** abre toda partida — inclusive depois de Vitória e Game Over — e se pula com `ESC`. Os resultados ganharam o painel `o que a partida mostrou`. O pulso de 0,75 s, a trava de 2 s e a perseguição continuam ausentes do build (`docs/game-design/decisoes.md`). Continua nos Resultados carrega a Fase 2 e preserva a pontuação; a última fase leva à Vitória, que mostra o total da run, o tempo total e o recorde. O recorde é a melhor pontuação da run, gravada em nanobo_hiscore.txt.
+> **Build de 04/11:** a camada 1 do scanner mostra a coloração (**roxo** ou **vermelho**) e o **nome do agente**; a camada 2 mostra o grupo, a estrutura e a frase de revisão; as armas se chamam **Ruptura** e **Dissolução**, com projétil neutro distinguido pela forma; as bactérias usam **sprite neutro** até a camada 1 e ganham **anel colorido permanente** depois. O **briefing de três cartões** abre toda partida — inclusive depois de Vitória e Game Over — e se pula com `ESC`. Os resultados ganharam o painel `o que a partida mostrou`. O pulso de 0,75 s continua ausente do build; a trava de 2 s e a perseguição (RF-06) entraram em 04/11 (`docs/game-design/decisoes.md`). Continua nos Resultados carrega a Fase 2 e preserva a pontuação; a última fase leva à Vitória, que mostra o total da run, o tempo total e o recorde. O recorde é a melhor pontuação da run, gravada em nanobo_hiscore.txt; a decisão de 05/11 é que só a Vitória grave, mas o build de 04/11 ainda grava no Game Over (#34/#82).
 
 ## Núcleo do jogo
 
@@ -35,8 +35,8 @@ O jogador deve interpretar as informações obtidas pelo scanner para decidir co
 - Identificação única dos agentes encontrados.
 - Interpretação das informações do scanner para orientar a decisão do jogador.
 - Combate implementado: arma por grupo (Ruptura/Dissolução), projétil, resistência, defesa e vida.
-- Pontuação (+10 por ameaça) e bônus de identificação (+15 com 9/9) implementados; hi-score persistente *(planejado)*.
-- Progressão por fases *(planejada)*.
+- Pontuação (+10 por ameaça) e bônus de identificação (+15 com 9/9) implementados; recorde persistente na forma mínima (melhor pontuação em `nanobo_hiscore.txt`); Top 10 com nome é M5.
+- Progressão por fases: Fase 1 e Fase 2 mínima implementadas.
 
 ### Conteúdo planejado
 
@@ -46,7 +46,7 @@ A primeira fase trabalha a diferenciação entre bactérias e células saudávei
 
 **Fase 2 — vírus**
 
-A segunda fase é planejada para a entrega final, após o MVP. O conteúdo envolve os ciclos lítico e lisogênico e uma mecânica de multiplicação limitada. As regras biológicas e de balanceamento que ainda não foram validadas permanecem como pendências.
+A Fase 2 mínima (3 vírus e 3 células) entrou no build em 04/11 para fechar o fluxo entre fases. A Fase 2 completa — ciclos lítico e lisogênico e multiplicação limitada — é objetivo do M5 (#55/#83–#91). As regras biológicas e de balanceamento ainda não validadas permanecem como pendências.
 
 ## Controles atuais
 
@@ -81,7 +81,7 @@ Os requisitos finais registrados no planejamento do projeto são:
 - Uso máximo de 100 MB de RAM.
 - Instalador para Windows.
 
-A entrega final deve cumprir esses requisitos. O MVP permanece deliberadamente centrado em uma fase para validar primeiro o núcleo jogável.
+A entrega final deve cumprir esses requisitos. O MVP foi centrado na Fase 1 para validar o núcleo jogável; a Fase 2 mínima entrou em 04/11 para fechar o fluxo entre fases, e a completa é M5.
 
 ## Tecnologias
 
