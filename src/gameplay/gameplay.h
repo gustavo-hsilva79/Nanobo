@@ -175,7 +175,7 @@ int agents_total(void);
 bool has_next_phase(void);
 void start_next_phase(void);
 
-// fim da run: grava o recorde quando a pontuacao supera o melhor (#M4)
+// fim da run: grava o recorde so na vitoria, quando a pontuacao supera o melhor (#M4)
 void finish_run(void);
 int hi_score(void);
 void load_hi_score(void);

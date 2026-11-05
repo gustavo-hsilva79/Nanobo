@@ -2105,7 +2105,7 @@ int main()
 
                     if (player.health == 0)
                     {
-                        finish_run();
+                        // game over nao grava recorde: so a vitoria entra (#34/#82)
                         game_set_scene(GAME_SCENE_GAME_OVER);
                     }
                     // fase cumprida entra em Resultados sozinha (#70)
