@@ -1133,7 +1133,7 @@ void load_hi_score()
     best_score = value;
 }
 
-// grava a melhor pontuacao quando a run termina; sem arquivo, so memoria
+// grava a melhor pontuacao quando a run termina em vitoria; sem arquivo, so memoria
 void finish_run()
 {
     FILE* file = NULL;
