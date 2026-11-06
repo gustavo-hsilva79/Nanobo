@@ -111,8 +111,7 @@ Nanobo/
 │   ├── core/               # Máquina de estados das cenas
 │   ├── entities/           # Entidades do jogo
 │   ├── gameplay/           # Regras e mecânicas de gameplay
-│   ├── scenes/             # Cenas e estados de jogo
-│   └── systems/            # Sistemas auxiliares (ainda só no papel)
+│   └── scenes/             # Cenas e estados de jogo
 │
 ├── assets/                 # Recursos utilizados pelo jogo
 │   ├── sprites/
@@ -132,7 +131,7 @@ Nanobo/
 └── Nanobo.vcxproj          # Projeto do Visual Studio
 ```
 
-> **Atenção:** entram na compilação os `<ClCompile>` de `Nanobo.vcxproj`: `src/main.c`, `src/core/game.c`, `src/entities/entities.c` e `src/gameplay/gameplay.c`. O `src/scenes/scenes.h` também é compilado, porque `src/core/game.h` o inclui. O `src/systems/systems.h` é um cabeçalho vazio e continua fora do build: código escrito ali não compila.
+> **Atenção:** entram na compilação os `<ClCompile>` de `Nanobo.vcxproj`: `src/main.c`, `src/core/game.c`, `src/entities/entities.c` e `src/gameplay/gameplay.c`. O `src/scenes/scenes.h` também é compilado, porque `src/core/game.h` o inclui.
 
 ## Planejamento acadêmico
 
