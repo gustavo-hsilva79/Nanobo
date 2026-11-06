@@ -300,6 +300,14 @@ O M4 continua centrado na Fase 1; a **Fase 2 mínima** existe para fechar o flux
 - **Recorde só na Vitória.** A melhor pontuação é a de uma execução vencida. Game Over não grava recorde; abandonar pelo menu também não. `finish_run()` deixa de ser chamado no Game Over (`src/main.c:2108`) — pendente no build de 04/11, que ainda grava. Vale para o recorde mínimo e para o Top 10 (#34, #82).
 - **Sem corte de escopo em 05/11.** A Fase 2 completa (#55/#83–#88/#91) e o Top 10 (#34/#77–#82/#197) continuam no M5. O marco fica com 85 issues e 228 SP brutos; 195 SP sem as oito agrupadoras.
 
+### Refatoração pós-entrega (06/11/2026)
+
+- **Estrutura-alvo enxuta.** As cinco casas continuam: `main.c` (loop, recursos, entrada e composição das telas), `entities/`, `gameplay/`, `core/` e `scenes/`. A Wave 2 acrescenta só `src/ui/` (menus, HUD, painel do scanner, resultados, botões e textos) e `src/render/` (mapa, agentes, projéteis, destino e mira). `app/`, `input/`, `resources/` e `persistence/` não entram.
+- **`gameplay.c` não é dividido.** Scanner, combate, movimento e progressão continuam no mesmo arquivo; a divisão em quatro módulos foi descartada por não resolver defeito nenhum antes da entrega.
+- **Sem `GameState`.** As escritas diretas que a UI e os atalhos de QA fazem hoje (`player.laser`, `agents[]`) passam por funções estreitas (`select_laser`, `debug_complete_phase`, `debug_identify_all`) quando a Wave 2 começar; não há struct central de estado.
+- **Quando.** A Wave 2 só começa depois da entrega de 02/12/2026 e depois de #195, #197, #199, #210, #211, #212 e #30 fecharem. Antes disso, o trabalho de refatoração é só o baseline e o harness fora do repositório (`../Nanobo-testes/`).
+- **Gate.** Cada extração é um commit `refactor(escopo): ...` que move código sem mudar comportamento; o gate é build Debug/Release com 0 avisos, harness 85/85 e as sete capturas de cena.
+
 ## Pendências
 
 - Duração do pulso do scanner (0,75 s é valor inicial; implementação #209) e configuração de camadas por agente/fase no MVP.

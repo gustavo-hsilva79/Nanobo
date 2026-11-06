@@ -5,6 +5,8 @@
 
 > **Nota de 18/10/2026:** o código final agrupou `player_x`, `player_y` e `player_speed` na struct `Nanobo player` (`src/entities/entities.c`). Os nomes soltos das tabelas abaixo são os do `main.c` de antes da refatoração; no código atual, use `player.x`, `player.y` e `player.speed`.
 
+> **Nota de 06/11/2026:** a estrutura-alvo aprovada é a enxuta — as cinco casas continuam e a Wave 2 acrescenta só `src/ui/` e `src/render/`. A divisão do `gameplay.c` em quatro módulos e o `GameState` foram descartados; ver `docs/game-design/decisoes.md`, seção "Refatoração pós-entrega".
+
 ## Regra de ouro
 
 Cada coisa tem **uma casa só**:
