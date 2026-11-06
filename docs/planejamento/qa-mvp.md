@@ -7,6 +7,7 @@
 > **Atualização:** 30/10/2026 — textos da interface e do feedback acentuados (#194) e evidências datadas do polimento de menus e HUD (#196); ver §9.
 > **Atualização:** 03/11/2026 — roteiro do fluxo educativo (briefing, dois pulsos, módulos A/B, controles por cursor e resumo por objetivo) incorporado como §10; **nenhum passo executado**.
 > **Atualização:** 04/11/2026 — QA da refatoração de interface executado em parte (E1–E5, E12–E14); briefing, scanner de duas camadas e resumo por contadores conferidos em captura; ver §10.
+> **Atualização:** 06/11/2026 — harness de regras fora do repositório, em `../Nanobo-testes/` (85 casos, 85 passaram) e comando reproduzível; ver §3.
 > **Ambiente:** Windows 11, monitor 2560×1440, janela maximizada, executável a partir da raiz do repositório; Debug|x64 e Release|x64.
 
 ## 1. Como reproduzir
@@ -33,12 +34,12 @@ Essas teclas **não existem no Release** (`#ifdef _DEBUG`). O Release foi testad
 | Debug\|x64 | `MSBuild Nanobo.vcxproj -p:Configuration=Debug -p:Platform=x64 -t:Rebuild` | 0 avisos, 0 erros | `docs/auditoria/evidencias/build-debug.log` |
 | Release\|x64 | idem, `-p:Configuration=Release` | 0 avisos, 0 erros | `docs/auditoria/evidencias/build-release.log` |
 
-## 3. Regras puras (harness fora do repositório)
+## 3. Regras puras (harness fora do repositório, em `../Nanobo-testes/`)
 
-- Cópia fresca de `src/gameplay/gameplay.c` e `src/entities/entities.c` desta branch.
-- Compilação com `/std:c11`, sem Allegro.
-- **78 casos, 78 passaram, 0 falharam.**
-- Inclui os 68 casos anteriores e 10 novos: `threats_total`, bônus pago/não pago, reset do bônus, `attack_ready` antes/depois do disparo e durante a defesa.
+- `../Nanobo-testes/harness_combate.c` roda contra uma cópia fresca de `src/gameplay/` e `src/entities/`, sem Allegro.
+- Comando: `bash ../Nanobo-testes/build_harness.sh` (copia as fontes para `%TEMP%\nanobo-harness` e compila com `/std:c11`).
+- **85 casos, 85 passaram, 0 falharam** (06/11/2026).
+- Cobre contato, dano, defesa, disparo/cooldown, resistência, pontuação, conclusão, bônus, bounce, clamp e as mensagens de feedback, incluindo os dois erros de arma por espécie.
 
 ## 4. Roteiro e resultado
 
