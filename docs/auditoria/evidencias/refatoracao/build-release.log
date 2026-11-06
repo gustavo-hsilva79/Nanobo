@@ -1,0 +1,10 @@
+
+  main.c
+  game.c
+  entities.c
+  gameplay.c
+  Gerando código
+  Previous IPDB not found, fall back to full compilation.
+  All 106 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finalizada a geração de código
+  Nanobo.vcxproj -> C:\Users\GIGABYTE\OneDrive - SENAC - SP\SENAC\Projetos\2° Semestre\Projeto Integrador\Nanobo\x64\Release\Nanobo.exe
