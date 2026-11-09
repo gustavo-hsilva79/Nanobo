@@ -172,6 +172,7 @@ void update_match(double dt);
 int phase_count(void);
 int current_phase(void);
 int agents_total(void);
+bool phase_has_bacteria();
 bool has_next_phase(void);
 void start_next_phase(void);
 
