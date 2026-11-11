@@ -48,6 +48,8 @@ Entregar uma partida completa centrada na Fase 1, com exploração, scanner, int
 
 Concluir a expansão pós-MVP, incluindo a segunda fase planejada, e realizar estabilização, testes, validação de memória, documentação e build candidata.
 
+**Situação em 11/11/2026:** movimento com aceleração e frenagem, áudio (seis efeitos e música em loop), spritesheet animado, regras dos estados do vírus da Fase 2 e medição de memória fecharam numa branch só (#179, #31, #32, #30, #83, #114–#116). O que resta do marco é a Fase 2 jogável (#84–#91), o hi-score Top 10 (#34/#77–#82), as dívidas #206–#212, o teste externo (#38/#134–#138) e o build/instalador (#42/#144–#158).
+
 ### M6 — Entrega Final
 
 Entregar a versão final com múltiplas fases, requisitos técnicos atendidos, instalador Windows, documentação e material de apresentação.
