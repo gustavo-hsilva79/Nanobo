@@ -1151,6 +1151,23 @@ int agents_total()
     return agents_count;
 }
 
+// Verifica se a fase atual possui pelo menos uma bactéria.
+bool phase_has_bacteria()
+{
+    int i;
+
+    for (i = 0; i < agents_count; i++)
+    {
+        if (agents[i].species == SPECIES_GRAM_POSITIVE ||
+            agents[i].species == SPECIES_GRAM_NEGATIVE)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 // true quando os Resultados devem carregar outra fase (#M4)
 bool has_next_phase()
 {

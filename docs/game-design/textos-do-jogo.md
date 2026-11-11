@@ -146,3 +146,36 @@ Regras que valem para todo texto novo:
 - Caixa alta só em texto **sem acento** (`INICIAR`, `CONTINUAR`, `COMO JOGAR` quando não houver acento).
 - Nenhum texto desenhado pode ter maiúscula acentuada. `NANOBÔ` é exceção registrada: é o nome do jogo, desenhado em bitmap ampliado 3×, onde o glifo é legível mas não correto.
 - Antes de commitar texto novo, rodar `python -c "print([c for c in 'TEXTO' if ord(c) > 0xFF])"` (codepoint fora de Latin-1 vira `^` na tela).
+
+## 2.2 Resumo por objetivo de aprendizagem (resultados, Issue #210)
+
+O painel de resultados apresenta uma mensagem independente para cada objetivo de aprendizagem. As mensagens são geradas com base nos contadores da partida atual (`MatchProgress`).
+
+| ID | Local | Texto | Caracteres | Condição / origem |
+|---|---|---|---:|---|
+| OA-01 | resultados | `OA1 Gram: identificou os dois grupos.` | 37 | Gram+ e Gram- identificados; #210 |
+| OA-01 | resultados | `OA1 Gram: identificou Gram+; faltou Gram-.` | 42 | Somente Gram+ identificado; #210 |
+| OA-01 | resultados | `OA1 Gram: identificou Gram-; faltou Gram+.` | 42 | Somente Gram- identificado; #210 |
+| OA-01 | resultados | `OA1 Gram: nenhuma bactéria identificada.` | 40 | Nenhum dos grupos identificado; #210 |
+| OA-02 | resultados | `OA2 Estrutura: identificou os dois grupos.` | 42 | Evidência de identificação dos dois grupos; #210 |
+| OA-02 | resultados | `OA2 Estrutura: identificou apenas Gram+.` | 40 | Evidência de identificação somente de Gram+; #210 |
+| OA-02 | resultados | `OA2 Estrutura: identificou apenas Gram-.` | 40 | Evidência de identificação somente de Gram-; #210 |
+| OA-02 | resultados | `OA2 Estrutura: sem grupos identificados.` | 40 | Nenhum grupo identificado; #210 |
+| OA-03 | resultados | `OA3 Armas: sem erros nas escolhas registradas.` | 46 | Acertos registrados e nenhum erro; #210 |
+| OA-03 | resultados | `OA3 Armas: %d acertos e %d erros; revise a escolha.` | 51 | Pelo menos um erro de arma; #210 |
+| OA-03 | resultados | `OA3 Armas: nenhuma escolha registrada.` | 38 | Nenhum acerto ou erro registrado; #210 |
+| OA-04 | resultados | `OA4 Células: nenhum ataque registrado.` | 38 | Nenhum ataque a célula; #210 |
+| OA-04 | resultados | `OA4 Células: %d ataques; revise a proteção.` | 43 | Um ou mais ataques a células; #210 |
+
+**Regras de interpretação dos contadores:**
+
+- OA1 utiliza `scans_gram_positive` e `scans_gram_negative` como evidência de identificação dos grupos.
+- OA2 utiliza os mesmos contadores como evidência para retomar a comparação estrutural. A identificação não comprova, isoladamente, compreensão das diferenças estruturais.
+- OA3 utiliza `correct_decisions` e `wrong_decisions`, que contabilizam acertos de projéteis em ameaças, não decisões independentes por alvo.
+- OA4 utiliza `cell_attacks`, que contabiliza projéteis que atingiram células próprias. Esse contador não representa necessariamente perda efetiva de vida.
+
+**Regra de independência:** cada objetivo apresenta sua própria mensagem. Um erro em OA3 não pode ocultar uma dificuldade em OA4, e vice-versa.
+
+**Regra de tipografia:** seguir a seção 2.1. Utilizar hífen ASCII em `Gram-` e evitar maiúsculas acentuadas.
+
+**Fonte:** Issue #210 — Resumo por objetivo na tela de Resultados (RF-07).

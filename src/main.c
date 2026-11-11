@@ -1635,20 +1635,112 @@ void draw_pause()
 // fim de fase: resultados, vitoria e game over
 // ---------------------------------------------------------------
 
-const char* results_review_text()
+
+void results_oa1_text(char* line, size_t size)
 {
-    if (progress.wrong_decisions > 0)
+    // Verifica se o objetivo de identificação de Gram se aplica à fase atual.
+    if (!phase_has_bacteria())
     {
-        return "reveja a estrutura lida no scan";
+        snprintf(line, size,
+            "OA1 Gram: nao aplicavel nesta fase.");
+        return;
     }
 
-    if (progress.cell_attacks > 0)
+    if (progress.scans_gram_positive > 0 &&
+        progress.scans_gram_negative > 0)
     {
-        return "reveja: as duas armas ferem a célula";
+        snprintf(line, size,
+            "OA1 Gram: identificou os dois grupos.");
     }
-
-    return "sem erro de arma nesta partida";
+    else if (progress.scans_gram_positive > 0)
+    {
+        snprintf(line, size,
+            "OA1 Gram: identificou Gram+; faltou Gram-.");
+    }
+    else if (progress.scans_gram_negative > 0)
+    {
+        snprintf(line, size,
+            "OA1 Gram: identificou Gram-; faltou Gram+.");
+    }
+    else
+    {
+        snprintf(line, size,
+            "OA1 Gram: nenhuma bactéria identificada.");
+    }
 }
+
+// Exibe o resultado da identificação dos grupos para o objetivo de comparação estrutural.
+void results_oa2_text(char* line, size_t size)
+{
+    // Verifica se existem bactérias na fase atual.
+    if (!phase_has_bacteria())
+    {
+        snprintf(line, size,
+            "OA2 Estrutura: nao aplicavel nesta fase.");
+        return;
+    }
+
+    if (progress.scans_gram_positive > 0 &&
+        progress.scans_gram_negative > 0)
+    {
+        snprintf(line, size,
+            "OA2: dados de Gram+ e Gram-.");
+    }
+    else if (progress.scans_gram_positive > 0)
+    {
+        snprintf(line, size,
+            "OA2 Estrutura: dados parciais (Gram+).");
+    }
+    else if (progress.scans_gram_negative > 0)
+    {
+        snprintf(line, size,
+            "OA2 Estrutura: dados parciais (Gram-).");
+    }
+    else
+    {
+        snprintf(line, size,
+            "OA2 Estrutura: sem dados para comparacao.");
+    }
+}
+
+void results_oa3_text(char* line, size_t size)
+{
+    if (progress.wrong_decisions == 0 &&
+        progress.correct_decisions > 0)
+    {
+        snprintf(line, size,
+            "OA3 Armas: %d acertos, nenhum erro.",
+            progress.correct_decisions);
+    }
+    else if (progress.wrong_decisions > 0)
+    {
+        snprintf(line, size,
+            "OA3 Armas: %d acertos, %d erros.",
+            progress.correct_decisions,
+            progress.wrong_decisions);
+    }
+    else
+    {
+        snprintf(line, size,
+            "OA3 Armas: sem acertos registrados.");
+    }
+}
+
+void results_oa4_text(char* line, size_t size)
+{
+    if (progress.cell_attacks == 0)
+    {
+        snprintf(line, size,
+            "OA4 Células: nenhum ataque registrado.");
+    }
+    else
+    {
+        snprintf(line, size,
+            "OA4 Células: %d ataques; revise a proteção.",
+            progress.cell_attacks);
+    }
+}
+
 
 void draw_results()
 {
@@ -1700,31 +1792,32 @@ void draw_results()
     al_draw_text(font, UI_DIM, left, 146.0f, 0, line);
 
     // resumo educativo: so contadores da partida atual (#174, #202)
-    draw_panel(140.0f, 162.0f, 360.0f, 84.0f, UI_INK, UI_FRAME);
+    draw_panel(140.0f, 162.0f, 360.0f, 92.0f, UI_INK, UI_FRAME);
 
     al_draw_text(font, UI_AMBER, left, 170.0f, 0, "o que a partida mostrou");
 
-    // a Fase 2 não tem bactéria: a linha de Gram só aparece onde há Gram (#M4)
+
     row = 186.0f;
 
-    if (current_phase() == 1)
-    {
-        snprintf(line, sizeof(line), "bactérias identificadas: %d Gram+ · %d Gram-",
-            progress.scans_gram_positive, progress.scans_gram_negative);
-        al_draw_text(font, UI_TEXT, left, row, 0, line);
-        row = row + 16.0f;
-    }
-
-    snprintf(line, sizeof(line), "acertos de arma: %d · erros: %d",
-        progress.correct_decisions, progress.wrong_decisions);
+    // OA1: identificacao dos grupos pela coloracao de Gram.
+    results_oa1_text(line, sizeof(line));
     al_draw_text(font, UI_TEXT, left, row, 0, line);
     row = row + 16.0f;
 
-    snprintf(line, sizeof(line), "ataques à célula: %d", progress.cell_attacks);
+    // OA2: dados dos grupos disponiveis para comparacao estrutural.
+    results_oa2_text(line, sizeof(line));
     al_draw_text(font, UI_TEXT, left, row, 0, line);
     row = row + 16.0f;
 
-    al_draw_text(font, UI_WARM, left, row, 0, results_review_text());
+    // OA3: registro de acertos e erros nas armas utilizadas.
+    results_oa3_text(line, sizeof(line));
+    al_draw_text(font, UI_TEXT, left, row, 0, line);
+    row = row + 16.0f;
+
+    // OA4: registro de ataques que atingiram celulas proprias.
+    results_oa4_text(line, sizeof(line));
+    al_draw_text(font, UI_TEXT, left, row, 0, line);
+
 
     draw_buttons(buttons, count);
 
