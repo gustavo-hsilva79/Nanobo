@@ -61,8 +61,9 @@ _Static_assert(HUD_LINES * HUD_LINE_H + 2 * HUD_MARGIN <= PANEL_H, "HUD nao cabe
 #define UI_LINE      al_map_rgb(48, 60, 74)    // separador e molduras discretas
 #define UI_FRAME     al_map_rgb(76, 92, 108)   // moldura de painel
 
-// volume dos efeitos, de 0 a 1 (#31)
+// volume dos efeitos e da musica, de 0 a 1 (#31, #32)
 #define SFX_GAIN 0.55f
+#define MUSIC_GAIN 0.30f
 
 // y de cada linha do HUD, contando de cima para baixo dentro do painel
 int hud_y(int line)
@@ -103,6 +104,11 @@ ALLEGRO_SAMPLE* sfx_hit = NULL;
 ALLEGRO_SAMPLE* sfx_neutralized = NULL;
 ALLEGRO_SAMPLE* sfx_penalty = NULL;
 ALLEGRO_SAMPLE* sfx_defense = NULL;
+
+// musica de fundo em loop, parada na pausa (#32)
+ALLEGRO_SAMPLE* music = NULL;
+ALLEGRO_SAMPLE_ID music_id;
+bool music_playing = false;
 
 // id do ultimo evento de audio que ja tocou: um som por evento (#31)
 unsigned int sfx_seen = 0;
@@ -382,9 +388,10 @@ bool load_resources()
         sfx_neutralized = al_load_sample("assets/audio/sfx/neutralizacao.wav");
         sfx_penalty = al_load_sample("assets/audio/sfx/penalidade.wav");
         sfx_defense = al_load_sample("assets/audio/sfx/defesa.wav");
+        music = al_load_sample("assets/audio/music/fundo.wav");
 
         if (!sfx_scan || !sfx_shot || !sfx_hit || !sfx_neutralized
-            || !sfx_penalty || !sfx_defense)
+            || !sfx_penalty || !sfx_defense || !music)
         {
             printf("couldn't load sound effects\n");
             return false;
@@ -503,6 +510,18 @@ void free_resources()
     {
         al_destroy_sample(sfx_scan);
         sfx_scan = NULL;
+    }
+
+    if (music)
+    {
+        al_destroy_sample(music);
+        music = NULL;
+    }
+
+    if (audio_ready)
+    {
+        al_uninstall_audio();
+        audio_ready = false;
     }
 
     if (font)
@@ -2110,6 +2129,23 @@ void play_pending_sfx()
     }
 }
 
+// a musica para na pausa e volta ao sair dela (#32)
+void sync_music()
+{
+    bool want = audio_ready && music != NULL && game_get_scene() != GAME_SCENE_PAUSE;
+
+    if (want && !music_playing)
+    {
+        al_play_sample(music, MUSIC_GAIN, 0.0f, 1.0f, ALLEGRO_PLAYMODE_LOOP, &music_id);
+        music_playing = true;
+    }
+    else if (!want && music_playing)
+    {
+        al_stop_sample(&music_id);
+        music_playing = false;
+    }
+}
+
 int main()
 {
     if (!al_init())
@@ -2240,6 +2276,7 @@ int main()
                     }
                 }
                 play_pending_sfx();
+                sync_music();
 
                 redraw = true;
                 break;
