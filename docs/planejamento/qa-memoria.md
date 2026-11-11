@@ -1,0 +1,98 @@
+# Nanobô — cenário de referência de medição de memória (#114)
+
+> **Issue:** #114 (fecha).
+>
+> **Consumido por:** #115 (medição datada) e #116 (revisão do limite de ≤ 100 MB).
+>
+> Este documento fixa **como** medir; os números datados saem na #115. Medir antes das Tarefas 3–5 produz um número que envelhece, porque áudio e spritesheet mudam o consumo.
+
+## Configuração
+
+- **Sistema:** Windows 11 Pro x64 (build 26300), sempre na mesma máquina. Comparações só valem dentro dela.
+- **Build de referência:** `Release|x64` — é a configuração que vale para o limite de ≤ 100 MB.
+- **Build comparativo:** `Debug|x64` — o runtime de depuração infla o consumo; serve para comparar, nunca para aprovar o limite.
+- **Executável:** `x64/Release/Nanobo.exe` (referência) e `x64/Debug/Nanobo.exe` (comparativo), compilados a partir do mesmo commit. Se o commit mudou, recompile os dois antes de medir.
+- **Diretório de trabalho:** a raiz do repositório (`Nanobo/`, onde está `Nanobo.sln`). Os assets são abertos por caminho relativo (`assets/...`); rodar de outra pasta falha no carregamento e o jogo não abre.
+- **Uma instância só:** o app é console-subsystem e mostra duas janelas do mesmo processo (`Nanobo.exe` e a janela do jogo). Não deixe outra cópia aberta: o script pega o primeiro processo encontrado.
+- **Áudio ativo:** a música deve estar audível no menu. Sem dispositivo de som o jogo abre mudo, não carrega os WAVs e o consumo não é o do cenário.
+
+## Sequência
+
+Roteiro único, do MENU até a nova partida, executado com o script amostrando em paralelo:
+
+1. Abrir o jogo a partir da raiz do repositório: `./x64/Release/Nanobo.exe` (ou `./x64/Debug/Nanobo.exe` no comparativo).
+2. **MENU — 15 s parado**, sem clicar. É o estado de repouso da primeira amostra.
+3. `ENTER` (ou clique em `INICIAR`) → BRIEFING.
+4. `ESC` (ou `PULAR`) para pular o briefing → GAME, Fase 1.
+5. Na Fase 1: andar com as setas; **botão direito** sobre cada um dos 9 agentes (3 Gram+, 3 Gram− e 3 células) até identificá-los; trocar de arma com `1`/`2` (ou a roda do mouse) e **clique esquerdo** para neutralizar as 6 bactérias — `Ruptura` nas Gram+ e `Dissolução` nas Gram−; não atirar nas células; ir até o destino para concluir a fase. Não usar `ESC` aqui (pausa).
+6. RESULTS: `ENTER` (ou `CONTINUAR`) → Fase 2.
+7. Fase 2: neutralizar os 3 vírus com a arma certa e ir até o destino; as 3 células não são alvo.
+8. RESULTS: `ENTER` (ou `CONTINUAR`) → VICTORY.
+9. VICTORY: `ENTER` (ou `NOVA PARTIDA`) → briefing de uma nova partida. O ciclo termina aqui.
+
+A sequência existe para passar por todos os recursos em uso: menu, briefing, as duas fases, os dois RESULTS e a VICTORY. Qualquer desvio (pausa, GAME_OVER, alt-tab) invalida a execução e ela é refeita.
+
+## Recursos carregados
+
+Tudo entra em `load_resources()` (`src/main.c`) uma única vez, antes do loop de eventos; nenhuma cena recarrega recurso. Se um arquivo for renomeado ou removido, o carregamento falha e o jogo não abre — a lista abaixo é a que a medição deve encontrar carregada.
+
+**Os 11 bitmaps:**
+
+| # | Recurso | Arquivo |
+|---|---|---|
+| 1 | Nanobô (spritesheet animado) | `assets/sprites/nanobo_spritesheet.png` |
+| 2 | Bactéria Gram+ | `assets/sprites/bacteria_gram_positiva.png` |
+| 3 | Bactéria Gram− | `assets/sprites/bacteria_gram_negativa.png` |
+| 4 | Célula própria | `assets/sprites/celula_propria.png` |
+| 5 | Vírus da Fase 2 | `assets/sprites/virus_fase2.png` |
+| 6 | Ícone de vida | `assets/sprites/icone_coracao.png` |
+| 7 | Ícone do scanner | `assets/sprites/icone_scanner.png` |
+| 8 | Ícone da arma Ruptura | `assets/sprites/icone_ruptura.png` |
+| 9 | Ícone da arma Dissolução | `assets/sprites/icone_dissolucao.png` |
+| 10 | Ícone de defesa | `assets/sprites/icone_defesa.png` |
+| 11 | Mapa da Fase 1 | `assets/backgrounds/mapa_fase1.png` |
+
+**A fonte:** a fonte embutida do Allegro (`al_create_builtin_font()`), criada em memória, sem arquivo. O título `NANOBÔ` é um bitmap montado a partir dela em `load_resources()` (`make_text_bitmap`), então conta como bitmap em memória mesmo sem PNG.
+
+**Os 6 efeitos sonoros** (`assets/audio/sfx/`): `scanner.wav`, `disparo.wav`, `impacto.wav`, `neutralizacao.wav`, `penalidade.wav`, `defesa.wav`.
+
+**A música** (`assets/audio/music/`): `fundo.wav`, tocada em loop durante o jogo e parada na pausa.
+
+Ficam em `assets/` sem entrar no carregamento: `sprites/icone_laser_vermelho.png`, `sprites/icone_laser_roxo.png` e `backgrounds/fundo_microscopico.png`. Não contam nesta medição.
+
+## Momento e método
+
+Com o jogo aberto e a sequência em andamento, rodar `medir_memoria.ps1 -Seconds 60 -EveryMs 250`. Em 60 s são 240 amostras previstas.
+
+- **O que é amostrado:** `WorkingSet64` (working set, o que o Gerenciador de Tarefas mostra) e `PrivateMemorySize64` (memória privada comprometida), arredondados a 0,01 MB. Uma linha de CSV por amostra, no formato `t_s,working_set_mb,private_mb`.
+- **Pico:** a maior amostra de `working_set_mb` da execução — o `max` que o script imprime. É o número que encosta no limite.
+- **Estável:** a última amostra (`ultimo`) de uma execução em que o jogo fica **20 s parado no MENU**, sem partida iniciada (`-Seconds 20`). Serve para separar carga e aquecimento do consumo de repouso.
+- **Limite:** julgar o pico do `Release|x64` contra ≤ 100 MB. `PrivateMemorySize64` é diagnóstico e não tem limite próprio. O `Debug|x64` repete a mesma sequência só como comparativo.
+- **Janela:** se a sequência manual passar de 60 s, repetir com `-Seconds` maior e registrar o valor usado; comparações só valem com a mesma janela.
+- **Registro:** anotar data/hora, commit, configuração, `amostras`, `min`, `max` e `ultimo`, e o caminho do CSV. A medição datada é a #115.
+
+## Como repetir
+
+Compile `Release|x64` e `Debug|x64` no Visual Studio 2022 (ou pelo MSBuild do `AGENTS.md`). Depois, com o terminal na raiz do repositório:
+
+```powershell
+cd "C:/Users/GIGABYTE/OneDrive - SENAC - SP/SENAC/Projetos/2° Semestre/Projeto Integrador/Nanobo"
+./x64/Release/Nanobo.exe
+```
+
+Com o jogo já aberto, numa segunda janela:
+
+```powershell
+cd "C:/Users/GIGABYTE/OneDrive - SENAC - SP/SENAC/Projetos/2° Semestre/Projeto Integrador/Nanobo"
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ../Nanobo-testes/medir_memoria.ps1 `
+  -Out "C:/Users/GIGABYTE/AppData/Local/Temp/nanobo-memoria-release.csv" -Seconds 60 -EveryMs 250
+```
+
+Saída esperada, uma linha por execução:
+
+```text
+amostras=240 min=... MB max=... MB ultimo=... MB
+csv: C:/Users/GIGABYTE/AppData/Local/Temp/nanobo-memoria-release.csv
+```
+
+O script vive em `../Nanobo-testes/medir_memoria.ps1`, ao lado do harness, fora deste repositório. Ele não abre o jogo sozinho: sem `Nanobo.exe` rodando, imprime `nenhuma amostra: o jogo nao estava aberto` e sai com código 1. O CSV usado fica em `C:/Users/GIGABYTE/AppData/Local/Temp/nanobo-memoria-release.csv` (o `%TEMP%` do usuário) e pode ser trocado pelo `-Out` na mesma chamada.
