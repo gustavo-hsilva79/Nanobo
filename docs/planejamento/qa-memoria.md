@@ -2,7 +2,7 @@
 
 > **Issue:** #114 (fecha).
 >
-> **Consumido por:** #115 (medição datada) e #116 (revisão do limite de ≤ 100 MB).
+> **Consumido por:** #115 (medição datada) e #119 (revisão do limite de ≤ 100 MB).
 >
 > Este documento fixa **como** medir; os números datados saem na #115. Medir antes das Tarefas 3–5 produz um número que envelhece, porque áudio e spritesheet mudam o consumo.
 
@@ -58,15 +58,15 @@ Tudo entra em `load_resources()` (`src/main.c`) uma única vez, antes do loop de
 
 **A música** (`assets/audio/music/`): `fundo.wav`, tocada em loop durante o jogo e parada na pausa.
 
-Ficam em `assets/` sem entrar no carregamento: `sprites/icone_laser_vermelho.png`, `sprites/icone_laser_roxo.png` e `backgrounds/fundo_microscopico.png`. Não contam nesta medição.
+Ficam em `assets/` sem entrar no carregamento: `sprites/nanobo.png` (o PNG parado, que o spritesheet substituiu), `sprites/icone_laser_vermelho.png`, `sprites/icone_laser_roxo.png` e `backgrounds/fundo_microscopico.png`. Não contam nesta medição.
 
 ## Momento e método
 
-Com o jogo aberto e a sequência em andamento, rodar `medir_memoria.ps1 -Seconds 60 -EveryMs 250`. Em 60 s são 240 amostras previstas.
+Com o jogo aberto e a sequência em andamento, rodar `medir_memoria.ps1 -Seconds 60 -EveryMs 250`. Em 60 s saem **~228 amostras**, não 240: o `-EveryMs` é um piso e o custo do próprio laço de amostragem come ~5% do intervalo (76 em 20 s, 151 em 40 s, 38 em 10 s).
 
 - **O que é amostrado:** `WorkingSet64` (working set, o que o Gerenciador de Tarefas mostra) e `PrivateMemorySize64` (memória privada comprometida), arredondados a 0,01 MB. Uma linha de CSV por amostra, no formato `t_s,working_set_mb,private_mb`.
 - **Pico:** a maior amostra de `working_set_mb` da execução — o `max` que o script imprime. É o número que encosta no limite.
-- **Estável:** a última amostra (`ultimo`) de uma execução em que o jogo fica **20 s parado no MENU**, sem partida iniciada (`-Seconds 20`). Serve para separar carga e aquecimento do consumo de repouso.
+- **Estável:** a última amostra (`ultimo`) de uma janela de **20 s que inclui a carga**, com o jogo parado no MENU e sem partida iniciada (`-Seconds 20`). A janela começa no primeiro instante do processo e a última amostra cai em ~19,9 s, uns 12 s depois do fim do carregamento — por isso ela já vale como consumo de repouso, e não como carga.
 - **Limite:** julgar o pico do `Release|x64` contra ≤ 100 MB. `PrivateMemorySize64` é diagnóstico e não tem limite próprio. O `Debug|x64` repete a mesma sequência só como comparativo.
 - **Janela:** se a sequência manual passar de 60 s, repetir com `-Seconds` maior e registrar o valor usado; comparações só valem com a mesma janela.
 - **Registro:** anotar data/hora, commit, configuração, `amostras`, `min`, `max` e `ultimo`, e o caminho do CSV. A medição datada é a #115.
@@ -91,7 +91,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File ../Nanobo-testes/medir_m
 Saída esperada, uma linha por execução:
 
 ```text
-amostras=240 min=... MB max=... MB ultimo=... MB
+amostras=~228 min=... MB max=... MB ultimo=... MB
 csv: C:/Users/GIGABYTE/AppData/Local/Temp/nanobo-memoria-release.csv
 ```
 
@@ -103,18 +103,22 @@ O script vive em `../Nanobo-testes/medir_memoria.ps1`, ao lado do harness, fora 
 
 - **Commit medido:** `86a962e` (branch `feat/vermelho-11-11`), com áudio e spritesheet carregados.
 - **Builds:** `Release|x64` (referência) e `Debug|x64` (comparativo), ambos com `Rebuild` e 0 avisos.
-- **Método:** `medir_memoria.ps1 -EveryMs 250`, três janelas no Release — carga+menu (20 s), GAME (40 s) e GAME logo depois de dirigir o Nanobô nas quatro direções (~7 s) — e uma janela de 10 s no Debug.
+- **Método:** `medir_memoria.ps1 -EveryMs 250`, três janelas no Release — carga+menu (20 s), GAME (40 s) e GAME com ~10 s de amostragem (9,83 s no CSV) depois de dirigir o Nanobô nas quatro direções por ~7 s — e uma janela de 10 s no Debug.
 
 | Build / janela | Amostras | Mín (MB) | Pico (MB) | Última (MB) |
 |---|---:|---:|---:|---:|
 | Release — carga + MENU, 20 s | 76 | 76,51 | **79,41** | 76,67 |
 | Release — GAME, 40 s | 151 | 78,05 | 78,27 | 78,27 |
-| Release — GAME após dirigir, 10 s | 38 | 76,34 | 78,15 | 76,34 |
+| Release — GAME após dirigir, ~10 s | 38 | 76,34 | 78,15 | 76,34 |
 | Debug — carga + MENU, 10 s | 38 | 77,11 | 77,27 | 77,27 |
 
-**Leitura.** O pico do Release é **79,41 MB**, no carregamento dos recursos, e cai para ~76,7 MB com o jogo em repouso no menu. Em partida, o working set fica em **78,0–78,3 MB** e **não sobe** quando o jogador anda ou age: a janela seguinte à movimentação fechou em 76,34 MB, mais baixa que a de repouso. Contra o limite de 100 MB sobram **20,6 MB** no pior instante medido.
+**Leitura.** O pico do Release é **79,41 MB**, no carregamento dos recursos, e cai para ~76,7 MB com o jogo em repouso no menu. Em partida, o working set fica em **78,0–78,3 MB** e **não sobe** quando o jogador anda: a janela seguinte à movimentação fechou em 76,34 MB, mais baixa que a de repouso. As janelas de GAME não têm scan nem tiro — o HUD da captura estava em `identificados 0/9` e `ameaças 0/6` —, então varredura e combate ficam para a #117. Contra o limite de 100 MB sobram **20,6 MB** no pior instante medido.
 
-**Desvio declarado.** O roteiro pede 60 s de partida com scan e combate manuais; a automação disponível não joga a fase inteira sem foco. Medi 40 s de GAME com os agentes se movendo e mais 10 s depois de dirigir o Nanobô — a diferença entre as duas janelas é menor que 2 MB e é para baixo, então o pico não está na ação do jogador. A varredura manual completa fica para a #117, quando o áudio e as variantes estiverem fechados.
+**Memória privada.** O pico de 79,41 MB é de **working set**. A privada é maior: no pico de carga (`t=0,02 s`, o primeiro instante do processo) ela chega a **101,02 MB**, e em partida fica em **98,37–98,55 MB**. O critério adotado é o **working set** — o número que o Gerenciador de Tarefas mostra —, e é ele que precisa ficar abaixo de 100 MB. Se a leitura de "RAM" for memória privada, o pico de carga passa do limite e o assunto deixa de ser medição: é otimização (#118/#119).
+
+**Tolerância.** **±2 MB entre janelas e entre execuções é ruído**: as janelas medidas vão de 76,34 a 79,41 MB e a de repouso fica em ~76,7. Só uma tendência monotônica maior que isso conta como crescimento.
+
+**Desvio declarado.** O roteiro pede 60 s de partida com scan e combate manuais; a automação disponível não joga a fase inteira sem foco. Medi 40 s de GAME com os agentes se movendo e mais ~10 s de amostragem depois de dirigir o Nanobô por ~7 s — a diferença entre as duas janelas é menor que 2 MB e é para baixo, então o pico não está na ação do jogador. A varredura manual completa fica para a #117, quando o áudio e as variantes estiverem fechados.
 
 **CSVs:** `t7-release-load.csv`, `t7-release-game.csv` e `t7-release-pos-drive.csv`, gravados em `C:/Users/GIGABYTE/AppData/Local/hermes/cache/scratch/`; a janela de Debug é `%TEMP%/nanobo-medida-teste.csv`.
 
@@ -123,7 +127,7 @@ O script vive em `../Nanobo-testes/medir_memoria.ps1`, ao lado do harness, fora 
 ## 11/11/2026 — #116: reinícios
 
 - **Build:** `Debug|x64`. O Release não tem tecla de QA para concluir a fase, e o limite de 100 MB é julgado no Release pela #115; aqui o que importa é a **tendência entre reinícios**, não o valor absoluto.
-- **Ciclo completo:** `ESC` (pula o briefing) → `F` (conclui a Fase 1, tecla de QA só do Debug) → `ENTER` (Results → Fase 2) → `F` (conclui a Fase 2) → `ENTER` (Results → Vitória) → `ENTER` (Vitória → briefing de uma partida nova). Cinco ciclos, com 4 s de amostragem (`-EveryMs 200`) depois de cada um. A captura final mostra o briefing da partida nova, o que prova que o reinício aconteceu de fato.
+- **Ciclo completo:** `ESC` (pula o briefing) → `F` (conclui a Fase 1, tecla de QA só do Debug) → `ENTER` (Results → Fase 2) → `F` (conclui a Fase 2) → `ENTER` (Results → Vitória) → `ENTER` (Vitória → briefing de uma partida nova). Cinco ciclos, com **4 s** de amostragem (`-EveryMs 200`) depois de cada um — janela curta de propósito, porque a série já saía plana em cada ciclo (19 amostras, desvio-padrão 0,000 MB) e a repetição de 20 s abaixo confirma que ela não cresce. A captura final mostra o briefing da partida nova, o que prova que o reinício aconteceu de fato.
 
 | Ciclo | Working set depois de 4 s (MB) | Δ para o ciclo anterior |
 |---|---:|---:|
@@ -133,8 +137,10 @@ O script vive em `../Nanobo-testes/medir_memoria.ps1`, ao lado do harness, fora 
 | 4 | 75,47 | 0,00 |
 | 5 | 75,46 | −0,01 |
 
-**Leitura.** Não há crescimento persistente: a série sobe 0,06 MB e depois **cai** 1,82 MB, terminando 1,77 MB abaixo do primeiro ciclo. O degrau para baixo aparece na troca de fase, quando o alocador devolve páginas — não há realocação de mundo nem de array de agentes entre partidas. **Nenhuma evidência de vazamento por reinício**, então a #118 não tem, por este caminho, o que investigar.
+**Repetição de 20 s.** A janela de 4 s não esconde tendência: depois de um ciclo completo, a mesma captura rodou por **20 s** (`-EveryMs 200`, 19,93 s de CSV, em `t8c-ciclo20.csv`) e saiu `amostras=76`, `min=77,27 MB`, `max=77,42 MB`, `ultimo=77,42 MB`, desvio-padrão de 0,075 MB. O regime não muda entre 4 s e 20 s — a série fica na mesma faixa e a diferença entre a primeira e a última amostra é de 0,15 MB, dentro do ruído.
 
-**CSVs:** `t8b-ciclo-1.csv` … `t8b-ciclo-5.csv`, gravados em `C:/Users/GIGABYTE/AppData/Local/hermes/cache/scratch/`.
+**Leitura.** Não há crescimento persistente: a série sobe 0,06 MB e depois **cai** 1,82 MB, terminando 1,77 MB abaixo do primeiro ciclo. O degrau de −1,82 MB aparece **uma única vez em cinco ciclos**, e os cinco passam por troca de fase: não há como atribuí-lo a um mecanismo, **a causa não foi medida**, e a conclusão não depende dela — o que se procura é crescimento, e não há. **Nenhuma evidência de vazamento por reinício**, então a #118 não tem, por este caminho, o que investigar.
+
+**CSVs:** `t8b-ciclo-1.csv` … `t8b-ciclo-5.csv` e `t8c-ciclo20.csv` (a janela de 20 s), gravados em `C:/Users/GIGABYTE/AppData/Local/hermes/cache/scratch/`.
 
 **Limite do que foi provado:** os cinco reinícios são por **conclusão de fase (Vitória)**. Reinício por Game Over e o retorno ao menu (#195, ainda aberto) não foram exercitados aqui e ficam para a #117/#118.
