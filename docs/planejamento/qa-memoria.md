@@ -117,3 +117,24 @@ O script vive em `../Nanobo-testes/medir_memoria.ps1`, ao lado do harness, fora 
 **Desvio declarado.** O roteiro pede 60 s de partida com scan e combate manuais; a automação disponível não joga a fase inteira sem foco. Medi 40 s de GAME com os agentes se movendo e mais 10 s depois de dirigir o Nanobô — a diferença entre as duas janelas é menor que 2 MB e é para baixo, então o pico não está na ação do jogador. A varredura manual completa fica para a #117, quando o áudio e as variantes estiverem fechados.
 
 **CSVs:** `t7-release-load.csv`, `t7-release-game.csv` e `t7-release-pos-drive.csv`, gravados em `C:/Users/GIGABYTE/AppData/Local/hermes/cache/scratch/`; a janela de Debug é `%TEMP%/nanobo-medida-teste.csv`.
+
+---
+
+## 11/11/2026 — #116: reinícios
+
+- **Build:** `Debug|x64`. O Release não tem tecla de QA para concluir a fase, e o limite de 100 MB é julgado no Release pela #115; aqui o que importa é a **tendência entre reinícios**, não o valor absoluto.
+- **Ciclo completo:** `ESC` (pula o briefing) → `F` (conclui a Fase 1, tecla de QA só do Debug) → `ENTER` (Results → Fase 2) → `F` (conclui a Fase 2) → `ENTER` (Results → Vitória) → `ENTER` (Vitória → briefing de uma partida nova). Cinco ciclos, com 4 s de amostragem (`-EveryMs 200`) depois de cada um. A captura final mostra o briefing da partida nova, o que prova que o reinício aconteceu de fato.
+
+| Ciclo | Working set depois de 4 s (MB) | Δ para o ciclo anterior |
+|---|---:|---:|
+| 1 | 77,23 | — |
+| 2 | 77,29 | +0,06 |
+| 3 | 75,47 | −1,82 |
+| 4 | 75,47 | 0,00 |
+| 5 | 75,46 | −0,01 |
+
+**Leitura.** Não há crescimento persistente: a série sobe 0,06 MB e depois **cai** 1,82 MB, terminando 1,77 MB abaixo do primeiro ciclo. O degrau para baixo aparece na troca de fase, quando o alocador devolve páginas — não há realocação de mundo nem de array de agentes entre partidas. **Nenhuma evidência de vazamento por reinício**, então a #118 não tem, por este caminho, o que investigar.
+
+**CSVs:** `t8b-ciclo-1.csv` … `t8b-ciclo-5.csv`, gravados em `C:/Users/GIGABYTE/AppData/Local/hermes/cache/scratch/`.
+
+**Limite do que foi provado:** os cinco reinícios são por **conclusão de fase (Vitória)**. Reinício por Game Over e o retorno ao menu (#195, ainda aberto) não foram exercitados aqui e ficam para a #117/#118.
