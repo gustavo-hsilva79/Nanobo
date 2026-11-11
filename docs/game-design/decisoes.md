@@ -210,6 +210,7 @@ O jogo terá pontuação, bônus por identificação e progressão. O hi-score d
 - A tira de quadros desenha **as 4 direções desenhadas uma a uma** (cima, baixo, esquerda e direita), nas poses **frente / costas / perfil**. Nada de espelhar um lado no código.
 - Grade da tira: **8 quadros por direção** (1–4 parado, 220 ms cada; 5–8 andando, 110 ms cada), 32×32 por quadro, tira final **256×128**, com as linhas na ordem do `player_facing` (`UP`, `DOWN`, `LEFT`, `RIGHT`) — assim o código acha a linha sem tabela de conversão.
 - Os arquivos novos são criados **ao lado dos antigos, sem alterá-los** (`nanobo_v2.png`, `nanobo_spritesheet_v2.png` e a fonte `.aseprite`). A troca no jogo é etapa separada.
+- **Entregue em 11/11/2026:** a folha saiu com **256×128**, linhas na ordem `UP`/`DOWN`/`LEFT`/`RIGHT` e 8 quadros por linha. Foi gerada por script (`Nanobo-testes/gerar_spritesheet.py`, fora do repositório) e a troca não esperou arquivos `_v2`: o `nanobo_spritesheet.png` do jogo passou a ser a folha nova, e a arte antiga ficou no histórico do git. A linha da direita é o **espelho** da esquerda, feito na geração da arte — o código continua sem espelhar nada.
 
 ### Resolução, escala inteira e câmera (22/10/2026)
 

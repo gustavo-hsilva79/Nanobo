@@ -6,7 +6,7 @@ Inventário dos recursos necessários à execução atual, para orientar o carre
 
 | Recurso | Uso atual | Local |
 |---|---|---|
-| Sprite do Nanobô (32×32, 8 quadros) | Personagem do jogador | `assets/sprites/nanobo_spritesheet.png` (256×32, 8 quadros de 32×32), o bitmap que `load_resources()` abre e `draw_game()` recorta (#30); `nanobo.png` fica como histórico |
+| Sprite do Nanobô (32×32, 4 direções × 8 quadros) | Personagem do jogador | `assets/sprites/nanobo_spritesheet.png` (256×128, 4 linhas × 8 quadros de 32×32), o bitmap que `load_resources()` abre e `draw_game()` recorta (#30); `nanobo.png` fica como histórico |
 | Bactéria Gram-positiva (32×32) | Agente `SPECIES_GRAM_POSITIVE` | `assets/sprites/bacteria_gram_positiva.png`; idem |
 | Bactéria Gram-negativa (32×32) | Agente `SPECIES_GRAM_NEGATIVE` | `assets/sprites/bacteria_gram_negativa.png`; idem |
 | Célula saudável própria (32×32) | Agente `SPECIES_CELL` | `assets/sprites/celula_propria.png`; idem |
@@ -23,7 +23,7 @@ Inventário dos recursos necessários à execução atual, para orientar o carre
 
 ## Arte final criada
 
-Os quatro sprites de agente (três da Fase 1 e o vírus da Fase 2), o coração, os quatro ícones de interface e o mapa do mundo são carregados pelo jogo. O bitmap do jogador é `assets/sprites/nanobo_spritesheet.png` (256×32, 8 quadros, uma direção), desenhado por região; `nanobo.png` fica como histórico. A arte antiga de fundo (`fundo_microscopico.png`) ficou como referência. Os recursos anteriores a 04/11 têm a fonte `.aseprite` editável ao lado do `.png`; os três novos (ícones neutros e vírus) foram gerados por script e ainda não têm `.aseprite` (pendência de arte). O `.png` é o arquivo que o jogo carrega.
+Os quatro sprites de agente (três da Fase 1 e o vírus da Fase 2), o coração, os quatro ícones de interface e o mapa do mundo são carregados pelo jogo. O bitmap do jogador é `assets/sprites/nanobo_spritesheet.png` (256×128, quatro direções × 8 quadros), desenhado por região; `nanobo.png` fica como histórico. A arte antiga de fundo (`fundo_microscopico.png`) ficou como referência. Os recursos anteriores a 04/11 têm a fonte `.aseprite` editável ao lado do `.png`; os três novos (ícones neutros e vírus) foram gerados por script e ainda não têm `.aseprite` (pendência de arte). O `.png` é o arquivo que o jogo carrega.
 
 Todos os sprites usam a mesma paleta, o mesmo tamanho de pixel e a mesma direção de luz (cima-esquerda), para manter a coesão visual.
 
@@ -45,8 +45,8 @@ A forma e o tamanho também separam os agentes: as bactérias são pequenas e si
 
 | Arquivo | Conteúdo |
 |---|---|
-| `assets/sprites/nanobo_spritesheet.png` | Tira horizontal de **256×32**: 8 quadros de 32×32 |
-| `assets/sprites/nanobo_spritesheet.aseprite` | Fonte editável, com as etiquetas de animação |
+| `assets/sprites/nanobo_spritesheet.png` | Folha de **256×128**: 4 linhas (cima, baixo, esquerda, direita) × 8 quadros de 32×32 |
+| `assets/sprites/nanobo_spritesheet.aseprite` | Fonte editável da arte antiga (uma direção); a folha de quatro direções é gerada por `Nanobo-testes/gerar_spritesheet.py` |
 
 | Etiqueta | Quadros | Duração | Movimento |
 |---|---|---|---|
