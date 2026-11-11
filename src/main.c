@@ -1585,7 +1585,7 @@ void results_oa2_text(char* line, size_t size)
     else
     {
         snprintf(line, size,
-            "OA2 Estrutura: sem dados para comparacao.");
+            "OA2 Estrutura: sem dados para comparção.");
     }
 }
 
