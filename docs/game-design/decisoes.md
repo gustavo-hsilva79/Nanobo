@@ -190,6 +190,8 @@ A Fase 2 trabalhará **vírus**, com conteúdo relacionado aos ciclos lítico e 
 
 Foi definido um limite de referência de **3 vírus** para uma mecânica de desafio. As regras exatas ainda precisam ser detalhadas e validadas.
 
+> **Nota de 11/11/2026:** a regra fechada em #83 **não tem teto** — os 3 vírus são a composição inicial do encontro e a população cresce por geração (3 → 12 → 39), como registra `fase2-virus.md`. O "3" aqui é tamanho de encontro, não limite de vírus vivos.
+
 ### Pontuação e progressão
 
 O jogo terá pontuação, bônus por identificação e progressão. O hi-score deverá ser persistente na versão final.
@@ -319,4 +321,4 @@ O M4 continua centrado na Fase 1; a **Fase 2 mínima** existe para fechar o flux
 - Balanceamento de vida, dano, ataque, defesa, cooldowns e resistência (a regra de mitigação da defesa está fechada desde 16/10/2026; falta calibrar os números).
 - Regras de progressão entre fases.
 - Variação de sprites das bactérias (regra decidida em 03/11; quantidade no M5, #211).
-- Regras do vírus decididas em 11/11/2026 — ver `fase2-virus.md`; falta balancear os números.
+- Regras detalhadas da multiplicação limitada da Fase 2 — resolvida em 11/11/2026, ver `fase2-virus.md`; falta balancear os números.
