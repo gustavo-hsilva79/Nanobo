@@ -295,10 +295,10 @@ bool load_resources()
         return false;
     }
 
-    nanobo = al_load_bitmap("assets/sprites/nanobo.png");
+    nanobo = al_load_bitmap("assets/sprites/nanobo_spritesheet.png");
     if (!nanobo)
     {
-        printf("couldn't load nanobo\n");
+        printf("couldn't load nanobo spritesheet\n");
         return false;
     }
 
@@ -1458,6 +1458,27 @@ void draw_hud()
     al_reset_clipping_rectangle();
 }
 
+// quadro do spritesheet: 1-4 parado (220 ms), 5-8 andando (110 ms) (#30)
+int player_frame()
+{
+    int base;
+    double frame_time;
+    bool moving = player.vx != 0.0f || player.vy != 0.0f;
+
+    if (moving)
+    {
+        base = 4;
+        frame_time = 0.110;
+    }
+    else
+    {
+        base = 0;
+        frame_time = 0.220;
+    }
+
+    return base + (int)(match_time / frame_time) % 4;
+}
+
 void draw_game()
 {
     int i;
@@ -1515,8 +1536,11 @@ void draw_game()
     }
 
     // o nanobo e desenhado onde o mundo deixou ele, ja descontada a camera
-    al_draw_bitmap(nanobo, view_x(player.x) - PLAYER_RADIUS,
-        view_y(player.y) - PLAYER_RADIUS, 0);
+    // a linha do spritesheet e a direcao quando a arte tem as quatro (#30)
+    int nanobo_row = (al_get_bitmap_height(nanobo) >= 4 * 32) ? (int)player.facing : 0;
+
+    al_draw_bitmap_region(nanobo, (float)(player_frame() * 32), (float)(nanobo_row * 32),
+        32.0f, 32.0f, view_x(player.x) - PLAYER_RADIUS, view_y(player.y) - PLAYER_RADIUS, 0);
 
     // anel da defesa: ciano enquanto protege, apagado durante a recarga (#17)
     if (defense_state() == 1)

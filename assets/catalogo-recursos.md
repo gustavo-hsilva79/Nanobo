@@ -6,7 +6,7 @@ Inventário dos recursos necessários à execução atual, para orientar o carre
 
 | Recurso | Uso atual | Local |
 |---|---|---|
-| Sprite do Nanobô (32×32) | Personagem do jogador | `assets/sprites/nanobo.png`; `load_resources()` em `src/main.c` |
+| Sprite do Nanobô (32×32, 8 quadros) | Personagem do jogador | `assets/sprites/nanobo_spritesheet.png` (256×32, 8 quadros de 32×32), o bitmap que `load_resources()` abre e `draw_game()` recorta (#30); `nanobo.png` fica como histórico |
 | Bactéria Gram-positiva (32×32) | Agente `SPECIES_GRAM_POSITIVE` | `assets/sprites/bacteria_gram_positiva.png`; idem |
 | Bactéria Gram-negativa (32×32) | Agente `SPECIES_GRAM_NEGATIVE` | `assets/sprites/bacteria_gram_negativa.png`; idem |
 | Célula saudável própria (32×32) | Agente `SPECIES_CELL` | `assets/sprites/celula_propria.png`; idem |
@@ -90,7 +90,7 @@ O fundo é escuro e de baixo contraste de propósito: os sprites precisam contin
 
 | Tipo | Recursos necessários | Local definido | Estado |
 |---|---|---|---|
-| Sprites e animações | Arte final dos agentes, **sprite neutro das bactérias** e spritesheet animado do Nanobô | `assets/sprites/` | Agentes carregados; spritesheet criado e não carregado; o disco cinza até a camada 1 é desenhado por primitiva, sem asset novo |
+| Sprites e animações | Arte final dos agentes, **sprite neutro das bactérias** e spritesheet animado do Nanobô | `assets/sprites/` | Agentes carregados; spritesheet animado carregado e desenhado (#30); o disco cinza até a camada 1 é desenhado por primitiva, sem asset novo |
 | Cenários | Mapa do mundo da Fase 1, 1920×512 | `assets/backgrounds/` | Criado e carregado (`ca4845a`) |
 | Ícones de interface | Armas (Ruptura/Dissolução), scanner, vida e defesa | `assets/sprites/` | Scanner, vida, defesa e as duas armas prontos; o HUD desenha `icone_ruptura.png` e `icone_dissolucao.png` |
 | Fontes | Tipografia final da interface | `assets/fonts/` | [PENDÊNCIA] Fonte ainda não escolhida; a fonte embutida atual é provisória |
