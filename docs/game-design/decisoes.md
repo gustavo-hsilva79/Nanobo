@@ -35,7 +35,7 @@ O que está decidido e o código ainda não faz — ou já faz desde o build de 
 | Identificação condiciona a conclusão | D2.1 + D2.2 | ausente — #206 (trava) e #207 (9/9; 6/6 na Fase 2) no M5 | M5 |
 | Resumo por objetivo na tela de Resultados | RF-07 (#174) | **parcial** — contadores no painel; o texto por OA fica no M5 (#210) | M5 |
 | Fase 2 mínima (3 vírus + 3 células, 1 resistência, qualquer arma) | `decisoes.md` (04/11) | **feito** | M4 (#76) |
-| Ciclo lisogênico/lítico e multiplicação limitada | #83–#86 | inexistente | M5 |
+| Ciclo lisogênico/lítico e multiplicação limitada | #83; `fase2-virus.md` | inexistente — regras fechadas em 11/11/2026 (#83), implementação em #84–#88 | M5 |
 | Recorde persistente mínimo (melhor pontuação) | `decisoes.md` (04/11) | **feito** — menu e Vitória; decisão de 05/11: só Vitória grava, o build de 04/11 ainda grava no Game Over (#34/#82) | M4 (Top 10 e nome no M5) |
 | Bônus +15 por run perfeito (0 erro de arma + 0 tiro na célula) | `decisoes.md` (03/11, noite) | paga 9/9 — #208 troca para run perfeito | M5 |
 | SFX e animação | requisito final | inexistentes | M5 |
@@ -174,6 +174,8 @@ A proposta é que o jogador descubra informações, interprete dados do scanner 
 - A Fase 1 não conclui com ameaça ativa: o destino só libera a vitória com as **6** neutralizadas (#26).
 - O feedback educacional (#178) comunica o custo no momento em que ele é aplicado, e só quando é aplicado; não existe barra de integridade do organismo nem segunda condição de derrota no MVP.
 
+> **Nota de 11/11/2026:** na Fase 2, a eclosão do vírus rompe a célula hospedeira e cobra 1 de vida do jogador. Isso **introduz uma segunda condição de derrota** na Fase 2, por decisão do dono em 11/11/2026, e **substitui a frase acima** no que vale para a Fase 2; a Fase 1 continua sem segunda condição de derrota. Regras em `fase2-virus.md`.
+
 **Descartado por enquanto:** cronômetro de infecção, aceleração das bactérias e perda de pontos por tempo. Os três punem o tempo de leitura do scanner, que é o núcleo da aprendizagem, e criam um segundo estado de falha para o MVP. Se o playtest do M5 mostrar que falta pressão, a opção mais barata de ler é a **aceleração** das bactérias, nunca a perda de pontos.
 
 ### Fase 1
@@ -187,6 +189,8 @@ A Fase 2 trabalhará **vírus**, com conteúdo relacionado aos ciclos lítico e 
 ### Limite de vírus
 
 Foi definido um limite de referência de **3 vírus** para uma mecânica de desafio. As regras exatas ainda precisam ser detalhadas e validadas.
+
+> **Nota de 11/11/2026:** a regra fechada em #83 **não tem teto** — os 3 vírus são a composição inicial do encontro e a população cresce por geração (3 → 12 → 39), como registra `fase2-virus.md`. O "3" aqui é tamanho de encontro, não limite de vírus vivos.
 
 ### Pontuação e progressão
 
@@ -206,6 +210,7 @@ O jogo terá pontuação, bônus por identificação e progressão. O hi-score d
 - A tira de quadros desenha **as 4 direções desenhadas uma a uma** (cima, baixo, esquerda e direita), nas poses **frente / costas / perfil**. Nada de espelhar um lado no código.
 - Grade da tira: **8 quadros por direção** (1–4 parado, 220 ms cada; 5–8 andando, 110 ms cada), 32×32 por quadro, tira final **256×128**, com as linhas na ordem do `player_facing` (`UP`, `DOWN`, `LEFT`, `RIGHT`) — assim o código acha a linha sem tabela de conversão.
 - Os arquivos novos são criados **ao lado dos antigos, sem alterá-los** (`nanobo_v2.png`, `nanobo_spritesheet_v2.png` e a fonte `.aseprite`). A troca no jogo é etapa separada.
+- **Entregue em 11/11/2026:** a folha saiu com **256×128**, linhas na ordem `UP`/`DOWN`/`LEFT`/`RIGHT` e 8 quadros por linha. Foi gerada por script (`Nanobo-testes/gerar_spritesheet.py`, fora do repositório) e a troca não esperou arquivos `_v2`: o `nanobo_spritesheet.png` do jogo passou a ser a folha nova, e a arte antiga ficou no histórico do git. A linha da direita é o **espelho** da esquerda, feito na geração da arte — o código continua sem espelhar nada.
 
 ### Resolução, escala inteira e câmera (22/10/2026)
 
@@ -317,4 +322,4 @@ O M4 continua centrado na Fase 1; a **Fase 2 mínima** existe para fechar o flux
 - Balanceamento de vida, dano, ataque, defesa, cooldowns e resistência (a regra de mitigação da defesa está fechada desde 16/10/2026; falta calibrar os números).
 - Regras de progressão entre fases.
 - Variação de sprites das bactérias (regra decidida em 03/11; quantidade no M5, #211).
-- Regras detalhadas da multiplicação limitada da Fase 2.
+- Regras detalhadas da multiplicação limitada da Fase 2 — resolvidas em 11/11/2026, ver `fase2-virus.md`; falta balancear os números.

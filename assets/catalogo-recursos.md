@@ -6,7 +6,7 @@ Inventário dos recursos necessários à execução atual, para orientar o carre
 
 | Recurso | Uso atual | Local |
 |---|---|---|
-| Sprite do Nanobô (32×32) | Personagem do jogador | `assets/sprites/nanobo.png`; `load_resources()` em `src/main.c` |
+| Sprite do Nanobô (32×32, 4 direções × 8 quadros) | Personagem do jogador | `assets/sprites/nanobo_spritesheet.png` (256×128, 4 linhas × 8 quadros de 32×32), o bitmap que `load_resources()` abre e `draw_game()` recorta (#30); `nanobo.png` fica como histórico |
 | Bactéria Gram-positiva (32×32) | Agente `SPECIES_GRAM_POSITIVE` | `assets/sprites/bacteria_gram_positiva.png`; idem |
 | Bactéria Gram-negativa (32×32) | Agente `SPECIES_GRAM_NEGATIVE` | `assets/sprites/bacteria_gram_negativa.png`; idem |
 | Célula saudável própria (32×32) | Agente `SPECIES_CELL` | `assets/sprites/celula_propria.png`; idem |
@@ -19,11 +19,11 @@ Inventário dos recursos necessários à execução atual, para orientar o carre
 | Fonte embutida do Allegro | Todo o texto da interface: HUD, painel do scanner, menu, pausa e telas de fim | `al_create_builtin_font()` em `src/main.c`; não há arquivo de fonte |
 | Mapa do mundo da Fase 1 (1920×512) | Fundo do mundo, desenhado atrás de destino, agentes e Nanobô | `assets/backgrounds/mapa_fase1.png`; idem |
 
-`free_resources()` libera os onze bitmaps na ordem inversa e depois a fonte. O título do menu (`NANOBÔ`) é um bitmap montado em tempo de carregamento a partir da fonte (`make_text_bitmap`), também liberado ali. O projétil é desenhado com primitivas do Allegro, sem bitmap; com a cor neutra, os dois projéteis se distinguem pela **forma**: quadrado na Ruptura, círculo na Dissolução. Os ícones `icone_laser_roxo.png` e `icone_laser_vermelho.png` saíram do `load_resources()` e continuam no disco como histórico.
+`load_resources()` abre os onze bitmaps, a fonte e, quando o áudio está instalado, os seis efeitos de `assets/audio/sfx/*.wav` e a música `assets/audio/music/fundo.wav`. `free_resources()` libera os onze bitmaps na ordem inversa, depois os seis efeitos e a música — os samples saem antes de `al_uninstall_audio()` — e por fim a fonte. O título do menu (`NANOBÔ`) é um bitmap montado em tempo de carregamento a partir da fonte (`make_text_bitmap`), também liberado ali. O projétil é desenhado com primitivas do Allegro, sem bitmap; com a cor neutra, os dois projéteis se distinguem pela **forma**: quadrado na Ruptura, círculo na Dissolução. Os ícones `icone_laser_roxo.png` e `icone_laser_vermelho.png` saíram do `load_resources()` e continuam no disco como histórico.
 
 ## Arte final criada
 
-Os quatro sprites de agente (três da Fase 1 e o vírus da Fase 2), o coração, os quatro ícones de interface e o mapa do mundo são carregados pelo jogo. A tira de quadros do Nanobô ainda não é; a arte antiga de fundo (`fundo_microscopico.png`) ficou como referência. Os recursos anteriores a 04/11 têm a fonte `.aseprite` editável ao lado do `.png`; os três novos (ícones neutros e vírus) foram gerados por script e ainda não têm `.aseprite` (pendência de arte). O `.png` é o arquivo que o jogo carrega.
+Os quatro sprites de agente (três da Fase 1 e o vírus da Fase 2), o coração, os quatro ícones de interface e o mapa do mundo são carregados pelo jogo. O bitmap do jogador é `assets/sprites/nanobo_spritesheet.png` (256×128, quatro direções × 8 quadros), desenhado por região; `nanobo.png` fica como histórico. A arte antiga de fundo (`fundo_microscopico.png`) ficou como referência. Os recursos anteriores a 04/11 têm a fonte `.aseprite` editável ao lado do `.png`; os três novos (ícones neutros e vírus) foram gerados por script e ainda não têm `.aseprite` (pendência de arte). O `.png` é o arquivo que o jogo carrega.
 
 Todos os sprites usam a mesma paleta, o mesmo tamanho de pixel e a mesma direção de luz (cima-esquerda), para manter a coesão visual.
 
@@ -45,8 +45,8 @@ A forma e o tamanho também separam os agentes: as bactérias são pequenas e si
 
 | Arquivo | Conteúdo |
 |---|---|
-| `assets/sprites/nanobo_spritesheet.png` | Tira horizontal de **256×32**: 8 quadros de 32×32 |
-| `assets/sprites/nanobo_spritesheet.aseprite` | Fonte editável, com as etiquetas de animação |
+| `assets/sprites/nanobo_spritesheet.png` | Folha de **256×128**: 4 linhas (cima, baixo, esquerda, direita) × 8 quadros de 32×32 |
+| `assets/sprites/nanobo_spritesheet.aseprite` | Fonte editável da arte antiga (uma direção); a folha de quatro direções é gerada por `Nanobo-testes/gerar_spritesheet.py` |
 
 | Etiqueta | Quadros | Duração | Movimento |
 |---|---|---|---|
@@ -90,12 +90,12 @@ O fundo é escuro e de baixo contraste de propósito: os sprites precisam contin
 
 | Tipo | Recursos necessários | Local definido | Estado |
 |---|---|---|---|
-| Sprites e animações | Arte final dos agentes, **sprite neutro das bactérias** e spritesheet animado do Nanobô | `assets/sprites/` | Agentes carregados; spritesheet criado e não carregado; o disco cinza até a camada 1 é desenhado por primitiva, sem asset novo |
+| Sprites e animações | Arte final dos agentes, **sprite neutro das bactérias** e spritesheet animado do Nanobô | `assets/sprites/` | Agentes carregados; spritesheet animado carregado e desenhado (#30); o disco cinza até a camada 1 é desenhado por primitiva, sem asset novo |
 | Cenários | Mapa do mundo da Fase 1, 1920×512 | `assets/backgrounds/` | Criado e carregado (`ca4845a`) |
 | Ícones de interface | Armas (Ruptura/Dissolução), scanner, vida e defesa | `assets/sprites/` | Scanner, vida, defesa e as duas armas prontos; o HUD desenha `icone_ruptura.png` e `icone_dissolucao.png` |
 | Fontes | Tipografia final da interface | `assets/fonts/` | [PENDÊNCIA] Fonte ainda não escolhida; a fonte embutida atual é provisória |
-| Música | Trilha da partida | `assets/audio/music/` | [PENDÊNCIA] Arquivo ainda não definido |
-| Efeitos sonoros | Feedback de ações e eventos | `assets/audio/sfx/` | [PENDÊNCIA] Arquivos ainda não definidos |
+| Música | Trilha da partida | `assets/audio/music/` | Presente: `fundo.wav`, 16 s em loop (705 644 B), WAV PCM 22 050 Hz mono 16 bits, carregado por `load_resources()` (#32) |
+| Efeitos sonoros | Feedback de ações e eventos | `assets/audio/sfx/` | Presente: 6 WAVs PCM 22 050 Hz mono 16 bits (4 a 11,5 KB) — `scanner`, `disparo`, `impacto`, `neutralizacao`, `penalidade` e `defesa` — gerados por `../Nanobo-testes/gerar_audio.py` e carregados por `load_resources()` (#31) |
 | Dados auxiliares | Configuração ou dados externos, caso necessários | `assets/data/` | [PENDÊNCIA] Nenhum arquivo necessário identificado até o momento |
 
 ## Observações para o carregador

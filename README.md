@@ -28,6 +28,8 @@ O jogador deve interpretar as informações obtidas pelo scanner para decidir co
 >
 > **Build de 04/11:** a camada 1 do scanner mostra a coloração (**roxo** ou **vermelho**) e o **nome do agente**; a camada 2 mostra o grupo, a estrutura e a frase de revisão; as armas se chamam **Ruptura** e **Dissolução**, com projétil neutro distinguido pela forma; as bactérias usam **sprite neutro** até a camada 1 e ganham **anel colorido permanente** depois. O **briefing de três cartões** abre toda partida — inclusive depois de Vitória e Game Over — e se pula com `ESC`. Os resultados ganharam o painel `o que a partida mostrou`. O pulso de 0,75 s continua ausente do build; a trava de 2 s e a perseguição (RF-06) entraram em 04/11 (`docs/game-design/decisoes.md`). Continua nos Resultados carrega a Fase 2 e preserva a pontuação; a última fase leva à Vitória, que mostra o total da run, o tempo total e o recorde. O recorde é a melhor pontuação da run, gravada em nanobo_hiscore.txt; a decisão de 05/11 é que só a Vitória grave, mas o build de 04/11 ainda grava no Game Over (#34/#82).
 
+> **M5 parcial (11/11/2026):** oito issues fecharam numa branch só. O Nanobô acelera e freia (#179), o jogo tem **seis efeitos sonoros** e **música em loop de 16 s** (#31/#32), o sprite do jogador é o **spritesheet animado nas quatro direções** (#30) e as regras dos estados do vírus da Fase 2 estão em [fase2-virus.md](docs/game-design/fase2-virus.md) (#83). A memória foi medida em build Release: pico de **79,41 MB** de working set, 78,0–78,3 MB em partida e nenhum crescimento em cinco reinícios (#114–#116), em [qa-memoria.md](docs/planejamento/qa-memoria.md).
+
 ## Núcleo do jogo
 
 - Exploração de um ambiente microscópico.
@@ -81,7 +83,7 @@ Os requisitos finais registrados no planejamento do projeto são:
 - Uso máximo de 100 MB de RAM.
 - Instalador para Windows.
 
-A entrega final deve cumprir esses requisitos. O MVP foi centrado na Fase 1 para validar o núcleo jogável; a Fase 2 mínima entrou em 04/11 para fechar o fluxo entre fases, e a completa é M5.
+Animação por spritesheet, música e efeitos sonoros entraram em 11/11/2026 (#30–#32), e o uso de RAM medido no Release é de 79,41 MB de pico por working set (#115). A entrega final deve cumprir o restante. O MVP foi centrado na Fase 1 para validar o núcleo jogável; a Fase 2 mínima entrou em 04/11 para fechar o fluxo entre fases, e a completa é M5.
 
 ## Tecnologias
 
@@ -99,7 +101,7 @@ Pré-requisitos: **Windows** e **Visual Studio 2022** com a carga de trabalho de
 1. Abra `Nanobo.sln` no Visual Studio.
 2. Na primeira vez, deixe o Visual Studio **restaurar os pacotes NuGet** — `Allegro 5.2.11.3` e `AllegroDeps 1.16.0`, listados em `packages.config`. Se o build reclamar de `packages\Allegro*.targets` ausente, restaure os pacotes; não edite o projeto para contornar.
 3. Escolha a configuração **Debug | x64** e compile com `Ctrl+Shift+B`. As configurações Win32 são legadas. O projeto compila em **C11** (`/std:c11`) com nível de aviso 4: código novo precisa compilar nos dois.
-4. Execute a partir da **raiz do repositório** (a pasta onde está `Nanobo.sln`): o jogo carrega os recursos por caminho relativo, como `assets/sprites/nanobo.png`.
+4. Execute a partir da **raiz do repositório** (a pasta onde está `Nanobo.sln`): o jogo carrega os recursos por caminho relativo, como `assets/sprites/nanobo_spritesheet.png`.
 
 O executável fica em `x64\Debug\Nanobo.exe`, ou `x64\Release\Nanobo.exe` quando a configuração é Release.
 
@@ -155,6 +157,7 @@ A lista completa dos marcos, com o objetivo e o critério de foco de cada um, es
 - [GDD](docs/game-design/gdd.md)
 - [Escopo](docs/game-design/escopo.md)
 - [Decisões de Game Design](docs/game-design/decisoes.md)
+- [Estados do vírus da Fase 2](docs/game-design/fase2-virus.md)
 - [Conteúdo biológico e objetivos de aprendizagem](docs/game-design/conteudo-biologico.md)
 - [Glossário](docs/game-design/glossario.md)
 - [Regras do scanner](docs/game-design/scanner.md)
@@ -170,6 +173,7 @@ A lista completa dos marcos, com o objetivo e o critério de foco de cada um, es
 - [Interação por mouse](docs/planejamento/interacao-mouse.md)
 - [Registro da PoC](docs/planejamento/qa-poc.md)
 - [QA do MVP](docs/planejamento/qa-mvp.md)
+- [Medição de memória](docs/planejamento/qa-memoria.md)
 - [Execução das correções da auditoria](docs/auditoria/execucao-correcoes-2026-10.md)
 - [Validação da máquina de estados](docs/planejamento/qa-maquina-estados.md)
 - [Validação do carregamento de recursos](docs/planejamento/qa-recursos.md)

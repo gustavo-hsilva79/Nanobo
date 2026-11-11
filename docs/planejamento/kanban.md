@@ -11,6 +11,8 @@
 > **Fechamento de 04/11/2026:** as 13 issues abertas do M4 fecharam com a Fase 2 mínima, os ícones neutros e o recorde; #58, #107 e #129 fecharam depois do QA manual do dono. #71 e #175 fecharam em 05/11 (a #175 como duplicata da #71).
 >
 > **Auditoria de 05/11/2026:** 5 entregues fecharam (#33, #35, #71, #90 e #175) e 7 dívidas decididas entraram (#206–#212: D2.2, D2.1, bônus de run perfeito, pulso de 0,75 s, RF-07, variação de sprites e registro de textos). O M5 fica com **85 abertas e 228 SP brutos** (195 SP sem as oito agrupadoras); #185, #195 e #197 ganharam responsável. O retrato completo está no relatório de auditoria de 05/11/2026, em `Nanobo-auditoria/` (fora do repositório).
+>
+> **Entrega de 11/11/2026:** oito issues no vermelho fecharam na branch `feat/vermelho-11-11` (12 commits, revisão final aprovada, merge fast-forward na `master` em `5c93b18`): #179 (aceleração e frenagem), #31 (seis efeitos sonoros), #32 (música em loop), #30 (spritesheet animado), #83 (estados do vírus da Fase 2), #114/#115/#116 (medição de memória — pico de 79,41 MB no Release). As regras da Fase 2 estão em `docs/game-design/fase2-virus.md` e a medição em `docs/planejamento/qa-memoria.md`.
 
 ## Entregas acadêmicas (Plano de Ensino)
 
@@ -119,9 +121,9 @@ A tabela de marcos — data, tipo e objetivo de cada um — fica em **[milestone
 
 > **Retrato de 05/11/2026:** 85 abertas. A lista abaixo é a de 18/10 com as correções desta data; as issues novas estão em #206–#212.
 
-- #30 Spritesheet e animação `[G]`
-- #31 Efeitos sonoros `[G]`
-- #32 Música `[G]`
+- #30 Spritesheet e animação `[G]` *(fechada em 11/11)*
+- #31 Efeitos sonoros `[G]` *(fechada em 11/11)*
+- #32 Música `[G]` *(fechada em 11/11)*
 - #33 Suporte a múltiplas fases `[G]` *(fechada em 05/11)*
 - #34 Hi-score persistente `[G]` *(agrupadora)*
 - #35 Liberação de recursos `[G]` *(fechada em 05/11)*
@@ -135,8 +137,8 @@ A tabela de marcos — data, tipo e objetivo de cada um — fica em **[milestone
 - #55 Segunda fase jogável `[G]` *(agrupadora)*
 - #65 Identificação única na Fase 1 `[G]` *(fechada; está no M4)*
 - #77–#82 Formato, leitura, gravação e validação do hi-score `[E]`
-- #83–#91 Estados, multiplicação e integração da Fase 2 — `[G]` #83–#90 · `[E]` #91 *(#90 fechada em 05/11)*
-- #114–#119 Medição de memória `[G]`
+- #83–#91 Estados, multiplicação e integração da Fase 2 — `[G]` #83–#90 · `[E]` #91 *(#83 e #90 fechadas — 11/11 e 05/11)*
+- #114–#119 Medição de memória `[G]` *(#114–#116 fechadas em 11/11; #117–#119 abertas)*
 - #127–#143 QA, regressão, teste externo e correção de bugs — `[G]` #127 e #134–#138 · `[E]` #128–#133 e #139–#143
 - #144–#158 Documentação final e build Release — `[G]` #144–#146 · `[E]` #147–#158
 - #159–#170 Instalador, teste em máquina limpa e ensaio da apresentação — `[E]` #159–#164 · `[G]` #165–#170

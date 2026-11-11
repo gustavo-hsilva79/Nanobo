@@ -164,6 +164,24 @@ float attack_cooldown_left();
 int threats_left();
 bool phase_completed();
 
+// evento de audio da ultima acao: o main toca o som, o gameplay fica sem Allegro (#31)
+typedef enum
+{
+    SFX_EVENT_NONE = 0,
+    SFX_EVENT_SCAN,
+    SFX_EVENT_SHOT,
+    SFX_EVENT_HIT,
+    SFX_EVENT_NEUTRALIZED,
+    SFX_EVENT_WRONG,
+    SFX_EVENT_DAMAGE,
+    SFX_EVENT_DEFENSE,
+    SFX_EVENT_PHASE_DONE
+} SfxEvent;
+
+// identificador do ultimo evento e o tipo dele: o main compara o id (#31)
+unsigned int sfx_event_id(void);
+SfxEvent sfx_event_kind(void);
+
 // partida: o tamanho do mundo vem das constantes, nao do main
 void reset_match();
 void update_match(double dt);

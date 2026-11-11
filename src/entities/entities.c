@@ -44,5 +44,6 @@ Camera camera = { 0.0f, 0.0f };
 Projectile projectiles[MAX_PROJECTILES];
 
 // inicializar player
-Nanobo player = { .x = 960.0f, .y = 256.0f, .speed = 200.0f, .facing = PLAYER_FACING_DOWN,
+Nanobo player = { .x = 960.0f, .y = 256.0f, .speed = 200.0f, .vx = 0.0f, .vy = 0.0f,
+                  .facing = PLAYER_FACING_DOWN,
                   .health = PLAYER_MAX_HEALTH, .laser = LASER_GRAM_POSITIVE };
