@@ -106,6 +106,10 @@ extern int identified_count;
 // vida maxima do player
 #define PLAYER_MAX_HEALTH 3
 
+// aceleracao e frenagem do nanobo em pixels por segundo ao quadrado (#179)
+#define PLAYER_ACCEL 1200.0f
+#define PLAYER_DECEL 1600.0f
+
 // direcao para onde o nanobo olha, usada pelo disparo (#63)
 typedef enum
 {
@@ -120,7 +124,9 @@ typedef struct
 {
     float x;
     float y;
-    float speed;
+    float speed; // velocidade maxima em pixels por segundo (#179)
+    float vx;    // velocidade atual em x, sobe e desce pelo delta time (#179)
+    float vy;    // velocidade atual em y, sobe e desce pelo delta time (#179)
     Facing facing;
     int health;
     Laser laser; // LASER_* escolhido pelo jogador (#62)

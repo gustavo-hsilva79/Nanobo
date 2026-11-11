@@ -72,6 +72,31 @@ bool key_down = false;
 bool key_left = false;
 bool key_right = false;
 
+// aproxima value de target sem passar dele, pelo passo maximo (#179)
+static float approach(float value, float target, float step)
+{
+    if (value < target)
+    {
+        value = value + step;
+
+        if (value > target)
+        {
+            value = target;
+        }
+    }
+    else if (value > target)
+    {
+        value = value - step;
+
+        if (value < target)
+        {
+            value = target;
+        }
+    }
+
+    return value;
+}
+
 // distancia ao quadrado entre dois pontos, evita a raiz quadrada
 static float squared_distance(float ax, float ay, float bx, float by)
 {
@@ -1022,6 +1047,8 @@ static void start_phase(int index)
     player.y = (float)WORLD_H / 2.0f;
     player.health = PLAYER_MAX_HEALTH;
     player.facing = PLAYER_FACING_DOWN;
+    player.vx = 0.0f;
+    player.vy = 0.0f;
 
     place_agents();
 
@@ -1303,7 +1330,8 @@ static void collide_agents()
 // a partida so anda no estado GAME; o mundo vem das constantes
 void update_match(double dt)
 {
-    float step = (float)(player.speed * dt);
+    float dir_x = 0.0f;
+    float dir_y = 0.0f;
 
     for (int i = 0; i < agents_count; i++)
     {
@@ -1421,29 +1449,39 @@ void update_match(double dt)
         }
     }
 
+    // direcao pedida pelas teclas: a diagonal soma os dois eixos, como antes (#179)
     if (key_up)
     {
-        player.y = player.y - step;
+        dir_y -= 1.0f;
         player.facing = PLAYER_FACING_UP;
     }
 
     if (key_down)
     {
-        player.y = player.y + step;
+        dir_y += 1.0f;
         player.facing = PLAYER_FACING_DOWN;
     }
 
     if (key_left)
     {
-        player.x = player.x - step;
+        dir_x -= 1.0f;
         player.facing = PLAYER_FACING_LEFT;
     }
 
     if (key_right)
     {
-        player.x = player.x + step;
+        dir_x += 1.0f;
         player.facing = PLAYER_FACING_RIGHT;
     }
+
+    // acelera enquanto a tecla esta apertada e freia quando ela solta (#179)
+    player.vx = approach(player.vx, dir_x * player.speed,
+        (dir_x != 0.0f ? PLAYER_ACCEL : PLAYER_DECEL) * (float)dt);
+    player.vy = approach(player.vy, dir_y * player.speed,
+        (dir_y != 0.0f ? PLAYER_ACCEL : PLAYER_DECEL) * (float)dt);
+
+    player.x = player.x + player.vx * (float)dt;
+    player.y = player.y + player.vy * (float)dt;
 
     // o nanobo nao sai do mundo
     player.x = clamp_to_world(player.x, (float)WORLD_W);
