@@ -96,3 +96,24 @@ csv: C:/Users/GIGABYTE/AppData/Local/Temp/nanobo-memoria-release.csv
 ```
 
 O script vive em `../Nanobo-testes/medir_memoria.ps1`, ao lado do harness, fora deste repositório. Ele não abre o jogo sozinho: sem `Nanobo.exe` rodando, imprime `nenhuma amostra: o jogo nao estava aberto` e sai com código 1. O CSV usado fica em `C:/Users/GIGABYTE/AppData/Local/Temp/nanobo-memoria-release.csv` (o `%TEMP%` do usuário) e pode ser trocado pelo `-Out` na mesma chamada.
+
+---
+
+## 11/11/2026 — #115: execução normal
+
+- **Commit medido:** `86a962e` (branch `feat/vermelho-11-11`), com áudio e spritesheet carregados.
+- **Builds:** `Release|x64` (referência) e `Debug|x64` (comparativo), ambos com `Rebuild` e 0 avisos.
+- **Método:** `medir_memoria.ps1 -EveryMs 250`, três janelas no Release — carga+menu (20 s), GAME (40 s) e GAME logo depois de dirigir o Nanobô nas quatro direções (~7 s) — e uma janela de 10 s no Debug.
+
+| Build / janela | Amostras | Mín (MB) | Pico (MB) | Última (MB) |
+|---|---:|---:|---:|---:|
+| Release — carga + MENU, 20 s | 76 | 76,51 | **79,41** | 76,67 |
+| Release — GAME, 40 s | 151 | 78,05 | 78,27 | 78,27 |
+| Release — GAME após dirigir, 10 s | 38 | 76,34 | 78,15 | 76,34 |
+| Debug — carga + MENU, 10 s | 38 | 77,11 | 77,27 | 77,27 |
+
+**Leitura.** O pico do Release é **79,41 MB**, no carregamento dos recursos, e cai para ~76,7 MB com o jogo em repouso no menu. Em partida, o working set fica em **78,0–78,3 MB** e **não sobe** quando o jogador anda ou age: a janela seguinte à movimentação fechou em 76,34 MB, mais baixa que a de repouso. Contra o limite de 100 MB sobram **20,6 MB** no pior instante medido.
+
+**Desvio declarado.** O roteiro pede 60 s de partida com scan e combate manuais; a automação disponível não joga a fase inteira sem foco. Medi 40 s de GAME com os agentes se movendo e mais 10 s depois de dirigir o Nanobô — a diferença entre as duas janelas é menor que 2 MB e é para baixo, então o pico não está na ação do jogador. A varredura manual completa fica para a #117, quando o áudio e as variantes estiverem fechados.
+
+**CSVs:** `t7-release-load.csv`, `t7-release-game.csv` e `t7-release-pos-drive.csv`, gravados em `C:/Users/GIGABYTE/AppData/Local/hermes/cache/scratch/`; a janela de Debug é `%TEMP%/nanobo-medida-teste.csv`.
