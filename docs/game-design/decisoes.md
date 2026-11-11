@@ -35,7 +35,7 @@ O que está decidido e o código ainda não faz — ou já faz desde o build de 
 | Identificação condiciona a conclusão | D2.1 + D2.2 | ausente — #206 (trava) e #207 (9/9; 6/6 na Fase 2) no M5 | M5 |
 | Resumo por objetivo na tela de Resultados | RF-07 (#174) | **parcial** — contadores no painel; o texto por OA fica no M5 (#210) | M5 |
 | Fase 2 mínima (3 vírus + 3 células, 1 resistência, qualquer arma) | `decisoes.md` (04/11) | **feito** | M4 (#76) |
-| Ciclo lisogênico/lítico e multiplicação limitada | #83–#86 | inexistente | M5 |
+| Ciclo lisogênico/lítico e multiplicação limitada | #83; `fase2-virus.md` | inexistente — regras fechadas em 11/11/2026 (#83), implementação em #84–#88 | M5 |
 | Recorde persistente mínimo (melhor pontuação) | `decisoes.md` (04/11) | **feito** — menu e Vitória; decisão de 05/11: só Vitória grava, o build de 04/11 ainda grava no Game Over (#34/#82) | M4 (Top 10 e nome no M5) |
 | Bônus +15 por run perfeito (0 erro de arma + 0 tiro na célula) | `decisoes.md` (03/11, noite) | paga 9/9 — #208 troca para run perfeito | M5 |
 | SFX e animação | requisito final | inexistentes | M5 |
@@ -173,6 +173,8 @@ A proposta é que o jogador descubra informações, interprete dados do scanner 
 - A ameaça ignorada deixa de valer os **+10** da neutralização (#66).
 - A Fase 1 não conclui com ameaça ativa: o destino só libera a vitória com as **6** neutralizadas (#26).
 - O feedback educacional (#178) comunica o custo no momento em que ele é aplicado, e só quando é aplicado; não existe barra de integridade do organismo nem segunda condição de derrota no MVP.
+
+> **Nota de 11/11/2026:** na Fase 2, a eclosão do vírus rompe a célula hospedeira e cobra 1 de vida do jogador. Isso **introduz uma segunda condição de derrota** na Fase 2, por decisão do dono em 11/11/2026, e **substitui a frase acima** no que vale para a Fase 2; a Fase 1 continua sem segunda condição de derrota. Regras em `fase2-virus.md`.
 
 **Descartado por enquanto:** cronômetro de infecção, aceleração das bactérias e perda de pontos por tempo. Os três punem o tempo de leitura do scanner, que é o núcleo da aprendizagem, e criam um segundo estado de falha para o MVP. Se o playtest do M5 mostrar que falta pressão, a opção mais barata de ler é a **aceleração** das bactérias, nunca a perda de pontos.
 
@@ -317,4 +319,4 @@ O M4 continua centrado na Fase 1; a **Fase 2 mínima** existe para fechar o flux
 - Balanceamento de vida, dano, ataque, defesa, cooldowns e resistência (a regra de mitigação da defesa está fechada desde 16/10/2026; falta calibrar os números).
 - Regras de progressão entre fases.
 - Variação de sprites das bactérias (regra decidida em 03/11; quantidade no M5, #211).
-- Regras detalhadas da multiplicação limitada da Fase 2.
+- Regras do vírus decididas em 11/11/2026 — ver `fase2-virus.md`; falta balancear os números.
