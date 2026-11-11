@@ -8,6 +8,8 @@
 #include <allegro5/allegro_ttf.h>
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_primitives.h>
+#include <allegro5/allegro_audio.h>
+#include <allegro5/allegro_acodec.h>
 
 #include "core/game.h"
 #include "entities/entities.h"
@@ -59,6 +61,9 @@ _Static_assert(HUD_LINES * HUD_LINE_H + 2 * HUD_MARGIN <= PANEL_H, "HUD nao cabe
 #define UI_LINE      al_map_rgb(48, 60, 74)    // separador e molduras discretas
 #define UI_FRAME     al_map_rgb(76, 92, 108)   // moldura de painel
 
+// volume dos efeitos, de 0 a 1 (#31)
+#define SFX_GAIN 0.55f
+
 // y de cada linha do HUD, contando de cima para baixo dentro do painel
 int hud_y(int line)
 {
@@ -89,6 +94,18 @@ ALLEGRO_BITMAP* virus_sprite = NULL;
 
 // mapa do mundo inteiro da Fase 1 (1920x512), sempre atras do resto
 ALLEGRO_BITMAP* world_map = NULL;
+
+// audio: opcional, o jogo abre mudo quando nao ha placa de som (#31)
+bool audio_ready = false;
+ALLEGRO_SAMPLE* sfx_scan = NULL;
+ALLEGRO_SAMPLE* sfx_shot = NULL;
+ALLEGRO_SAMPLE* sfx_hit = NULL;
+ALLEGRO_SAMPLE* sfx_neutralized = NULL;
+ALLEGRO_SAMPLE* sfx_penalty = NULL;
+ALLEGRO_SAMPLE* sfx_defense = NULL;
+
+// id do ultimo evento de audio que ja tocou: um som por evento (#31)
+unsigned int sfx_seen = 0;
 
 // janela, canvas logico e a escala inteira aplicada na saida
 ALLEGRO_DISPLAY* display = NULL;
@@ -356,6 +373,24 @@ bool load_resources()
         return false;
     }
 
+    // sons curtos: sem audio instalado os ponteiros ficam nulos (#31)
+    if (audio_ready)
+    {
+        sfx_scan = al_load_sample("assets/audio/sfx/scanner.wav");
+        sfx_shot = al_load_sample("assets/audio/sfx/disparo.wav");
+        sfx_hit = al_load_sample("assets/audio/sfx/impacto.wav");
+        sfx_neutralized = al_load_sample("assets/audio/sfx/neutralizacao.wav");
+        sfx_penalty = al_load_sample("assets/audio/sfx/penalidade.wav");
+        sfx_defense = al_load_sample("assets/audio/sfx/defesa.wav");
+
+        if (!sfx_scan || !sfx_shot || !sfx_hit || !sfx_neutralized
+            || !sfx_penalty || !sfx_defense)
+        {
+            printf("couldn't load sound effects\n");
+            return false;
+        }
+    }
+
     return true;
 }
 
@@ -432,6 +467,42 @@ void free_resources()
     {
         al_destroy_bitmap(nanobo);
         nanobo = NULL;
+    }
+
+    if (sfx_defense)
+    {
+        al_destroy_sample(sfx_defense);
+        sfx_defense = NULL;
+    }
+
+    if (sfx_penalty)
+    {
+        al_destroy_sample(sfx_penalty);
+        sfx_penalty = NULL;
+    }
+
+    if (sfx_neutralized)
+    {
+        al_destroy_sample(sfx_neutralized);
+        sfx_neutralized = NULL;
+    }
+
+    if (sfx_hit)
+    {
+        al_destroy_sample(sfx_hit);
+        sfx_hit = NULL;
+    }
+
+    if (sfx_shot)
+    {
+        al_destroy_sample(sfx_shot);
+        sfx_shot = NULL;
+    }
+
+    if (sfx_scan)
+    {
+        al_destroy_sample(sfx_scan);
+        sfx_scan = NULL;
     }
 
     if (font)
@@ -2000,6 +2071,45 @@ void handle_mouse_click(int button, float x, float y)
     }
 }
 
+// toca o som do ultimo evento de gameplay, uma vez por evento (#31)
+void play_pending_sfx()
+{
+    SfxEvent kind;
+
+    if (!audio_ready || sfx_event_id() == sfx_seen)
+    {
+        return;
+    }
+
+    sfx_seen = sfx_event_id();
+    kind = sfx_event_kind();
+
+    if (kind == SFX_EVENT_SCAN)
+    {
+        al_play_sample(sfx_scan, SFX_GAIN, 0.0f, 1.0f, ALLEGRO_PLAYMODE_ONCE, NULL);
+    }
+    else if (kind == SFX_EVENT_SHOT)
+    {
+        al_play_sample(sfx_shot, SFX_GAIN, 0.0f, 1.0f, ALLEGRO_PLAYMODE_ONCE, NULL);
+    }
+    else if (kind == SFX_EVENT_HIT)
+    {
+        al_play_sample(sfx_hit, SFX_GAIN, 0.0f, 1.0f, ALLEGRO_PLAYMODE_ONCE, NULL);
+    }
+    else if (kind == SFX_EVENT_NEUTRALIZED || kind == SFX_EVENT_PHASE_DONE)
+    {
+        al_play_sample(sfx_neutralized, SFX_GAIN, 0.0f, 1.0f, ALLEGRO_PLAYMODE_ONCE, NULL);
+    }
+    else if (kind == SFX_EVENT_WRONG || kind == SFX_EVENT_DAMAGE)
+    {
+        al_play_sample(sfx_penalty, SFX_GAIN, 0.0f, 1.0f, ALLEGRO_PLAYMODE_ONCE, NULL);
+    }
+    else if (kind == SFX_EVENT_DEFENSE)
+    {
+        al_play_sample(sfx_defense, SFX_GAIN, 0.0f, 1.0f, ALLEGRO_PLAYMODE_ONCE, NULL);
+    }
+}
+
 int main()
 {
     if (!al_init())
@@ -2024,6 +2134,21 @@ int main()
     {
         printf("couldn't initialize image addon\n");
         return 1;
+    }
+
+    // audio opcional: sem placa de som o jogo abre mudo (#31)
+    if (al_install_audio() && al_init_acodec_addon())
+    {
+        if (!al_reserve_samples(8))
+        {
+            printf("couldn't reserve audio samples\n");
+        }
+
+        audio_ready = true;
+    }
+    else
+    {
+        printf("couldn't initialize audio: the game runs silent\n");
     }
 
     if (!al_install_keyboard())
@@ -2114,6 +2239,8 @@ int main()
                         game_set_scene(GAME_SCENE_RESULTS);
                     }
                 }
+                play_pending_sfx();
+
                 redraw = true;
                 break;
 
