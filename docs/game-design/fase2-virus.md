@@ -43,7 +43,7 @@ O ciclo tem três momentos, nesta ordem: eclipse (`[PENDÊNCIA]`, abaixo), multi
 
 - Ao fim do eclipse nascem **até 3 vírus novos**, em volta do ponto da ruptura — ou do próprio vírus, quando não há célula viva —, sem nascer em cima do Nanobô nem fora da área jogável. Raio, ângulo e ordem de criação são da implementação (#86).
 - Os novos nascem **lisogênicos**, com `LYSOGENIC_TIME` cheio, e `generation` igual à geração do pai mais 1.
-- O vírus que eclodiu vira **lítico**, permanece na cena e **não eclode de novo**: uma marca de "já eclodiu" (nome livre para a implementação) fecha o ciclo dele.
+- O vírus que eclodiu **continua lítico**, permanece na cena e **não eclode de novo**: uma marca de "já eclodiu" (nome livre para a implementação) fecha o ciclo dele.
 - **No mesmo instante da multiplicação**, a célula hospedeira **se rompe, sai da cena e cobra 1 de vida** do Nanobô (ver "Consequências"). Ruptura, nascimento dos novos e perda de vida são um evento só: neutralizar o vírus durante o eclipse impede os três.
 - Sem célula hospedeira viva na fase, a eclosão **só multiplica**: não há célula a romper e não há custo de vida.
 
@@ -85,7 +85,7 @@ O vírus mantém **duas camadas**, como os outros agentes, e a leitura continua 
 | 1 | vírus lisogênico | `vírus · Vírus da fase · lisogênico · %d s` | 41 (com 2 dígitos) |
 | 1 | vírus lítico | `vírus · Vírus da fase · lítico` | 30 |
 | 2, linha 1 | vírus lisogênico | `lisogênico · %d s · espera na célula e eclode em até 3 novos` | 60 |
-| 2, linha 1 | vírus lítico | `lítico · já eclodiu; não eclode de novo` | 39 |
+| 2, linha 1 | vírus lítico | `lítico · não eclode de novo` | 27 |
 | 2, linha 2 (revisão) | qualquer estado | `cada vírus eclode uma vez; a célula hospedeira morre` | 52 |
 
 - O `%d s` é o **tempo restante** do lisogênico e aparece **nas duas camadas**: na 1 para quem ainda não leu, na primeira linha da 2 para quem já concluiu a leitura. O painel desenha **uma camada por vez** (`src/main.c:909-925`), então o contador sumiria justo quando o jogador termina de ler se existisse só na 1. No lítico não existe número.

@@ -321,4 +321,4 @@ O M4 continua centrado na Fase 1; a **Fase 2 mínima** existe para fechar o flux
 - Balanceamento de vida, dano, ataque, defesa, cooldowns e resistência (a regra de mitigação da defesa está fechada desde 16/10/2026; falta calibrar os números).
 - Regras de progressão entre fases.
 - Variação de sprites das bactérias (regra decidida em 03/11; quantidade no M5, #211).
-- Regras detalhadas da multiplicação limitada da Fase 2 — resolvida em 11/11/2026, ver `fase2-virus.md`; falta balancear os números.
+- Regras detalhadas da multiplicação limitada da Fase 2 — resolvidas em 11/11/2026, ver `fase2-virus.md`; falta balancear os números.
