@@ -15,15 +15,16 @@ Inventário dos recursos necessários à execução atual, para orientar o carre
 | Ícone da arma Ruptura (16×16) | Indicador da arma na HUD: parede de tijolos, cor neutra e forma própria (04/11) | `assets/sprites/icone_ruptura.png` |
 | Ícone da arma Dissolução (16×16) | Indicador da arma na HUD: anéis concêntricos, cor neutra e forma própria (04/11) | `assets/sprites/icone_dissolucao.png` |
 | Vírus da Fase 2 (32×32) | Agente `SPECIES_VIRUS`: corpo laranja com espinhos e núcleo | `assets/sprites/virus_fase2.png` |
+| Variantes B das quatro espécies (32×32) | Segunda variante sorteada por agente no nascimento (#211) | `assets/sprites/bacteria_gram_positiva_b.png`, `bacteria_gram_negativa_b.png`, `celula_propria_b.png` e `virus_fase2_b.png`, com o `.aseprite` ao lado |
 | Ícone de defesa (16×16) | Linha de controles do menu | `assets/sprites/icone_defesa.png`; idem |
 | Fonte embutida do Allegro | Todo o texto da interface: HUD, painel do scanner, menu, pausa e telas de fim | `al_create_builtin_font()` em `src/main.c`; não há arquivo de fonte |
 | Mapa do mundo da Fase 1 (1920×512) | Fundo do mundo, desenhado atrás de destino, agentes e Nanobô | `assets/backgrounds/mapa_fase1.png`; idem |
 
-`load_resources()` abre os onze bitmaps, a fonte e, quando o áudio está instalado, os seis efeitos de `assets/audio/sfx/*.wav` e a música `assets/audio/music/fundo.wav`. `free_resources()` libera os onze bitmaps na ordem inversa, depois os seis efeitos e a música — os samples saem antes de `al_uninstall_audio()` — e por fim a fonte. O título do menu (`NANOBÔ`) é um bitmap montado em tempo de carregamento a partir da fonte (`make_text_bitmap`), também liberado ali. O projétil é desenhado com primitivas do Allegro, sem bitmap; com a cor neutra, os dois projéteis se distinguem pela **forma**: quadrado na Ruptura, círculo na Dissolução. Os ícones `icone_laser_roxo.png` e `icone_laser_vermelho.png` saíram do `load_resources()` e continuam no disco como histórico.
+`load_resources()` abre os quinze bitmaps, a fonte e, quando o áudio está instalado, os seis efeitos de `assets/audio/sfx/*.wav` e a música `assets/audio/music/fundo.wav`. `free_resources()` libera os quinze bitmaps na ordem inversa, depois os seis efeitos e a música — os samples saem antes de `al_uninstall_audio()` — e por fim a fonte. O título do menu (`NANOBÔ`) é um bitmap montado em tempo de carregamento a partir da fonte (`make_text_bitmap`), também liberado ali. O projétil é desenhado com primitivas do Allegro, sem bitmap; com a cor neutra, os dois projéteis se distinguem pela **forma**: quadrado na Ruptura, círculo na Dissolução. Os ícones `icone_laser_roxo.png` e `icone_laser_vermelho.png` saíram do `load_resources()` e continuam no disco como histórico.
 
 ## Arte final criada
 
-Os quatro sprites de agente (três da Fase 1 e o vírus da Fase 2), o coração, os quatro ícones de interface e o mapa do mundo são carregados pelo jogo. O bitmap do jogador é `assets/sprites/nanobo_spritesheet.png` (256×128, quatro direções × 8 quadros), desenhado por região; `nanobo.png` fica como histórico. A arte antiga de fundo (`fundo_microscopico.png`) ficou como referência. Os recursos anteriores a 04/11 têm a fonte `.aseprite` editável ao lado do `.png`; os três novos (ícones neutros e vírus) foram gerados por script e ainda não têm `.aseprite` (pendência de arte). O `.png` é o arquivo que o jogo carrega.
+Os oito sprites de agente (as quatro espécies, cada uma com as variantes A e B), o coração, os quatro ícones de interface e o mapa do mundo são carregados pelo jogo. O bitmap do jogador é `assets/sprites/nanobo_spritesheet.png` (256×128, quatro direções × 8 quadros), desenhado por região; `nanobo.png` fica como histórico. A arte antiga de fundo (`fundo_microscopico.png`) ficou como referência. Os recursos anteriores a 04/11 têm a fonte `.aseprite` editável ao lado do `.png`; os três novos (ícones neutros e vírus) foram gerados por script e ainda não têm `.aseprite` (pendência de arte). O `.png` é o arquivo que o jogo carrega.
 
 Todos os sprites usam a mesma paleta, o mesmo tamanho de pixel e a mesma direção de luz (cima-esquerda), para manter a coesão visual.
 
@@ -34,8 +35,12 @@ Todos os sprites usam a mesma paleta, o mesmo tamanho de pixel e a mesma direç�
 | `assets/sprites/bacteria_gram_positiva.png` | Bactéria Gram-positiva | roxo | cacho de cocos esféricos | parede espessa e clara (2 px), sem membrana externa |
 | `assets/sprites/bacteria_gram_negativa.png` | Bactéria Gram-negativa | vermelho | bacilo (bastonete) | membrana externa fina, separada do corpo |
 | `assets/sprites/celula_propria.png` | Célula saudável própria | verde | célula maior e arredondada | núcleo delimitado com nucléolo e mitocôndrias |
+| `assets/sprites/bacteria_gram_positiva_b.png` | Bactéria Gram-positiva, variante B | roxo | cadeia de cocos (estreptococo) | mesma paleta e contorno da variante A |
+| `assets/sprites/bacteria_gram_negativa_b.png` | Bactéria Gram-negativa, variante B | vermelho | dois bastonetes curtos (diplobacilo) | mesma paleta e contorno da variante A |
+| `assets/sprites/celula_propria_b.png` | Célula saudável própria, variante B | verde | célula redonda | núcleo em cima à direita e organela embaixo à esquerda |
+| `assets/sprites/virus_fase2_b.png` | Vírus da Fase 2, variante B | laranja | capsídeo com seis espículas terminadas em botão | mesma paleta da variante A |
 
-Cada espécie pode ter **mais de um sprite** para variar o cenário: mesmo número de variantes por grupo (senão a variante vira pista), 32×32, a mesma hitbox, e a variante só aparece **depois** da camada 1 — antes dela todas as bactérias são o mesmo disco cinza. A quantidade de variantes fica para o M5.
+Cada espécie tem **duas variantes** desde 12/11/2026 (#211, `SPRITE_VARIANTS`): o agente sorteia a sua no nascimento (`reset_agent`), o número é o mesmo em todo grupo (senão a variante vira pista), o tamanho é 32×32 e a hitbox continua `AGENT_RADIUS`. A variante da bactéria só aparece **depois** da camada 1 — antes dela todas são o mesmo disco cinza. O vírus aparece com a variante desde o início, porque o estado dele é lido no mundo (#84).
 
 As cores da **coloração** são **roxo para Gram+** e **vermelho para Gram−**; a célula própria é verde. Desde 03/11 (noite) o HUD **não** usa roxo/vermelho para a arma: as armas Ruptura e Dissolução têm cor neutra, e ícone e projétil se distinguem pela forma. O coração continua carmim. Desde 04/11 os ícones neutros (parede/anéis) são os que o HUD desenha.
 
