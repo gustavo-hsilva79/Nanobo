@@ -922,6 +922,10 @@ static void reset_agent(int index)
     agents[index].lysogenic_timer = LYSOGENIC_TIME;
     agents[index].generation = 0;
 
+    // cada agente sorteia o sprite quando nasce; o desenho so mostra depois
+    // da camada 1, antes disso a bacteria e o disco cinza (#211)
+    agents[index].variant = rand() % SPRITE_VARIANTS;
+
     pick_new_direction(index);
 }
 

@@ -58,6 +58,10 @@ typedef enum
     VIRUS_LYTIC_READY = 1
 } VirusState;
 
+// sprites por especie, sorteados no nascimento do agente (#211)
+// o mesmo numero em todo grupo, senao a variante vira pista do Gram
+#define SPRITE_VARIANTS 2
+
 // raio escolhido pelo jogador: roxo para Gram+, vermelho para Gram- (#62)
 typedef enum
 {
@@ -96,6 +100,7 @@ typedef struct
     float lysogenic_timer; // tempo ate o virus ficar pronto para o litico (#84)
     int generation; // 0 nos virus da fase; a eclosao soma 1 (#86)
     int host_cell; // indice da celula hospedeira, -1 sem celula (#89)
+    int variant; // sprite sorteado no nascimento, de 0 a SPRITE_VARIANTS - 1 (#211)
 } Agent;
 
 // composicao de uma fase: uma linha por agente que ela coloca no mundo (#M4)

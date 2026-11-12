@@ -93,6 +93,12 @@ ALLEGRO_BITMAP* gram_negative = NULL;
 ALLEGRO_BITMAP* cell_sprite = NULL;
 ALLEGRO_BITMAP* virus_sprite = NULL;
 
+// segunda variante de cada especie (#211)
+ALLEGRO_BITMAP* gram_positive_b = NULL;
+ALLEGRO_BITMAP* gram_negative_b = NULL;
+ALLEGRO_BITMAP* cell_sprite_b = NULL;
+ALLEGRO_BITMAP* virus_sprite_b = NULL;
+
 // mapa do mundo inteiro da Fase 1 (1920x512), sempre atras do resto
 ALLEGRO_BITMAP* world_map = NULL;
 
@@ -330,6 +336,34 @@ bool load_resources()
         return false;
     }
 
+    gram_positive_b = al_load_bitmap("assets/sprites/bacteria_gram_positiva_b.png");
+    if (!gram_positive_b)
+    {
+        printf("couldn't load gram positive variant\n");
+        return false;
+    }
+
+    gram_negative_b = al_load_bitmap("assets/sprites/bacteria_gram_negativa_b.png");
+    if (!gram_negative_b)
+    {
+        printf("couldn't load gram negative variant\n");
+        return false;
+    }
+
+    cell_sprite_b = al_load_bitmap("assets/sprites/celula_propria_b.png");
+    if (!cell_sprite_b)
+    {
+        printf("couldn't load cell variant\n");
+        return false;
+    }
+
+    virus_sprite_b = al_load_bitmap("assets/sprites/virus_fase2_b.png");
+    if (!virus_sprite_b)
+    {
+        printf("couldn't load virus variant\n");
+        return false;
+    }
+
     heart_icon = al_load_bitmap("assets/sprites/icone_coracao.png");
     if (!heart_icon)
     {
@@ -432,6 +466,30 @@ void free_resources()
     {
         al_destroy_bitmap(virus_sprite);
         virus_sprite = NULL;
+    }
+
+    if (gram_positive_b)
+    {
+        al_destroy_bitmap(gram_positive_b);
+        gram_positive_b = NULL;
+    }
+
+    if (gram_negative_b)
+    {
+        al_destroy_bitmap(gram_negative_b);
+        gram_negative_b = NULL;
+    }
+
+    if (cell_sprite_b)
+    {
+        al_destroy_bitmap(cell_sprite_b);
+        cell_sprite_b = NULL;
+    }
+
+    if (virus_sprite_b)
+    {
+        al_destroy_bitmap(virus_sprite_b);
+        virus_sprite_b = NULL;
     }
 
     if (heart_icon)
@@ -1246,25 +1304,26 @@ void draw_menu()
 }
 
 
-// sprite de cada especie, alinhado com as constantes do entities.h
-ALLEGRO_BITMAP* species_sprite(Species species)
+// sprite de cada especie e variante, alinhado com as constantes do entities.h
+// variante 1 usa o segundo desenho da especie; qualquer outra, o primeiro (#211)
+ALLEGRO_BITMAP* species_sprite(Species species, int variant)
 {
     if (species == SPECIES_GRAM_POSITIVE)
     {
-        return gram_positive;
+        return variant == 1 ? gram_positive_b : gram_positive;
     }
 
     if (species == SPECIES_GRAM_NEGATIVE)
     {
-        return gram_negative;
+        return variant == 1 ? gram_negative_b : gram_negative;
     }
 
     if (species == SPECIES_VIRUS)
     {
-        return virus_sprite;
+        return variant == 1 ? virus_sprite_b : virus_sprite;
     }
 
-    return cell_sprite;
+    return variant == 1 ? cell_sprite_b : cell_sprite;
 }
 
 // coordenada do mundo para o pixel do canvas, arredondada para nao tremer
@@ -1523,14 +1582,14 @@ void draw_game()
         // virus lisogenico pisca: opaco e semitransparente a cada LYSOGENIC_BLINK (#84)
         if (virus_is_lysogenic(i) && (int)(match_time / LYSOGENIC_BLINK) % 2 == 1)
         {
-            al_draw_tinted_bitmap(species_sprite(agents[i].species),
+            al_draw_tinted_bitmap(species_sprite(agents[i].species, agents[i].variant),
                 al_map_rgba_f(0.35f, 0.35f, 0.35f, 0.35f),
                 view_x(agents[i].x) - AGENT_RADIUS,
                 view_y(agents[i].y) - AGENT_RADIUS, 0);
             continue;
         }
 
-        al_draw_bitmap(species_sprite(agents[i].species),
+        al_draw_bitmap(species_sprite(agents[i].species, agents[i].variant),
             view_x(agents[i].x) - AGENT_RADIUS,
             view_y(agents[i].y) - AGENT_RADIUS, 0);
 
