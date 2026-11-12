@@ -1511,10 +1511,22 @@ void draw_game()
         }
 
         // bacteria sem leitura: disco cinza, sem forma nem cor que entregue o grupo (RF-03)
-        if (agents[i].species != SPECIES_CELL && agents[i].layers == 0)
+        // o virus fica de fora: o estado dele e lido no mundo, sem scanner (#84)
+        if (agents[i].species != SPECIES_CELL && agents[i].species != SPECIES_VIRUS
+            && agents[i].layers == 0)
         {
             al_draw_filled_circle(view_x(agents[i].x), view_y(agents[i].y),
                 (float)AGENT_RADIUS - 2.0f, UI_FRAME);
+            continue;
+        }
+
+        // virus lisogenico pisca: opaco e semitransparente a cada LYSOGENIC_BLINK (#84)
+        if (virus_is_lysogenic(i) && (int)(match_time / LYSOGENIC_BLINK) % 2 == 1)
+        {
+            al_draw_tinted_bitmap(species_sprite(agents[i].species),
+                al_map_rgba_f(0.35f, 0.35f, 0.35f, 0.35f),
+                view_x(agents[i].x) - AGENT_RADIUS,
+                view_y(agents[i].y) - AGENT_RADIUS, 0);
             continue;
         }
 
@@ -1610,6 +1622,29 @@ void draw_game()
         al_draw_line(aim_x + 0.5f, aim_y - 9.0f, aim_x + 0.5f, aim_y - 3.0f, UI_CYAN, 1.0f);
         al_draw_line(aim_x + 0.5f, aim_y + 3.0f, aim_x + 0.5f, aim_y + 9.0f, UI_CYAN, 1.0f);
     }
+
+#ifdef _DEBUG
+    // F1 mostra o estado e o tempo de cada virus da fase (#84)
+    if (show_debug)
+    {
+        char line[96];
+        int used = snprintf(line, sizeof(line), "QA virus");
+
+        for (i = 0; i < agents_total() && used > 0 && used < (int)sizeof(line); i++)
+        {
+            if (agents[i].species != SPECIES_VIRUS || !agents[i].active)
+            {
+                continue;
+            }
+
+            used += snprintf(line + used, sizeof(line) - (size_t)used, " %d:%s%.1f",
+                agents[i].id, virus_is_lysogenic(i) ? "L" : "R",
+                agents[i].lysogenic_timer);
+        }
+
+        al_draw_text(font, UI_DIM, 8, 8, 0, line);
+    }
+#endif
 
     // o clip do painel nao pode intersectar o clip do mundo, senao o HUD some
     al_reset_clipping_rectangle();
@@ -2094,6 +2129,19 @@ void handle_key_down(int key)
     else if (key == ALLEGRO_KEY_G)
     {
         game_set_scene(GAME_SCENE_GAME_OVER);
+    }
+    // L encurta o lisogenico de todo virus para 1 s, para testar o fim (#84)
+    else if (key == ALLEGRO_KEY_L)
+    {
+        int i;
+
+        for (i = 0; i < agents_total(); i++)
+        {
+            if (virus_is_lysogenic(i) && agents[i].lysogenic_timer > 1.0f)
+            {
+                agents[i].lysogenic_timer = 1.0f;
+            }
+        }
     }
     // H identifica os 9 e conclui, para testar o caminho do bonus (#67)
     else if (key == ALLEGRO_KEY_H)
