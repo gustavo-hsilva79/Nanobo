@@ -29,11 +29,11 @@ O vírus tem dois estados, e os dois são legíveis **no mundo, sem scanner** �
 
 ## Ciclo lítico
 
-O ciclo tem três momentos, nesta ordem: eclipse (`[PENDÊNCIA]`, abaixo), multiplicação e a vida lítica do vírus que eclodiu.
+O ciclo tem três momentos, nesta ordem: eclipse, multiplicação e a vida lítica do vírus que eclodiu.
 
-### Eclipse — [PENDÊNCIA] mecanismo derivado
+### Eclipse
 
-- **O eclipse não foi decidido pelo dono.** A decisão de 11/11/2026 foi só esta: ao fim do lisogênico o vírus vira lítico, eclode e gera até 3 novos. O compasso entre o fim do temporizador e o nascimento dos novos é uma leitura da dupla para dar ao jogador uma última janela visível — vale como proposta, não como regra fechada, e precisa ser confirmado ou trocado por eclosão imediata **antes de #84**. Dono: dupla, antes de #84.
+- **Decisão do dono em 12/11/2026: o eclipse fica.** A proposta da dupla de 11/11 foi confirmada no lugar da eclosão imediata. No código, a #84 termina o lisogênico em `VIRUS_LYTIC_READY` (vírus opaco e parado) e a #85 abre o eclipse a partir desse estado. `ECLIPSE_TIME` continua em aberto.
 - O fim do temporizador **não cria os vírus no mesmo quadro**. Abre um compasso curto em que o vírus para de piscar e continua no lugar; a célula hospedeira **ainda não se rompe**.
 - A duração é `ECLIPSE_TIME`, constante própria: **valor em aberto** — curta o bastante para não parecer travamento, longa o bastante para o jogador ver o que aconteceu.
 - Durante o eclipse o vírus já é lítico e **continua neutralizável**. Se for neutralizado antes do fim do compasso, a multiplicação é cancelada **e a célula hospedeira é salva**: nenhum vírus novo nasce, a célula fica na cena e o 1 de vida não é cobrado.
@@ -139,8 +139,8 @@ Números e ritmos, todos com dono: a dupla, no playtest do M5. Nenhum deles muda
 | item | valor de partida | o que o número decide |
 |---|---|---|
 | `LYSOGENIC_TIME` | 12 s | quanto tempo o jogador tem para ler e agir antes da eclosão |
-| `LYSOGENIC_BLINK` | [PENDÊNCIA] | ritmo do piscar; precisa ler como "parado, mas ativo" |
-| `ECLIPSE_TIME` | [PENDÊNCIA] | se o eclipse fica; se ficar, o compasso entre o fim do temporizador e o nascimento dos novos |
+| `LYSOGENIC_BLINK` | 0,25 s de meio período (#84, 12/11/2026) | ritmo do piscar; precisa ler como "parado, mas ativo" |
+| `ECLIPSE_TIME` | [PENDÊNCIA] (o eclipse fica, decisão de 12/11/2026) | o compasso entre o fim do temporizador e o nascimento dos novos |
 | novos por eclosão | até 3, fixo ou sorteado | se toda eclosão dá 3 ou varia entre 1 e 3 |
 | teto global de vírus vivos | sem teto hoje; referência 6 | se o crescimento por geração torna a fase invencível |
 | posição e raio de nascimento | [PENDÊNCIA] | se os novos nascem legíveis e longe do Nanobô |
