@@ -147,3 +147,24 @@ O script vive em `../Nanobo-testes/medir_memoria.ps1`, ao lado do harness, fora 
 **CSVs:** `t8b-ciclo-1.csv` … `t8b-ciclo-5.csv` e `t8c-ciclo20.csv` (a janela de 20 s), gravados em `C:/Users/GIGABYTE/AppData/Local/hermes/cache/scratch/`.
 
 **Limite do que foi provado:** os cinco reinícios são por **conclusão de fase (Vitória)**. Reinício por Game Over e o retorno ao menu (#195, ainda aberto) não foram exercitados aqui e ficam para a #117/#118.
+
+## 12/11/2026 — #118: carga com as variantes de sprite (parcial)
+
+- **Build:** `Release|x64` da branch `feat/fase2-lisogenico-12-11` (`848b2aa`), que já carrega **15 PNGs** (as variantes B da #211) e tem o vírus lisogênico da #84.
+- **Método:** `medir_memoria.ps1 -Seconds 22 -EveryMs 250`, iniciado **antes** do jogo, como manda a seção "Como repetir"; 80 amostras. O jogo ficou no menu, sem entrada de teclado.
+- **Ambiente:** a medição rodou na sessão do agente, com o jogo aberto num desktop que não recebe foco nem captura de tela. O processo e o display do Allegro existem normalmente, mas este número **não substitui** a medição na sessão do dono.
+
+| Janela | Amostras | Mín (MB) | Pico (MB) | Última (MB) | Privada no pico (MB) |
+|---|---:|---:|---:|---:|---:|
+| carga + menu, 22 s | 80 | 29,93 | 77,68 | 74,95 | 100,66 |
+
+**Leitura.** O pico de working set (77,68 MB em `t=4,28 s`) fica **1,73 MB abaixo** dos 79,41 MB da #115, dentro dos ±2 MB de ruído. Os quatro PNGs novos somam 16 KB de textura (32×32×4 bytes cada), então nenhuma diferença era esperada. A privada repete o platô de ~100 MB na carga, já registrado na #115. Os últimos 10 s ficam entre 74,62 e 74,95 MB, sem subida no menu.
+
+**O que ainda falta para a #118** (precisa de foco de teclado, que a sessão do agente não tem):
+
+1. cinco ciclos de **Game Over** (`G` no Debug) → briefing, com 4 s de amostragem depois de cada um, como na #116;
+2. a Fase 2 com o lisogênico expirando (`L` no Debug), com scan e tiro, numa janela de 60 s.
+
+A #118 continua **aberta** até esses dois cenários serem medidos. Se ficarem planos (Δ acumulado abaixo de 5 MB), ela fecha como "sem evidência de vazamento".
+
+**CSV:** `release-carga-12-11.csv`, no scratchpad da sessão de 12/11/2026 (fora do repositório).
