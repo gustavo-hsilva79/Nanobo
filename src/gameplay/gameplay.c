@@ -916,7 +916,59 @@ static void reset_agent(int index)
     agents[index].identified = false;
     agents[index].impulse_timer = 0.0f;
     agents[index].alert = false;
+
+    // virus nasce lisogenico com o tempo cheio; quem nao e virus ignora (#84)
+    agents[index].virus_state = VIRUS_LYSOGENIC;
+    agents[index].lysogenic_timer = LYSOGENIC_TIME;
+    agents[index].generation = 0;
+
     pick_new_direction(index);
+}
+
+// virus lisogenico: parado, piscando e com tempo correndo (#84)
+bool virus_is_lysogenic(int index)
+{
+    if (index < 0 || index >= agents_count)
+    {
+        return false;
+    }
+
+    return agents[index].species == SPECIES_VIRUS
+        && agents[index].virus_state == VIRUS_LYSOGENIC;
+}
+
+// segundos que faltam do lisogenico; 0 quando nao e virus lisogenico (#84)
+float virus_lysogenic_left(int index)
+{
+    if (!virus_is_lysogenic(index))
+    {
+        return 0.0f;
+    }
+
+    return agents[index].lysogenic_timer;
+}
+
+// conta o tempo do virus lisogenico e marca o fim uma vez so (#84)
+// a multiplicacao e o eclipse ficam para a #85/#86
+static void update_virus(int index, double dt)
+{
+    if (agents[index].species != SPECIES_VIRUS)
+    {
+        return;
+    }
+
+    if (agents[index].virus_state != VIRUS_LYSOGENIC)
+    {
+        return;
+    }
+
+    agents[index].lysogenic_timer -= (float)dt;
+
+    if (agents[index].lysogenic_timer <= 0.0f)
+    {
+        agents[index].lysogenic_timer = 0.0f;
+        agents[index].virus_state = VIRUS_LYTIC_READY;
+    }
 }
 
 // quantas ameacas ainda estao ativas: celula saudavel nao conta (#26)
@@ -1067,6 +1119,24 @@ static void start_phase(int index)
         else
         {
             agents[i].active = false;
+        }
+    }
+
+    // liga cada virus a celula hospedeira pelo id da composicao (#89)
+    for (i = 0; i < agents_count; i++)
+    {
+        int j;
+
+        agents[i].host_cell = -1;
+
+        for (j = 0; j < agents_count; j++)
+        {
+            if (phases[index].members[i].host != 0
+                && agents[j].species == SPECIES_CELL
+                && agents[j].id == phases[index].members[i].host)
+            {
+                agents[i].host_cell = j;
+            }
         }
     }
 
@@ -1388,6 +1458,15 @@ void update_match(double dt)
 
         if (!agents[i].active)
             continue;
+
+        update_virus(i, dt);
+
+        // virus lisogenico ou pronto para o litico fica parado; so o
+        // empurrao da defesa o move (#84); andar e regra do litico (#85)
+        if (agents[i].species == SPECIES_VIRUS && agents[i].impulse_timer <= 0.0f)
+        {
+            continue;
+        }
 
         // durante o empurrao da defesa a direcao e a velocidade vem do impulso
         if (agents[i].impulse_timer > 0.0f)

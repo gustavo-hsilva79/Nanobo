@@ -14,15 +14,16 @@ static const PhaseAgent phase_one_agents[] =
     { SPECIES_CELL, "Célula epitelial", 9 }
 };
 
-// Fase 2 minima: os tres virus e as celulas que eles precisam preservar (#M4)
+// Fase 2: os tres virus e as celulas que eles precisam preservar (#M4)
+// cada virus nasce ligado a uma celula hospedeira pelo id dela (#89)
 static const PhaseAgent phase_two_agents[] =
 {
-    { SPECIES_VIRUS, "Vírus da fase", 1 },
-    { SPECIES_VIRUS, "Vírus da fase", 2 },
-    { SPECIES_VIRUS, "Vírus da fase", 3 },
-    { SPECIES_CELL, "Célula epitelial", 4 },
-    { SPECIES_CELL, "Célula epitelial", 5 },
-    { SPECIES_CELL, "Célula epitelial", 6 }
+    { SPECIES_VIRUS, "Vírus da fase", 1, 4 },
+    { SPECIES_VIRUS, "Vírus da fase", 2, 5 },
+    { SPECIES_VIRUS, "Vírus da fase", 3, 6 },
+    { SPECIES_CELL, "Célula epitelial", 4, 0 },
+    { SPECIES_CELL, "Célula epitelial", 5, 0 },
+    { SPECIES_CELL, "Célula epitelial", 6, 0 }
 };
 
 // a ordem das fases e a ordem do jogo: a run comeca na primeira

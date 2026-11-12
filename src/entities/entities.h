@@ -43,6 +43,21 @@ typedef enum
 // virus da Fase 2 minima: um acerto de qualquer arma neutraliza (#M4)
 #define VIRUS_RESISTANCE 1
 
+// tempo do virus parado e piscando antes do ciclo litico, em segundos (#84)
+// valor de partida a validar no PoC (fase2-virus.md)
+#define LYSOGENIC_TIME 12.0f
+
+// meio periodo do piscar do virus lisogenico: opaco, depois semitransparente (#84)
+#define LYSOGENIC_BLINK 0.25f
+
+// estado do virus da Fase 2: nasce lisogenico e fica pronto para o litico (#84)
+// a #85 consome o VIRUS_LYTIC_READY e abre o eclipse
+typedef enum
+{
+    VIRUS_LYSOGENIC = 0,
+    VIRUS_LYTIC_READY = 1
+} VirusState;
+
 // raio escolhido pelo jogador: roxo para Gram+, vermelho para Gram- (#62)
 typedef enum
 {
@@ -77,6 +92,10 @@ typedef struct
     float direction_timer; // tempo ate a proxima mudanca de direcao
     float impulse_timer; // tempo restante do empurrao da defesa (#17)
     bool active;
+    VirusState virus_state; // so vale para SPECIES_VIRUS (#84)
+    float lysogenic_timer; // tempo ate o virus ficar pronto para o litico (#84)
+    int generation; // 0 nos virus da fase; a eclosao soma 1 (#86)
+    int host_cell; // indice da celula hospedeira, -1 sem celula (#89)
 } Agent;
 
 // composicao de uma fase: uma linha por agente que ela coloca no mundo (#M4)
@@ -85,6 +104,7 @@ typedef struct
     Species species;
     const char* name;
     int id;
+    int host; // id da celula hospedeira do virus, 0 sem celula (#89)
 } PhaseAgent;
 
 // fase jogavel: titulo, composicao e quantos agentes ela tem
