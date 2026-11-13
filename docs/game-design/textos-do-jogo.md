@@ -76,7 +76,7 @@ Desenhado **em toda partida** — `MENU → BRIEFING → GAME`, e também depois
 | CT-23 | scanner, alvo no alcance | `Clique com o botão direito para escanear.` | 41 | #199 |
 | CT-24 | scanner, alvo no alcance | `o scan revela os dados do agente` | 32 | #199, texto de 04/11 |
 | CT-25 | scanner, 1 camada | `Leitura 1 de 2` | 14 | #199 |
-| CT-26 | scanner, 1 camada | `clique de novo para revelar o grupo` | 35 | #199, texto de 04/11 |
+| CT-26 | scanner, 1 camada, bactéria | `clique de novo para revelar a coloração` | 39 | #214 |
 | CT-27 | scanner, identificado | `Identificação concluída` | 23 | #199 |
 | CT-29 | scanner, cabeçalho | `célula` / `bactéria` | 6 / 7 | #199 |
 | CT-30 | resultados | `resumo da fase` | 14 | #202 |
@@ -120,21 +120,20 @@ Desenhado **em toda partida** — `MENU → BRIEFING → GAME`, e também depois
 
 | ID | Local | Texto | Caracteres | Origem |
 |---|---|---|---|---|
-| RT-01 | scanner, camada 1, bactéria | `roxo · Staphylococcus aureus` | 28 | decisão 03/11 (noite) |
-| RT-02 | scanner, camada 1, bactéria | `vermelho · Escherichia coli` | 27 | decisão 03/11 (noite) |
-| RT-03 | scanner, camada 1, célula | `célula do organismo · Célula epitelial` (sem amostra de cor) | 38 | decisão 03/11 (noite) |
-| RT-04 | scanner, camada 2, Gram+ | `Gram+ · parede espessa, rica em peptidoglicano` | 46 | #104 |
-| RT-05 | scanner, camada 2, Gram- | `Gram- · parede fina sob membrana externa` | 40 | #104 |
-| RT-05b | scanner, camada 2, célula | `célula saudável do próprio organismo: preserve-a` | 48 | D1 |
+| RT-01 | scanner, camada 1, coco | `forma: coco (esférica)` (sem amostra de cor) | 22 | #214, design 2.0 |
+| RT-02 | scanner, camada 1, bacilo | `forma: bacilo (bastão)` (sem amostra de cor) | 22 | #214, design 2.0 |
+| RT-03 | scanner, camada 1, célula | `célula do paciente · eucarionte` (sem amostra de cor) | 31 | #214, design 2.0 |
+| RT-04 | scanner, camada 2, Gram+ (amostra roxa) | `Gram+ · parede grossa, sem membrana externa · %s` (`... · Streptococcus pyogenes`) | 46 + nome (até 68) | #214, design 2.0 |
+| RT-05 | scanner, camada 2, Gram- (amostra rosa) | `Gram- · parede fina sob membrana externa · %s` (`... · Pseudomonas aeruginosa`) | 43 + nome (até 65) | #214, design 2.0 |
+| RT-05b | scanner, camada 2, célula | `núcleo guarda o DNA · mitocôndrias · não atacar` | 47 | #214, design 2.0 |
 | RT-06 | scanner, linha de estado | ` · alvo sob o cursor` (ciano) / ` · última leitura` (apagado) | 20 / 17 | #199, build de 04/11 |
-| RT-07 | scanner, camada 2, revisão Gram+ | `Essa parede mais espessa distingue este grupo.` | 46 | #104 |
-| RT-08 | scanner, camada 2, revisão Gram- | `A membrana externa adicional distingue este grupo.` | 50 | #104 |
-| RT-08b | scanner, camada 2, revisão célula | `preserve a célula: as duas armas ferem o próprio organismo` | 58 | D1 |
+| RT-07 | scanner, camada 2, revisão bactéria (Gram+ e Gram-) | `procarionte · sem núcleo: DNA solto no nucleoide` | 48 | #214, OA1 |
+| RT-08b | scanner, camada 2, revisão célula | `eucarionte: tem núcleo, como as células do corpo` | 48 | #214, OA1 |
 | RT-09 | scanner, camada 1, vírus | `vírus · Vírus da fase` | 21 | Fase 2 mínima (04/11) |
 | RT-10 | scanner, camada 2, vírus | `Vírus precisa de uma célula hospedeira para se multiplicar` | 58 | Fase 2 mínima (04/11) |
 | RT-11 | scanner, camada 2, revisão, vírus | `a célula hospedeira é o que ele usa para se multiplicar` | 55 | Fase 2 mínima (04/11) |
 
-**Limite:** a fonte embutida é de **8 px por caractere** (medido com `al_get_text_width`, não estimado) e a área útil do painel do scanner é de 588 px. A linha mais longa desenhada na fase tem **58 caracteres** (464 px, `preserve a célula: as duas armas ferem o próprio organismo`); a mais longa do briefing tem 54 (432 px, dentro dos 548 px do painel) e a dos resultados, 36 (288 px). Nenhuma passa da área do painel em 640×360.
+**Limite:** a fonte embutida é de **8 px por caractere** (medido com `al_get_text_width`, não estimado) e a área útil do painel do scanner é de 588 px, a partir de `text_x = 36`. A linha mais longa desenhada na fase é a RT-04 com *Streptococcus pyogenes*: **68 caracteres** (544 px) mais a amostra de 12 px, 556 px no total (medido em 13/11, #214). A mais longa do briefing tem 54 (432 px, dentro dos 548 px do painel) e a dos resultados, 36 (288 px). Nenhuma passa da área do painel em 640×360. A RT-08 (revisão Gram- separada) saiu em 13/11: Gram+ e Gram- compartilham a RT-07, porque a revisão agora fala do procarionte, não do grupo.
 
 ## 2.1 Regra de tipografia (medida em 03/11/2026)
 

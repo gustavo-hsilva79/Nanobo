@@ -1,17 +1,19 @@
 #include "entities.h"
 
-// composicao da Fase 1: 3 bacterias Gram+, 3 Gram- e 3 celulas saudaveis
+// composicao da Fase 1: 3 bacterias Gram+, 3 Gram- e 3 celulas do paciente
+// as formas se cruzam com o Gram: 2 cocos e 1 bacilo Gram+, 1 coco e 2 bacilos Gram- (#214)
+// no vaso sanguineo, a celula do paciente e a do endotelio que forra o vaso
 static const PhaseAgent phase_one_agents[] =
 {
-    { SPECIES_GRAM_POSITIVE, "Staphylococcus aureus", 1 },
-    { SPECIES_GRAM_NEGATIVE, "Escherichia coli", 2 },
-    { SPECIES_CELL, "Célula epitelial", 3 },
-    { SPECIES_GRAM_POSITIVE, "Streptococcus pneumoniae", 4 },
-    { SPECIES_GRAM_NEGATIVE, "Salmonella enterica", 5 },
-    { SPECIES_CELL, "Célula epitelial", 6 },
-    { SPECIES_GRAM_POSITIVE, "Streptococcus pyogenes", 7 },
-    { SPECIES_GRAM_NEGATIVE, "Pseudomonas aeruginosa", 8 },
-    { SPECIES_CELL, "Célula epitelial", 9 }
+    { SPECIES_GRAM_POSITIVE, "Staphylococcus aureus", 1, 0, SHAPE_COCCUS },
+    { SPECIES_GRAM_NEGATIVE, "Escherichia coli", 2, 0, SHAPE_BACILLUS },
+    { SPECIES_CELL, "Célula endotelial", 3, 0, SHAPE_NONE },
+    { SPECIES_GRAM_POSITIVE, "Streptococcus pyogenes", 4, 0, SHAPE_COCCUS },
+    { SPECIES_GRAM_NEGATIVE, "Neisseria meningitidis", 5, 0, SHAPE_COCCUS },
+    { SPECIES_CELL, "Célula endotelial", 6, 0, SHAPE_NONE },
+    { SPECIES_GRAM_POSITIVE, "Bacillus cereus", 7, 0, SHAPE_BACILLUS },
+    { SPECIES_GRAM_NEGATIVE, "Pseudomonas aeruginosa", 8, 0, SHAPE_BACILLUS },
+    { SPECIES_CELL, "Célula endotelial", 9, 0, SHAPE_NONE }
 };
 
 // Fase 2: os tres virus e as celulas que eles precisam preservar (#M4)

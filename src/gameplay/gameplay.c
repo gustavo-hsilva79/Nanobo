@@ -127,42 +127,51 @@ SfxEvent sfx_event_kind(void)
     return sfx_event_last;
 }
 
-// camada 1: coloracao (roxo/vermelho) e nome do agente (#104)
-const char* layer_one_text(Species species, const char* name)
+// camada 1: so a forma da bacteria, sem cor nem nome que entreguem o grupo (#214)
+const char* layer_one_text(int index)
 {
     static char text[96];
-    const char* color;
+    Species species = agents[index].species;
 
     if (species == SPECIES_CELL)
     {
-        snprintf(text, sizeof(text), "célula do organismo · %s", name);
-        return text;
+        return "célula do paciente · eucarionte";
     }
 
     // o virus nao tem coloracao de Gram: a camada 1 diz o que ele e (#M4)
     if (species == SPECIES_VIRUS)
     {
-        snprintf(text, sizeof(text), "vírus · %s", name);
+        snprintf(text, sizeof(text), "vírus · %s", agents[index].name);
         return text;
     }
 
-    color = species == SPECIES_GRAM_POSITIVE ? "roxo" : "vermelho";
-    snprintf(text, sizeof(text), "%s · %s", color, name);
-    return text;
+    if (agents[index].shape == SHAPE_BACILLUS)
+    {
+        return "forma: bacilo (bastão)";
+    }
+
+    return "forma: coco (esférica)";
 }
 
-
-// segunda camada: grupo, pista do envelope e o porque; a interpretacao e do jogador (#104)
-const char* layer_two_text(Species species)
+// camada 2: coloracao de Gram, estrutura do envoltorio e o nome (#214)
+// a interpretacao e do jogador: o scanner nao recomenda arma
+const char* layer_two_text(int index)
 {
+    static char text[96];
+    Species species = agents[index].species;
+
     if (species == SPECIES_GRAM_POSITIVE)
     {
-        return "Gram+ · parede espessa, rica em peptidoglicano";
+        snprintf(text, sizeof(text), "Gram+ · parede grossa, sem membrana externa · %s",
+            agents[index].name);
+        return text;
     }
 
     if (species == SPECIES_GRAM_NEGATIVE)
     {
-        return "Gram- · parede fina sob membrana externa";
+        snprintf(text, sizeof(text), "Gram- · parede fina sob membrana externa · %s",
+            agents[index].name);
+        return text;
     }
 
     if (species == SPECIES_VIRUS)
@@ -170,22 +179,18 @@ const char* layer_two_text(Species species)
         return "Vírus precisa de uma célula hospedeira para se multiplicar";
     }
 
-    return "célula saudável do próprio organismo: preserve-a";
+    return "núcleo guarda o DNA · mitocôndrias · não atacar";
 }
 
-// o porque do grupo, na mesma linha de leitura da camada 2 (#104)
-// a frase repete o que o conteudo biologico validado ja traz: nenhuma
-// mecanica nova e nenhuma recomendacao de arma
-const char* layer_two_reason(Species species)
+// segunda linha da camada 2: o que a celula e (#214)
+// procarionte x eucarionte e o conteudo da linha; nenhuma recomendacao de arma
+const char* layer_two_reason(int index)
 {
-    if (species == SPECIES_GRAM_POSITIVE)
-    {
-        return "Essa parede mais espessa distingue este grupo.";
-    }
+    Species species = agents[index].species;
 
-    if (species == SPECIES_GRAM_NEGATIVE)
+    if (species == SPECIES_GRAM_POSITIVE || species == SPECIES_GRAM_NEGATIVE)
     {
-        return "A membrana externa adicional distingue este grupo.";
+        return "procarionte · sem núcleo: DNA solto no nucleoide";
     }
 
     if (species == SPECIES_VIRUS)
@@ -193,7 +198,7 @@ const char* layer_two_reason(Species species)
         return "a célula hospedeira é o que ele usa para se multiplicar";
     }
 
-    return "preserve a célula: as duas armas ferem o próprio organismo";
+    return "eucarionte: tem núcleo, como as células do corpo";
 }
 
 // agente valido mais perto, -1 quando ninguem esta no alcance
@@ -1118,6 +1123,7 @@ static void start_phase(int index)
             agents[i].name = phases[index].members[i].name;
             agents[i].id = phases[index].members[i].id;
             agents[i].species = phases[index].members[i].species;
+            agents[i].shape = phases[index].members[i].shape;
             reset_agent(i);
         }
         else

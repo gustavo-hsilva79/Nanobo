@@ -113,10 +113,11 @@ extern bool key_down;
 extern bool key_left;
 extern bool key_right;
 
-// leitura do scanner: camada 1 = coloracao + nome; camada 2 = grupo + estrutura
-const char* layer_one_text(Species species, const char* name);
-const char* layer_two_text(Species species);
-const char* layer_two_reason(Species species);
+// textos das camadas do scanner pelo indice do agente (#214)
+// camada 1 = forma; camada 2 = coloracao, estrutura e nome
+const char* layer_one_text(int index);
+const char* layer_two_text(int index);
+const char* layer_two_reason(int index);
 int pick_target(float x, float y);
 void use_scanner();
 

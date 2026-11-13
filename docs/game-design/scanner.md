@@ -8,11 +8,11 @@
 
 ## Nanobô 2.0 — camadas vigentes (13/11/2026)
 
-> Decisão do dono em 13/11. Substitui "camada 1 com coloração e nome": a coloração entregava a arma já na 1ª camada, e a estrutura, que é o conteúdo, nunca precisava ser lida. A seleção do alvo, a identificação única, a reinicialização e a regra "o scanner não recomenda arma" continuam como abaixo.
+> Decisão do dono em 13/11; as linhas da bactéria e da célula do paciente estão no build de 13/11 (#214). Substitui "camada 1 com coloração e nome": a coloração entregava a arma já na 1ª camada, e a estrutura, que é o conteúdo, nunca precisava ser lida. A seleção do alvo, a identificação única, a reinicialização e a regra "o scanner não recomenda arma" continuam como abaixo.
 
 | Agente | Camada 1 (forma) | Camada 2 (coloração e estrutura) |
 |---|---|---|
-| Bactéria | "forma: coco (esférica)" ou "forma: bacilo (bastão)" | "Gram+ · parede grossa, sem membrana externa" ou "Gram- · parede fina sob membrana externa"; "procarionte · sem núcleo: DNA solto no nucleoide" |
+| Bactéria | "forma: coco (esférica)" ou "forma: bacilo (bastão)" | "Gram+ · parede grossa, sem membrana externa · %s" ou "Gram- · parede fina sob membrana externa · %s", com o nome da espécie; "procarionte · sem núcleo: DNA solto no nucleoide" |
 | Célula do paciente | "célula do paciente · eucarionte" | "núcleo guarda o DNA · mitocôndrias · não atacar" |
 | Vírus (Fase 2) | "vírus · lisogênico · %d s" ou "vírus · lítico" | textos de `fase2-virus.md` §"Scanner" |
 | Célula infectada | "célula infectada · vírus dentro" | "lisogênico · %d s · use a Lise antes de romper" |
@@ -81,6 +81,8 @@ Regra já fechada, repetida aqui para que o fluxo fique em um único lugar:
 - O conteúdo revelado descreve o agente e **não recomenda** qual arma o jogador deve usar.
 
 ### Conteúdo das camadas no M4
+
+> Histórico: substituído pela seção "Nanobô 2.0" acima no build de 13/11 (#214).
 
 O texto da segunda camada é a informação curta de scanner aprovada em `docs/game-design/conteudo-biologico.md`. A primeira camada é o resultado da coloração **e o nome do agente**; a segunda nomeia o grupo e explica a estrutura (D2, 03/11). A coloração aparece de duas formas que se reforçam: uma **amostra de cor** antes do nome, no painel, e um **anel colorido permanente** no agente, no mundo.
 

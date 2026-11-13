@@ -34,6 +34,15 @@ typedef enum
     SPECIES_VIRUS = 3
 } Species;
 
+// forma da bacteria: a camada 1 do scanner revela so isto (#214)
+// a forma sozinha nao decide a arma: a fase mistura cocos e bacilos dos dois grupos
+typedef enum
+{
+    SHAPE_NONE = 0,
+    SHAPE_COCCUS = 1,
+    SHAPE_BACILLUS = 2
+} Shape;
+
 // resistencia de combate dos agentes: quantos acertos validos ate neutralizar (#49)
 #define BACTERIA_RESISTANCE 2
 
@@ -101,6 +110,7 @@ typedef struct
     int generation; // 0 nos virus da fase; a eclosao soma 1 (#86)
     int host_cell; // indice da celula hospedeira, -1 sem celula (#89)
     int variant; // sprite sorteado no nascimento, de 0 a SPRITE_VARIANTS - 1 (#211)
+    Shape shape; // coco ou bacilo; SHAPE_NONE fora das bacterias (#214)
 } Agent;
 
 // composicao de uma fase: uma linha por agente que ela coloca no mundo (#M4)
@@ -110,6 +120,7 @@ typedef struct
     const char* name;
     int id;
     int host; // id da celula hospedeira do virus, 0 sem celula (#89)
+    Shape shape; // forma da bacteria; SHAPE_NONE fora das bacterias (#214)
 } PhaseAgent;
 
 // fase jogavel: titulo, composicao e quantos agentes ela tem

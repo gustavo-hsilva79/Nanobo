@@ -53,6 +53,18 @@ _Static_assert(HUD_LINES * HUD_LINE_H + 2 * HUD_MARGIN <= PANEL_H, "HUD nao cabe
 #define UI_AMBER     al_map_rgb(255, 210, 63)  // #FFD23F
 #define UI_PURPLE    al_map_rgb(190, 110, 240) // #BE6EF0
 #define UI_RED       al_map_rgb(240, 90, 90)   // #F05A5A
+#define UI_PINK      al_map_rgb(240, 130, 165) // Gram-: rosa da safranina (#214)
+
+// mapa recuado e silhueta neutra: os agentes precisam se destacar do vermelho (#220)
+#define MAP_TINT        al_map_rgb_f(0.68f, 0.62f, 0.66f)
+#define MAP_VEIL        al_map_rgba_f(0.05f * 0.28f, 0.07f * 0.28f, 0.11f * 0.28f, 0.28f)
+#define SILHOUETTE_FILL al_map_rgb(86, 104, 132)
+#define SILHOUETTE_EDGE al_map_rgb(170, 190, 215)
+#define CONTACT_SHADOW  al_map_rgba_f(0.0f, 0.0f, 0.0f, 0.35f)
+
+// tingimento do sprite cinza da bacteria depois da camada 2 (#214)
+#define GRAM_POS_TINT   al_map_rgb_f(0.85f, 0.55f, 1.0f)
+#define GRAM_NEG_TINT   al_map_rgb_f(1.0f, 0.62f, 0.74f)
 #define UI_CYAN      al_map_rgb(125, 249, 255) // #7DF9FF
 #define UI_GREEN     al_map_rgb(110, 220, 120) // #6EDC78
 #define UI_WARM      al_map_rgb(255, 232, 148) // #FFE894
@@ -98,6 +110,11 @@ ALLEGRO_BITMAP* gram_positive_b = NULL;
 ALLEGRO_BITMAP* gram_negative_b = NULL;
 ALLEGRO_BITMAP* cell_sprite_b = NULL;
 ALLEGRO_BITMAP* virus_sprite_b = NULL;
+
+// bacterias em cinza, uma por forma e variante: a cor de Gram vem do tingimento (#214)
+// o coco sai do cacho e da cadeia, o bacilo do bastao e do par de bastoes
+ALLEGRO_BITMAP* coccus_grey[SPRITE_VARIANTS] = { NULL };
+ALLEGRO_BITMAP* bacillus_grey[SPRITE_VARIANTS] = { NULL };
 
 // mapa do mundo inteiro da Fase 1 (1920x512), sempre atras do resto
 ALLEGRO_BITMAP* world_map = NULL;
@@ -291,6 +308,56 @@ ALLEGRO_BITMAP* make_text_bitmap(const char* text, ALLEGRO_COLOR color)
     return bmp;
 }
 
+// copia em tons de cinza de um sprite, para ser tingida na hora de desenhar (#214)
+// o PNG carregado ja tem alfa pre-multiplicado, e a copia mantem isso
+ALLEGRO_BITMAP* make_grey_copy(ALLEGRO_BITMAP* source)
+{
+    ALLEGRO_BITMAP* copy;
+    ALLEGRO_BITMAP* old_target = al_get_target_bitmap();
+    int w = al_get_bitmap_width(source);
+    int h = al_get_bitmap_height(source);
+    int x;
+    int y;
+
+    copy = al_create_bitmap(w, h);
+    if (!copy)
+    {
+        return NULL;
+    }
+
+    al_set_target_bitmap(copy);
+    al_lock_bitmap(source, ALLEGRO_PIXEL_FORMAT_ANY, ALLEGRO_LOCK_READONLY);
+    al_lock_bitmap(copy, ALLEGRO_PIXEL_FORMAT_ANY, ALLEGRO_LOCK_WRITEONLY);
+
+    for (y = 0; y < h; y++)
+    {
+        for (x = 0; x < w; x++)
+        {
+            float r;
+            float g;
+            float b;
+            float a;
+            float grey;
+
+            al_unmap_rgba_f(al_get_pixel(source, x, y), &r, &g, &b, &a);
+
+            // luminancia com um pouco mais de brilho, para o tingimento aparecer
+            grey = (0.299f * r + 0.587f * g + 0.114f * b) * 1.35f;
+            if (grey > a)
+            {
+                grey = a;
+            }
+
+            al_put_pixel(x, y, al_map_rgba_f(grey, grey, grey, a));
+        }
+    }
+
+    al_unlock_bitmap(copy);
+    al_unlock_bitmap(source);
+    al_set_target_bitmap(old_target);
+    return copy;
+}
+
 // carrega tudo que o jogo precisa antes do loop por frame
 bool load_resources()
 {
@@ -361,6 +428,17 @@ bool load_resources()
     if (!virus_sprite_b)
     {
         printf("couldn't load virus variant\n");
+        return false;
+    }
+
+    // a camada 1 mostra a forma sem a cor: copias cinza das bacterias (#214)
+    coccus_grey[0] = make_grey_copy(gram_positive);
+    coccus_grey[1] = make_grey_copy(gram_positive_b);
+    bacillus_grey[0] = make_grey_copy(gram_negative);
+    bacillus_grey[1] = make_grey_copy(gram_negative_b);
+    if (!coccus_grey[0] || !coccus_grey[1] || !bacillus_grey[0] || !bacillus_grey[1])
+    {
+        printf("couldn't create grey bacteria\n");
         return false;
     }
 
@@ -490,6 +568,21 @@ void free_resources()
     {
         al_destroy_bitmap(virus_sprite_b);
         virus_sprite_b = NULL;
+    }
+
+    for (int v = 0; v < SPRITE_VARIANTS; v++)
+    {
+        if (coccus_grey[v])
+        {
+            al_destroy_bitmap(coccus_grey[v]);
+            coccus_grey[v] = NULL;
+        }
+
+        if (bacillus_grey[v])
+        {
+            al_destroy_bitmap(bacillus_grey[v]);
+            bacillus_grey[v] = NULL;
+        }
     }
 
     if (heart_icon)
@@ -850,7 +943,7 @@ void draw_scan_swatch(Species species, float x, float y)
     }
 
     al_draw_filled_rectangle(x, y + 1.0f, x + 8.0f, y + 9.0f,
-        species == SPECIES_GRAM_POSITIVE ? UI_PURPLE : UI_RED);
+        species == SPECIES_GRAM_POSITIVE ? UI_PURPLE : UI_PINK);
 }
 
 void draw_scan_panel()
@@ -967,25 +1060,25 @@ void draw_scan_panel()
         return;
     }
 
-    // camada 1: amostra da cor + coloracao e nome do agente (#104)
+    // camada 1: so a forma, sem amostra de cor que entregue o grupo (#214)
     if (agents[target].layers < MAX_LAYERS)
     {
-        draw_scan_swatch(agents[target].species, (float)text_x, (float)row_info);
         al_draw_text(font, UI_TEXT, (float)(text_x + 12), (float)row_info, 0,
-            layer_one_text(agents[target].species, agents[target].name));
+            layer_one_text(target));
         al_draw_text(font, UI_DIM, (float)text_x, (float)row_action, 0,
-            agents[target].species == SPECIES_VIRUS
-                ? "clique de novo para concluir a leitura"
-                : "clique de novo para revelar o grupo");
+            agents[target].species == SPECIES_GRAM_POSITIVE
+                || agents[target].species == SPECIES_GRAM_NEGATIVE
+                ? "clique de novo para revelar a coloração"
+                : "clique de novo para concluir a leitura");
         return;
     }
 
-    // camada 2: grupo, pista estrutural e o porque, sem indicar a arma (#104)
+    // camada 2: coloracao, estrutura e o que a celula e, sem indicar a arma (#214)
     draw_scan_swatch(agents[target].species, (float)text_x, (float)row_info);
     al_draw_text(font, UI_WARM, (float)(text_x + 12), (float)row_info, 0,
-        layer_two_text(agents[target].species));
+        layer_two_text(target));
     al_draw_text(font, UI_WARM, (float)text_x, (float)row_action, 0,
-        layer_two_reason(agents[target].species));
+        layer_two_reason(target));
 }
 
 // ---------------------------------------------------------------
@@ -1326,6 +1419,19 @@ ALLEGRO_BITMAP* species_sprite(Species species, int variant)
     return variant == 1 ? cell_sprite_b : cell_sprite;
 }
 
+// sprite cinza da bacteria pela forma e variante; o grupo vem do tingimento (#214)
+ALLEGRO_BITMAP* bacteria_sprite(Shape shape, int variant)
+{
+    int v = variant == 1 ? 1 : 0;
+
+    if (shape == SHAPE_BACILLUS)
+    {
+        return bacillus_grey[v];
+    }
+
+    return coccus_grey[v];
+}
+
 // coordenada do mundo para o pixel do canvas, arredondada para nao tremer
 float view_x(float x)
 {
@@ -1541,6 +1647,7 @@ int player_frame()
 void draw_game()
 {
     int i;
+    bool is_bacteria;
     const char* message;
     float aim_x;
     float aim_y;
@@ -1551,7 +1658,9 @@ void draw_game()
     al_set_clipping_rectangle(0, 0, SCREEN_W, PLAY_H);
 
     // mapa do mundo deslocado pela camera, atras de destino, agentes e nanobo
-    al_draw_bitmap(world_map, -floorf(camera.x), -floorf(camera.y), 0);
+    // recuado: escurecido e com um veu azulado, sem mudar o PNG (#220)
+    al_draw_tinted_bitmap(world_map, MAP_TINT, -floorf(camera.x), -floorf(camera.y), 0);
+    al_draw_filled_rectangle(0.0f, 0.0f, (float)SCREEN_W, (float)PLAY_H, MAP_VEIL);
 
     // destino da fase: anel e rotulo visiveis desde o inicio (#26)
     al_draw_filled_circle(view_x(DESTINATION_X), view_y(DESTINATION_Y), DESTINATION_RADIUS,
@@ -1569,13 +1678,46 @@ void draw_game()
             continue;
         }
 
-        // bacteria sem leitura: disco cinza, sem forma nem cor que entregue o grupo (RF-03)
+        is_bacteria = agents[i].species == SPECIES_GRAM_POSITIVE
+            || agents[i].species == SPECIES_GRAM_NEGATIVE;
+
+        // sombra de contato: o agente deixa de parecer colado no fundo (#220)
+        al_draw_filled_ellipse(view_x(agents[i].x), view_y(agents[i].y) + 12.0f,
+            12.0f, 4.0f, CONTACT_SHADOW);
+
+        // bacteria sem leitura: silhueta azulada, sem forma nem cor que entregue o grupo (#220)
         // o virus fica de fora: o estado dele e lido no mundo, sem scanner (#84)
-        if (agents[i].species != SPECIES_CELL && agents[i].species != SPECIES_VIRUS
-            && agents[i].layers == 0)
+        if (is_bacteria && agents[i].layers == 0)
         {
             al_draw_filled_circle(view_x(agents[i].x), view_y(agents[i].y),
-                (float)AGENT_RADIUS - 2.0f, UI_FRAME);
+                (float)AGENT_RADIUS - 3.0f, SILHOUETTE_FILL);
+            al_draw_circle(view_x(agents[i].x), view_y(agents[i].y),
+                (float)AGENT_RADIUS - 3.0f, SILHOUETTE_EDGE, 1.0f);
+            continue;
+        }
+
+        // bacteria lida: sprite cinza da forma; na camada 2, tingido pelo Gram e com anel (#214)
+        if (is_bacteria)
+        {
+            ALLEGRO_COLOR tint = al_map_rgb_f(1.0f, 1.0f, 1.0f);
+            bool stained = agents[i].layers >= MAX_LAYERS;
+
+            if (stained)
+            {
+                tint = agents[i].species == SPECIES_GRAM_POSITIVE ? GRAM_POS_TINT : GRAM_NEG_TINT;
+            }
+
+            al_draw_tinted_bitmap(bacteria_sprite(agents[i].shape, agents[i].variant), tint,
+                view_x(agents[i].x) - AGENT_RADIUS,
+                view_y(agents[i].y) - AGENT_RADIUS, 0);
+
+            if (stained)
+            {
+                al_draw_circle(view_x(agents[i].x), view_y(agents[i].y),
+                    (float)AGENT_RADIUS + 2.0f,
+                    agents[i].species == SPECIES_GRAM_POSITIVE ? UI_PURPLE : UI_PINK, 1.0f);
+            }
+
             continue;
         }
 
@@ -1592,19 +1734,11 @@ void draw_game()
         al_draw_bitmap(species_sprite(agents[i].species, agents[i].variant),
             view_x(agents[i].x) - AGENT_RADIUS,
             view_y(agents[i].y) - AGENT_RADIUS, 0);
-
-        // anel da coloracao: fica no agente depois da camada 1, roxo ou vermelho
-        if (agents[i].species == SPECIES_GRAM_POSITIVE)
-        {
-            al_draw_circle(view_x(agents[i].x), view_y(agents[i].y),
-                (float)AGENT_RADIUS + 2.0f, UI_PURPLE, 1.0f);
-        }
-        else if (agents[i].species == SPECIES_GRAM_NEGATIVE)
-        {
-            al_draw_circle(view_x(agents[i].x), view_y(agents[i].y),
-                (float)AGENT_RADIUS + 2.0f, UI_RED, 1.0f);
-        }
     }
+
+    // a sombra do nanobo segue a mesma regra dos agentes (#220)
+    al_draw_filled_ellipse(view_x(player.x), view_y(player.y) + 13.0f,
+        11.0f, 4.0f, CONTACT_SHADOW);
 
     // o nanobo e desenhado onde o mundo deixou ele, ja descontada a camera
     // a linha do spritesheet e a direcao quando a arte tem as quatro (#30)
@@ -2199,6 +2333,25 @@ void handle_key_down(int key)
             if (virus_is_lysogenic(i) && agents[i].lysogenic_timer > 1.0f)
             {
                 agents[i].lysogenic_timer = 1.0f;
+            }
+        }
+    }
+    // J avanca uma camada do scan em todo agente, para conferir o desenho (#214)
+    else if (key == ALLEGRO_KEY_J)
+    {
+        int i;
+
+        for (i = 0; i < agents_total(); i++)
+        {
+            if (agents[i].active && agents[i].layers < MAX_LAYERS)
+            {
+                agents[i].layers = agents[i].layers + 1;
+
+                if (agents[i].layers == MAX_LAYERS && !agents[i].identified)
+                {
+                    agents[i].identified = true;
+                    identified_count = identified_count + 1;
+                }
             }
         }
     }
