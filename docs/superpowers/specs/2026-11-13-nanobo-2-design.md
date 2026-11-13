@@ -79,7 +79,7 @@ Cada OA tem uma **regra do mundo**, o **momento** em que o jogador a sente e o *
 | **OA1** | Célula procarionte × eucarionte | O scan da célula do paciente mostra **núcleo e mitocôndrias**; o da bactéria mostra **nucleoide e ribossomos, sem núcleo**. Atirar na célula custa vitais. | Na primeira leitura de cada um; e ao errar o tiro. |
 | **OA2** | Morfologia e coloração de Gram | A 1ª camada do scan dá **só a forma** (coco ou bacilo). A 2ª dá a **coloração** (roxo ou rosa) e a **estrutura** (parede espessa ou parede fina com membrana externa). As espécies da fase misturam formas e Gram, então a forma **sozinha** não decide a arma: para acertar, é preciso concluir o scan. | Quando um coco Gram− ou um bacilo Gram+ contraria o palpite pela forma. |
 | **OA3** | O antibiótico age numa estrutura | **Antibiótico de parede** (inibe a parede de peptidoglicano) funciona na Gram+; na Gram− a membrana externa barra sua entrada. **Antibiótico de membrana** age na membrana externa, que só a Gram− tem. | Ao escolher a arma pela 2ª camada (estrutura); o erro dá a explicação. |
-| **OA4** | Resistência bacteriana e seleção | Antibiótico errado numa bactéria **não a mata e a seleciona como resistente**: ela fica marcada, **ignora antibióticos** e só o sistema imune a remove. Toda bactéria viva se **divide por divisão binária** a cada `DIVISION_TIME`, e a filha herda a resistência. | No primeiro erro de arma; quando a população dobra. |
+| **OA4** | Resistência bacteriana por **tratamento incompleto** | A bactéria precisa de **2 doses do antibiótico certo**. Se levar 1 dose e continuar viva por mais de `INCOMPLETE_TIME` (cerca de 6 s, mostrado por um anel que se esvazia), ela se torna **resistente àquele antibiótico**: as doses seguintes não fazem efeito e só o macrófago a remove. O **antibiótico errado não faz efeito nenhum**: gasta o tiro e o tempo, e o feedback explica por quê (OA3), mas não cria resistência. Toda bactéria viva se **divide por divisão binária** a cada `DIVISION_TIME`; a filha herda a resistência, mas não a dose recebida. | Quando deixa uma bactéria "meio tratada" escapar. A mensagem é "termine o tratamento" (decisão do dono, 13/11, que substitui "erro de arma gera resistência a tudo", porque isso ensinaria multirresistência por um erro só). |
 | **OA5** | Sistema imune inato: fagocitose e opsonização | **Macrófagos aliados** patrulham. Concluir as 2 camadas do scan **marca automaticamente** o alvo (opsonização) e o macrófago livre mais próximo vai até ele e o fagocita. O jogador ainda pode abater o alvo com antibiótico antes de o macrófago chegar. É o único jeito de remover uma bactéria resistente. | Na primeira bactéria resistente; o card do macrófago aparece aí. |
 | **OA6** | Vírus é acelular | Na Fase 2, **antibiótico não afeta o vírus**: o projétil atravessa e o feedback diz que vírus não tem parede, metabolismo próprio nem ribossomos. | No primeiro tiro de antibiótico num vírus. |
 | **OA7** | Ciclos lisogênico/lítico e imunidade adaptativa | O vírus **lisogênico** fica dentro da célula e pisca (já no código). Escanear a **célula infectada** a marca, e o **linfócito T** aliado a destrói antes da eclosão. O vírus **lítico** livre é neutralizado com **anticorpos**, a 3ª ferramenta, que só existe na Fase 2. | Ao decidir entre conter a célula agora ou caçar vírus livres depois. |
@@ -129,6 +129,7 @@ Cada OA tem uma **regra do mundo**, o **momento** em que o jogador a sente e o *
 | `VITALS_DRAIN_PER_BACTERIUM` | −0,12/s | cada bactéria viva drena; com 6, cerca de 0,7/s |
 | `VITALS_HOST_RUPTURE` | −10 | eclosão rompe a célula (Fase 2) |
 | `DIVISION_TIME` | 22 s ± 4 s | divisão binária por bactéria |
+| `INCOMPLETE_TIME` | 6 s | janela para a 2ª dose antes da resistência |
 | `BACTERIA_CAP` | 16 | teto populacional da Fase 1 |
 | `MAX_AGENTS` | 24 | capacidade do array (bactérias, células e aliados) |
 | `MACROPHAGE_SPEED` | 45 px/s | velocidade do macrófago (Nanobô a 200) |
@@ -139,7 +140,8 @@ Cada OA tem uma **regra do mundo**, o **momento** em que o jogador a sente e o *
 
 ### 7.2 Escolhas que o jogador faz
 
-- **Escanear ou atirar já.** O scan leva 2 cliques e o jogador fica exposto; atirar sem ler arrisca a resistência.
+- **Escanear ou atirar já.** O scan leva 2 cliques e o jogador fica exposto. Atirar sem ler arrisca gastar tiros com o antibiótico errado enquanto as bactérias se dividem.
+- **Terminar o tratamento.** Depois da 1ª dose, o jogador tem cerca de 6 s para dar a 2ª, mesmo que outra ameaça apareça. Deixar a bactéria meio tratada cria uma resistente.
 - **Abater ou esperar o macrófago.** O scan completo marca o alvo, e o macrófago começa a ir até ele. O jogador escolhe entre abater já com o antibiótico certo (+10, rápido, sem drenar mais vitais) e deixar o macrófago chegar (+15, lento, mas sem risco de criar resistência). Contra a resistente, só o macrófago funciona.
 - **Onde gastar o tempo.** Cada bactéria viva drena vitais e se divide: é preciso priorizar a que está prestes a se dividir. Um anel de progresso aparece em volta dela depois da 1ª camada.
 - **Fase 2: célula agora ou vírus depois.** Marcar a célula infectada para o linfócito T impede a eclosão de 3, mas o linfócito T é um só e lento.
@@ -148,7 +150,7 @@ Cada OA tem uma **regra do mundo**, o **momento** em que o jogador a sente e o *
 
 - +10 por bactéria eliminada com antibiótico.
 - +15 por alvo marcado e eliminado por aliado.
-- −5 por resistência criada.
+- −5 por resistência criada (tratamento incompleto).
 - +15 de bônus de identificação completa (mantido).
 - **Bônus de vitais no fim da fase:** vitais × 0,5. É o que liga a narrativa ao placar.
 - **Top 10 (requisito da disciplina, #34/#77–#82/#197):** a pontuação final da run entra no ranking só em vitória (decisão de 05/11, mantida), com nome de até 10 caracteres digitado na tela de vitória. O ranking aparece no menu.
@@ -218,7 +220,7 @@ Cada OA tem uma **regra do mundo**, o **momento** em que o jogador a sente e o *
 | Etapa | Datas | Entrega |
 |---|---|---|
 | 0 | 13–14/11 | este documento aprovado; issues da Etapa 1 criadas; Todoist remarcado |
-| 1 | 15–19/11 | Fase 1 nova jogável com a arte atual: forma, antibiótico pelo alvo, resistência, divisão, macrófago, vitais, tutorial no mundo, **mapa recuado** e os **4 primeiros itens de game feel** (§8) |
+| 1 | 15–19/11 | Fase 1 nova jogável com a arte atual: forma, antibiótico pelo alvo, resistência, divisão, macrófago, vitais, tutorial no mundo, **mapa recuado** e os **4 primeiros itens de game feel** (§8). Em paralelo, **amostra de arte** (Nanobô, coco e macrófago) para aprovação até 18/11 |
 | 1b | 20–21/11 | **instalador de fumaça:** Release empacotado e instalado numa pasta limpa, mesmo com o jogo incompleto, para descobrir cedo o que falta (DLLs do Allegro, caminhos dos assets, arquivo de hi-score gravável) (#42, #154–#158, #159–#161) |
 | 2 | 20–23/11 | Fase 2 completa: eclipse, eclosão, anticorpo, linfócito T, scanner viral |
 | 3 | 24–28/11 | arte e interface novas, narrativa, textos, **Top 10 com entrada de nome** (#77–#82, #197) |
@@ -265,3 +267,22 @@ O dono decide em cada ponto de corte.
 - **Eclosão:** os vírus novos nascem líticos e livres e infectam células livres ao tocá-las. Substitui o "nascem lisogênicos" de `fase2-virus.md` (11/11).
 - **Mapa:** pode ser escurecido e dessaturado na hora de desenhar; o PNG não muda.
 - **Equipe:** o Gustavo assume Top 10, build Release e instalador.
+
+### Rodada de arguição (13/11)
+
+- **Resistência:** surge por **tratamento incompleto** e vale só para o antibiótico usado. O antibiótico errado não faz efeito, mas não cria resistência (§5, OA4).
+- **Arte:** uma **amostra cedo**. Até 18/11, as peças-âncora (Nanobô de frente, 1 coco e 1 macrófago) são desenhadas sobre o mapa escurecido e passam pela aprovação do dono antes do resto. Se o estilo não for aprovado, ainda há tempo de mudar de abordagem.
+- **Playtest:** só o dono e partidas simuladas. Não haverá teste com aluno do ensino médio antes de 02/12, então a calibração da §3 (meta 3) é feita por bots no harness e pelas partidas do dono. A #38 e as #134–#138 (teste externo) ficam sem cumprir; o destino delas segue a regra de "não fechar nada por enquanto".
+- **Escopo:** o dono manteve tudo, com a ordem de corte da §11 como rede de segurança.
+- **Checagem diária:** no fim de cada dia de trabalho, um resumo curto para o dono, sem o código cru:
+  - o que mudou e qual issue fechou (no GitHub e no Todoist);
+  - capturas automáticas das telas afetadas;
+  - harness e build Debug/Release com 0 warnings;
+  - o que vem no dia seguinte;
+  - as decisões que só o dono pode tomar, cada uma com uma recomendação.
+- **Merge:** direto, como até agora: branch local por etapa e merge fast-forward na `master` quando a etapa fecha, sem PR.
+- **Dificuldade-alvo:** quem joga a Fase 1 pela primeira vez e lê o scanner perde cerca de 1 em 3 partidas e vence quase sempre na segunda tentativa. A calibração usa dois bots no harness:
+  - **leitor:** completa o scan, escolhe a arma pela 2ª camada, termina o tratamento e reage com atraso humano de cerca de 0,4 s; precisa vencer 55–75%;
+  - **chute:** não escaneia e escolhe a arma ao acaso; precisa vencer no máximo 10%.
+- **Modo de demonstração:** não haverá. A apresentação usa o jogo normal, com ensaio (#47, #167).
+- **Call minha:** o macrófago prioriza a bactéria resistente marcada; empatando, vai na mais próxima.
