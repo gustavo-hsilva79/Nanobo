@@ -51,9 +51,16 @@ _Static_assert(WORLD_W % 32 == 0 && WORLD_H % 32 == 0, "mundo precisa fechar no 
 // intervalo entre disparos (#64)
 #define ATTACK_COOLDOWN 1.0
 
-// arma errada: trava o disparo e poe a bacteria atingida atras do nanobo (RF-06)
+// antibiotico errado: nao muda a bacteria, mas trava o disparo por 2 s,
+// o custo de chutar a arma; a perseguicao da RF-06 saiu no 2.0 (#215)
 #define FIRE_LOCK_TIME 2.0
-#define CHASE_SPEED 60
+
+// tratamento em duas doses: depois da 1a, o prazo para a 2a; se ele zera,
+// a bacteria fica resistente ao antibiotico que recebeu (#215)
+#define INCOMPLETE_TIME 6.0
+
+// pontos perdidos por resistencia criada; a pontuacao nao fica negativa (#215)
+#define RESISTANCE_PENALTY 5
 
 // cursor a menos disso do nanobo cai na direcao do facing (#198)
 #define AIM_DEAD_ZONE 8.0f

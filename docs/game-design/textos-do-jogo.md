@@ -8,13 +8,16 @@
 
 | ID | Situação | Texto | Caracteres | Origem |
 |---|---|---|---|---|
-| FB-01 | Ruptura acerta Gram+, primeiro acerto | `Ruptura atingiu a parede: falta 1 acerto` | 40 | spec, tabela de feedback |
-| FB-02 | Dissolução acerta Gram-, primeiro acerto | `Dissolução atingiu a camada extra: falta 1 acerto` | 49 | spec, tabela de feedback |
+| FB-01 | primeira dose do antibiótico certo (Gram+ ou Gram-) | `primeira dose: complete o tratamento` | 36 | #215 (FB2-05) |
+| FB-01b | prazo da 2ª dose venceu, Gram+ | `tratamento incompleto: resistente à Ruptura` | 43 | #215 (FB2-06) |
+| FB-01c | prazo da 2ª dose venceu, Gram- | `tratamento incompleto: resistente à Dissolução` | 46 | #215 (FB2-06) |
+| FB-02 | antibiótico do tratamento numa resistente, Gram+ | `resistente à Ruptura: use a Reserva` | 35 | #215 |
+| FB-02b | antibiótico do tratamento numa resistente, Gram- | `resistente à Dissolução: use a Reserva` | 38 | #215 |
 | FB-03 | acerto que neutraliza, agente identificado | `ameaça neutralizada: +10 pontos` | 31 | já existia (#66) |
 | FB-04 | acerto que neutraliza sem identificação | `neutralizada sem identificar: o bônus de 9/9 se perdeu` | 54 | já existia (#67) |
-| FB-05 | primeiro erro de arma | `que estrutura o scan mostrou? qual arma tem esse alvo?` | 54 | spec, dica escalonada |
-| FB-06 | segundo erro, Dissolução em Gram+ | `no jogo, a Gram+ não tem a camada extra atingida pela Dissolução` | 64 | spec, dica escalonada |
-| FB-07 | segundo erro, Ruptura em Gram- | `no jogo, a camada extra das Gram- dificulta a ação da Ruptura` | 61 | spec, dica escalonada |
+| FB-05 | antibiótico errado depois de ler só a forma (camada 1) | `a forma não define o grupo: veja a coloração` | 44 | #215 (FB2-02) |
+| FB-06 | Dissolução em Gram+ | `a Gram+ não tem membrana externa para a Dissolução` | 50 | #215 (FB2-04) |
+| FB-07 | Ruptura em Gram- | `a membrana externa barrou a Ruptura` | 35 | #215 (FB2-03) |
 | FB-08 | célula própria ferida pela Ruptura | `no jogo, a Ruptura fere a célula própria: -1 vida` | 49 | spec + D1 |
 | FB-09 | célula própria ferida pela Dissolução | `no jogo, a Dissolução fere a célula própria: -1 vida` | 52 | spec + D1 |
 | FB-10 | contato com bactéria | `contato com bactéria: -1 de vida` | 32 | já existia (#11) |
@@ -225,7 +228,7 @@ O painel de resultados apresenta uma mensagem independente para cada objetivo de
 | FB2-02 | Arma escolhida pela forma, no grupo errado | a forma não define o grupo: veja a coloração |
 | FB2-03 | Ruptura numa Gram− | a membrana externa barrou a Ruptura |
 | FB2-04 | Dissolução numa Gram+ | a Gram+ não tem membrana externa para a Dissolução |
-| FB2-05 | 1ª dose certa | 1ª dose: complete o tratamento |
+| FB2-05 | 1ª dose certa | primeira dose: complete o tratamento (no código: FB-01; o "ª" não foi testado na fonte embutida) |
 | FB2-06 | Resistência surgiu | tratamento incompleto: resistente à Ruptura (ou à Dissolução) |
 | FB2-07 | Reserva sem carga | Reserva esgotada |
 | FB2-08 | Antibiótico em vírus | antibiótico não age em vírus |

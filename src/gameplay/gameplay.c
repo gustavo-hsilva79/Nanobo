@@ -13,8 +13,8 @@
 // a invulnerabilidade precisa existir para o dano nao virar por quadro
 _Static_assert(INVULNERABILITY_TIME > 0.0, "invulnerabilidade precisa ser positiva");
 
-// o texto do feedback diz "falta 1 acerto": a bacteria tem 2 de resistencia (#105)
-_Static_assert(BACTERIA_RESISTANCE == 2, "o feedback assume um acerto restante");
+// o tratamento e de duas doses: o feedback fala em "primeira dose" (#215)
+_Static_assert(BACTERIA_RESISTANCE == 2, "o tratamento assume duas doses");
 
 // tempo da partida em segundos, so conta dentro do estado GAME
 double match_time = 0;
@@ -307,12 +307,20 @@ bool hit_agent(int index)
     if (agents[index].resistance <= 0)
     {
         agents[index].active = false;
+        agents[index].dose_timer = 0.0f;
 
         // o acerto que neutralizou e o unico evento que pontua (#66)
         score = score + SCORE_PER_THREAT;
         run_progress.neutralized = run_progress.neutralized + 1;
 
         return true;
+    }
+
+    // primeira dose numa bacteria: liga o prazo da segunda (#215)
+    if (agents[index].species == SPECIES_GRAM_POSITIVE
+        || agents[index].species == SPECIES_GRAM_NEGATIVE)
+    {
+        agents[index].dose_timer = (float)INCOMPLETE_TIME;
     }
 
     return false;
@@ -401,6 +409,21 @@ static void hit_projectiles()
                     }
                 }
             }
+            else if (weapon_affects(projectiles[i].laser, agents[j].species)
+                && agents[j].resistant)
+            {
+                // resistente: o antibiotico do tratamento incompleto nao age mais (#215)
+                emit_sfx(SFX_EVENT_WRONG);
+
+                if (agents[j].species == SPECIES_GRAM_POSITIVE)
+                {
+                    set_feedback("resistente à Ruptura: use a Reserva");
+                }
+                else
+                {
+                    set_feedback("resistente à Dissolução: use a Reserva");
+                }
+            }
             else if (weapon_affects(projectiles[i].laser, agents[j].species))
             {
                 progress.correct_decisions = progress.correct_decisions + 1;
@@ -419,38 +442,34 @@ static void hit_projectiles()
                         set_feedback("neutralizada sem identificar: o bônus de 9/9 se perdeu");
                     }
                 }
-                else if (agents[j].species == SPECIES_GRAM_POSITIVE)
-                {
-                    emit_sfx(SFX_EVENT_HIT);
-                    set_feedback("Ruptura atingiu a parede: falta 1 acerto");
-                }
                 else
                 {
+                    // primeira dose: o anel do prazo comeca a esvaziar (#215)
                     emit_sfx(SFX_EVENT_HIT);
-                    set_feedback("Dissolução atingiu a camada extra: falta 1 acerto");
+                    set_feedback("primeira dose: complete o tratamento");
                 }
             }
             else
             {
                 progress.wrong_decisions = progress.wrong_decisions + 1;
 
-                // arma errada custa caro: trava o disparo e poe so esta bacteria atras do nanobo (RF-06)
-                agents[j].alert = true;
+                // antibiotico errado nao muda a bacteria: nem dose, nem resistencia;
+                // o custo e a trava do disparo (#215)
                 fire_lock_timer = FIRE_LOCK_TIME;
                 emit_sfx(SFX_EVENT_WRONG);
 
-                // dica escalonada: pergunta no primeiro erro, mecanismo do segundo em diante (#105)
-                if (progress.wrong_decisions == 1)
+                // quem leu so a forma chutou o grupo: o feedback aponta a coloracao (#215)
+                if (agents[j].layers == 1)
                 {
-                    set_feedback("que estrutura o scan mostrou? qual arma tem esse alvo?");
+                    set_feedback("a forma não define o grupo: veja a coloração");
                 }
-                else if (agents[j].species == SPECIES_GRAM_POSITIVE)
+                else if (agents[j].species == SPECIES_GRAM_NEGATIVE)
                 {
-                    set_feedback("no jogo, a Gram+ não tem a camada extra atingida pela Dissolução");
+                    set_feedback("a membrana externa barrou a Ruptura");
                 }
                 else
                 {
-                    set_feedback("no jogo, a camada extra das Gram- dificulta a ação da Ruptura");
+                    set_feedback("a Gram+ não tem membrana externa para a Dissolução");
                 }
             }
 
@@ -828,23 +847,6 @@ static void pick_new_direction(int index)
     agents[index].direction_timer = (float)(rand() % 5 + 1);
 }
 
-// aponta a bacteria alertada para o nanobo; no centro exato, sorteia uma direcao (RF-06)
-static void chase_player(int index)
-{
-    float dx = player.x - agents[index].x;
-    float dy = player.y - agents[index].y;
-    float dist = sqrtf(dx * dx + dy * dy);
-
-    if (dist < 0.001f)
-    {
-        pick_new_direction(index);
-        return;
-    }
-
-    agents[index].dx = dx / dist;
-    agents[index].dy = dy / dist;
-}
-
 // defesa ativa empurra a bacteria que encosta: direcao do nanobo para o agente (#17)
 static void repel_touching_agents()
 {
@@ -936,7 +938,8 @@ static void reset_agent(int index)
     agents[index].layers = 0;
     agents[index].identified = false;
     agents[index].impulse_timer = 0.0f;
-    agents[index].alert = false;
+    agents[index].dose_timer = 0.0f;
+    agents[index].resistant = false;
 
     // virus nasce lisogenico com o tempo cheio; quem nao e virus ignora (#84)
     agents[index].virus_state = VIRUS_LYSOGENIC;
@@ -993,6 +996,46 @@ static void update_virus(int index, double dt)
     {
         agents[index].lysogenic_timer = 0.0f;
         agents[index].virus_state = VIRUS_LYTIC_READY;
+    }
+}
+
+// prazo da segunda dose: ao zerar, a bacteria fica resistente ao antibiotico
+// que recebeu, e a dose dada se perde (#215); so a Reserva age nela (#216)
+static void update_dose(int index, double dt)
+{
+    if (agents[index].dose_timer <= 0.0f)
+    {
+        return;
+    }
+
+    agents[index].dose_timer -= (float)dt;
+
+    if (agents[index].dose_timer > 0.0f)
+    {
+        return;
+    }
+
+    agents[index].dose_timer = 0.0f;
+    agents[index].resistant = true;
+    agents[index].resistance = species_resistance(agents[index].species);
+
+    // resistencia criada custa pontos, sem deixar a pontuacao negativa (#215)
+    score = score - RESISTANCE_PENALTY;
+
+    if (score < 0)
+    {
+        score = 0;
+    }
+
+    emit_sfx(SFX_EVENT_WRONG);
+
+    if (agents[index].species == SPECIES_GRAM_POSITIVE)
+    {
+        set_feedback("tratamento incompleto: resistente à Ruptura");
+    }
+    else
+    {
+        set_feedback("tratamento incompleto: resistente à Dissolução");
     }
 }
 
@@ -1405,8 +1448,8 @@ static void collide_agents()
             agents[i].x += nx * (player_reach - dist);
             agents[i].y += ny * (player_reach - dist);
 
-            // quem persegue ou esta no empurrao da defesa mantem a direcao (RF-06, #17)
-            if (!agents[i].alert && agents[i].impulse_timer <= 0.0f)
+            // quem esta no empurrao da defesa mantem a direcao (#17)
+            if (agents[i].impulse_timer <= 0.0f)
             {
                 agents[i].dx = nx;
                 agents[i].dy = ny;
@@ -1453,13 +1496,13 @@ static void collide_agents()
             agents[j].x += nx * push;
             agents[j].y += ny * push;
 
-            if (!agents[i].alert && agents[i].impulse_timer <= 0.0f)
+            if (agents[i].impulse_timer <= 0.0f)
             {
                 agents[i].dx = -nx;
                 agents[i].dy = -ny;
             }
 
-            if (!agents[j].alert && agents[j].impulse_timer <= 0.0f)
+            if (agents[j].impulse_timer <= 0.0f)
             {
                 agents[j].dx = nx;
                 agents[j].dy = ny;
@@ -1480,12 +1523,12 @@ void update_match(double dt)
     for (int i = 0; i < agents_count; i++)
     {
         float speed_factor = 1.0f;
-        int move_speed = agents[i].speed;
 
         if (!agents[i].active)
             continue;
 
         update_virus(i, dt);
+        update_dose(i, dt);
 
         // virus lisogenico ou pronto para o litico fica parado; so o
         // empurrao da defesa o move (#84); andar e regra do litico (#85)
@@ -1503,19 +1546,8 @@ void update_match(double dt)
             if (agents[i].impulse_timer <= 0.0f)
             {
                 agents[i].impulse_timer = 0.0f;
-
-                // o fim do empurrao nao pode apagar a perseguicao (RF-06)
-                if (!agents[i].alert)
-                {
-                    pick_new_direction(i);
-                }
+                pick_new_direction(i);
             }
-        }
-        else if (agents[i].alert)
-        {
-            // so a bacteria que levou arma errada persegue, e ate ser neutralizada (RF-06)
-            chase_player(i);
-            move_speed = CHASE_SPEED;
         }
         else
         {
@@ -1528,8 +1560,8 @@ void update_match(double dt)
             }
         }
 
-        agents[i].x += (float)(agents[i].dx * move_speed * speed_factor * dt);
-        agents[i].y += (float)(agents[i].dy * move_speed * speed_factor * dt);
+        agents[i].x += (float)(agents[i].dx * agents[i].speed * speed_factor * dt);
+        agents[i].y += (float)(agents[i].dy * agents[i].speed * speed_factor * dt);
 
         bounce_agent_off_bounds(i);
     }

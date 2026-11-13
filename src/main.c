@@ -1644,6 +1644,29 @@ int player_frame()
     return base + (int)(match_time / frame_time) % 4;
 }
 
+// marcas do tratamento sobre a bacteria: o arco ambar esvazia ate a 2a dose
+// e a resistente ganha anel vermelho e um R (#215)
+void draw_treatment_marks(int index)
+{
+    float x = view_x(agents[index].x);
+    float y = view_y(agents[index].y);
+
+    if (agents[index].dose_timer > 0.0f)
+    {
+        float left = agents[index].dose_timer / (float)INCOMPLETE_TIME;
+
+        al_draw_arc(x, y, (float)AGENT_RADIUS + 5.0f, -ALLEGRO_PI / 2.0f,
+            left * 2.0f * ALLEGRO_PI, UI_AMBER, 2.0f);
+    }
+
+    if (agents[index].resistant)
+    {
+        al_draw_circle(x, y, (float)AGENT_RADIUS + 5.0f, UI_RED, 2.0f);
+        al_draw_text(font, UI_RED, x, y - (float)AGENT_RADIUS - 16.0f,
+            ALLEGRO_ALIGN_CENTRE, "R");
+    }
+}
+
 void draw_game()
 {
     int i;
@@ -1693,6 +1716,7 @@ void draw_game()
                 (float)AGENT_RADIUS - 3.0f, SILHOUETTE_FILL);
             al_draw_circle(view_x(agents[i].x), view_y(agents[i].y),
                 (float)AGENT_RADIUS - 3.0f, SILHOUETTE_EDGE, 1.0f);
+            draw_treatment_marks(i);
             continue;
         }
 
@@ -1718,6 +1742,7 @@ void draw_game()
                     agents[i].species == SPECIES_GRAM_POSITIVE ? UI_PURPLE : UI_PINK, 1.0f);
             }
 
+            draw_treatment_marks(i);
             continue;
         }
 

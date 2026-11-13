@@ -58,7 +58,7 @@ Cada fase tem mapa, ponto de partida e destino próprios. O mapa da Fase 1 conti
 - **Tratamento:**
   - cada bactéria precisa de **2 doses** do antibiótico certo;
   - uma dose e mais de 6 s sem a segunda deixam a bactéria **resistente àquele antibiótico**, e daí só a **Reserva** a elimina;
-  - o antibiótico errado não faz efeito, e não cria resistência.
+  - o antibiótico errado não faz efeito, e não cria resistência; ele trava o disparo por 2 s, o custo do chute (#215).
 - **Divisão e crescimento:**
   - as bactérias se dividem a cada cerca de 22 s, com teto de 16;
   - as leveduras brotam a cada cerca de 20 s, com teto de 12;
