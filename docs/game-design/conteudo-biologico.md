@@ -10,6 +10,47 @@
 
 Este documento limita o conteúdo ao que apoia a decisão do jogador. Separa fatos biológicos de regras abstratas do jogo e registra lacunas como **[PENDÊNCIA]**.
 
+## Nanobô 2.0 — conteúdo vigente (13/11/2026)
+
+> **Vigente.** Acrescenta e substitui, onde conflitar, o conteúdo das seções do M4 abaixo. Os objetivos e textos estão em [`ensino-e-aprendizagem.md`](ensino-e-aprendizagem.md) (§"Nanobô 2.0"); a visão do jogo, no [`gdd.md`](gdd.md). Nível de ensino médio, sem termos moleculares no HUD.
+
+### Fase 1 — bactérias na corrente sanguínea
+
+- **Espécies** (misturam forma e Gram para a forma não decidir a arma):
+
+  | Forma | Gram+ | Gram− |
+  |---|---|---|
+  | Coco | *Staphylococcus aureus*, *Streptococcus pyogenes* | *Neisseria meningitidis* |
+  | Bacilo | *Bacillus cereus* | *Escherichia coli*, *Pseudomonas aeruginosa* |
+
+- **Gram:** o corante roxo (cristal violeta) fica retido na parede grossa de peptidoglicano da Gram+. Na Gram− (parede fina e membrana externa), o álcool remove o roxo, e o segundo corante deixa a bactéria rosa. A cor vem do corante de laboratório, não da bactéria: o sprite é neutro e é tingido depois da 2ª camada.
+- **Antibióticos, como regra de jogo:**
+  - **Ruptura** (de parede, inspirada nos β-lactâmicos, como a penicilina) impede a montagem da parede e age na Gram+; a membrana externa da Gram− dificulta sua entrada;
+  - **Dissolução** (de membrana, inspirada nas polimixinas) desfaz a membrana externa, que só a Gram− tem;
+  - **Reserva** representa os antibióticos de reserva, usados quando os comuns falham, e é limitada para ensinar o uso racional.
+- **Resistência:** a bactéria que sobrevive a um tratamento incompleto (1 dose de 2) se multiplica, e o mesmo antibiótico deixa de agir. Simplificação: na realidade, a resistência surge por mutação ou por aquisição de genes e é **selecionada** pelo uso inadequado. A divisão binária (uma bactéria vira duas) passa a resistência para as filhas.
+- **Microbiota:** a maioria das bactérias do corpo é inofensiva ou útil; o jogo trata só as que causam a infecção.
+
+### Fase 2 — vírus nas vias aéreas
+
+- **Ambiente e agente:** um vírus respiratório (como o da gripe) infecta o epitélio dos brônquios.
+- **O vírus não é célula:** não tem parede, ribossomos nem metabolismo próprio, e só se multiplica dentro de uma célula. Por isso, o antibiótico não age nele.
+- **Ciclos (analogia didática dos bacteriófagos):**
+  - **lisogênico:** o material genético do vírus fica na célula sem destruí-la por um tempo;
+  - **lítico:** o vírus faz cópias, a célula se rompe e libera vírus novos, que infectam outras células.
+- **Imunidade adaptativa:**
+  - os **anticorpos** (produzidos pelos linfócitos B) se prendem ao vírus livre e o impedem de entrar nas células; é a **Neutralização** do jogo;
+  - o **linfócito T citotóxico** reconhece e destrói células infectadas; é a **Lise** do jogo, aplicada pelo Nanobô.
+  - O jogo não tem aliados: o Nanobô faz os dois papéis, e os cards dizem quem faz isso no corpo.
+
+### Fase 3 — fungos no pulmão
+
+- **Fungos são eucariontes:** têm núcleo, como as nossas células. A parede é de **quitina**, e não de peptidoglicano, por isso os antibióticos antibacterianos não agem. A membrana tem **ergosterol** (a nossa tem colesterol), que é o alvo de muitos antifúngicos.
+- **Perfuração** (inspirada na anfotericina B, que se liga ao ergosterol e abre poros na membrana): o antifúngico do jogo.
+- **Levedura:** *Cryptococcus neoformans*, unicelular, inalada; multiplica-se por **brotamento** (uma célula-filha cresce grudada e se solta).
+- **Bolor:** *Aspergillus fumigatus*, formado por filamentos (**hifas**) que crescem e soltam **esporos** (conídios), que viram colônias novas.
+- **Oportunismo:** os esporos estão no ar, e um organismo saudável os elimina. A infecção pulmonar por fungos se aproveita de um organismo enfraquecido; há registro de aspergilose depois de gripe grave. No jogo, a carga inicial de esporos depende dos sinais vitais ao fim da Fase 2 e das cargas de Reserva gastas. O jogo **não** afirma que o antibiótico causa aspergilose.
+
 ## Fase 1 — bactérias e células próprias
 
 | Agente | Tipo no jogo | Resistência do jogo | Informação curta para o scanner |

@@ -4,6 +4,40 @@ Este arquivo registra decisões já tomadas pela dupla. Quando uma decisão impo
 
 ## Decisões atuais
 
+### Nanobô 2.0 (13/11/2026)
+
+> Decisões do dono em 13/11, tomadas depois da auditoria (`docs/auditoria/auditoria-2026-11-13.md`) e em duas rodadas de arguição. Valem acima das decisões mais antigas deste arquivo onde conflitarem. A visão vigente está no [`gdd.md`](gdd.md) (§"Nanobô 2.0").
+
+**Escopo e equipe**
+- Entram cinco frentes: game design, ensino, narrativa, arte e interface com textos. **Nada cede no prazo**; a ordem de corte do `kanban.md` é a rede de segurança.
+- O Gustavo assume os requisitos obrigatórios que estavam com o Eric: hi-score Top 10 (#77–#82, #197), build Release (#42, #154–#158) e instalador (#43, #159–#164). O Eric fica com QA, documentação, textos (#212) e volta ao menu (#195).
+- **Sem arquivos novos**, a não ser que seja extremamente necessário: o design vive nos documentos que já existem, e a interface nova é redesenhada dentro do `main.c` (sem `src/ui/`).
+- Merge direto na `master`, sem PR. Resumo diário ao dono.
+- Não há teste com aluno antes de 02/12; a calibração usa bots no harness e as partidas do dono.
+- Sem modo de demonstração.
+
+**Ensino**
+- Os conteúdos são de ensino médio: bactérias a fundo, célula humana × bactéria, sistema imune (só anticorpos), vírus e ciclos, e **fungos** (Fase 3). São 8 objetivos como mecânicas (`ensino-e-aprendizagem.md`, §"Nanobô 2.0").
+- Cada conteúdo tem definição, feedback do erro com o porquê biológico e retomada nos resultados. Há 6 cards de conceito. O scanner continua sem recomendar a arma.
+
+**Mecânicas**
+- **O Nanobô é o único defensor.** Macrófago e linfócito T saem.
+- **Camadas do scan:** a 1ª dá a forma, e a 2ª dá a coloração e a estrutura. Isso substitui "camada 1 com coloração e nome" (03/11, noite). A marcação acontece sozinha ao concluir o scan.
+- **Resistência por tratamento incompleto:** 2 doses; 1 dose e mais de 6 s sem a segunda geram resistência ao antibiótico usado. O antibiótico errado não faz efeito e não gera resistência. A regra antiga, "erro de arma gera resistência a tudo", ensinaria multirresistência e foi descartada.
+- **Reserva:** antibiótico de reserva com 2 cargas por fase; elimina a resistente.
+- **Substituições de regras antigas:** a perseguição por arma errada (RF-06, 04/11) é substituída pela resistência. Os 3 corações dão lugar à barra de vitais de 0 a 100, que passa entre as fases.
+- **Fase 2:** vias aéreas; vírus livres na eclosão, que infectam células livres; **Lise** para a célula infectada (custa poucos vitais); teto de 12 vírus (`fase2-virus.md`).
+- **Fase 3:** pulmão; levedura (*Cryptococcus*, brotamento) e bolor (*Aspergillus*, hifas e esporos); a parede de quitina impede o antibiótico; **Perfuração** é o antifúngico. A carga de esporos depende do estado do paciente ao fim da Fase 2 e das cargas de Reserva gastas, e o jogo não afirma que o antibiótico causa aspergilose. A Perfuração **não** custa vitais (o dono não escolheu o efeito colateral).
+- **Nomes das ferramentas:** Ruptura e Dissolução continuam; entram **Reserva**, **Neutralização**, **Lise** e **Perfuração**. Cada fase mostra só as suas ferramentas (até 3).
+- A identificação deixa de ser condição de vitória.
+
+**Arte e interface**
+- Pixel art à mão, desenhada por Claude. Uma amostra (Nanobô, coco e silhueta) vai para aprovação até 18/11.
+- O mapa da Fase 1 é desenhado escurecido e dessaturado (o PNG não muda). As Fases 2 e 3 ganham mapas próprios desenhados por Claude, que o dono pode melhorar com IA de imagem.
+- **Sprites das bactérias** neutros por forma, com 2 variantes cada (#211 reescopada). O Gram vem do tingimento depois da 2ª camada.
+- **Tiros:** um sprite de 12×12 com 2 quadros por arma, em cor neutra (a forma mostra o mecanismo). As animações de impacto são 3 por resultado (dose certa, sem efeito, eliminado). O recuo do Nanobô é feito em código.
+- Fonte TTF pixel com licença OFL; HUD mais baixo, com a ficha do scanner só quando há alvo; ←/→ entre botões lado a lado.
+
 ### Precedência entre fontes (03/11/2026)
 
 Quando documento e código divergem, vale nesta ordem:

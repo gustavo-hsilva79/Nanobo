@@ -6,6 +6,74 @@ Sincronização com a auditoria e com o escopo real do M4: 3 nov 2026
 
 > **Histórico:** o texto de 31/10 é a proposta inicial; a revisão de 02/11 acrescentou os objetivos, o fluxo, os requisitos e a verificação; **esta cópia de 03/11 é a fonte pedagógica do M4** e aplica as correções da auditoria de escopo (#150). O que a auditoria não decidiu está marcado como proposta ou pendência, nunca como regra.
 
+## Nanobô 2.0 — objetivos e como cada um é explicado (13/11/2026)
+
+> **Vigente.** Esta seção substitui os objetivos OA1–OA4 e o fluxo de ensino do M4 descritos mais abaixo, que ficam como histórico. A visão do jogo está no [`gdd.md`](gdd.md) (§"Nanobô 2.0"). O público continua sendo o ensino médio (Plano de Ensino, Aula 1: "tema de aprendizado do ensino médio"; mecânicas, não quiz).
+
+### Objetivos (OA) como mecânicas
+
+| OA | Conteúdo | Regra no jogo | Quando o jogador aprende |
+|---|---|---|---|
+| **OA1** | Procarionte × eucarionte | O scan da célula do paciente mostra núcleo e mitocôndrias. O da bactéria mostra o DNA solto no nucleoide, sem núcleo. O fungo também tem núcleo (Fase 3). Atirar na célula do paciente custa vitais. | Na 1ª leitura de cada tipo e no erro de tiro. |
+| **OA2** | Morfologia e coloração de Gram | A 1ª camada dá só a forma (coco ou bacilo). A 2ª dá a coloração (roxo ou rosa) e a estrutura. A fase mistura formas e grupos, então a forma sozinha não decide a arma. | Quando um coco Gram− ou um bacilo Gram+ contraria o palpite pela forma. |
+| **OA3** | O antibiótico age numa estrutura | **Ruptura** (antibiótico de parede, inspirado na penicilina) impede a montagem da parede de peptidoglicano e age na Gram+; na Gram−, a membrana externa barra a entrada. **Dissolução** (antibiótico de membrana, inspirado na polimixina) desfaz a membrana externa, que só a Gram− tem. | Ao escolher a arma pela 2ª camada; o erro explica por quê. |
+| **OA4** | Resistência por tratamento incompleto e uso racional | São 2 doses do antibiótico certo. Uma dose e mais de 6 s sem a segunda tornam a bactéria resistente àquele antibiótico. A **Reserva** (2 cargas por fase) elimina a resistente com 1 dose. A filha da divisão herda a resistência. | Quando deixa uma bactéria meio tratada escapar; quando a Reserva acaba. |
+| **OA5** | Imunidade adaptativa: anticorpos | A **Neutralização** dispara anticorpos que se prendem ao vírus livre e o impedem de entrar em outra célula. | No 1º vírus livre neutralizado. |
+| **OA6** | Vírus é acelular | O antibiótico atravessa o vírus sem efeito: o vírus não tem parede, ribossomos nem metabolismo próprio. | No 1º antibiótico num vírus ou na 1ª leitura de um vírus. |
+| **OA7** | Ciclos lisogênico e lítico | O lisogênico fica na célula. No lítico, a célula se rompe e libera vírus livres, que infectam outras. A **Lise** destrói a célula infectada já lida, como faz o linfócito T. | Ao decidir entre aplicar a Lise agora (custo em vitais) e neutralizar 3 vírus depois. |
+| **OA8** | Fungos | Eucarionte com parede de **quitina** (o antibiótico não age); membrana com **ergosterol**, alvo da **Perfuração**. **Levedura** (*Cryptococcus*) brota; **bolor** (*Aspergillus*) cresce em hifas e solta esporos. Fungos **oportunistas** aproveitam o organismo enfraquecido. | Na 1ª leitura de um fungo, no 1º brotamento e na carga de esporos ligada aos vitais. |
+
+### Critério de clareza
+
+Cada OA precisa ter:
+
+1. uma **definição** em linguagem de ensino médio na primeira vez que o termo aparece, com explicação curta na mesma frase;
+2. um **feedback do erro** com o porquê biológico;
+3. uma **retomada** no relatório de resultados.
+
+O scanner continua **sem recomendar a arma**: ele mostra a estrutura, e o aluno liga a estrutura à arma.
+
+### Cards de conceito
+
+São 6 cards. Cada um aparece uma única vez, pausa o jogo, tem 3 linhas de até 70 caracteres e é ilustrado com o sprite ampliado. Os textos estão em [`textos-do-jogo.md`](textos-do-jogo.md) §3.
+
+| Card | Quando aparece |
+|---|---|
+| Coloração de Gram | 1ª leitura completa de bactéria |
+| Resistência e Reserva | 1ª bactéria resistente |
+| Vírus não é célula | 1ª leitura de vírus ou 1º antibiótico em vírus |
+| Lisogênico e lítico | 1ª leitura de célula infectada |
+| Organismo enfraquecido | início da Fase 3 (junto do interlúdio) |
+| Fungo | 1ª leitura de fungo |
+
+### Definição, feedback e retomada por OA
+
+| OA | Definição (onde) | Feedback do erro | Retomada |
+|---|---|---|---|
+| OA1 | Ficha: "célula do paciente · eucarionte · núcleo guarda o DNA"; bactéria: "procarionte · sem núcleo: DNA solto no nucleoide" | "você feriu uma célula do paciente: ela tem núcleo, não é bactéria" | "você poupou X de Y células" |
+| OA2 | Ficha: "forma: coco (esférica)" ou "forma: bacilo (bastão)"; card Gram | "a forma não define o grupo: veja a coloração" | "X bactérias lidas até a coloração" |
+| OA3 | Ficha: "Gram+ · parede grossa, sem membrana externa" ou "Gram- · parede fina sob membrana externa"; HUD: "Ruptura · parede" e "Dissolução · membrana" | "a membrana externa barrou a Ruptura" ou "a Gram+ não tem membrana externa para a Dissolução" | "X doses certas, Y no grupo errado" |
+| OA4 | Na 1ª dose, "complete o tratamento" e um anel de 6 s; card Resistência | "tratamento incompleto: resistente à Ruptura" (ou à Dissolução); "Reserva esgotada" | "X tratamentos completos, Y resistentes, Z cargas de Reserva" |
+| OA5 | HUD: "Neutralização · vírus livre"; card Vírus | Neutralização num lisogênico: "o vírus está dentro da célula: use a Lise" | "X vírus neutralizados" |
+| OA6 | Card Vírus | "antibiótico não age em vírus" | "X tiros de antibiótico em vírus" |
+| OA7 | Card Lisogênico e lítico; ficha: "vírus · lisogênico · 9 s" ou "célula infectada" | Eclosão: "a célula se rompeu: 3 vírus livres (ciclo lítico)" | "X células contidas antes de romper" |
+| OA8 | Card Fungo; ficha: "eucarionte · parede de quitina · membrana com ergosterol" | Antibiótico em fungo: "a parede do fungo é de quitina: antibiótico não age"; tiro na ponta da hifa: "corte a base da colônia" | "X leveduras e Y colônias eliminadas; Z esporos pelo estado do paciente" |
+
+### O que o jogo não afirma
+
+- Não há antibiótico real "de parede" ou "de membrana" puro, nem posologia; as armas são regras do jogo.
+- Na realidade, a resistência surge por mutação e é **selecionada** pelo uso inadequado.
+- Os ciclos lisogênico e lítico são descritos em bacteriófagos; aqui servem de analogia.
+- O antibiótico não causa a aspergilose: o fator de risco é o **organismo enfraquecido**.
+- Nem toda bactéria é ruim: a maioria das que vivem no corpo é inofensiva ou útil (microbiota).
+
+### Calibração
+
+- **Meta:** quem joga a Fase 1 pela 1ª vez e lê o scanner perde cerca de 1 em 3 partidas.
+- **Bot "leitor"** (completa o scan, escolhe a arma pela 2ª camada, termina o tratamento, atraso de cerca de 0,4 s): precisa vencer 55–75%.
+- **Bot "chute"** (sem scan, arma ao acaso): no máximo 10%.
+- Não há teste com aluno antes de 02/12 (decisão do dono): a #38 e as #134–#138 ficam sem cumprir.
+
 ## Correções desta revisão (03/11/2026)
 
 | # | Correção | O que substitui |

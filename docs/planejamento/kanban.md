@@ -14,6 +14,37 @@
 >
 > **Entrega de 11/11/2026:** oito issues no vermelho fecharam na branch `feat/vermelho-11-11` (12 commits, revisão final aprovada, merge fast-forward na `master` em `5c93b18`): #179 (aceleração e frenagem), #31 (seis efeitos sonoros), #32 (música em loop), #30 (spritesheet animado), #83 (estados do vírus da Fase 2), #114/#115/#116 (medição de memória — pico de 79,41 MB no Release). As regras da Fase 2 estão em `docs/game-design/fase2-virus.md` e a medição em `docs/planejamento/qa-memoria.md`.
 
+## Nanobô 2.0 — cronograma, corte e equipe (13/11/2026)
+
+> **Vigente.** Decisões do dono em 13/11, depois da auditoria (`docs/auditoria/auditoria-2026-11-13.md`). A visão do jogo está no [`gdd.md`](../game-design/gdd.md) (§"Nanobô 2.0"). As issues do trabalho novo são criadas no M5 quando cada etapa começa; ao terminar, fecham no GitHub e no Todoist, sem comentário.
+
+**Equipe**
+- **Gustavo:** todo o design 2.0, mais hi-score Top 10 (#77–#82, #197), build Release (#42, #154–#158) e instalador (#43, #159–#164), que eram do Eric.
+- **Eric:** QA e regressão, documentação final, registro de textos (#212) e volta ao menu (#195).
+- A divisão de story points em `divisao-issues-dupla.md` precisa ser recalculada.
+
+**Cronograma**
+
+| Datas | Entrega |
+|---|---|
+| 14/11 | docs sincronizados e enviados; issues da Etapa 1; Todoist remarcado |
+| 15–19/11 | **Etapa 1:** Fase 1 nova com a arte atual (forma, tratamento de 2 doses e resistência, Reserva, divisão, vitais, tutorial no mundo, mapa escurecido e game feel); **amostra de arte** em 18/11 |
+| 20–21/11 | instalador de fumaça (Release empacotado numa pasta limpa); regras da Fase 2 |
+| 20–23/11 | **Etapa 2:** Fase 2 nas vias aéreas (eclipse, eclosão de vírus livres, infecção, Neutralização, Lise) |
+| 23–25/11 | **Fase 3** no pulmão (levedura, bolor, Perfuração, carga de esporos pelo estado do paciente) |
+| 24–28/11 | **Etapa 3:** arte (personagens, tiros, impactos, mapas 2 e 3), interface nova no `main.c`, narrativa, textos e Top 10 com entrada de nome |
+| 29/11–01/12 | **Etapa 4:** calibração com bots, QA automatizado, memória (#117/#118) e instalador final em máquina limpa |
+
+**Ordem de corte**, do que nunca sai para o que sai primeiro (decisão do dono: nada cede; isto é só a rede de segurança):
+
+1. Requisitos obrigatórios da Aula 1: Top 10 salvo, instalador, até 100 MB, menu e game over, várias fases, spritesheet animado, áudio.
+2. Ensino da Fase 1.
+3. Fase 2 nova, depois Fase 3.
+4. Arte nova: o Nanobô e os agentes primeiro; ilustrações de narrativa por último.
+5. Interface nova: HUD e menu primeiro.
+
+**Ritmo:** resumo diário ao dono (o que mudou, capturas, harness e build, próximo passo, decisões pendentes). Merge direto na `master`, sem PR.
+
 ## Entregas acadêmicas (Plano de Ensino)
 
 | Instrumento | Aplicação | Composição da nota | Milestone |

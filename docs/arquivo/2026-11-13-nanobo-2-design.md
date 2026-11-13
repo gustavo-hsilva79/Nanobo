@@ -1,5 +1,7 @@
 # Nanobô 2.0 — design de ensino, narrativa, dificuldade, arte e interface
 
+> **Arquivado em 13/11/2026. Histórico, não vigente.** Este é o primeiro rascunho do design 2.0, antes da arguição da tarde de 13/11. Depois dele, o dono retirou o macrófago e o linfócito T, criou a Fase 3 (fungos), deu mapas próprios a cada fase e decidiu as ferramentas Reserva, Lise e Perfuração. O conteúdo vigente está nos documentos vivos, cada um na sua §"Nanobô 2.0": [`gdd.md`](../game-design/gdd.md), [`ensino-e-aprendizagem.md`](../game-design/ensino-e-aprendizagem.md), [`conteudo-biologico.md`](../game-design/conteudo-biologico.md), [`decisoes.md`](../game-design/decisoes.md), [`fase2-virus.md`](../game-design/fase2-virus.md), [`scanner.md`](../game-design/scanner.md), [`textos-do-jogo.md`](../game-design/textos-do-jogo.md), [`escopo.md`](../game-design/escopo.md), [`catalogo-recursos.md`](../../assets/catalogo-recursos.md) e [`kanban.md`](../planejamento/kanban.md).
+
 > **Criado em:** 13/11/2026, a partir da rodada de brainstorming com o dono (Gustavo).
 > **Substitui**, no que conflitar: `docs/game-design/gdd.md` (núcleo e fases), os objetivos OA1–OA4 de `ensino-e-aprendizagem.md` e a seção de arte de `decisoes.md`. A regra viral de `fase2-virus.md` continua valendo, com os acréscimos da §6.
 > **Prazo:** entrega final em 02/12/2026 (Aula 17). O M5 interno vence em 29/11.

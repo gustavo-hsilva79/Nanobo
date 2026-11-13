@@ -4,6 +4,26 @@
 > Este arquivo é **regra**, não descrição do build: a Fase 2 mínima de 04/11 tem três vírus sem ciclo, que já andam sozinhos a `AGENT_SPEED` como qualquer agente ativo (`update_match`) e não eclodem (`decisoes.md`, "Dívida de implementação"). Onde o código divergir daqui, vale este documento.
 > Cada item abaixo é decisão do dono em 11/11/2026, exceto o que estiver marcado `[PENDÊNCIA]` — mecanismo derivado pela dupla para tornar a decisão implementável, com dono e momento nomeados.
 
+## Nanobô 2.0 — mudanças de 13/11/2026 (vigentes)
+
+Decisões do dono em 13/11, que valem acima do texto de 11/11 abaixo:
+
+- **Ambiente:** a Fase 2 acontece nas **vias aéreas** (epitélio dos brônquios), com um vírus respiratório e mapa próprio. Antes era "tecido" genérico com o mapa da Fase 1.
+- **Eclipse:** fica (decidido em 12/11). `ECLIPSE_TIME` continua em aberto para a #85.
+- **Eclosão:**
+  - os até 3 vírus novos nascem **líticos e livres**, andando, e não lisogênicos como dizia a §"Multiplicação";
+  - se um vírus livre tocar uma **célula livre** do paciente, ele a infecta e vira lisogênico dentro dela, com o tempo cheio;
+  - sem célula livre, ele continua livre.
+- **Ferramentas:**
+  - **Neutralização** (anticorpos) só atinge o vírus **livre**, e não alcança o lisogênico dentro da célula;
+  - **Lise** destrói a **célula infectada já lida** pelo scan, custando poucos vitais (`VITALS_LYSE`, ponto de partida −5) e impedindo a eclosão; numa célula saudável ela não dispara;
+  - o antibiótico (Ruptura, Dissolução, Reserva) não age em vírus.
+- **Sem aliados:** o linfócito T não é um personagem; a Lise faz o papel dele, e o card cita isso.
+- **Teto de 12 vírus vivos.** Resolve a [PENDÊNCIA] de "Capacidade do mundo": `MAX_AGENTS` sobe para 24.
+- **Conflito com D2.1:** deixou de existir, porque a identificação não é mais condição de vitória. A célula hospedeira rompida só sai da conta do bônus de identificação.
+- **Custo da ruptura:** a célula hospedeira rompida continua custando vitais (`VITALS_HOST_RUPTURE`, ponto de partida −10), agora na barra de vitais de 0 a 100, e não em corações.
+- **Scanner:** as duas camadas e os textos da §"Scanner" abaixo continuam valendo, com a ficha nova do HUD; a célula infectada aparece como "célula infectada".
+
 ## Estados
 
 O vírus tem dois estados, e os dois são legíveis **no mundo, sem scanner** — é o que permite ao jogador decidir se vale gastar a leitura antes de se aproximar.

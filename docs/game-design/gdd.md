@@ -1,5 +1,106 @@
 # Nanobô — GDD
 
+> **Nanobô 2.0 (13/11/2026).** A seção abaixo é a visão vigente do jogo, decidida pelo dono em 13/11 depois da auditoria (`docs/auditoria/auditoria-2026-11-13.md`). As seções seguintes descrevem o MVP do M4 e valem só onde não conflitarem com ela. O detalhe pedagógico está em [`ensino-e-aprendizagem.md`](ensino-e-aprendizagem.md) (§"Nanobô 2.0"), o biológico em [`conteudo-biologico.md`](conteudo-biologico.md) e as decisões em [`decisoes.md`](decisoes.md) (§"Nanobô 2.0").
+
+## Nanobô 2.0 — visão vigente (13/11/2026)
+
+### Por que mudou
+
+Ao jogar o build de 12/11, o dono avaliou que o jogo estava:
+
+- **fácil:** nada pressionava o jogador;
+- **pouco intuitivo:** as bactérias tinham a cor da parede do vaso;
+- **raso no ensino:** quase só "Gram+ roxo, Gram− vermelho";
+- **sem narrativa;**
+- **sem coerência na arte.**
+
+O 2.0 responde aos critérios da disciplina (Plano de Ensino e Aulas 1 e 2):
+
+- tema do ensino médio;
+- aprendizado vindo das mecânicas, e não de quiz;
+- "um jogo é uma série de escolhas interessantes";
+- estética que comunica a mecânica.
+
+### Narrativa
+
+Premissa curta, contada em cards de até 3 linhas.
+
+- **Abertura (4 cards):**
+  1. Um paciente de 16 anos chega ao hospital com febre alta e uma infecção que se espalha pelo sangue.
+  2. A equipe testa o **Nanobô**, um nanorrobô médico menor que uma célula.
+  3. Ele ajuda o corpo sem ferir as células do paciente, e vai atrás só dos invasores (a maioria das bactérias do corpo é inofensiva).
+  4. A missão é manter os sinais vitais estáveis.
+- **Interlúdios** entre as fases mostram os sinais vitais ("estável" ≥ 70, "em observação" 40–69, "grave" < 40) e anunciam o próximo invasor.
+- **Final:** o paciente recebe alta, com o relatório do que o Nanobô viu.
+- **Game over:** os sinais vitais caem demais e a equipe retira o Nanobô.
+- O paciente não tem nome nem gênero no texto.
+
+### O Nanobô é o único defensor
+
+Não há aliados: o macrófago e o linfócito T planejados foram retirados em 13/11. O que o corpo faria aparece nas ferramentas do Nanobô e na explicação dos cards.
+
+### Fases
+
+| Fase | Local | Invasor | Ferramentas | Vitória |
+|---|---|---|---|---|
+| 1 | corrente sanguínea (mapa atual) | 6 bactérias (cocos e bacilos, Gram+ e Gram−) + 3 células do paciente | **Ruptura** (antibiótico de parede), **Dissolução** (antibiótico de membrana), **Reserva** (antibiótico de reserva, 2 cargas) | zero bactérias e Nanobô no destino |
+| 2 | vias aéreas (brônquio, mapa novo) | vírus respiratório: 3 vírus lisogênicos dentro de células + 2 células livres | **Neutralização** (anticorpos, vírus livre), **Lise** (destrói célula infectada já lida, papel do linfócito T) | zero vírus e Nanobô no destino |
+| 3 | pulmão (alvéolos, mapa novo) | fungos: 4 leveduras (*Cryptococcus*) + 2 colônias de bolor (*Aspergillus*) + 3 células, mais esporos conforme o estado do paciente | **Perfuração** (antifúngico, abre poros na membrana com ergosterol) | zero fungos e Nanobô no destino |
+
+Cada fase tem mapa, ponto de partida e destino próprios. O mapa da Fase 1 continua o atual, mas é desenhado escurecido e dessaturado com `al_draw_tinted_bitmap` para os agentes se destacarem; o PNG não muda. Os mapas das Fases 2 e 3 (1920×512) são desenhados por Claude e podem ser melhorados pelo dono com IA de geração de imagem.
+
+### Regras centrais
+
+- **Scanner em duas camadas:**
+  - a 1ª dá a **forma** (coco ou bacilo; levedura ou filamento);
+  - a 2ª dá a **coloração e a estrutura**.
+  - Antes da leitura, o agente é uma silhueta azul-acinzentada neutra. O sprite da forma é o mesmo para Gram+ e Gram−, e a cor do Gram vem do tingimento depois da 2ª camada.
+- **Tratamento:**
+  - cada bactéria precisa de **2 doses** do antibiótico certo;
+  - uma dose e mais de 6 s sem a segunda deixam a bactéria **resistente àquele antibiótico**, e daí só a **Reserva** a elimina;
+  - o antibiótico errado não faz efeito, e não cria resistência.
+- **Divisão e crescimento:**
+  - as bactérias se dividem a cada cerca de 22 s, com teto de 16;
+  - as leveduras brotam a cada cerca de 20 s, com teto de 12;
+  - a hifa do bolor cresce 1 segmento a cada cerca de 5 s, até 5 segmentos. Acertar a **base** mata a colônia, e acertar a ponta só corta um segmento. Com a hifa no tamanho máximo, a colônia solta esporos e nasce outra, até 4 colônias.
+- **Vírus (Fase 2):**
+  - o lisogênico fica dentro da célula, piscando, por 12 s;
+  - depois do eclipse, a célula se rompe e libera até 3 vírus **livres**, que infectam células livres ao tocá-las;
+  - a **Lise** elimina a célula infectada já lida: custa poucos vitais, mas impede a eclosão;
+  - o antibiótico não age em vírus;
+  - teto de 12 vírus.
+- **Ligação com a Fase 3:** a carga inicial de esporos sobe quanto menores forem os vitais ao fim da Fase 2 e quanto mais cargas de Reserva tiverem sido gastas. Fungos oportunistas aproveitam um organismo enfraquecido.
+- **Sinais vitais:**
+  - uma barra de 0 a 100 substitui os 3 corações;
+  - caem com contato, tiro na célula do paciente, invasores vivos (drenagem), Lise e ruptura de célula hospedeira;
+  - passam de uma fase para a outra, e o interlúdio recupera até no mínimo 60;
+  - derrota com vitais em 0.
+- **Pontuação:**
+  - +10 por invasor eliminado;
+  - −5 por resistência criada;
+  - +15 de bônus de identificação completa (agentes iniciais);
+  - bônus de vitais no fim de cada fase (vitais × 0,5).
+  - **Top 10** com nome de até 10 caracteres, gravado só em vitória (#34/#77–#82/#197).
+
+### Arte e interface
+
+- Pixel art à mão, com amostra aprovada pelo dono até 18/11 (Nanobô, coco e silhueta) antes do resto.
+- Agentes com contorno escuro e cores fora do vermelho.
+- Um sprite de tiro por arma (a forma mostra o mecanismo: Ruptura é uma cunha, Dissolução uma gota, Neutralização um anticorpo em Y, Perfuração um anel) e 3 animações de impacto por resultado (dose certa, sem efeito, eliminado).
+- **Fonte:** TTF pixel com licença OFL.
+- **HUD:**
+  - mais baixo que os 104 px atuais;
+  - barra de vitais;
+  - ferramenta ativa com o alvo ("Ruptura · parede");
+  - ficha do scanner só quando há alvo.
+- **Telas novas:** narrativa (substitui o briefing), interlúdios, 6 cards de conceito, entrada de nome e Top 10.
+- **Navegação:** ←/→ entre botões lado a lado, e volta ao menu (#195).
+- A interface é redesenhada **dentro do `main.c`**, sem módulo novo.
+
+### Prazo e corte
+
+O cronograma, a ordem de corte e a divisão da equipe estão em [`../planejamento/kanban.md`](../planejamento/kanban.md) (§"Nanobô 2.0").
+
 ## Visão geral
 
 Nanobô é um jogo educacional 2D desenvolvido em C com Allegro 5. O jogador controla um nanorrobô em um ambiente microscópico inspirado no interior do corpo humano.

@@ -16,6 +16,8 @@
 
 > **M3.5 e M5 são metas internas**, não datas de entrega do professor.
 
+> **Nanobô 2.0 (13/11/2026):** o **M5** passa a incluir o redesenho decidido pelo dono: 3 fases com mapas próprios (bactérias, vírus nas vias aéreas e fungos no pulmão), narrativa, 8 objetivos de ensino como mecânicas, barra de vitais, arte e interface novas, além dos requisitos obrigatórios (Top 10, build Release e instalador, agora com o Gustavo). O **M6** continua sendo a entrega e a apresentação de 02/12. O cronograma por etapa e a ordem de corte estão no [`kanban.md`](kanban.md) (§"Nanobô 2.0"); a visão do jogo, no [`gdd.md`](../game-design/gdd.md).
+
 ## Critérios de foco por marco
 
 ### M1 — Conceito e Escopo

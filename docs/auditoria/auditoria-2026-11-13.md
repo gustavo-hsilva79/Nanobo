@@ -1,7 +1,7 @@
 # Auditoria do projeto e do repositório — 13/11/2026
 
 > **Escopo:** repositório local e remoto (`gustavo-hsilva79/Nanobo`), issues e marcos do GitHub, tarefas do Todoist e o build atual. O build foi avaliado jogando de forma automatizada (`../Nanobo-testes/qa_jogo.ps1`, 11 capturas) sob três lentes: sensação de jogo (game feel), interface (UI/UX) e direção de arte 2D.
-> **Referência de rumo:** o design 2.0 em `docs/superpowers/specs/2026-11-13-nanobo-2-design.md`, ainda aguardando aprovação do dono.
+> **Referência de rumo:** o design 2.0, que no momento desta auditoria estava em `docs/superpowers/specs/2026-11-13-nanobo-2-design.md`. Em 13/11 ele foi migrado para os documentos vivos (`gdd.md`, `ensino-e-aprendizagem.md`, `decisoes.md` e outros, cada um na sua §"Nanobô 2.0"), e o arquivo foi movido para `docs/arquivo/`.
 > **Prazo:** M5 interno em 29/11 e entrega final em 02/12 (16 e 19 dias).
 
 ## 1. Resumo

@@ -1,5 +1,12 @@
 # Nanobô — Escopo
 
+> **Nanobô 2.0 (13/11/2026) — escopo vigente.** O jogo final tem **3 fases**, cada uma com mapa próprio:
+> - Fase 1: bactérias na corrente sanguínea;
+> - Fase 2: vírus nas vias aéreas;
+> - Fase 3: fungos no pulmão.
+>
+> O Nanobô é o único defensor: aliados (macrófago, linfócito T) estão **fora do escopo**. Entram também narrativa, 8 objetivos de ensino como mecânicas, barra de vitais, arte e interface novas, Top 10, build Release e instalador. "Uma terceira fase só se houver tempo", abaixo, foi superado pela decisão do dono: a Fase 3 está no escopo e nada cede. A ordem de corte, caso o prazo aperte, está no [`kanban.md`](../planejamento/kanban.md) (§"Nanobô 2.0"). A visão completa está no [`gdd.md`](gdd.md).
+
 ## Objetivo do escopo
 
 Construir um jogo educacional 2D em C com Allegro 5 no qual o conteúdo biológico influencia decisões do jogador durante o gameplay.

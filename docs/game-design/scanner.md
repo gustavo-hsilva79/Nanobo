@@ -6,6 +6,26 @@
 >
 > **Tarefas relacionadas:** #59 (seleção do alvo), #60 (pulsos e camadas), #61 (identificação única), #104 (pulsos com nome e estrutura), #198 (scan sob o cursor).
 
+## Nanobô 2.0 — camadas vigentes (13/11/2026)
+
+> Decisão do dono em 13/11. Substitui "camada 1 com coloração e nome": a coloração entregava a arma já na 1ª camada, e a estrutura, que é o conteúdo, nunca precisava ser lida. A seleção do alvo, a identificação única, a reinicialização e a regra "o scanner não recomenda arma" continuam como abaixo.
+
+| Agente | Camada 1 (forma) | Camada 2 (coloração e estrutura) |
+|---|---|---|
+| Bactéria | "forma: coco (esférica)" ou "forma: bacilo (bastão)" | "Gram+ · parede grossa, sem membrana externa" ou "Gram- · parede fina sob membrana externa"; "procarionte · sem núcleo: DNA solto no nucleoide" |
+| Célula do paciente | "célula do paciente · eucarionte" | "núcleo guarda o DNA · mitocôndrias · não atacar" |
+| Vírus (Fase 2) | "vírus · lisogênico · %d s" ou "vírus · lítico" | textos de `fase2-virus.md` §"Scanner" |
+| Célula infectada | "célula infectada · vírus dentro" | "lisogênico · %d s · use a Lise antes de romper" |
+| Levedura (Fase 3) | "forma: levedura (arredondada, brota)" | "eucarionte · parede de quitina · membrana com ergosterol" |
+| Bolor (Fase 3) | "forma: bolor (filamentos)" | "eucarionte · parede de quitina · corte a base da colônia" |
+
+- **Desenho no mundo:**
+  - antes da camada 1, uma silhueta azul-acinzentada neutra;
+  - depois da camada 1, o sprite neutro da forma;
+  - depois da camada 2, o sprite tingido (roxo para Gram+, rosa para Gram−), o anel de coloração e a marca de alvo lido.
+  - O vírus continua fora da silhueta neutra, porque o estado dele é lido no mundo (#84).
+- **Ficha no HUD:** aparece só quando há alvo sob o cursor ou lido há pouco; sem alvo, recolhe. Os textos exatos e as contagens entram em [`textos-do-jogo.md`](textos-do-jogo.md).
+
 As regras de seleção do alvo já estavam registradas em `docs/game-design/decisoes.md` (#59). Este documento acrescenta as regras de pulsos/camadas (#60) e de identificação única (#61), para que as três tarefas descrevam o mesmo fluxo, sem sobreposição de responsabilidade.
 
 ## 1. Fluxo completo

@@ -91,6 +91,30 @@ O fundo é escuro e de baixo contraste de propósito: os sprites precisam contin
 
 > O coração é carmim, um vermelho mais frio que o da Gram−, para não competir com o laser vermelho no HUD.
 
+## Nanobô 2.0 — arte prevista (13/11/2026)
+
+> Pixel art à mão, desenhada por Claude no Aseprite. **Antes do resto, uma amostra vai para aprovação do dono até 18/11:** o Nanobô de frente, um coco e a silhueta neutra, sobre o mapa escurecido. As cores dos agentes ficam fora do vermelho do cenário, com contorno escuro (`#121a24`) e luz vinda de cima à esquerda. Os arquivos novos entram aqui com o tamanho real quando forem criados. O mapa da Fase 1 não muda: ele é desenhado escurecido por código.
+
+| Asset | Tamanho | Quadros | Observação |
+|---|---|---|---|
+| Nanobô (spritesheet) | 256×128 | 4 direções × 8 | mantém o contrato atual de `player_frame()` |
+| Coco neutro (2 variantes) | 32×32 | 4 de pulso | o Gram vem do tingimento depois da 2ª camada; substitui `bacteria_gram_*` e `*_b` |
+| Bacilo neutro (2 variantes) | 32×32 | 4 de pulso | idem |
+| Silhueta neutra | 32×32 | 1 | substitui o disco cinza desenhado por primitiva |
+| Célula do paciente (núcleo visível) | 32×32 | 2 | substitui `celula_propria*` |
+| Vírus | 32×32 | 2 | substitui `virus_fase2*` |
+| Célula infectada | 32×32 | 2 | Fase 2 |
+| Levedura (*Cryptococcus*) | 32×32 | 3 (brotamento) | Fase 3 |
+| Bolor (*Aspergillus*): base e segmento de hifa | 32×32 + 16×16 | 2 + 1 | Fase 3; hifa de até 5 segmentos |
+| Tiros (Ruptura, Dissolução, Reserva, Neutralização, Lise, Perfuração) | 12×12 | 2 | cor neutra; a forma mostra o mecanismo |
+| Impacto por resultado (dose certa, sem efeito, eliminado) | 24×24 | 4 | compartilhados e tingidos por código |
+| Ícones de ferramenta (Reserva, Neutralização, Lise, Perfuração) + vitais | 16×16 | 1 | se juntam a `icone_ruptura` e `icone_dissolucao` |
+| Moldura de painel (9-slice) | 24×24 | 1 | interface |
+| Ilustrações de narrativa | 160×90 | 1 cada | abertura (4), interlúdios (2), final (1) |
+| Mapa da Fase 2 — vias aéreas (brônquio: cílios e muco) | 1920×512 | — | `assets/backgrounds/` |
+| Mapa da Fase 3 — pulmão (alvéolos e capilares) | 1920×512 | — | `assets/backgrounds/` |
+| Fonte pixel TTF (licença OFL, com acentos) | — | — | `assets/fonts/`; a licença é registrada aqui |
+
 ## Recursos previstos
 
 | Tipo | Recursos necessários | Local definido | Estado |

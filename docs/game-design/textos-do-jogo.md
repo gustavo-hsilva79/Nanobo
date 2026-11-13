@@ -179,3 +179,62 @@ O painel de resultados apresenta uma mensagem independente para cada objetivo de
 **Regra de tipografia:** seguir a seção 2.1. Utilizar hífen ASCII em `Gram-` e evitar maiúsculas acentuadas.
 
 **Fonte:** Issue #210 — Resumo por objetivo na tela de Resultados (RF-07).
+
+## 3. Nanobô 2.0 — rascunhos (13/11/2026)
+
+> **Rascunhos, ainda não estão no código.** Regras em `ensino-e-aprendizagem.md` (§"Nanobô 2.0"). Os cards têm 3 linhas de até 70 caracteres (contagem abaixo, feita com Python). Os textos de HUD e ficha passam a ser medidos com a fonte TTF nova quando ela entrar; até lá, vale a regra da seção 2.1. Os IDs `CC-` são cards de conceito, `FB2-` são feedback do 2.0 e `FE-` são ferramentas.
+
+### 3.1 Cards de conceito
+
+| ID | Card / quando aparece | Linha | Car. |
+|---|---|---|---:|
+| CC-01a | Coloração de Gram · 1ª leitura completa de bactéria | No laboratório, um corante roxo tinge a parede das bactérias. | 61 |
+| CC-01b | | Gram+: parede grossa de peptidoglicano, que segura o roxo. | 58 |
+| CC-01c | | Gram-: parede fina e membrana externa; perde o roxo e fica rosa. | 64 |
+| CC-02a | Resistência e Reserva · 1ª bactéria resistente | Uma dose só não basta: as bactérias que sobrevivem se multiplicam. | 66 |
+| CC-02b | | Esta ficou resistente: o mesmo antibiótico não age mais nela. | 61 |
+| CC-02c | | A Reserva age nela, mas tem poucas cargas: use só se precisar. | 62 |
+| CC-03a | Vírus não é célula · 1ª leitura de vírus ou 1º antibiótico em vírus | O vírus não tem parede, ribossomos nem metabolismo próprio. | 59 |
+| CC-03b | | Ele só se multiplica dentro de uma célula. Antibiótico não o atinge. | 68 |
+| CC-03c | | A Neutralização leva anticorpos, que se prendem ao vírus livre. | 63 |
+| CC-04a | Lisogênico e lítico · 1ª leitura de célula infectada | Lisogênico: o vírus fica dentro da célula, sem destruí-la ainda. | 64 |
+| CC-04b | | Lítico: ele faz cópias, a célula se rompe e libera novos vírus. | 63 |
+| CC-04c | | A Lise destrói a célula infectada, como faz o linfócito T. | 58 |
+| CC-05a | Organismo enfraquecido · início da Fase 3 | Fungos oportunistas aproveitam um organismo enfraquecido. | 57 |
+| CC-05b | | Os esporos de Aspergillus estão no ar; o corpo saudável os elimina. | 67 |
+| CC-05c | | Quanto pior o paciente chega, mais esporos se instalam no pulmão. | 65 |
+| CC-06a | Fungo · 1ª leitura de fungo | O fungo tem núcleo, como as nossas células: é um eucarionte. | 60 |
+| CC-06b | | Sua parede é de quitina, não de peptidoglicano: antibiótico não age. | 68 |
+| CC-06c | | A Perfuração abre poros na membrana dele, que tem ergosterol. | 61 |
+
+### 3.2 Ferramentas (menu "como jogar" e HUD)
+
+| ID | Texto | Fase |
+|---|---|---|
+| FE-01 | Ruptura · antibiótico de parede: impede a bactéria de montar a parede | 1 |
+| FE-02 | Dissolução · antibiótico de membrana: desfaz a membrana externa das Gram- | 1 |
+| FE-03 | Reserva · antibiótico de reserva: age na resistente, poucas cargas | 1 |
+| FE-04 | Neutralização · anticorpos: prendem o vírus livre | 2 |
+| FE-05 | Lise · destrói a célula infectada já lida, como o linfócito T | 2 |
+| FE-06 | Perfuração · antifúngico: abre poros na membrana do fungo | 3 |
+
+### 3.3 Feedback do 2.0
+
+| ID | Situação | Texto |
+|---|---|---|
+| FB2-01 | Tiro na célula do paciente | você feriu uma célula do paciente: ela tem núcleo, não é bactéria |
+| FB2-02 | Arma escolhida pela forma, no grupo errado | a forma não define o grupo: veja a coloração |
+| FB2-03 | Ruptura numa Gram− | a membrana externa barrou a Ruptura |
+| FB2-04 | Dissolução numa Gram+ | a Gram+ não tem membrana externa para a Dissolução |
+| FB2-05 | 1ª dose certa | 1ª dose: complete o tratamento |
+| FB2-06 | Resistência surgiu | tratamento incompleto: resistente à Ruptura (ou à Dissolução) |
+| FB2-07 | Reserva sem carga | Reserva esgotada |
+| FB2-08 | Antibiótico em vírus | antibiótico não age em vírus |
+| FB2-09 | Neutralização num lisogênico | o vírus está dentro da célula: use a Lise |
+| FB2-10 | Eclosão | a célula se rompeu: 3 vírus livres (ciclo lítico) |
+| FB2-11 | Antibiótico em fungo | a parede do fungo é de quitina: antibiótico não age |
+| FB2-12 | Tiro na ponta da hifa | corte a base da colônia |
+| FB2-13 | Bactéria se dividiu | uma bactéria se dividiu em duas |
+| FB2-14 | Levedura brotou | a levedura brotou: nasceu outra |
+
+**Narrativa** (abertura, interlúdios, final, game over): rascunhos no [`gdd.md`](gdd.md) §"Nanobô 2.0". Eles entram aqui com ID quando forem desenhados.
