@@ -59,7 +59,7 @@ Premissa curta, contada em cards ilustrados com no máximo 3 linhas cada.
 
 1. *Hospital, 23h.* Um paciente de 16 anos chega com febre alta. Os exames mostram uma infecção que se espalha pelo sangue.
 2. A equipe decide testar o **Nanobô**: um nanorrobô médico, menor que uma célula, que lê os invasores de perto.
-3. O Nanobô não substitui o corpo. Ele **ajuda o sistema imune**: identifica, marca e trata, sem ferir as células do paciente.
+3. O Nanobô não substitui o corpo. Ele **ajuda o sistema imune**: identifica, marca e trata, sem ferir as células do paciente. A maioria das bactérias do corpo é inofensiva; ele vai atrás só das que causam a infecção.
 4. *Missão:* entrar na corrente sanguínea, reconhecer cada invasor e manter os sinais vitais do paciente estáveis.
 
 **Interlúdio Fase 1 → Fase 2** (`STORY_INTERLUDE`, 1 card): os sinais vitais aparecem como resultado do desempenho (§7.3). Exemplo: "a febre baixou. Mas o organismo enfraquecido abriu caminho para outro invasor: um vírus". O texto muda conforme os vitais: ≥ 70 "estável", 40–69 "em observação" e < 40 "grave".
@@ -78,17 +78,59 @@ Cada OA tem uma **regra do mundo**, o **momento** em que o jogador a sente e o *
 |---|---|---|---|
 | **OA1** | Célula procarionte × eucarionte | O scan da célula do paciente mostra **núcleo e mitocôndrias**; o da bactéria mostra **nucleoide e ribossomos, sem núcleo**. Atirar na célula custa vitais. | Na primeira leitura de cada um; e ao errar o tiro. |
 | **OA2** | Morfologia e coloração de Gram | A 1ª camada do scan dá **só a forma** (coco ou bacilo). A 2ª dá a **coloração** (roxo ou rosa) e a **estrutura** (parede espessa ou parede fina com membrana externa). As espécies da fase misturam formas e Gram, então a forma **sozinha** não decide a arma: para acertar, é preciso concluir o scan. | Quando um coco Gram− ou um bacilo Gram+ contraria o palpite pela forma. |
-| **OA3** | O antibiótico age numa estrutura | **Antibiótico de parede** (inibe a parede de peptidoglicano) funciona na Gram+; na Gram− a membrana externa barra sua entrada. **Antibiótico de membrana** age na membrana externa, que só a Gram− tem. | Ao escolher a arma pela 2ª camada (estrutura); o erro dá a explicação. |
+| **OA3** | O antibiótico age numa estrutura | A **Ruptura** (antibiótico de parede, inspirado na penicilina) impede a bactéria de montar a parede de peptidoglicano e funciona na Gram+; na Gram−, a membrana externa barra sua entrada. A **Dissolução** (antibiótico de membrana, inspirado na polimixina) desfaz a membrana externa, que só a Gram− tem. | Ao escolher a arma pela 2ª camada (estrutura); o erro dá a explicação. |
 | **OA4** | Resistência bacteriana por **tratamento incompleto** | A bactéria precisa de **2 doses do antibiótico certo**. Se levar 1 dose e continuar viva por mais de `INCOMPLETE_TIME` (cerca de 6 s, mostrado por um anel que se esvazia), ela se torna **resistente àquele antibiótico**: as doses seguintes não fazem efeito e só o macrófago a remove. O **antibiótico errado não faz efeito nenhum**: gasta o tiro e o tempo, e o feedback explica por quê (OA3), mas não cria resistência. Toda bactéria viva se **divide por divisão binária** a cada `DIVISION_TIME`; a filha herda a resistência, mas não a dose recebida. | Quando deixa uma bactéria "meio tratada" escapar. A mensagem é "termine o tratamento" (decisão do dono, 13/11, que substitui "erro de arma gera resistência a tudo", porque isso ensinaria multirresistência por um erro só). |
 | **OA5** | Sistema imune inato: fagocitose e opsonização | **Macrófagos aliados** patrulham. Concluir as 2 camadas do scan **marca automaticamente** o alvo (opsonização) e o macrófago livre mais próximo vai até ele e o fagocita. O jogador ainda pode abater o alvo com antibiótico antes de o macrófago chegar. É o único jeito de remover uma bactéria resistente. | Na primeira bactéria resistente; o card do macrófago aparece aí. |
 | **OA6** | Vírus é acelular | Na Fase 2, **antibiótico não afeta o vírus**: o projétil atravessa e o feedback diz que vírus não tem parede, metabolismo próprio nem ribossomos. | No primeiro tiro de antibiótico num vírus. |
-| **OA7** | Ciclos lisogênico/lítico e imunidade adaptativa | O vírus **lisogênico** fica dentro da célula e pisca (já no código). Escanear a **célula infectada** a marca, e o **linfócito T** aliado a destrói antes da eclosão. O vírus **lítico** livre é neutralizado com **anticorpos**, a 3ª ferramenta, que só existe na Fase 2. | Ao decidir entre conter a célula agora ou caçar vírus livres depois. |
+| **OA7** | Ciclos lisogênico/lítico e imunidade adaptativa | O vírus **lisogênico** fica dentro da célula e pisca (já no código). Escanear a **célula infectada** a marca, e o **linfócito T** aliado a destrói antes da eclosão. O vírus **lítico** livre é neutralizado pela **Neutralização** (anticorpos), a 3ª ferramenta, que só existe na Fase 2. | Ao decidir entre conter a célula agora ou caçar vírus livres depois. |
 
 **O que o jogo não afirma** (nota no fim, nos "Para ir além" dos resultados):
 
 - não ensina posologia, nem que um antibiótico real seja "de parede" puro (é uma regra do jogo inspirada em β-lactâmicos e polimixinas);
 - simplifica a resistência: ela surge por mutação e é **selecionada** pelo uso inadequado;
-- os ciclos lisogênico e lítico são descritos em bacteriófagos; o jogo usa o modelo como analogia didática.
+- os ciclos lisogênico e lítico são descritos em bacteriófagos; o jogo usa o modelo como analogia didática;
+- não afirma que toda bactéria é ruim: a maioria das que vivem no corpo é inofensiva ou útil (microbiota); as do jogo são as que causam a infecção do paciente.
+
+### 5.1 Como cada conteúdo é explicado
+
+> **Verificado em 13/11** a pedido do dono. Antes desta seção, o design dizia **que regra** ensina cada conteúdo, mas não **como** o aluno descobre o significado dela. Só três conteúdos tinham um momento de explicação; o porquê da cor do Gram, a diferença entre procarionte e eucarionte, o linfócito T, os anticorpos e os ciclos virais não tinham texto nenhum; e "peptidoglicano", "nucleoide" e "opsonização" eram usados sem ser definidos.
+
+**Critério de clareza.** Cada conteúdo precisa de três coisas:
+
+1. **Definição** em linguagem de ensino médio, no máximo **na primeira vez** em que o termo aparece na tela. Todo termo técnico vem com uma explicação curta na mesma frase.
+2. **Feedback** quando a ação do jogador contraria a regra, dizendo o porquê biológico e não só "errou".
+3. **Retomada** no relatório de resultados, com o que o jogador fez naquele conteúdo.
+
+**Os cinco cards de conceito.** Cada um aparece uma única vez, na primeira ocorrência do evento, pausa o jogo, tem 3 linhas de no máximo 70 caracteres e é ilustrado com o sprite ampliado. Todos são rascunhos, a contar e registrar em `textos-do-jogo.md`.
+
+| Card | Quando aparece | Texto |
+|---|---|---|
+| **Coloração de Gram** | 1ª leitura completa (2ª camada) de uma bactéria | No laboratório, um corante roxo tinge a parede das bactérias. / Gram+: parede grossa de peptidoglicano, que segura o roxo. / Gram-: parede fina e membrana externa; perde o roxo e fica rosa. |
+| **Resistência** | 1ª bactéria que fica resistente | Uma dose só não basta: as bactérias que sobrevivem se multiplicam. / Esta ficou resistente: o mesmo antibiótico não age mais nela. / Termine o tratamento. Contra a resistente, conte com o macrófago. |
+| **Macrófago** | 1ª fagocitose de um alvo marcado | O macrófago é uma célula de defesa que engole invasores. / Isso se chama fagocitose. O scan marca o alvo para ele. / No corpo, quem marca são os anticorpos: é a opsonização. |
+| **Vírus não é célula** | 1ª leitura de um vírus ou 1º antibiótico num vírus, o que vier antes | O vírus não tem parede, ribossomos nem metabolismo próprio. / Ele só se multiplica dentro de uma célula. Antibiótico não o atinge. / Neutralização: anticorpos que se prendem ao vírus livre. |
+| **Lisogênico e lítico** | 1ª leitura de uma célula infectada | Lisogênico: o vírus fica dentro da célula, sem destruí-la ainda. / Lítico: ele faz cópias, a célula se rompe e libera novos vírus. / O linfócito T destrói a célula infectada antes que ela se rompa. |
+
+**O que cada conteúdo usa:**
+
+| OA | Definição (onde e texto) | Feedback do erro | Retomada nos resultados |
+|---|---|---|---|
+| OA1 procarionte × eucarionte | Ficha do scanner. Célula do paciente: "célula do paciente · eucarionte · núcleo guarda o DNA". Bactéria, na 2ª camada: "procarionte · sem núcleo: DNA solto no nucleoide" | Tiro na célula: "você feriu uma célula do paciente: ela tem núcleo, não é bactéria" | "Você poupou X de Y células do paciente" |
+| OA2 forma e Gram | Ficha: "forma: coco (esférica)" ou "forma: bacilo (bastão)" na 1ª camada; o card **Coloração de Gram** na 2ª | Errar a arma pela forma: "a forma não define o grupo: veja a coloração" | "Você leu X bactérias até a coloração" |
+| OA3 antibiótico × estrutura | Ficha na 2ª camada: "Gram+ · parede grossa, sem membrana externa" ou "Gram- · parede fina sob membrana externa". No menu e no HUD: "Ruptura · parede" e "Dissolução · membrana". O scanner **não recomenda a arma**, regra mantida desde o M4 | Ruptura na Gram−: "a membrana externa barrou a Ruptura". Dissolução na Gram+: "a Gram+ não tem membrana externa para a Dissolução" | "X doses certas, Y no grupo errado" |
+| OA4 resistência | Na 1ª dose: "1ª dose: complete o tratamento" e o anel de 6 s; depois, o card **Resistência** | Quando a resistência surge: "tratamento incompleto: esta bactéria ficou resistente à Ruptura" (ou à Dissolução) | "X tratamentos completos, Y bactérias resistentes" |
+| OA5 imunidade inata | Card **Macrófago** | Tiro inútil numa resistente: "resistente: só o macrófago remove esta bactéria" | "O macrófago removeu X invasores marcados" |
+| OA6 vírus acelular | Card **Vírus não é célula** | Antibiótico num vírus: "antibiótico não age em vírus: use a Neutralização" | "Você usou a Neutralização em X vírus" |
+| OA7 ciclos e imunidade adaptativa | Card **Lisogênico e lítico**; ficha: "vírus · lisogênico · 9 s" e "célula infectada · marcada para o linfócito T" | Eclosão: "a célula se rompeu: 3 vírus livres (ciclo lítico)" | "X células infectadas contidas antes de romper" |
+
+**Ferramentas**, no menu "como jogar" e no HUD:
+- **Ruptura** · antibiótico de parede: impede a bactéria de montar a parede.
+- **Dissolução** · antibiótico de membrana: desfaz a membrana externa das Gram-.
+- **Neutralização** · anticorpos: prendem o vírus livre e impedem que ele entre em outra célula (só na Fase 2).
+
+**Anti-meta "toda bactéria é ruim":** o card 3 da abertura (§4) ganha uma frase, e o relatório final ganha um "Para ir além" com a microbiota: "a maioria das bactérias do corpo é inofensiva ou útil; estas causam a infecção".
+
+**Teste de clareza no QA da Etapa 4.** Para cada OA, uma partida automatizada confirma que o card aparece, que o feedback do erro dispara com o texto certo e que a retomada no resultado bate com o que aconteceu. Na leitura, o dono confere se cada texto se entende sem conhecer o documento.
 
 ## 6. Fases
 
@@ -197,7 +239,7 @@ Cada OA tem uma **regra do mundo**, o **momento** em que o jogador a sente e o *
 - **Código:** as telas saem de `main.c` para `src/ui/ui.c` + `ui.h`, destino aprovado no `AGENTS.md`. O `main.c` fica com o loop, a entrada e os recursos.
 - **HUD (painel inferior, menor que os 104 px atuais, que ocupam 29% da tela; auditoria §6):**
   - linha 1: barra de **vitais do paciente** com cor por faixa, contagem de bactérias ou vírus vivos, tempo e pontos;
-  - linha 2: **ferramenta ativa** (ícone e nome do alvo: "parede", "membrana", "anticorpo") e recarga;
+  - linha 2: **ferramenta ativa** (ícone, nome e alvo: "Ruptura · parede", "Dissolução · membrana", "Neutralização · vírus livre") e recarga;
   - **ficha do scanner** só quando há alvo sob o cursor ou lido há pouco, com forma, coloração e estrutura num formato fixo, como um exame. Sem alvo, a ficha recolhe e o espaço volta para o mundo, em vez de mostrar "Nenhum alvo" a partida inteira.
 - **Telas novas:**
   - `STORY_INTRO` (substitui `BRIEFING`);
@@ -250,7 +292,8 @@ O dono decide em cada ponto de corte.
 10. **Os vitais passam para a Fase 2.** No interlúdio, o paciente recupera até no mínimo 60 (quem terminou acima disso não ganha nada). O bônus de vitais é pago no fim de cada fase.
 11. **A identificação não é condição de vitória.** O +15 de identificação completa conta só os agentes iniciais da fase. As filhas da divisão herdam as camadas lidas, a marca e a resistência da mãe.
 12. **Variantes por forma:** 2 variantes de coco e 2 de bacilo, num total de 4 sprites neutros. O Gram vem do tingimento depois da 2ª camada (§8), então a contagem é igual por Gram automaticamente. Revisado em 13/11; a primeira versão previa 8 sprites, um por categoria, e entregava o Gram na 1ª camada.
-13. **Três cards de conceito:** "primeira bactéria resistente", "macrófago" e "antibiótico não age em vírus". São ilustrados com o próprio sprite ampliado, não com uma ilustração nova.
+13. **Cinco cards de conceito** (§5.1): "Coloração de Gram", "Resistência", "Macrófago", "Vírus não é célula" e "Lisogênico e lítico". Ilustrados com o próprio sprite ampliado, não com uma ilustração nova. Revisado em 13/11: eram três, e deixavam a coloração e os ciclos virais sem explicação.
+15. **Nome da 3ª ferramenta:** **Neutralização**. O dono decidiu manter Ruptura e Dissolução, e a 3ª segue o mesmo estilo. "Anticorpo neutralizante" é o termo real da imunologia.
 14. **Placeholders:** até a Etapa 3, as espécies novas (macrófago, linfócito T, célula infectada) usam sprites atuais com tinta. O contrato de arquivos (nome, tamanho e quadros) é a tabela da §9.1.
 
 ## 13. Issues
@@ -286,3 +329,5 @@ O dono decide em cada ponto de corte.
   - **chute:** não escaneia e escolhe a arma ao acaso; precisa vencer no máximo 10%.
 - **Modo de demonstração:** não haverá. A apresentação usa o jogo normal, com ensaio (#47, #167).
 - **Call minha:** o macrófago prioriza a bactéria resistente marcada; empatando, vai na mais próxima.
+- **Armas:** os nomes atuais ficam: **Ruptura** (antibiótico de parede) e **Dissolução** (antibiótico de membrana). A 3ª ferramenta, da Fase 2, se chama **Neutralização** (anticorpos), por call minha, no mesmo estilo.
+- **Clareza do ensino:** a §5.1 define, para cada conteúdo, a definição, o feedback do erro e a retomada nos resultados, com os textos de rascunho dos cinco cards.
