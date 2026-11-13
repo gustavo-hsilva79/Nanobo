@@ -113,6 +113,11 @@ extern bool key_down;
 extern bool key_left;
 extern bool key_right;
 
+// onde nasce a bacteria do tutorial, em relacao ao nanobo: dentro da camera
+// do primeiro quadro, um pouco alem do alcance do scan, para ensinar a chegar perto (#219)
+#define TUTORIAL_OFFSET_X 140.0f
+#define TUTORIAL_OFFSET_Y -40.0f
+
 // textos das camadas do scanner pelo indice do agente (#214)
 // camada 1 = forma; camada 2 = coloracao, estrutura e nome
 const char* layer_one_text(int index);

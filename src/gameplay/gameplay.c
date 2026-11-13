@@ -770,6 +770,22 @@ static void place_agents()
         agents[i].x = valid_points[p][0];
         agents[i].y = valid_points[p][1];
     }
+
+    // tutorial: a primeira bacteria da Fase 1 nasce perto do nanobo, a vista no
+    // primeiro quadro, para o jogador aprender o scan no proprio mundo (#219)
+    if (phase_index == 0)
+    {
+        for (i = 0; i < agents_count; i++)
+        {
+            if (agents[i].species == SPECIES_GRAM_POSITIVE
+                || agents[i].species == SPECIES_GRAM_NEGATIVE)
+            {
+                agents[i].x = player.x + TUTORIAL_OFFSET_X;
+                agents[i].y = player.y + TUTORIAL_OFFSET_Y;
+                break;
+            }
+        }
+    }
 }
 
 // a camera segue o nanobo e para nas bordas do mundo
