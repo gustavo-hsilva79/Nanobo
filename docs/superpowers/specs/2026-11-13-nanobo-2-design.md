@@ -3,7 +3,8 @@
 > **Criado em:** 13/11/2026, a partir da rodada de brainstorming com o dono (Gustavo).
 > **Substitui**, no que conflitar: `docs/game-design/gdd.md` (núcleo e fases), os objetivos OA1–OA4 de `ensino-e-aprendizagem.md` e a seção de arte de `decisoes.md`. A regra viral de `fase2-virus.md` continua valendo, com os acréscimos da §6.
 > **Prazo:** entrega final em 02/12/2026 (Aula 17). O M5 interno vence em 29/11.
-> **Equipe:** este redesenho é do Gustavo. O Eric segue com Top 10, instalador e documentação final.
+> **Equipe (atualizado em 13/11, depois da auditoria):** o redesenho é do Gustavo, que também assumiu os requisitos obrigatórios da disciplina que estavam com o Eric: hi-score Top 10 (#77–#82, #197), build Release (#42, #154–#158) e instalador (#43, #159–#164). O Eric fica com QA e regressão, documentação final, registro de textos (#212) e volta ao menu (#195).
+> **Auditoria relacionada:** `docs/auditoria/auditoria-2026-11-13.md`.
 
 ## 1. Por que mudar
 
@@ -96,6 +97,7 @@ Cada OA tem uma **regra do mundo**, o **momento** em que o jogador a sente e o *
 - **Composição:** 6 bactérias (2 cocos Gram+, 1 bacilo Gram+, 1 coco Gram−, 2 bacilos Gram−), 3 células do paciente e 2 macrófagos.
 - **Espécies sugeridas:** *S. aureus* (coco +), *S. pyogenes* (coco +), *Bacillus cereus* (bacilo +), *Neisseria meningitidis* (coco −), *E. coli* (bacilo −), *P. aeruginosa* (bacilo −).
 - **Tutorial no mundo:** a primeira bactéria nasce isolada perto do Nanobô, e uma dica curta no próprio mundo indica o scan pelo botão direito. A dica some depois do primeiro scan e reaparece só se o jogador atirar sem ler.
+- **Primeiro quadro com vida:** hoje os 9 agentes nascem fora da câmera, e a tela inicial mostra só o Nanobô (auditoria §4). Na Fase 1 nova, a bactéria do tutorial e um macrófago aparecem no primeiro quadro; o resto continua sorteado nos pontos válidos, longe do Nanobô.
 - **Vitória:** população bacteriana zerada e o Nanobô no destino ("foco da infecção").
 - **Derrota:** vitais em 0.
 
@@ -110,9 +112,10 @@ Cada OA tem uma **regra do mundo**, o **momento** em que o jogador a sente e o *
   - o antibiótico não tem efeito (OA6);
   - o vírus livre exige anticorpo;
   - a célula infectada marcada é destruída pelo linfócito T, e isso conta como salvar o tecido, não como ferir o paciente.
-- **Conflito D2.1:** resolvido por (a), ou seja, a célula hospedeira não conta no 6/6 de identificação.
+- **Conflito D2.1:** deixou de existir, porque a identificação não é mais condição de vitória (§12 item 11). A célula hospedeira rompida só sai da conta do bônus de identificação.
 - **Vitória:** zero vírus vivos e o Nanobô no destino.
 - **Mapa:** o mesmo, com filtro de cor mais escuro e arroxeado, desenhado com `al_draw_tinted_bitmap`. É call minha.
+- **Partida e destino diferentes da Fase 1:** hoje as duas fases começam no mesmo ponto, com o mesmo destino (auditoria §4). Na Fase 2, o Nanobô entra pela esquerda e o destino fica no alto à direita, para a fase não parecer repetida. É call minha.
 
 ## 7. Dificuldade, pressão e escolhas
 
@@ -148,6 +151,7 @@ Cada OA tem uma **regra do mundo**, o **momento** em que o jogador a sente e o *
 - −5 por resistência criada.
 - +15 de bônus de identificação completa (mantido).
 - **Bônus de vitais no fim da fase:** vitais × 0,5. É o que liga a narrativa ao placar.
+- **Top 10 (requisito da disciplina, #34/#77–#82/#197):** a pontuação final da run entra no ranking só em vitória (decisão de 05/11, mantida), com nome de até 10 caracteres digitado na tela de vitória. O ranking aparece no menu.
 
 ## 8. Clareza e onboarding
 
@@ -155,11 +159,11 @@ Cada OA tem uma **regra do mundo**, o **momento** em que o jogador a sente e o *
 - **Mapa recuado (decisão do dono, 13/11):** o mapa é desenhado escurecido (cerca de 70% de valor) e um pouco dessaturado, com `al_draw_tinted_bitmap`; o PNG não muda. Isso resolve o mid-on-mid e as hemácias e leucócitos pintados que hoje competem com os agentes (auditoria de 13/11, §7). Todo agente ganha também uma sombra de contato.
 - **Resposta às ações (game feel, auditoria §5):** piscar durante a invulnerabilidade, flash e tremor curto ao levar dano, partículas com "+pontos" e hit-stop curto ao neutralizar, flash de 1 quadro no acerto parcial e um anel de scan saindo do Nanobô. Três níveis de intensidade, um ponto de chamada por evento (`SfxEvent`).
 - **Antes da leitura:** a silhueta neutra deixa de ser o disco cinza e vira um disco **azul-acinzentado com contorno**, legível sobre o vermelho, sem revelar forma nem Gram.
-- **Depois da 1ª camada:** o sprite real, que mostra a forma, num tom neutro.
-- **Depois da 2ª camada:** o anel de coloração (roxo ou rosa) e o alvo de marcação.
+- **Depois da 1ª camada:** o sprite real da **forma** (coco ou bacilo), num tom neutro. O sprite é o mesmo para Gram+ e Gram−, para não entregar o grupo antes da hora.
+- **Depois da 2ª camada:** o mesmo sprite tingido pela coloração (roxo ou rosa), com `al_draw_tinted_bitmap`, o anel de coloração e o alvo de marcação. Biologicamente, a cor vem do corante do laboratório e não da bactéria, então tingir o sprite neutro é a representação certa.
 - **Resistente:** uma auréola âmbar pulsando, para ser lida de longe.
 - **Marcado:** um alvo ciano girando, para o jogador ver que o macrófago está indo até ele.
-- **Briefing:** a abertura narrativa (§4) substitui os 3 cards de Gram. O conteúdo de Gram passa a aparecer quando o jogador precisa dele: no tutorial do mundo e nos cards curtos que surgem na 1ª ocorrência de cada conceito ("primeira bactéria resistente", "primeiro vírus"). Esses cards pausam o jogo e duram uma tela.
+- **Briefing:** a abertura narrativa (§4) substitui os 3 cards de Gram. O conteúdo de Gram passa a aparecer quando o jogador precisa dele: no tutorial do mundo e nos três cards de conceito (§12 item 13), que surgem na 1ª ocorrência de cada um e pausam o jogo por uma tela.
 
 ## 9. Arte e interface
 
@@ -172,7 +176,7 @@ Cada OA tem uma **regra do mundo**, o **momento** em que o jogador a sente e o *
 | Asset | Tamanho | Quadros |
 |---|---|---|
 | Nanobô | 256×128 | 4 direções × 8 (contrato atual) |
-| Coco Gram+, coco Gram−, bacilo Gram+, bacilo Gram− | 32×32 | 4 de pulso cada |
+| Coco e bacilo, neutros (o Gram vem do tingimento, §8), 2 variantes cada | 32×32 | 4 de pulso cada |
 | Célula do paciente (núcleo visível) | 32×32 | 2 |
 | Vírus | 32×32 | 2 |
 | Célula infectada | 32×32 | 2 |
@@ -183,17 +187,23 @@ Cada OA tem uma **regra do mundo**, o **momento** em que o jogador a sente e o *
 | Moldura 9-slice | 24×24 | 1 |
 | Ilustrações dos cards | 160×90 | 1 por card (6) |
 
-- **Variantes (#211):** 2 variantes por espécie de bactéria, para manter a contagem igual por Gram.
+- **Variantes (#211):** 2 variantes por forma (coco e bacilo), 4 sprites no total. Como o sprite não muda com o Gram, a contagem fica igual por grupo sem esforço extra. Os sprites `_b` de 12/11 saem quando a arte nova entrar.
 
 ### 9.2 Interface
 
-- **Fonte:** pixel TTF com licença OFL, com acentos do português, em `assets/fonts/`. A escolha da fonte é minha, e a licença vai para `assets/catalogo-recursos.md`.
+- **Fonte:** pixel TTF com licença OFL, com acentos do português, em `assets/fonts/`. A escolha da fonte é minha, e a licença vai para `assets/catalogo-recursos.md`. Antes de adotar, testo maiúsculas acentuadas (`Ç`, `Ã`, `Ô`). Se renderizarem bem, a regra do `AGENTS.md` de evitar maiúscula acentuada deixa de valer, e os botões podem voltar a ter acento ("AVANÇAR").
 - **Código:** as telas saem de `main.c` para `src/ui/ui.c` + `ui.h`, destino aprovado no `AGENTS.md`. O `main.c` fica com o loop, a entrada e os recursos.
-- **HUD (painel inferior, 104 px):**
+- **HUD (painel inferior, menor que os 104 px atuais, que ocupam 29% da tela; auditoria §6):**
   - linha 1: barra de **vitais do paciente** com cor por faixa, contagem de bactérias ou vírus vivos, tempo e pontos;
   - linha 2: **ferramenta ativa** (ícone e nome do alvo: "parede", "membrana", "anticorpo") e recarga;
-  - linhas 3–5: **ficha do scanner**, com forma, coloração e estrutura num formato fixo de ficha, como um exame, e não uma frase solta.
-- **Telas novas:** `STORY_INTRO` (substitui `BRIEFING`), `STORY_INTERLUDE` (entre `RESULTS` e a Fase 2) e os cards de conceito (sobrepostos, pausando).
+  - **ficha do scanner** só quando há alvo sob o cursor ou lido há pouco, com forma, coloração e estrutura num formato fixo, como um exame. Sem alvo, a ficha recolhe e o espaço volta para o mundo, em vez de mostrar "Nenhum alvo" a partida inteira.
+- **Telas novas:**
+  - `STORY_INTRO` (substitui `BRIEFING`);
+  - `STORY_INTERLUDE` (entre `RESULTS` e a Fase 2);
+  - os cards de conceito (sobrepostos, pausando);
+  - **entrada de nome** na vitória e **Top 10** acessível pelo menu (#81, #197).
+- **Navegação:** o foco segue a geometria. Botões lado a lado andam com ←/→ e empilhados com ↑/↓, porque hoje ←/→ não fazem nada no briefing (auditoria §6). A pausa, o game over e a vitória ganham "voltar ao menu" (#195, do Eric), e essa transição entra na máquina de estados.
+- **Resultados em linguagem de jogador:** o resumo deixa os códigos internos ("OA1 Gram:") e fala como relatório do paciente ("você identificou 4 de 6 bactérias pelo Gram"). Os códigos OA ficam só nos documentos.
 - **Máquina de estados:** as transições novas entram em `game.c` e em `docs/planejamento/fluxo-estados.md`.
 - **Textos:** todos reescritos e registrados em `textos-do-jogo.md`, com ID e número de caracteres.
 
@@ -201,19 +211,28 @@ Cada OA tem uma **regra do mundo**, o **momento** em que o jogador a sente e o *
 
 - **A. Fatia vertical (escolhida pelo dono).** Este documento primeiro; depois as mecânicas da Fase 1 com a arte atual, testadas pelo harness e por partidas; depois arte e interface novas; depois a Fase 2; e por fim calibração e QA. Prova cedo o que tem mais risco (ensino e dificuldade) e desenha a arte para o que já se sabe.
 - **B. Visual primeiro.** Descartada: redesenharia o HUD antes de saber o que ele mostra.
-- **C. A com o Eric na interface.** Descartada pelo dono: o Eric segue no Top 10, no instalador e na documentação.
+- **C. A com o Eric na interface.** Descartada pelo dono. Depois da auditoria de 13/11, o Eric ficou com QA, documentação, textos e a volta ao menu.
 
 ## 11. Cronograma
 
 | Etapa | Datas | Entrega |
 |---|---|---|
-| 0 | 13–14/11 | este documento aprovado |
-| 1 | 15–19/11 | Fase 1 nova jogável com a arte atual: forma, antibiótico pelo alvo, resistência, divisão, macrófago, vitais e tutorial no mundo |
+| 0 | 13–14/11 | este documento aprovado; issues da Etapa 1 criadas; Todoist remarcado |
+| 1 | 15–19/11 | Fase 1 nova jogável com a arte atual: forma, antibiótico pelo alvo, resistência, divisão, macrófago, vitais, tutorial no mundo, **mapa recuado** e os **4 primeiros itens de game feel** (§8) |
+| 1b | 20–21/11 | **instalador de fumaça:** Release empacotado e instalado numa pasta limpa, mesmo com o jogo incompleto, para descobrir cedo o que falta (DLLs do Allegro, caminhos dos assets, arquivo de hi-score gravável) (#42, #154–#158, #159–#161) |
 | 2 | 20–23/11 | Fase 2 completa: eclipse, eclosão, anticorpo, linfócito T, scanner viral |
-| 3 | 24–28/11 | arte e interface novas, narrativa e textos |
-| 4 | 29/11–01/12 | calibração, QA, memória (#117/#118) e docs |
+| 3 | 24–28/11 | arte e interface novas, narrativa, textos, **Top 10 com entrada de nome** (#77–#82, #197) |
+| 4 | 29/11–01/12 | calibração, QA, memória (#117/#118), **instalador final** testado em máquina limpa (#43, #162–#164) e docs |
 
-**Corte, se a Etapa 1 passar de 19/11:** a Etapa 2 fica sem linfócito T (célula infectada só pode ser preservada; o vírus livre só cai com anticorpo). O dono decide nesse ponto.
+**Prioridade de corte**, do que nunca sai para o que sai primeiro:
+
+1. **Requisitos obrigatórios da Aula 1**, porque reprovam se faltarem: Top 10 salvo, instalador, até 100 MB, menu e game over, 2 fases, spritesheet animado, áudio.
+2. **Ensino da Fase 1** (Etapa 1): é o centro da nota de "mecânicas que contribuem para o aprendizado".
+3. **Fase 2 nova:** se a Etapa 1 passar de 19/11, ela fica sem linfócito T (a célula infectada só pode ser preservada, e o vírus livre só cai com anticorpo).
+4. **Arte nova:** se faltar tempo, primeiro o Nanobô e os agentes da Fase 1; ilustrações dos cards por último.
+5. **Interface nova:** se faltar tempo, HUD e menu primeiro; resultados e pausa ficam com o layout atual e os textos novos.
+
+O dono decide em cada ponto de corte.
 
 ## 12. Calls minhas, para o dono conferir
 
@@ -228,18 +247,21 @@ Cada OA tem uma **regra do mundo**, o **momento** em que o jogador a sente e o *
 9. As espécies da Fase 1 mudam para misturar formas e Gram (§6).
 10. **Os vitais passam para a Fase 2.** No interlúdio, o paciente recupera até no mínimo 60 (quem terminou acima disso não ganha nada). O bônus de vitais é pago no fim de cada fase.
 11. **A identificação não é condição de vitória.** O +15 de identificação completa conta só os agentes iniciais da fase. As filhas da divisão herdam as camadas lidas, a marca e a resistência da mãe.
-12. **Variantes por categoria:** 2 variantes para cada uma das 4 categorias de bactéria (coco ou bacilo × Gram), num total de 8 sprites. A contagem é igual por Gram.
+12. **Variantes por forma:** 2 variantes de coco e 2 de bacilo, num total de 4 sprites neutros. O Gram vem do tingimento depois da 2ª camada (§8), então a contagem é igual por Gram automaticamente. Revisado em 13/11; a primeira versão previa 8 sprites, um por categoria, e entregava o Gram na 1ª camada.
 13. **Três cards de conceito:** "primeira bactéria resistente", "macrófago" e "antibiótico não age em vírus". São ilustrados com o próprio sprite ampliado, não com uma ilustração nova.
 14. **Placeholders:** até a Etapa 3, as espécies novas (macrófago, linfócito T, célula infectada) usam sprites atuais com tinta. O contrato de arquivos (nome, tamanho e quadros) é a tabela da §9.1.
+
+## 13. Issues
+
+- O trabalho novo vira issues no M5 (GitHub) e tarefas no Todoist quando cada etapa começar. Nada de comentários em issues.
+- Fechar no GitHub e no Todoist quando terminar: #85–#89 e #91 (Fase 2), #211 (variantes), #117/#118 (memória), e os requisitos obrigatórios que o Gustavo assumiu (#42, #43, #77–#82, #154–#164, #197).
+- Candidatas a "not planned": #206/#207 (D2.1/D2.2 do modelo antigo), #208 (bônus de run perfeito, substituído pelo bônus de vitais) e #209 (pulso de scan de 0,75 s). Também as duplicadas do M6: #43/#44/#46/#47 repetem #159–#170. **Decisão do dono em 13/11: nada é fechado por enquanto.** A #210 (RF-07) já está fechada desde 09/11.
+- A substituição da perseguição (RF-06) pela resistência não tem issue própria; entra numa das issues novas da Etapa 1.
 
 ## 14. Decisões do dono na revisão (13/11)
 
 - **Camadas do scan:** a 1ª camada dá só a forma, e a 2ª dá coloração e estrutura. Substitui a decisão de 03/11, em que a camada 1 trazia a coloração.
 - **Marcação:** automática ao concluir o scan.
 - **Eclosão:** os vírus novos nascem líticos e livres e infectam células livres ao tocá-las. Substitui o "nascem lisogênicos" de `fase2-virus.md` (11/11).
-
-## 13. Issues
-
-- O trabalho novo vira issues no M5 (GitHub) e tarefas no Todoist quando cada etapa começar. Nada de comentários em issues.
-- Fechar no GitHub e no Todoist quando terminar: #85–#89 e #91 (Fase 2), #211 (variantes), #117/#118 (memória).
-- Candidatas a "not planned", **só com a decisão do dono**: RF-06 (perseguição), #206/#207 (D2.1/D2.2 do modelo antigo), #208 (bônus de run perfeito, substituído pelo bônus de vitais), #209 (pulso de scan de 0,75 s) e #210 (RF-07, substituído pelo relatório final).
+- **Mapa:** pode ser escurecido e dessaturado na hora de desenhar; o PNG não muda.
+- **Equipe:** o Gustavo assume Top 10, build Release e instalador.
