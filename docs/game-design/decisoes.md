@@ -38,6 +38,20 @@ Este arquivo registra decisões já tomadas pela dupla. Quando uma decisão impo
   - só a run nova enche a barra: entre as fases os vitais continuam, com piso de 60;
   - a conclusão paga vitais × 0,5, mostrado nos resultados como "bônus de vitais";
   - no HUD, a barra fica verde a partir de 60, âmbar a partir de 30 e vermelha abaixo disso.
+- **Resposta visual (#221):**
+  - um ponto de chamada por evento (`SfxEvent`), em três níveis:
+    - leve: scan, disparo, defesa;
+    - médio: dose e antibiótico sem efeito;
+    - forte: dano, eliminação, fase concluída;
+  - o tremor é de 0, 1 ou 3 px, decai em 0,25 s e só desloca o desenho do mundo;
+  - efeitos por evento:
+    - flash vermelho de 0,2 s no dano;
+    - o Nanobô pisca na invulnerabilidade;
+    - anel de impacto no acerto (claro na dose, apagado sem efeito);
+    - anel do scan saindo do Nanobô;
+    - partículas, "+10" e hit-stop de 50 ms na eliminação;
+  - a camada não chama `rand()`, para não mudar a sequência sorteada do gameplay;
+  - o hit-stop só segura o `update_match`: a entrada continua chegando.
 - **Trava do antibiótico errado (call de 13/11, #215):** a perseguição saiu, mas a trava de 2 s do disparo ficou. Sem ela, chutar a arma custaria só 1 s de recarga, e a simulação de 01/11 mostrou que o chute vence quando o erro sai barato. A bactéria não muda; só o disparo trava. A resistência perde 5 pontos, sem deixar a pontuação negativa. Os bots da #224 conferem se a trava basta.
 - **Fase 2:** vias aéreas; vírus livres na eclosão, que infectam células livres; **Lise** para a célula infectada (custa poucos vitais); teto de 12 vírus (`fase2-virus.md`).
 - **Fase 3:** pulmão; levedura (*Cryptococcus*, brotamento) e bolor (*Aspergillus*, hifas e esporos); a parede de quitina impede o antibiótico; **Perfuração** é o antifúngico. A carga de esporos depende do estado do paciente ao fim da Fase 2 e das cargas de Reserva gastas, e o jogo não afirma que o antibiótico causa aspergilose. A Perfuração **não** custa vitais (o dono não escolheu o efeito colateral).

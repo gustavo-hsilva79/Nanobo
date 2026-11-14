@@ -60,6 +60,10 @@ static int reserve_left = RESERVE_CHARGES;
 static unsigned int sfx_event_count = 0;
 static SfxEvent sfx_event_last = SFX_EVENT_NONE;
 
+// lugar do ultimo evento no mundo, para a resposta visual (#221)
+static float sfx_event_x = 0.0f;
+static float sfx_event_y = 0.0f;
+
 // ultimo alvo lido pelo scanner: o painel do HUD mostra so ele
 static int scan_target = -1;
 
@@ -127,6 +131,27 @@ static void emit_sfx(SfxEvent kind)
 {
     sfx_event_count = sfx_event_count + 1;
     sfx_event_last = kind;
+    sfx_event_x = player.x;
+    sfx_event_y = player.y;
+}
+
+// evento num agente: a resposta visual aparece em cima dele (#221)
+static void emit_sfx_at(SfxEvent kind, float x, float y)
+{
+    emit_sfx(kind);
+    sfx_event_x = x;
+    sfx_event_y = y;
+}
+
+void sfx_event_position(float* x, float* y)
+{
+    *x = sfx_event_x;
+    *y = sfx_event_y;
+}
+
+float invulnerability_left(void)
+{
+    return (float)invulnerability_timer;
 }
 
 unsigned int sfx_event_id(void)
@@ -432,7 +457,7 @@ static void hit_projectiles()
                 progress.correct_decisions = progress.correct_decisions + 1;
                 agents[j].resistance = 1;
                 hit_agent(j);
-                emit_sfx(SFX_EVENT_NEUTRALIZED);
+                emit_sfx_at(SFX_EVENT_NEUTRALIZED, agents[j].x, agents[j].y);
 
                 if (was_resistant)
                 {
@@ -447,7 +472,7 @@ static void hit_projectiles()
                 && agents[j].resistant)
             {
                 // resistente: o antibiotico do tratamento incompleto nao age mais (#215)
-                emit_sfx(SFX_EVENT_WRONG);
+                emit_sfx_at(SFX_EVENT_WRONG, agents[j].x, agents[j].y);
 
                 if (agents[j].species == SPECIES_GRAM_POSITIVE)
                 {
@@ -464,7 +489,7 @@ static void hit_projectiles()
 
                 if (hit_agent(j))
                 {
-                    emit_sfx(SFX_EVENT_NEUTRALIZED);
+                    emit_sfx_at(SFX_EVENT_NEUTRALIZED, agents[j].x, agents[j].y);
 
                     // sem identificacao a ameaca sai da cena e o bonus de 9/9 fica impossivel
                     if (agents[j].identified)
@@ -479,7 +504,7 @@ static void hit_projectiles()
                 else
                 {
                     // primeira dose: o anel do prazo comeca a esvaziar (#215)
-                    emit_sfx(SFX_EVENT_HIT);
+                    emit_sfx_at(SFX_EVENT_HIT, agents[j].x, agents[j].y);
                     set_feedback("primeira dose: complete o tratamento");
                 }
             }
@@ -490,7 +515,7 @@ static void hit_projectiles()
                 // antibiotico errado nao muda a bacteria: nem dose, nem resistencia;
                 // o custo e a trava do disparo (#215)
                 fire_lock_timer = FIRE_LOCK_TIME;
-                emit_sfx(SFX_EVENT_WRONG);
+                emit_sfx_at(SFX_EVENT_WRONG, agents[j].x, agents[j].y);
 
                 // quem leu so a forma chutou o grupo: o feedback aponta a coloracao (#215)
                 if (agents[j].layers == 1)
@@ -550,7 +575,7 @@ static void reveal_layer(int index)
     if (agents[index].layers < MAX_LAYERS)
     {
         agents[index].layers = agents[index].layers + 1;
-        emit_sfx(SFX_EVENT_SCAN);
+        emit_sfx_at(SFX_EVENT_SCAN, agents[index].x, agents[index].y);
     }
 
     if (agents[index].layers == MAX_LAYERS && agents[index].identified == false)
@@ -1115,7 +1140,7 @@ static void update_dose(int index, double dt)
         score = 0;
     }
 
-    emit_sfx(SFX_EVENT_WRONG);
+    emit_sfx_at(SFX_EVENT_WRONG, agents[index].x, agents[index].y);
 
     if (agents[index].species == SPECIES_GRAM_POSITIVE)
     {

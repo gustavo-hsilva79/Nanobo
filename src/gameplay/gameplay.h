@@ -227,6 +227,12 @@ typedef enum
 unsigned int sfx_event_id(void);
 SfxEvent sfx_event_kind(void);
 
+// onde o ultimo evento aconteceu no mundo: o main desenha a resposta ali (#221)
+void sfx_event_position(float* x, float* y);
+
+// segundos que faltam da invulnerabilidade, para o nanobo piscar (#221)
+float invulnerability_left(void);
+
 // partida: o tamanho do mundo vem das constantes, nao do main
 void reset_match();
 void update_match(double dt);
