@@ -1519,10 +1519,15 @@ static void start_phase(int index)
         player.laser = LASER_GRAM_POSITIVE;
     }
 
-    // fase nova comeca sem projetil na tela
+    // fase nova comeca sem projetil na tela, nem do nanobo nem dos invasores (#236)
     for (i = 0; i < MAX_PROJECTILES; i++)
     {
         projectiles[i].active = false;
+    }
+
+    for (i = 0; i < MAX_ENEMY_SHOTS; i++)
+    {
+        enemy_shots[i].active = false;
     }
 
     scan_target = -1;
@@ -2127,6 +2132,118 @@ static float coccus_ai(int index, float dt)
     return COCCUS_DRIFT_SPEED;
 }
 
+// projetil inimigo novo numa vaga livre; sem vaga, o ataque se perde (#236)
+static void fire_enemy_shot(EnemyShotKind kind, float x, float y, float dx, float dy,
+    float speed, float damage)
+{
+    int i;
+
+    for (i = 0; i < MAX_ENEMY_SHOTS; i++)
+    {
+        if (!enemy_shots[i].active)
+        {
+            enemy_shots[i].active = true;
+            enemy_shots[i].kind = kind;
+            enemy_shots[i].x = x;
+            enemy_shots[i].y = y;
+            enemy_shots[i].dx = dx;
+            enemy_shots[i].dy = dy;
+            enemy_shots[i].speed = speed;
+            enemy_shots[i].damage = damage;
+            enemy_shots[i].life = ENEMY_SHOT_LIFE;
+            return;
+        }
+    }
+}
+
+// toxina do coco: com o nanobo a TOXIN_RANGE, avisa e solta uma toxina a cada
+// TOXIN_INTERVAL; colonizando ou nao, o coco se defende assim (#236)
+static void coccus_toxin(int index, float dx, float dy, float dist, float dt)
+{
+    Agent* a = &agents[index];
+
+    if (a->windup > 0.0f)
+    {
+        a->windup -= dt;
+
+        if (a->windup <= 0.0f)
+        {
+            a->windup = 0.0f;
+            a->attack_timer = TOXIN_INTERVAL;
+
+            if (dist > 0.001f)
+            {
+                fire_enemy_shot(SHOT_TOXIN, a->x, a->y, dx / dist, dy / dist,
+                    TOXIN_SPEED, TOXIN_DAMAGE);
+            }
+        }
+
+        return;
+    }
+
+    if (a->ai_state != AI_ALERT || dist > TOXIN_RANGE)
+    {
+        return;
+    }
+
+    a->attack_timer -= dt;
+
+    if (a->attack_timer <= 0.0f)
+    {
+        a->windup = WINDUP_TIME;
+    }
+}
+
+// projeteis inimigos andam em linha reta; acertam o nanobo, morrem no escudo
+// da defesa, somem fora do mundo ou quando acaba o tempo (#236)
+static void update_enemy_shots(double dt)
+{
+    int i;
+
+    for (i = 0; i < MAX_ENEMY_SHOTS; i++)
+    {
+        float d2;
+
+        if (!enemy_shots[i].active)
+        {
+            continue;
+        }
+
+        enemy_shots[i].x += enemy_shots[i].dx * enemy_shots[i].speed * (float)dt;
+        enemy_shots[i].y += enemy_shots[i].dy * enemy_shots[i].speed * (float)dt;
+        enemy_shots[i].life -= (float)dt;
+
+        if (enemy_shots[i].life <= 0.0f || enemy_shots[i].x < 0.0f || enemy_shots[i].y < 0.0f
+            || enemy_shots[i].x > (float)WORLD_W || enemy_shots[i].y > (float)WORLD_H)
+        {
+            enemy_shots[i].active = false;
+            continue;
+        }
+
+        d2 = squared_distance(enemy_shots[i].x, enemy_shots[i].y, player.x, player.y);
+
+        // escudo da defesa ativa destroi o projetil antes de ele chegar (#236)
+        if (defense_timer > 0.0
+            && d2 <= (SHIELD_RADIUS + ENEMY_SHOT_RADIUS) * (SHIELD_RADIUS + ENEMY_SHOT_RADIUS))
+        {
+            enemy_shots[i].active = false;
+            emit_sfx_at(SFX_EVENT_HIT, enemy_shots[i].x, enemy_shots[i].y);
+            set_feedback("a defesa destruiu a toxina");
+            continue;
+        }
+
+        if (d2 <= (float)((PLAYER_RADIUS + ENEMY_SHOT_RADIUS) * (PLAYER_RADIUS + ENEMY_SHOT_RADIUS)))
+        {
+            enemy_shots[i].active = false;
+
+            if (damage_player(enemy_shots[i].damage))
+            {
+                set_feedback("toxina do coco: -8 de integridade");
+            }
+        }
+    }
+}
+
 // cada bacteria age pela forma: o bacilo ameaca o nanobo e o coco ameaca o
 // paciente (#235)
 static float update_bacteria_ai(int index, float dt)
@@ -2139,6 +2256,7 @@ static float update_bacteria_ai(int index, float dt)
 
     if (agents[index].shape == SHAPE_COCCUS)
     {
+        coccus_toxin(index, dx, dy, dist, dt);
         return coccus_ai(index, dt);
     }
 
@@ -2334,6 +2452,7 @@ void update_match(double dt)
 
     repel_touching_agents();
     update_projectiles(dt);
+    update_enemy_shots(dt);
     update_camera();
 
     int touched = touching_agent();

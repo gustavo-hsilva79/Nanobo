@@ -46,6 +46,9 @@ Camera camera = { 0.0f, 0.0f };
 // nenhum projetil vivo antes do primeiro disparo da partida
 Projectile projectiles[MAX_PROJECTILES];
 
+// nenhum projetil inimigo antes do primeiro ataque (#236)
+EnemyShot enemy_shots[MAX_ENEMY_SHOTS];
+
 // inicializar player
 Nanobo player = { .x = 960.0f, .y = 256.0f, .speed = 200.0f, .vx = 0.0f, .vy = 0.0f,
                   .facing = PLAYER_FACING_DOWN,

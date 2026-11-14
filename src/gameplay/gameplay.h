@@ -106,6 +106,15 @@ _Static_assert(WORLD_W % 32 == 0 && WORLD_H % 32 == 0, "mundo precisa fechar no 
 #define BACILLUS_LUNGE_TIME 0.4f
 #define BACILLUS_LUNGE_INTERVAL 2.5f
 #define COCCUS_DRIFT_SPEED 20.0f
+
+// toxina do coco (#236): alcance, intervalo, voo e dano; some sozinha depois
+// de ENEMY_SHOT_LIFE; a defesa ativa destroi o que toca o escudo
+#define TOXIN_RANGE 180.0f
+#define TOXIN_INTERVAL 3.0f
+#define TOXIN_SPEED 90.0f
+#define TOXIN_DAMAGE 8.0f
+#define ENEMY_SHOT_LIFE 4.0f
+#define SHIELD_RADIUS 22.0f
 #define COLONIZE_DAMAGE 5.0f
 #define COLONIZE_REACH 2.0f
 

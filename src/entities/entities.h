@@ -206,6 +206,33 @@ typedef struct
 
 extern Projectile projectiles[MAX_PROJECTILES];
 
+// projeteis inimigos: a toxina do coco agora; o esporo do bolor e o virus da
+// rajada usam o mesmo array nas Fases 2 e 3 (#236)
+#define MAX_ENEMY_SHOTS 32
+#define ENEMY_SHOT_RADIUS 4
+
+typedef enum
+{
+    SHOT_TOXIN = 0,
+    SHOT_SPORE = 1,
+    SHOT_VIRION = 2
+} EnemyShotKind;
+
+typedef struct
+{
+    bool active;
+    EnemyShotKind kind;
+    float x;
+    float y;
+    float dx; // direcao unitaria
+    float dy;
+    float speed;
+    float damage; // integridade que tira do nanobo
+    float life;   // segundos ate sumir sozinho
+} EnemyShot;
+
+extern EnemyShot enemy_shots[MAX_ENEMY_SHOTS];
+
 // camera: canto superior esquerdo da faixa visivel do mundo
 typedef struct
 {

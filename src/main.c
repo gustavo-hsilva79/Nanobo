@@ -2217,6 +2217,21 @@ void draw_game()
         }
     }
 
+    // projeteis inimigos: a toxina e uma gota verde-amarela com contorno (#236)
+    for (i = 0; i < MAX_ENEMY_SHOTS; i++)
+    {
+        if (!enemy_shots[i].active)
+        {
+            continue;
+        }
+
+        px = view_x(enemy_shots[i].x);
+        py = view_y(enemy_shots[i].y);
+        al_draw_filled_circle(px, py, (float)ENEMY_SHOT_RADIUS + 1.0f, UI_INK);
+        al_draw_filled_circle(px, py, (float)ENEMY_SHOT_RADIUS, al_map_rgb(170, 230, 90));
+        al_draw_filled_circle(px - 1.0f, py - 1.0f, 1.0f, al_map_rgb(235, 255, 200));
+    }
+
     draw_feel_world();
 
     // o resto da tela nao treme
