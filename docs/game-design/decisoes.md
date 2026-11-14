@@ -65,7 +65,7 @@ Este arquivo registra decisões já tomadas pela dupla. Quando uma decisão impo
 - **Reserva:** antibiótico de reserva com 2 cargas por fase; elimina a resistente.
 - **Substituições de regras antigas:** a perseguição por arma errada (RF-06, 04/11) é substituída pela resistência. Os 3 corações dão lugar à barra de vitais de 0 a 100, que passa entre as fases.
 - **Divisão binária (#217):**
-  - cada bactéria viva se divide em 22 s ± 4 s, com teto de 16 vivas;
+  - cada bactéria viva se divide em 12 s ± 3 s (era 22 ± 4; mudou na calibração da #238), com teto de 16 vivas;
   - a filha nasce ao lado da mãe numa vaga nova do array (`MAX_AGENTS` 24), então uma fase tem no máximo 15 nascimentos;
   - a filha herda a resistência e as camadas lidas, mas não a dose;
   - o bônus de identificação e o "identificados x/9" contam só os 9 agentes iniciais;

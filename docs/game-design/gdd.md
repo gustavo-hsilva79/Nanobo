@@ -60,7 +60,7 @@ Cada fase tem mapa, ponto de partida e destino próprios. O mapa da Fase 1 conti
   - uma dose e mais de 6 s sem a segunda deixam a bactéria **resistente àquele antibiótico**, e daí só a **Reserva** a elimina;
   - o antibiótico errado não faz efeito, e não cria resistência; ele trava o disparo por 2 s, o custo do chute (#215).
 - **Divisão e crescimento:**
-  - as bactérias se dividem a cada cerca de 22 s, com teto de 16;
+  - as bactérias se dividem a cada cerca de 12 s (12 ± 3 s, calibrado na #238), com teto de 16;
   - as leveduras brotam a cada cerca de 20 s, com teto de 12;
   - a hifa do bolor cresce 1 segmento a cada cerca de 5 s, até 5 segmentos. Acertar a **base** mata a colônia, e acertar a ponta só corta um segmento. Com a hifa no tamanho máximo, a colônia solta esporos e nasce outra, até 4 colônias.
 - **Vírus (Fase 2):**

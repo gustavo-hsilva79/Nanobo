@@ -65,10 +65,11 @@ _Static_assert(WORLD_W % 32 == 0 && WORLD_H % 32 == 0, "mundo precisa fechar no 
 // antibiotico de reserva: cargas por fase, que voltam no inicio de cada uma (#216)
 #define RESERVE_CHARGES 2
 
-// divisao binaria: cada bacteria viva se divide a cada 22 s, com 4 s de sorteio
-// para mais ou para menos, ate o teto de bacterias vivas na fase (#217)
-#define DIVISION_TIME 22.0f
-#define DIVISION_JITTER 4.0f
+// divisao binaria: cada bacteria viva se divide a cada 12 s, com 3 s de sorteio
+// para mais ou para menos, ate o teto de bacterias vivas na fase (#217);
+// os 12 s vem da calibracao com os bots, sem drenagem por tempo (#238)
+#define DIVISION_TIME 12.0f
+#define DIVISION_JITTER 3.0f
 #define BACTERIA_CAP 16
 
 // cursor a menos disso do nanobo cai na direcao do facing (#198)

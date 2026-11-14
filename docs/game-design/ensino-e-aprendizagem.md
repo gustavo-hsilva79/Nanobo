@@ -106,6 +106,31 @@ O leitor, além disso, lê as duas camadas (0,8 s de leitura cada) e escolhe a a
 - **Por que o chute perde:** ele cria em média 0,6 resistência por partida e esgota a Reserva. Aí a resistente que sobra drena os vitais até zerar.
 - **Ressalva:** o bot ainda acha o caminho, mira e reage melhor que uma pessoa jogando pela primeira vez. Se as partidas do dono mostrarem que o leitor humano perde mais de 1 em 3, o primeiro ajuste é voltar a drenagem para 0,50 (leitor 94%, chute 10%).
 
+#### Recalibração sem drenagem, com a IA dos invasores (14/11, #238)
+
+A drenagem saiu. Os bots passaram a enfrentar a IA nova (bacilo que persegue e investe, coco que coloniza e solta toxina, biofilme, endotoxina e correnteza) e mudaram em quatro pontos:
+- usam a defesa contra toxina, investida e contato, com o mesmo atraso de reação de 0,4 s;
+- saem da nuvem de endotoxina;
+- agem enquanto se movem;
+- consideram um ponto da rota alcançado a 60 px, porque as células de 64 px nascem nos pontos de nascimento e são sólidas.
+
+| Configuração (300 a 1000 partidas) | Leitor vence | Chute vence | Leitor: tempo e vitais na vitória |
+|---|---:|---:|---|
+| IA nova, divisão 22 ± 4 s | 85% | 11% | 51 s, 87 vitais |
+| + perseguição 85–95 px/s, toxina a cada 2–2,5 s, colonização 6–8/s | 82–90% | 5–8% | 64–69 s |
+| + célula perdida −30 a −34, contato 12–14, toxina 10–12 | 81–82% | 6% | 64 s |
+| + alerta 280 px, investida a cada 1,5 s ou a 220 px/s, toxina a 140 px/s | 82–86% | 10–14% | 50–53 s |
+| divisão 16 ± 3 s | 73% | 3% | 77 s, 84 vitais |
+| **divisão 12 ± 3 s (adotada, 1000 partidas)** | **64%** | **2%** | 97 s, 77 vitais |
+
+- **Constante ajustada:** `DIVISION_TIME` passou de 22 para **12 s** e `DIVISION_JITTER` de 4 para **3 s**. As demais ficaram nos valores da especificação.
+- **Por que só a divisão move a taxa:** o bot desvia e se defende bem, então dano e agressividade de cada invasor mudam pouco. O que pesa é quantos invasores existem ao mesmo tempo.
+- **De onde vêm as derrotas do leitor:**
+  - o tiro no coco grudado na célula acerta a célula, e cada acerto custa 15 dos vitais;
+  - a população que cresce fere a integridade.
+  - Atirar no coco colonizando pede se posicionar do lado de fora da célula, uma decisão que a fase passa a cobrar.
+- **Duração:** o leitor vence em 97 s, dentro da meta antiga de 60 a 150 s.
+
 ## Correções desta revisão (03/11/2026)
 
 | # | Correção | O que substitui |
