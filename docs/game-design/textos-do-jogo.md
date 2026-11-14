@@ -71,6 +71,8 @@ Desenhado **em toda partida** — `MENU → BRIEFING → GAME`, e também depois
 | CT-11b | resultados, painel dos objetivos secundários | `bônus de vitais` · `+%d` | 15 | #218; ocupa a linha da CT-11 nos resultados |
 | CT-11c | HUD, linha 0 | vitais `%d` (de `0` a `100`), verde ≥ 60, âmbar ≥ 30, vermelho abaixo | até 3 | #218 |
 | CT-11d | mundo, acima do agente da dica | `botão direito: escanear` (some no primeiro scan; volta no tiro num invasor sem leitura) | 23 | #219 |
+| CT-11e | card de conceito, rótulo e aviso | `conceito` / `enter ou clique para continuar` | 8 / 30 | #222 |
+| CT-11f | card de conceito, títulos da Fase 1 | `Coloração de Gram` (CC-01) / `Resistência e Reserva` (CC-02) | 17 / 21 | #222; linhas em §3.1 |
 | CT-12 | menu, rodapé | `enter ou clique para começar` | 28 | #201 |
 | CT-13 | menu, rodapé | `F11 tela cheia` | 14 | #201 |
 | CT-14 | HUD, linha 0 | `ameaças %d/%d` | 11 | #199 |
@@ -193,6 +195,8 @@ O painel de resultados apresenta uma mensagem independente para cada objetivo de
 > **Rascunhos, ainda não estão no código.** Regras em `ensino-e-aprendizagem.md` (§"Nanobô 2.0"). Os cards têm 3 linhas de até 70 caracteres (contagem abaixo, feita com Python). Os textos de HUD e ficha passam a ser medidos com a fonte TTF nova quando ela entrar; até lá, vale a regra da seção 2.1. Os IDs `CC-` são cards de conceito, `FB2-` são feedback do 2.0 e `FE-` são ferramentas.
 
 ### 3.1 Cards de conceito
+
+> **No código desde 14/11 (#222):** CC-01 abre na primeira leitura completa de bactéria e CC-02 na primeira bactéria resistente. Cada card aparece uma vez por partida, sobre a fase parada, com as linhas desenhadas a partir de x = 56 num painel de 576 px; a maior (CC-02a, 66 caracteres) ocupa 528 px. CC-03 a CC-06 entram com as Fases 2 e 3.
 
 | ID | Card / quando aparece | Linha | Car. |
 |---|---|---|---:|

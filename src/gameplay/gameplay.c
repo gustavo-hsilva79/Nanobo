@@ -403,6 +403,46 @@ const char* feedback_text()
     return feedback;
 }
 
+// cards da run: cada um aparece uma vez por partida, na ordem em que acontece (#222)
+static bool card_shown[CARD_COUNT];
+static bool card_waiting[CARD_COUNT];
+
+static void queue_card(ConceptCard card)
+{
+    if (card_shown[card])
+    {
+        return;
+    }
+
+    card_shown[card] = true;
+    card_waiting[card] = true;
+}
+
+ConceptCard pending_card(void)
+{
+    int i;
+
+    for (i = 0; i < CARD_COUNT; i++)
+    {
+        if (card_waiting[i])
+        {
+            return (ConceptCard)i;
+        }
+    }
+
+    return CARD_NONE;
+}
+
+void dismiss_card(void)
+{
+    ConceptCard card = pending_card();
+
+    if (card != CARD_NONE)
+    {
+        card_waiting[card] = false;
+    }
+}
+
 // um projetil contra os agentes: o primeiro que cruzar leva o acerto e o projetil some (#49)
 static void hit_projectiles()
 {
@@ -566,6 +606,12 @@ static void update_projectiles(double dt)
 // revela a proxima camada do alvo e identifica quando as duas apareceram (#60, #61)
 static void reveal_layer(int index)
 {
+    // com card na tela o scanner espera (#222)
+    if (pending_card() != CARD_NONE)
+    {
+        return;
+    }
+
     // o painel do HUD relembra o ultimo alvo, mesmo depois de andar
     scan_target = index;
 
@@ -581,6 +627,13 @@ static void reveal_layer(int index)
     if (agents[index].layers == MAX_LAYERS && agents[index].identified == false)
     {
         agents[index].identified = true;
+
+        // a primeira leitura completa de bacteria abre o card da coloracao (#222)
+        if (agents[index].species == SPECIES_GRAM_POSITIVE
+            || agents[index].species == SPECIES_GRAM_NEGATIVE)
+        {
+            queue_card(CARD_GRAM);
+        }
 
         // a filha da divisao fica identificada, mas so os agentes iniciais
         // contam para o bonus e para o resumo (#217)
@@ -721,6 +774,12 @@ static void fire(float dx, float dy)
     float offset = (float)(PLAYER_RADIUS + PROJECTILE_RADIUS);
 
     if (player.health <= 0)
+    {
+        return;
+    }
+
+    // com card na tela nao ha disparo (#222)
+    if (pending_card() != CARD_NONE)
     {
         return;
     }
@@ -1132,6 +1191,9 @@ static void update_dose(int index, double dt)
     agents[index].resistant = true;
     agents[index].resistance = species_resistance(agents[index].species);
 
+    // a primeira resistente abre o card da resistencia e da Reserva (#222)
+    queue_card(CARD_RESISTANCE);
+
     // resistencia criada custa pontos, sem deixar a pontuacao negativa (#215)
     score = score - RESISTANCE_PENALTY;
 
@@ -1408,6 +1470,13 @@ void reset_match()
 
     // os vitais so enchem numa run nova; entre as fases eles continuam (#218)
     player.health = PLAYER_MAX_HEALTH;
+
+    // cada card aparece uma vez por partida (#222)
+    for (int c = 0; c < CARD_COUNT; c++)
+    {
+        card_shown[c] = false;
+        card_waiting[c] = false;
+    }
 
     start_phase(0);
 }
@@ -1745,6 +1814,12 @@ void update_match(double dt)
 {
     float dir_x = 0.0f;
     float dir_y = 0.0f;
+
+    // card de conceito na tela: a partida fica parada ate ele fechar (#222)
+    if (pending_card() != CARD_NONE)
+    {
+        return;
+    }
 
     for (int i = 0; i < agents_count; i++)
     {

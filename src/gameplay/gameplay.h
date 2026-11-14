@@ -227,6 +227,19 @@ typedef enum
 unsigned int sfx_event_id(void);
 SfxEvent sfx_event_kind(void);
 
+// cards de conceito: explicam um conteudo na primeira vez que ele acontece (#222)
+typedef enum
+{
+    CARD_NONE = -1,
+    CARD_GRAM = 0,
+    CARD_RESISTANCE = 1,
+    CARD_COUNT
+} ConceptCard;
+
+// card esperando a vez; com card na tela a partida fica parada (#222)
+ConceptCard pending_card(void);
+void dismiss_card(void);
+
 // onde o ultimo evento aconteceu no mundo: o main desenha a resposta ali (#221)
 void sfx_event_position(float* x, float* y);
 

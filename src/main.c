@@ -1742,6 +1742,54 @@ void draw_feel_world()
     }
 }
 
+// cards de conceito (#222): titulo e tres linhas, registrados em textos-do-jogo.md §3.1
+static const char* card_titles[CARD_COUNT] =
+{
+    "Coloração de Gram",
+    "Resistência e Reserva"
+};
+
+static const char* card_lines[CARD_COUNT][3] =
+{
+    {
+        "No laboratório, um corante roxo tinge a parede das bactérias.",
+        "Gram+: parede grossa de peptidoglicano, que segura o roxo.",
+        "Gram-: parede fina e membrana externa; perde o roxo e fica rosa."
+    },
+    {
+        "Uma dose só não basta: as bactérias que sobrevivem se multiplicam.",
+        "Esta ficou resistente: o mesmo antibiótico não age mais nela.",
+        "A Reserva age nela, mas tem poucas cargas: use só se precisar."
+    }
+};
+
+// card sobre a fase parada: tela escurecida, painel, titulo, tres linhas e o aviso
+void draw_concept_card()
+{
+    ConceptCard card = pending_card();
+    int line;
+
+    if (card == CARD_NONE)
+    {
+        return;
+    }
+
+    al_draw_filled_rectangle(0.0f, 0.0f, (float)SCREEN_W, (float)SCREEN_H,
+        al_map_rgba_f(0.0f, 0.0f, 0.0f, 0.6f));
+    draw_panel(32.0f, 72.0f, 576.0f, 120.0f, UI_INK, UI_AMBER);
+    al_draw_text(font, UI_DIM, (float)SCREEN_W / 2.0f, 82.0f, ALLEGRO_ALIGN_CENTRE, "conceito");
+    al_draw_text(font, UI_AMBER, (float)SCREEN_W / 2.0f, 96.0f, ALLEGRO_ALIGN_CENTRE,
+        card_titles[card]);
+
+    for (line = 0; line < 3; line++)
+    {
+        al_draw_text(font, UI_TEXT, 56.0f, 120.0f + (float)line * 16.0f, 0, card_lines[card][line]);
+    }
+
+    al_draw_text(font, UI_DIM, (float)SCREEN_W / 2.0f, 174.0f, ALLEGRO_ALIGN_CENTRE,
+        "enter ou clique para continuar");
+}
+
 // icone provisorio da Reserva no HUD: capsula de 16x16 em duas metades (#216)
 void draw_reserve_icon(float x, float y)
 {
@@ -2541,6 +2589,7 @@ void render()
     else if (scene == GAME_SCENE_GAME)
     {
         draw_game();
+        draw_concept_card();
     }
     else if (scene == GAME_SCENE_PAUSE)
     {
@@ -2629,6 +2678,27 @@ void handle_key_down(int key)
         }
 
         return;
+    }
+
+    // card de conceito na tela: enter, espaco ou esc fecham; as setas e o WASD
+    // continuam registrados, para o movimento nao se perder (#222)
+    if (pending_card() != CARD_NONE)
+    {
+        bool movement = key == ALLEGRO_KEY_UP || key == ALLEGRO_KEY_W
+            || key == ALLEGRO_KEY_DOWN || key == ALLEGRO_KEY_S
+            || key == ALLEGRO_KEY_LEFT || key == ALLEGRO_KEY_A
+            || key == ALLEGRO_KEY_RIGHT || key == ALLEGRO_KEY_D;
+
+        if (key == ALLEGRO_KEY_ENTER || key == ALLEGRO_KEY_SPACE || key == ALLEGRO_KEY_ESCAPE)
+        {
+            dismiss_card();
+            return;
+        }
+
+        if (!movement)
+        {
+            return;
+        }
     }
 
     if (key == ALLEGRO_KEY_UP || key == ALLEGRO_KEY_W)
@@ -2788,6 +2858,17 @@ void handle_game_click(int button, float lx, float ly)
 {
     float wx;
     float wy;
+
+    // card de conceito na tela: o clique esquerdo fecha o card e nao atira (#222)
+    if (pending_card() != CARD_NONE)
+    {
+        if (button == 1)
+        {
+            dismiss_card();
+        }
+
+        return;
+    }
 
     // clique no painel do HUD e na barra preta da janela nao e acao de mundo
     if (lx < 0.0f || lx >= (float)SCREEN_W || ly < 0.0f || ly >= (float)PLAY_H)
