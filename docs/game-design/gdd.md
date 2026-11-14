@@ -65,16 +65,16 @@ Cada fase tem mapa, ponto de partida e destino próprios. O mapa da Fase 1 conti
   - a hifa do bolor cresce 1 segmento a cada cerca de 5 s, até 5 segmentos. Acertar a **base** mata a colônia, e acertar a ponta só corta um segmento. Com a hifa no tamanho máximo, a colônia solta esporos e nasce outra, até 4 colônias.
 - **Vírus (Fase 2):**
   - o lisogênico fica dentro da célula, piscando, por 12 s;
-  - depois do eclipse, a célula se rompe e libera até 3 vírus **livres**, que infectam células livres ao tocá-las;
+  - depois do eclipse, a célula se rompe e solta 6 vírus numa **rajada radial**; eles ferem o Nanobô e depois derivam no muco como vírus **livres**, que infectam células livres ao tocá-las (14/11);
   - a **Lise** elimina a célula infectada já lida: custa poucos vitais, mas impede a eclosão;
   - o antibiótico não age em vírus;
   - teto de 12 vírus.
 - **Ligação com a Fase 3:** a carga inicial de esporos sobe quanto menores forem os vitais ao fim da Fase 2 e quanto mais cargas de Reserva tiverem sido gastas. Fungos oportunistas aproveitam um organismo enfraquecido.
-- **Sinais vitais:**
-  - uma barra de 0 a 100 substitui os 3 corações;
-  - caem com contato, tiro na célula do paciente, invasores vivos (drenagem), Lise e ruptura de célula hospedeira;
-  - passam de uma fase para a outra, e o interlúdio recupera até no mínimo 60;
-  - derrota com vitais em 0.
+- **Duas barras (14/11):**
+  - **Integridade do Nanobô:** de 0 a 100, cheia no início de cada fase. Cai com contato (10), toxina (8), esporo (8), vírus da rajada (6), hifa (10) e nuvem de endotoxina (10/s).
+  - **Vitais do paciente:** de 0 a 100. Caem com célula do paciente destruída (−20), tiro do Nanobô numa célula (−15) e Lise (−5). Passam de uma fase para a outra, e o interlúdio recupera até no mínimo 60.
+  - Derrota quando qualquer uma zera; a tela de Game Over diz qual.
+  - Não há drenagem por tempo: a pressão vem dos invasores (§"Dificuldade").
 - **Pontuação:**
   - +10 por invasor eliminado;
   - −5 por resistência criada;
@@ -82,9 +82,47 @@ Cada fase tem mapa, ponto de partida e destino próprios. O mapa da Fase 1 conti
   - bônus de vitais no fim de cada fase (vitais × 0,5).
   - **Top 10** com nome de até 10 caracteres, gravado só em vitória (#34/#77–#82/#197).
 
+### Dificuldade: a IA dos invasores (14/11)
+
+A dificuldade vem do que cada invasor faz, e o comportamento ensina a biologia dele. Cada agente tem três estados:
+- **vagar**;
+- **alerta:** o Nanobô a 200 px, ou o agente levou tiro;
+- **atacar.**
+
+O agente volta a vagar se o Nanobô ficar a mais de 320 px por 3 s. Todo ataque tem 0,4 s de aviso (pisca ou encolhe).
+
+| Invasor | Biologia que o comportamento mostra | Comportamento |
+|---|---|---|
+| Bacilo (*E. coli*, *P. aeruginosa*, *B. cereus*) | tem flagelo e nada | persegue a 70 px/s; investida de 0,4 s a 150 px/s a cada 2,5 s |
+| Coco (*S. aureus*, *S. pyogenes*, *N. meningitidis*) | sem flagelo; coloniza tecido e produz toxina | deriva a 20 px/s até a célula do paciente mais próxima e coloniza (5/s numa célula de 100); a menos de 180 px do Nanobô, solta toxina a cada 3 s (90 px/s) |
+| Biofilme | matriz que protege as bactérias | coco colonizando por mais de 6 s cria uma mancha de raio 40: o Nanobô anda a 50% e a bactéria dentro pede 3 doses |
+| Endotoxina | LPS da membrana externa da Gram-, liberado quando ela se rompe | a Gram- eliminada deixa uma nuvem de raio 36 por 2,5 s (10/s) |
+| Correnteza | fluxo do sangue; muco empurrado pelos cílios | faixas que empurram o Nanobô, os cocos e as toxinas (40 px/s) |
+| Vírus (Fase 2) | não tem motor; só se multiplica dentro de células | deriva no muco, infecta a célula livre que toca; a célula infectada estoura em rajada radial de 6 vírus (110 px/s) |
+| Bolor (*Aspergillus*, Fase 3) | hifas invadem o tecido; esporos espalham o fungo | colônia fixa; hifa como parede que machuca; 3 esporos em leque a cada 5 s, e o esporo que pousa vira colônia em 6 s (teto de 4) |
+| Levedura (*Cryptococcus*, Fase 3) | cápsula protege; brotamento | avança a 35 px/s; cápsula pede 3 doses; brota a cada 20 s (teto de 12) |
+
+- **Defesa (X):** além de empurrar, destrói os projéteis inimigos que tocam o escudo (toxina, esporo, vírus da rajada). Não protege da nuvem, do biofilme nem da hifa.
+- **Calibração:** pelos bots do harness (leitor 55–75%, chute até 10%), ajustando a perseguição, a toxina e a colonização, não o tempo.
+- **Escala dos sprites:** segue a biologia (vírus < bactéria < levedura < célula do paciente), como na tabela de §"Arte e interface".
+
 ### Arte e interface
 
-- Pixel art à mão, com amostra aprovada pelo dono até 18/11 (Nanobô, coco e silhueta) antes do resto.
+- Pixel art à mão, com amostra aprovada pelo dono antes do resto. A amostra de 14/11 foi recusada: a nova (até 19/11) traz Nanobô, coco, silhueta e célula do paciente com o detalhe da referência do dono (luz de borda, brilho especular, contorno escuro).
+- **Nanobô:** 48×48, cabeça arredondada com visor escuro e olhos ciano, núcleo dourado, braços curtos, antenas com ponta ciano e **propulsão magnética** (anel ciano que pulsa embaixo, sem hélice nem parte móvel que machuque o corpo).
+- **Escala dos sprites (14/11):**
+
+  | Sprite | Tamanho | Raio de colisão |
+  |---|---|---|
+  | vírus | 16×16 | 7 |
+  | bactéria e silhueta | 32×32 | 14 |
+  | levedura | 40×40 | 18 |
+  | colônia de bolor; segmento de hifa | 48×48; 16×16 | 20; 7 |
+  | Nanobô | 48×48 | 18 |
+  | célula do paciente | 64×64 | 28 |
+  | toxina e esporo | 8×8 | 4 |
+
+  A colisão passa a ser por espécie (`agent_radius`), e não mais `AGENT_RADIUS` para todos.
 - Agentes com contorno escuro e cores fora do vermelho.
 - Um sprite de tiro por arma (a forma mostra o mecanismo: Ruptura é uma cunha, Dissolução uma gota, Neutralização um anticorpo em Y, Perfuração um anel) e 3 animações de impacto por resultado (dose certa, sem efeito, eliminado).
 - **Fonte:** TTF pixel com licença OFL.

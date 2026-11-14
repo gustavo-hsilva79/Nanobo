@@ -8,6 +8,34 @@ Este arquivo registra decisões já tomadas pela dupla. Quando uma decisão impo
 
 > Decisões do dono em 13/11, tomadas depois da auditoria (`docs/auditoria/auditoria-2026-11-13.md`) e em duas rodadas de arguição. Valem acima das decisões mais antigas deste arquivo onde conflitarem. A visão vigente está no [`gdd.md`](gdd.md) (§"Nanobô 2.0").
 
+**Revisão de 14/11: dificuldade pela IA dos invasores e arte detalhada**
+
+> Brainstorming do dono em 14/11, depois de jogar a Etapa 1. A especificação completa está no [`gdd.md`](gdd.md) (§"Dificuldade: a IA dos invasores" e §"Arte e interface").
+
+- **Sai a drenagem por tempo** (`THREAT_DRAIN` de 0,68 calibrado na #224): o dono não quer a dificuldade vindo do tempo.
+- **Duas barras:**
+  - integridade do Nanobô, cheia em cada fase;
+  - vitais do paciente, que caem quando uma célula dele é destruída e passam de fase com piso de 60.
+  - Perde quem zerar qualquer uma.
+- **Bactérias pela forma:**
+  - o bacilo (flagelo) persegue o Nanobô e dá investidas;
+  - o coco (sem flagelo) coloniza as células do paciente e solta toxina no Nanobô que chega perto.
+  - O bacilo ameaça o robô e o coco ameaça o paciente.
+- **Perigos:**
+  - biofilme (lentidão e 3 doses);
+  - nuvem de endotoxina da Gram- eliminada;
+  - correnteza;
+  - na Fase 3, hifas e esporos.
+- **Vírus:** derivam no muco; a célula infectada estoura em rajada radial.
+- **Fungos:** bolor fixo com hifa e esporos; levedura que anda, com cápsula e brotamento.
+- **Defesa:** destrói projéteis inimigos.
+- **Arte:**
+  - a amostra de 14/11 foi recusada;
+  - o Nanobô vai a 48×48, com o detalhe da referência e propulsão magnética;
+  - coco e silhueta são refeitos.
+- **Escala biológica dos sprites:** vírus 16, bactéria 32, levedura 40, Nanobô 48 e célula do paciente 64, com colisão por espécie.
+- **Ordem:** a Fase 1 primeiro (15–18/11), a nova amostra em 17–19/11, e as Fases 2 e 3 já nascem com a IA delas.
+
 **Escopo e equipe**
 - Entram cinco frentes: game design, ensino, narrativa, arte e interface com textos. **Nada cede no prazo**; a ordem de corte do `kanban.md` é a rede de segurança.
 - O Gustavo assume os requisitos obrigatórios que estavam com o Eric: hi-score Top 10 (#77–#82, #197), build Release (#42, #154–#158) e instalador (#43, #159–#164). O Eric fica com QA, documentação, textos (#212) e volta ao menu (#195).

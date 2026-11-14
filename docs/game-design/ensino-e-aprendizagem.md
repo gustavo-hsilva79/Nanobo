@@ -45,6 +45,11 @@ São 6 cards. Cada um aparece uma única vez, pausa o jogo, tem 3 linhas de até
 | Lisogênico e lítico | 1ª leitura de célula infectada |
 | Organismo enfraquecido | início da Fase 3 (junto do interlúdio) |
 | Fungo | 1ª leitura de fungo |
+| Flagelo (14/11) | 1ª investida de um bacilo |
+| Biofilme (14/11) | 1º biofilme formado |
+| Endotoxina (14/11) | 1ª nuvem de endotoxina |
+
+Os três cards de 14/11 vêm da IA nova (`gdd.md` §"Dificuldade"). Os textos estão em `textos-do-jogo.md` §3.1 (CC-07 a CC-09).
 
 ### Definição, feedback e retomada por OA
 
@@ -73,6 +78,8 @@ São 6 cards. Cada um aparece uma única vez, pausa o jogo, tem 3 linhas de até
 - **Bot "leitor"** (completa o scan, escolhe a arma pela 2ª camada, termina o tratamento, atraso de cerca de 0,4 s): precisa vencer 55–75%.
 - **Bot "chute"** (sem scan, arma ao acaso): no máximo 10%.
 - Não há teste com aluno antes de 02/12 (decisão do dono): a #38 e as #134–#138 ficam sem cumprir.
+
+> **Revisão de 14/11:** a drenagem por tempo saiu por decisão do dono. A dificuldade passa a vir da IA dos invasores (`gdd.md` §"Dificuldade"), e a calibração abaixo é refeita com os bots desviando de projéteis e nuvens e usando a defesa. As metas não mudam: leitor 55–75% e chute até 10%.
 
 #### Resultado dos bots (14/11, #224)
 

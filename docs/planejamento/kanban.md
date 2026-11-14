@@ -27,7 +27,9 @@
 
 | Datas | Entrega |
 |---|---|
-| 14/11 | docs sincronizados e enviados; issues da Etapa 1; Todoist remarcado |
+| 14/11 | docs sincronizados e enviados; issues da Etapa 1; Todoist remarcado; **Etapa 1 concluída**; revisão do dono: dificuldade pela IA dos invasores e amostra de arte refeita |
+| 15–18/11 | **Etapa 1b:** duas barras, IA das bactérias pela forma, projéteis e defesa, biofilme, endotoxina e correnteza na Fase 1; escala biológica dos sprites com colisão por espécie; bots recalibrados |
+| 17–19/11 | nova amostra de arte (Nanobô 48×48, coco, silhueta, célula do paciente 64×64) |
 | 15–19/11 | **Etapa 1:** Fase 1 nova com a arte atual (forma, tratamento de 2 doses e resistência, Reserva, divisão, vitais, tutorial no mundo, mapa escurecido e game feel); **amostra de arte** em 18/11 |
 | 20–21/11 | instalador de fumaça (Release empacotado numa pasta limpa); regras da Fase 2 |
 | 20–23/11 | **Etapa 2:** Fase 2 nas vias aéreas (eclipse, eclosão de vírus livres, infecção, Neutralização, Lise) |

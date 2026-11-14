@@ -30,10 +30,18 @@ Este documento limita o conteúdo ao que apoia a decisão do jogador. Separa fat
   - **Reserva** representa os antibióticos de reserva, usados quando os comuns falham, e é limitada para ensinar o uso racional.
 - **Resistência:** a bactéria que sobrevive a um tratamento incompleto (1 dose de 2) se multiplica, e o mesmo antibiótico deixa de agir. Simplificação: na realidade, a resistência surge por mutação ou por aquisição de genes e é **selecionada** pelo uso inadequado. A divisão binária (uma bactéria vira duas) passa a resistência para as filhas.
 - **Microbiota:** a maioria das bactérias do corpo é inofensiva ou útil; o jogo trata só as que causam a infecção.
+- **Comportamento pela forma (14/11):**
+  - os bacilos do jogo (*E. coli*, *P. aeruginosa*, *B. cereus*) têm **flagelo** e nadam, por isso perseguem o Nanobô;
+  - os cocos (*Staphylococcus*, *Streptococcus*, *Neisseria*) não têm flagelo: são levados pelo sangue, aderem ao tecido, colonizam e produzem **toxinas** que lesam as células.
+  - Simplificação: há exceções na natureza, mas a regra vale para as seis espécies do jogo.
+- **Biofilme:** bactérias aderidas produzem uma matriz (polissacarídeos) que as protege dos antibióticos e do sistema imune. No jogo, a bactéria dentro do biofilme pede uma dose a mais e a mancha deixa o Nanobô lento.
+- **Endotoxina:** o **LPS** (lipopolissacarídeo) da membrana externa das Gram- é liberado quando a bactéria se rompe, inclusive pelo antibiótico, e causa inflamação. No jogo, a Gram- eliminada deixa uma nuvem que fere o Nanobô.
+- **Escala:** vírus (cerca de 0,1 µm) < bactéria (1–2 µm) < hemácia (7 µm) ≤ levedura (4–10 µm) < célula humana (10–20 µm). Os sprites seguem essa ordem, ampliada para caber na tela (vírus 16, bactéria 32, levedura 40, célula 64 px).
 
 ### Fase 2 — vírus nas vias aéreas
 
 - **Ambiente e agente:** um vírus respiratório (como o da gripe) infecta o epitélio dos brônquios.
+- **Muco e cílios:** o epitélio dos brônquios tem células com cílios que empurram o muco para cima, a "escada mucociliar". O vírus não nada: é levado pelo muco até as células. No jogo, a correnteza do muco empurra os vírus livres e o Nanobô.
 - **O vírus não é célula:** não tem parede, ribossomos nem metabolismo próprio, e só se multiplica dentro de uma célula. Por isso, o antibiótico não age nele.
 - **Ciclos (analogia didática dos bacteriófagos):**
   - **lisogênico:** o material genético do vírus fica na célula sem destruí-la por um tempo;

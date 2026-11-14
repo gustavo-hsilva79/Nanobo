@@ -93,6 +93,13 @@ O fundo é escuro e de baixo contraste de propósito: os sprites precisam contin
 
 ## Nanobô 2.0 — arte prevista (13/11/2026)
 
+> **Revisão de 14/11:**
+> - a amostra de 14/11 foi recusada;
+> - a nova amostra, até 19/11, traz o Nanobô 48×48 com o detalhe da referência do dono e propulsão magnética, o coco e a silhueta refeitos e a célula do paciente 64×64;
+> - os tamanhos da tabela abaixo seguem a escala biológica decidida em 14/11: vírus 16, bactéria 32, levedura 40, colônia de bolor 48, Nanobô 48, célula do paciente 64, toxina e esporo 8×8;
+> - o Nanobô passa a ter spritesheet de 384×192 (4 direções × 8 quadros de 48 px);
+> - entram os sprites de toxina e esporo (8×8, 2 quadros) e as manchas de biofilme e de nuvem de endotoxina (desenhadas por código, translúcidas).
+
 > Pixel art à mão, desenhada por Claude no Aseprite. **Antes do resto, uma amostra vai para aprovação do dono até 18/11:** o Nanobô de frente, um coco e a silhueta neutra, sobre o mapa escurecido. As cores dos agentes ficam fora do vermelho do cenário, com contorno escuro (`#121a24`) e luz vinda de cima à esquerda. Os arquivos novos entram aqui com o tamanho real quando forem criados. O mapa da Fase 1 não muda: ele é desenhado escurecido por código.
 
 | Asset | Tamanho | Quadros | Observação |

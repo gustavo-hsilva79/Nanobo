@@ -24,6 +24,17 @@ Decisões do dono em 13/11, que valem acima do texto de 11/11 abaixo:
 - **Custo da ruptura:** a célula hospedeira rompida continua custando vitais (`VITALS_HOST_RUPTURE`, ponto de partida −10), agora na barra de vitais de 0 a 100, e não em corações.
 - **Scanner:** as duas camadas e os textos da §"Scanner" abaixo continuam valendo, com a ficha nova do HUD; a célula infectada aparece como "célula infectada".
 
+**Revisão de 14/11 (IA dos invasores, `gdd.md` §"Dificuldade"):**
+- **Vírus livre:** não tem motor. Deriva na correnteza do muco, que sobe pela escada mucociliar, e infecta a célula livre que toca.
+- **Eclosão:**
+  - passa a ser uma **rajada radial de 6 vírus** a 110 px/s, no lugar dos até 3 vírus que andavam;
+  - cada vírus da rajada tira 6 de integridade do Nanobô que encosta e depois vira vírus livre à deriva;
+  - a defesa destrói os vírus da rajada que tocam o escudo.
+- **Custos, nas duas barras:**
+  - a célula hospedeira rompida é uma célula do paciente destruída e tira 20 dos vitais (substitui `VITALS_HOST_RUPTURE` −10);
+  - a Lise continua custando 5 dos vitais.
+- **Tamanho:** o vírus tem 16×16 (raio 7) e a célula 64×64 (raio 28), em escala biológica.
+
 ## Estados
 
 O vírus tem dois estados, e os dois são legíveis **no mundo, sem scanner** — é o que permite ao jogador decidir se vale gastar a leitura antes de se aproximar.

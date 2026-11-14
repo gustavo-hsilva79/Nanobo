@@ -17,6 +17,8 @@
 > **M3.5 e M5 são metas internas**, não datas de entrega do professor.
 
 > **Nanobô 2.0 (13/11/2026):** o **M5** passa a incluir o redesenho decidido pelo dono: 3 fases com mapas próprios (bactérias, vírus nas vias aéreas e fungos no pulmão), narrativa, 8 objetivos de ensino como mecânicas, barra de vitais, arte e interface novas, além dos requisitos obrigatórios (Top 10, build Release e instalador, agora com o Gustavo). O **M6** continua sendo a entrega e a apresentação de 02/12. O cronograma por etapa e a ordem de corte estão no [`kanban.md`](kanban.md) (§"Nanobô 2.0"); a visão do jogo, no [`gdd.md`](../game-design/gdd.md).
+>
+> **Revisão de 14/11:** a Etapa 1 fechou em 14/11 (#214–#224). Por decisão do dono, a dificuldade passa a vir da IA dos invasores, com duas barras (integridade do Nanobô e vitais do paciente) e sem drenagem por tempo. Entra no M5 a **Etapa 1b** (15–18/11), e a amostra de arte é refeita até 19/11.
 
 ## Critérios de foco por marco
 
