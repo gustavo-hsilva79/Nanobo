@@ -19,8 +19,9 @@ Inventário dos recursos necessários à execução atual, para orientar o carre
 | Ícone de defesa (16×16) | Linha de controles do menu | `assets/sprites/icone_defesa.png`; idem |
 | Fonte embutida do Allegro | Todo o texto da interface: HUD, painel do scanner, menu, pausa e telas de fim | `al_create_builtin_font()` em `src/main.c`; não há arquivo de fonte |
 | Mapa do mundo da Fase 1 (1920×512) | Fundo do mundo, desenhado atrás de destino, agentes e Nanobô | `assets/backgrounds/mapa_fase1.png`; idem |
+| Mapa do mundo da Fase 2 (1920×512) | Fundo da Fase 2: interior do brônquio | `assets/backgrounds/mapa_fase2.png`; idem (14/11, #89) |
 
-`load_resources()` abre os quinze bitmaps, a fonte e, quando o áudio está instalado, os seis efeitos de `assets/audio/sfx/*.wav` e a música `assets/audio/music/fundo.wav`. `free_resources()` libera os quinze bitmaps na ordem inversa, depois os seis efeitos e a música — os samples saem antes de `al_uninstall_audio()` — e por fim a fonte. O título do menu (`NANOBÔ`) é um bitmap montado em tempo de carregamento a partir da fonte (`make_text_bitmap`), também liberado ali. O projétil é desenhado com primitivas do Allegro, sem bitmap; com a cor neutra, os dois projéteis se distinguem pela **forma**: quadrado na Ruptura, círculo na Dissolução. Os ícones `icone_laser_roxo.png` e `icone_laser_vermelho.png` saíram do `load_resources()` e continuam no disco como histórico.
+`load_resources()` abre os dezesseis bitmaps, a fonte e, quando o áudio está instalado, os seis efeitos de `assets/audio/sfx/*.wav` e a música `assets/audio/music/fundo.wav`. `free_resources()` libera os dezesseis bitmaps na ordem inversa, depois os seis efeitos e a música — os samples saem antes de `al_uninstall_audio()` — e por fim a fonte. O título do menu (`NANOBÔ`) é um bitmap montado em tempo de carregamento a partir da fonte (`make_text_bitmap`), também liberado ali. O projétil é desenhado com primitivas do Allegro, sem bitmap; com a cor neutra, os dois projéteis se distinguem pela **forma**: quadrado na Ruptura, círculo na Dissolução. Os ícones `icone_laser_roxo.png` e `icone_laser_vermelho.png` saíram do `load_resources()` e continuam no disco como histórico.
 
 ## Arte final criada
 
@@ -68,6 +69,20 @@ Cada quadro é um recorte de 32×32 na tira, na ordem dos quadros. Em Allegro, o
 | `assets/backgrounds/mapa_fase1.aseprite` | Fonte editável, cinco camadas: `fundo`, `tecido`, `corredores`, `bordas`, `marcos` |
 
 O mapa cobre exatamente `WORLD_W`×`WORLD_H` e desenha a estrutura que o gameplay já usa, sem tocar nas regras: dois corredores horizontais de largura variável, a veia central, o atalho da esquerda, a clareira de nascimento em `(960, 256)` com a doca tracejada e o poro do destino em `(1856, 448)`, com a única luz quente do cenário. O tecido é **decoração**: não existe colisão, o Nanobô anda por cima de tudo.
+
+| Arquivo | Conteúdo |
+|---|---|
+| `assets/backgrounds/mapa_fase2.png` | Mapa da Fase 2, o interior de um brônquio, **1920×512**, opaco (14/11, #89) |
+| `assets/backgrounds/mapa_fase2.aseprite` | Fonte editável, seis camadas: `fundo`, `epitelio`, `cilios`, `muco`, `particulas`, `marcos` |
+
+O mapa da Fase 2 é gerado por `../Nanobo-testes/gerar_mapa_fase2.lua` (Aseprite), com ruído fixo: a mesma execução dá o mesmo mapa.
+- **Paredes:** em cima e embaixo, epitélio com células colunares de núcleo roxo e caliciformes claras, sem cílio. Os cílios das colunares se inclinam para a direita, rumo à garganta. Na submucosa há placas de cartilagem e capilares.
+- **Luz do brônquio:** escura e arroxeada. Ao fundo aparece a parede oposta do tubo, um calçamento de células com tufos de cílios, apagado pela distância.
+- **Muco:** duas correntes nas mesmas faixas da correnteza do jogo (y de 100 a 150 e de 360 a 410), com fios de fluxo e bolhas.
+- **Saída:** a abertura de um brônquio menor, no destino `(1856, 448)`.
+- **Cores e desenho no jogo:** as cores ficam fora do verde das células e do laranja dos vírus. O jogo desenha o mapa com um recuo mais leve que o da Fase 1 (`MAP_TINT_AIRWAY`), porque o PNG já nasce escuro.
+- **Memória:** o jogo mantém só o mapa da fase atual. Carregado, cada mapa custa cerca de 15 MB, e os dois juntos levavam o pico a 95,9 MB. Com a troca, o pico do Release fica em 80,03 MB (`qa-memoria.md`, 14/11).
+- **Melhoria:** o dono pode melhorar o mapa com IA de imagem, mantendo o tamanho e as faixas de muco.
 
 O mapa foi desenhado pelo MCP do Aseprite em cinco scripts (um por camada), para poder ser regerado ou ajustado por script.
 
@@ -120,8 +135,7 @@ O fundo é escuro e de baixo contraste de propósito: os sprites precisam contin
 | Ilustrações de narrativa | 160×90 | 1 cada | abertura (4), interlúdios (2), final (1) |
 | Mapa da Fase 2 — vias aéreas (brônquio: cílios e muco) | 1920×512 | — | `assets/backgrounds/` |
 
-> **Fase 2 no build desde 14/11 (#85–#89), sem arquivo novo.** Até a arte da Etapa 3:
-> - o mapa da Fase 1 é desenhado num tom frio (`MAP_TINT_AIRWAY`) com um véu verde-azulado;
+> **Fase 2 no build desde 14/11 (#85–#89).** O mapa do brônquio (`mapa_fase2.png`) entrou no mesmo dia. Até a arte da Etapa 3:
 > - a célula infectada é o sprite da célula com o vírus de 14 px piscando dentro, sobre um disco escuro. No eclipse, a célula pulsa vermelha com três cópias;
 > - o vírus da rajada é o sprite do vírus reduzido a 12 px;
 > - os ícones da Neutralização (o Y do anticorpo) e da Lise (a célula com o poro) são desenhados por código, como a cápsula da Reserva.

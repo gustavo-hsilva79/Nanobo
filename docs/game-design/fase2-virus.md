@@ -40,7 +40,7 @@ Decisões do dono em 13/11, que valem acima do texto de 11/11 abaixo:
 - **Composição (#89):**
   - 3 vírus lisogênicos, cada um dentro da sua célula do epitélio, e 2 células livres;
   - cada célula livre nasce a 140 px de uma infectada (`NEIGHBOR_GAP`), do lado do meio do mapa, como no epitélio contínuo. Quando a infectada rompe, a rajada chega na vizinha;
-  - duas faixas de muco (y de 100 a 150 e de 360 a 410) levam o Nanobô e os vírus livres para a direita, rumo à garganta.
+  - duas faixas de muco (y de 100 a 150 e de 360 a 410) levam o Nanobô e os vírus livres para a direita, rumo à garganta. O mapa `mapa_fase2.png` desenha essas faixas como as correntes de muco do brônquio.
 - **Estados (#84, #85):** `VIRUS_LYSOGENIC` e `VIRUS_ECLIPSE` ficam dentro da célula; `VIRUS_FREE` deriva no muco.
   - **Lisogênico:** **10 s** (`LYSOGENIC_TIME`, era 12; calibrado com os bots). Os três da fase começam escalonados em 10, 14 e 18 s (`LYSOGENIC_STAGGER` 4 s), para o jogador ter como chegar em cada um.
   - **Eclipse:** **2 s** (`ECLIPSE_TIME`). A célula pulsa vermelha com três cópias do vírus dentro: é o aviso de que vai romper.

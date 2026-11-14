@@ -60,7 +60,7 @@ Este arquivo registra decisões já tomadas pela dupla. Quando uma decisão impo
   - **a Lise não dispara** sem uma célula infectada lida no caminho, como o jogo pede ("numa célula saudável ela não dispara"). Basta uma camada lida, porque a 1ª já mostra a infecção;
   - **o vírus da rajada que acerta o Nanobô cai livre**, porque continua sendo vírus. Só a defesa o destrói;
   - **o vírus de dentro não se lê sozinho**: ler a infectada até o fim o identifica, e a infectada que sai de cena sem leitura sai da meta do bônus com o vírus dela;
-  - **a Fase 2 usa o mapa da Fase 1 num tom frio com véu verde-azulado** até o mapa das vias aéreas (Etapa 3).
+  - **mapa próprio da Fase 2 já em 14/11**, a pedido do dono, adiantado da Etapa 3: o interior de um brônquio (`mapa_fase2.png`), com as correntes de muco nas faixas da correnteza.
 
 **Escopo e equipe**
 - Entram cinco frentes: game design, ensino, narrativa, arte e interface com textos. **Nada cede no prazo**; a ordem de corte do `kanban.md` é a rede de segurança.

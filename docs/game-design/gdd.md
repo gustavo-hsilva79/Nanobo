@@ -215,7 +215,7 @@ A Fase 2 do 2.0 entrou no build em 14/11 (#85–#89).
 - **Composição:** 3 vírus lisogênicos dentro de células do epitélio e 2 células livres, cada uma vizinha de uma infectada.
 - **Ciclo:** o vírus fica lisogênico (10, 14 e 18 s), entra no eclipse (2 s) e rompe a célula numa rajada de 6 vírus livres, que derivam no muco e infectam a célula livre que tocam.
 - **Ferramentas:** a Neutralização prende o vírus livre; a Lise tira a célula infectada já lida (−5 vitais) antes de ela romper.
-- **Mapa:** até o das vias aéreas (Etapa 3), é o mapa da Fase 1 num tom frio.
+- **Mapa:** o interior de um brônquio (`mapa_fase2.png`), com paredes de epitélio ciliado, as duas correntes de muco e a saída no destino.
 - **Regras completas:** `fase2-virus.md` (§"Implementação de 14/11").
 
 ## Combate e consequências

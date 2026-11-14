@@ -168,3 +168,19 @@ O script vive em `../Nanobo-testes/medir_memoria.ps1`, ao lado do harness, fora 
 A #118 continua **aberta** até esses dois cenários serem medidos. Se ficarem planos (Δ acumulado abaixo de 5 MB), ela fecha como "sem evidência de vazamento".
 
 **CSV:** `release-carga-12-11.csv`, no scratchpad da sessão de 12/11/2026 (fora do repositório).
+
+## 14/11/2026 — mapa da Fase 2 (#89): um mapa por vez
+
+- **Build:** `Release|x64` e `Debug|x64` da branch `feat/etapa1-fase1-ensino`, com a Fase 2 dos vírus e o mapa novo `mapa_fase2.png` (1920×512).
+- **Método:** `medir_memoria.ps1 -EveryMs 250`, iniciado antes do jogo, como manda a seção "Como repetir".
+
+| Build e situação | Pico (MB) | Privada no pico (MB) | Observação |
+|---|---:|---:|---|
+| Release, os dois mapas carregados na abertura | **95,90** | 119,72 | rejeitado: perto demais do limite |
+| Release, sem o mapa da Fase 2 (build de teste) | 80,22 / 80,36 | — | duas execuções; cada mapa custa cerca de 15 MB carregado, não só os 4 MB da textura |
+| **Release, um mapa por vez (adotado)** | **80,03** | — | carga e menu |
+| Debug, um mapa por vez: Fase 1 → Fase 2 | 81,07 | 106,29 | a troca não acumula: 78,3 MB na Fase 1 e 80,8 MB na Fase 2 |
+
+- **Leitura:** carregado, o mapa custa cerca de 15 MB. O Allegro guarda uma cópia da textura em memória, além da imagem decodificada.
+- **O que mudou:** `load_phase_map()` em `src/main.c` libera o mapa da fase anterior antes de abrir o da fase nova, no primeiro quadro dela. Na carga, o jogo só confere se o arquivo da Fase 2 existe. A Fase 3 segue a mesma regra, então os mapas novos não somam no pico.
+- **CSVs:** `mem_f2.csv`, `mem_sem_a.csv`, `mem_sem_b.csv`, `mem_rel.csv` e `mem_dbg.csv`, no scratchpad da sessão de 14/11/2026 (fora do repositório).

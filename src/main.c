@@ -62,11 +62,9 @@ _Static_assert(HUD_LINES * HUD_LINE_H + 2 * HUD_MARGIN <= PANEL_H, "HUD nao cabe
 // mapa recuado e silhueta neutra: os agentes precisam se destacar do vermelho (#220)
 #define MAP_TINT        al_map_rgb_f(0.68f, 0.62f, 0.66f)
 
-// Fase 2 nas vias aereas: ate o mapa proprio (Etapa 3), o mesmo PNG num tom
-// frio de mucosa, com um veu verde-azulado, para a fase nova nao parecer o vaso
-// da Fase 1 (#89)
-#define MAP_TINT_AIRWAY al_map_rgb_f(0.46f, 0.60f, 0.62f)
-#define MAP_VEIL_AIRWAY al_map_rgba_f(0.06f * 0.34f, 0.24f * 0.34f, 0.26f * 0.34f, 0.34f)
+// o mapa do bronquio ja nasce escuro: recua menos que o vaso da Fase 1 (#89)
+#define MAP_TINT_AIRWAY al_map_rgb_f(0.9f, 0.86f, 0.9f)
+
 #define MAP_VEIL        al_map_rgba_f(0.05f * 0.28f, 0.07f * 0.28f, 0.11f * 0.28f, 0.28f)
 #define SILHOUETTE_FILL al_map_rgb(86, 104, 132)
 #define SILHOUETTE_EDGE al_map_rgb(170, 190, 215)
@@ -129,8 +127,50 @@ ALLEGRO_BITMAP* virus_sprite_b = NULL;
 ALLEGRO_BITMAP* coccus_grey[SPRITE_VARIANTS] = { NULL };
 ALLEGRO_BITMAP* bacillus_grey[SPRITE_VARIANTS] = { NULL };
 
-// mapa do mundo inteiro da Fase 1 (1920x512), sempre atras do resto
+// mapa do mundo da fase atual (1920x512), sempre atras do resto. So um fica na
+// memoria por vez: cada mapa custa cerca de 15 MB carregado, e os dois juntos
+// levavam o pico a 96 MB, perto do limite de 100 (#89)
 ALLEGRO_BITMAP* world_map = NULL;
+int world_map_phase = 0;
+
+// arquivo do mapa de cada fase: a Fase 1 no vaso, a Fase 2 no bronquio (#89)
+const char* phase_map_path(int phase)
+{
+    if (phase == 2)
+    {
+        return "assets/backgrounds/mapa_fase2.png";
+    }
+
+    return "assets/backgrounds/mapa_fase1.png";
+}
+
+// troca o mapa quando a fase muda: libera o anterior antes de abrir o novo,
+// para o pico ficar em um mapa so (#89)
+bool load_phase_map(int phase)
+{
+    // a mesma fase nao recarrega; se o arquivo falhou, nao tenta a cada quadro
+    if (world_map_phase == phase)
+    {
+        return world_map != NULL;
+    }
+
+    if (world_map)
+    {
+        al_destroy_bitmap(world_map);
+        world_map = NULL;
+    }
+
+    world_map = al_load_bitmap(phase_map_path(phase));
+    world_map_phase = phase;
+
+    if (!world_map)
+    {
+        printf("couldn't load world map\n");
+        return false;
+    }
+
+    return true;
+}
 
 // audio: opcional, o jogo abre mudo quando nao ha placa de som (#31)
 bool audio_ready = false;
@@ -497,10 +537,16 @@ bool load_resources()
         return false;
     }
 
-    world_map = al_load_bitmap("assets/backgrounds/mapa_fase1.png");
-    if (!world_map)
+    // os mapas das outras fases abrem na troca de fase, mas o arquivo precisa
+    // existir desde ja: asset ausente fecha o jogo na carga, como os outros (#89)
+    if (!al_filename_exists(phase_map_path(2)))
     {
-        printf("couldn't load world map\n");
+        printf("couldn't find airway map\n");
+        return false;
+    }
+
+    if (!load_phase_map(1))
+    {
         return false;
     }
 
@@ -533,6 +579,7 @@ void free_resources()
     {
         al_destroy_bitmap(world_map);
         world_map = NULL;
+        world_map_phase = 0;
     }
 
     if (gram_positive)
@@ -2115,11 +2162,16 @@ void draw_game()
     al_use_transform(&shake);
 
     // mapa do mundo deslocado pela camera, atras de destino, agentes e nanobo
-    // recuado: escurecido e com um veu azulado, sem mudar o PNG (#220)
-    al_draw_tinted_bitmap(world_map, phase_has_viruses() ? MAP_TINT_AIRWAY : MAP_TINT,
-        -floorf(camera.x), -floorf(camera.y), 0);
-    al_draw_filled_rectangle(0.0f, 0.0f, (float)SCREEN_W, (float)PLAY_H,
-        phase_has_viruses() ? MAP_VEIL_AIRWAY : MAP_VEIL);
+    // recuado: escurecido e com um veu azulado, sem mudar o PNG (#220); a fase
+    // nova troca o mapa no primeiro quadro dela (#89)
+    load_phase_map(current_phase());
+
+    if (world_map)
+    {
+        al_draw_tinted_bitmap(world_map, phase_has_viruses() ? MAP_TINT_AIRWAY : MAP_TINT,
+            -floorf(camera.x), -floorf(camera.y), 0);
+    }
+    al_draw_filled_rectangle(0.0f, 0.0f, (float)SCREEN_W, (float)PLAY_H, MAP_VEIL);
 
     // destino da fase: anel e rotulo visiveis desde o inicio (#26)
     al_draw_filled_circle(view_x(DESTINATION_X), view_y(DESTINATION_Y), DESTINATION_RADIUS,
