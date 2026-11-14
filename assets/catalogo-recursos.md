@@ -73,12 +73,15 @@ O mapa cobre exatamente `WORLD_W`×`WORLD_H` e desenha a estrutura que o gamepla
 | Arquivo | Conteúdo |
 |---|---|
 | `assets/backgrounds/mapa_fase2.png` | Mapa da Fase 2, o interior de um brônquio, **1920×512**, opaco (14/11, #89) |
-| `assets/backgrounds/mapa_fase2.aseprite` | Fonte editável, seis camadas: `fundo`, `epitelio`, `cilios`, `muco`, `particulas`, `marcos` |
+| `assets/backgrounds/mapa_fase2.aseprite` | Fonte editável: a camada `melhorado com IA (dono)` é a versão do PNG; o grupo oculto `gerado por script (14/11)` guarda as seis camadas da primeira versão (`fundo`, `epitelio`, `cilios`, `muco`, `particulas`, `marcos`) |
 
-O mapa da Fase 2 é gerado por `../Nanobo-testes/gerar_mapa_fase2.lua` (Aseprite), com ruído fixo: a mesma execução dá o mesmo mapa.
+**Origem:**
+- a primeira versão foi gerada por `../Nanobo-testes/gerar_mapa_fase2.lua` (Aseprite), com ruído fixo;
+- no mesmo dia, o dono a melhorou com IA de imagem, usando a versão gerada como referência e o prompt deste projeto;
+- o PNG atual é essa versão melhorada.
 - **Paredes:** em cima e embaixo, epitélio com células colunares de núcleo roxo e caliciformes claras, sem cílio. Os cílios das colunares se inclinam para a direita, rumo à garganta. Na submucosa há placas de cartilagem e capilares.
 - **Luz do brônquio:** escura e arroxeada. Ao fundo aparece a parede oposta do tubo, um calçamento de células com tufos de cílios, apagado pela distância.
-- **Muco:** duas correntes nas mesmas faixas da correnteza do jogo (y de 100 a 150 e de 360 a 410), com fios de fluxo e bolhas.
+- **Muco:** duas correntes com fios de fluxo e bolhas. A correnteza do jogo foi ajustada às que a IA desenhou: y de 80 a 130 e de 345 a 395.
 - **Saída:** a abertura de um brônquio menor, no destino `(1856, 448)`.
 - **Cores e desenho no jogo:** as cores ficam fora do verde das células e do laranja dos vírus. O jogo desenha o mapa com um recuo mais leve que o da Fase 1 (`MAP_TINT_AIRWAY`), porque o PNG já nasce escuro.
 - **Memória:** o jogo mantém só o mapa da fase atual. Carregado, cada mapa custa cerca de 15 MB, e os dois juntos levavam o pico a 95,9 MB. Com a troca, o pico do Release fica em 80,03 MB (`qa-memoria.md`, 14/11).
