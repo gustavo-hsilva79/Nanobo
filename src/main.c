@@ -1749,7 +1749,8 @@ void draw_feel_world()
 static const char* card_titles[CARD_COUNT] =
 {
     "Coloração de Gram",
-    "Resistência e Reserva"
+    "Resistência e Reserva",
+    "Flagelo"
 };
 
 static const char* card_lines[CARD_COUNT][3] =
@@ -1763,6 +1764,11 @@ static const char* card_lines[CARD_COUNT][3] =
         "Uma dose só não basta: as bactérias que sobrevivem se multiplicam.",
         "Esta ficou resistente: o mesmo antibiótico não age mais nela.",
         "A Reserva age nela, mas tem poucas cargas: use só se precisar."
+    },
+    {
+        "O bacilo tem flagelo, um chicote que gira e o faz nadar.",
+        "Por isso ele vem atrás de você e dá investidas.",
+        "O coco não tem flagelo: é levado pelo sangue e gruda no tecido."
     }
 };
 
@@ -2001,15 +2007,21 @@ void draw_treatment_marks(int index)
     {
         float left = agents[index].dose_timer / (float)INCOMPLETE_TIME;
 
-        al_draw_arc(x, y, (float)AGENT_RADIUS + 5.0f, -ALLEGRO_PI / 2.0f,
+        al_draw_arc(x, y, agent_radius(index) + 7.0f, -ALLEGRO_PI / 2.0f,
             left * 2.0f * ALLEGRO_PI, UI_AMBER, 2.0f);
     }
 
     if (agents[index].resistant)
     {
-        al_draw_circle(x, y, (float)AGENT_RADIUS + 5.0f, UI_RED, 2.0f);
-        al_draw_text(font, UI_RED, x, y - (float)AGENT_RADIUS - 16.0f,
+        al_draw_circle(x, y, agent_radius(index) + 7.0f, UI_RED, 2.0f);
+        al_draw_text(font, UI_RED, x, y - agent_radius(index) - 18.0f,
             ALLEGRO_ALIGN_CENTRE, "R");
+    }
+
+    // aviso do ataque: anel claro que pisca enquanto o invasor se prepara (#235)
+    if (agents[index].windup > 0.0f && (int)(agents[index].windup * 20.0f) % 2 == 0)
+    {
+        al_draw_circle(x, y, agent_radius(index) + 4.0f, UI_TEXT, 2.0f);
     }
 }
 
@@ -2066,9 +2078,9 @@ void draw_game()
         if (is_bacteria && agents[i].layers == 0)
         {
             al_draw_filled_circle(view_x(agents[i].x), view_y(agents[i].y),
-                (float)AGENT_RADIUS - 3.0f, SILHOUETTE_FILL);
+                agent_radius(i) - 1.0f, SILHOUETTE_FILL);
             al_draw_circle(view_x(agents[i].x), view_y(agents[i].y),
-                (float)AGENT_RADIUS - 3.0f, SILHOUETTE_EDGE, 1.0f);
+                agent_radius(i) - 1.0f, SILHOUETTE_EDGE, 1.0f);
             draw_treatment_marks(i);
             continue;
         }
@@ -2099,19 +2111,36 @@ void draw_game()
             continue;
         }
 
-        // virus lisogenico pisca: opaco e semitransparente a cada LYSOGENIC_BLINK (#84)
-        if (virus_is_lysogenic(i) && (int)(match_time / LYSOGENIC_BLINK) % 2 == 1)
+        // virus e celula em escala biologica: o sprite e esticado ao tamanho
+        // da especie, 16 px o virus e 64 px a celula (#235)
         {
-            al_draw_tinted_bitmap(species_sprite(agents[i].species, agents[i].variant),
-                al_map_rgba_f(0.35f, 0.35f, 0.35f, 0.35f),
-                view_x(agents[i].x) - AGENT_RADIUS,
-                view_y(agents[i].y) - AGENT_RADIUS, 0);
-            continue;
+            ALLEGRO_BITMAP* bmp = species_sprite(agents[i].species, agents[i].variant);
+            float size = 2.0f * agent_radius(i)
+                + (agents[i].species == SPECIES_CELL ? 8.0f : 2.0f);
+            ALLEGRO_COLOR tint = al_map_rgb_f(1.0f, 1.0f, 1.0f);
+
+            // virus lisogenico pisca: opaco e semitransparente a cada LYSOGENIC_BLINK (#84)
+            if (virus_is_lysogenic(i) && (int)(match_time / LYSOGENIC_BLINK) % 2 == 1)
+            {
+                tint = al_map_rgba_f(0.35f, 0.35f, 0.35f, 0.35f);
+            }
+
+            al_draw_tinted_scaled_bitmap(bmp, tint, 0.0f, 0.0f,
+                (float)al_get_bitmap_width(bmp), (float)al_get_bitmap_height(bmp),
+                view_x(agents[i].x) - size / 2.0f, view_y(agents[i].y) - size / 2.0f,
+                size, size, 0);
         }
 
-        al_draw_bitmap(species_sprite(agents[i].species, agents[i].variant),
-            view_x(agents[i].x) - AGENT_RADIUS,
-            view_y(agents[i].y) - AGENT_RADIUS, 0);
+        // celula colonizada: barra curta da vida dela, acima do sprite (#235)
+        if (agents[i].species == SPECIES_CELL && agents[i].cell_health < CELL_HEALTH)
+        {
+            float bx = view_x(agents[i].x) - 16.0f;
+            float by = view_y(agents[i].y) - agent_radius(i) - 8.0f;
+
+            al_draw_filled_rectangle(bx, by, bx + 32.0f, by + 3.0f, UI_SLOT);
+            al_draw_filled_rectangle(bx, by, bx + 32.0f * agents[i].cell_health / CELL_HEALTH,
+                by + 3.0f, UI_RED);
+        }
     }
 
     // dica do tutorial presa ao agente: some no primeiro scan, volta no tiro sem leitura (#219)
@@ -2120,7 +2149,7 @@ void draw_game()
         const char* hint = "botão direito: escanear";
         int hint_w = al_get_text_width(font, hint);
         float hx = floorf(view_x(agents[tutorial_hint_target()].x) - (float)hint_w / 2.0f);
-        float hy = view_y(agents[tutorial_hint_target()].y) - (float)AGENT_RADIUS - 18.0f;
+        float hy = view_y(agents[tutorial_hint_target()].y) - agent_radius(tutorial_hint_target()) - 20.0f;
 
         al_draw_filled_rectangle(hx - 4.0f, hy - 3.0f, hx + (float)hint_w + 4.0f, hy + 11.0f, UI_INK);
         al_draw_rectangle(hx - 3.5f, hy - 2.5f, hx + (float)hint_w + 3.5f, hy + 10.5f, UI_CYAN, 1.0f);

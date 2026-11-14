@@ -35,6 +35,11 @@ Este arquivo registra decisões já tomadas pela dupla. Quando uma decisão impo
   - coco e silhueta são refeitos.
 - **Escala biológica dos sprites:** vírus 16, bactéria 32, levedura 40, Nanobô 48 e célula do paciente 64, com colisão por espécie.
 - **Ordem:** a Fase 1 primeiro (15–18/11), a nova amostra em 17–19/11, e as Fases 2 e 3 já nascem com a IA delas.
+- **Calls de implementação (#235):**
+  - **5 s de calma** no começo de cada fase (`AI_GRACE_TIME`): ninguém entra em alerta antes disso. Sem isso, um bacilo nascido a 198 px do início investia aos 2 s, antes do tutorial;
+  - **células do paciente fixas:** o endotélio forra o vaso. Na colisão, quem recua é o outro agente ou o Nanobô, e a célula de 64 px vira obstáculo;
+  - **o coco do tutorial fica segurado** (`AI_HOLD`) até o primeiro scan e depois segue para uma célula como os outros;
+  - **até a arte nova**, os sprites atuais de 32 px são esticados para 64 (célula) e 16 (vírus).
 
 **Escopo e equipe**
 - Entram cinco frentes: game design, ensino, narrativa, arte e interface com textos. **Nada cede no prazo**; a ordem de corte do `kanban.md` é a rede de segurança.

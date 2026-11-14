@@ -90,6 +90,15 @@ typedef enum
 // raio de desenho e de colisao do projetil em pixels
 #define PROJECTILE_RADIUS 3
 
+// estado da IA dos invasores: vagar, alerta (o nanobo perto ou tiro levado) e
+// segurado (a bacteria do tutorial ate o primeiro scan) (#235)
+typedef enum
+{
+    AI_WANDER = 0,
+    AI_ALERT = 1,
+    AI_HOLD = 2
+} AiState;
+
 // agente do encontro
 typedef struct
 {
@@ -116,6 +125,15 @@ typedef struct
     int variant; // sprite sorteado no nascimento, de 0 a SPRITE_VARIANTS - 1 (#211)
     Shape shape; // coco ou bacilo; SHAPE_NONE fora das bacterias (#214)
     float division_timer; // tempo ate a proxima divisao binaria, so bacteria (#217)
+    AiState ai_state; // vagar, alerta ou segurado (#235)
+    float lost_timer; // tempo com o nanobo longe, ate perder o alerta (#235)
+    float attack_timer; // tempo ate o proximo ataque (#235)
+    float windup; // aviso antes do ataque; maior que 0 enquanto avisa (#235)
+    float lunge_timer; // investida do bacilo em curso (#235)
+    int target_cell; // celula que o coco procura ou coloniza; -1 sem alvo (#235)
+    bool colonizing; // coco preso numa celula, ferindo-a (#235)
+    float colonize_time; // tempo colonizando, para o biofilme (#237)
+    float cell_health; // vida da celula do paciente (#235)
 } Agent;
 
 // composicao de uma fase: uma linha por agente que ela coloca no mundo (#M4)

@@ -91,6 +91,29 @@ _Static_assert(WORLD_W % 32 == 0 && WORLD_H % 32 == 0, "mundo precisa fechar no 
 // tempo de invulnerabilidade depois de levar dano (#11)
 #define INVULNERABILITY_TIME 1.0
 
+// IA dos invasores (#235): alerta e perda do alerta, aviso antes do ataque,
+// perseguicao e investida do bacilo, deriva e colonizacao do coco
+#define ALERT_RANGE 200.0f
+
+// calma no comeco de cada fase: ninguem entra em alerta antes disso, para o
+// jogador ver o mapa e aprender o scan (#235)
+#define AI_GRACE_TIME 5.0f
+#define LOSE_RANGE 320.0f
+#define LOSE_TIME 3.0f
+#define WINDUP_TIME 0.4f
+#define BACILLUS_CHASE_SPEED 70.0f
+#define BACILLUS_LUNGE_SPEED 150.0f
+#define BACILLUS_LUNGE_TIME 0.4f
+#define BACILLUS_LUNGE_INTERVAL 2.5f
+#define COCCUS_DRIFT_SPEED 20.0f
+#define COLONIZE_DAMAGE 5.0f
+#define COLONIZE_REACH 2.0f
+
+// raio de colisao em escala biologica: virus < bacteria < celula do paciente (#235)
+#define VIRUS_RADIUS 7
+#define BACTERIA_RADIUS 14
+#define CELL_RADIUS 28
+
 // duas barras (#234): a integridade do nanobo (player.health) cai com o que
 // o fere; os vitais do paciente caem quando uma celula dele e perdida ou ferida.
 // nao ha drenagem por tempo: a pressao vem dos invasores (revisao de 14/11)
@@ -159,6 +182,9 @@ extern bool key_right;
 
 // dica do tutorial no mundo: o agente onde ela aparece, -1 quando escondida (#219)
 int tutorial_hint_target(void);
+
+// raio de colisao do agente pela especie (#235)
+float agent_radius(int index);
 
 // textos das camadas do scanner pelo indice do agente (#214)
 // camada 1 = forma; camada 2 = coloracao, estrutura e nome
@@ -247,6 +273,7 @@ typedef enum
     CARD_NONE = -1,
     CARD_GRAM = 0,
     CARD_RESISTANCE = 1,
+    CARD_FLAGELLUM = 2,
     CARD_COUNT
 } ConceptCard;
 

@@ -129,6 +129,22 @@ static float squared_distance(float ax, float ay, float bx, float by)
     return dx * dx + dy * dy;
 }
 
+// raio de colisao de cada especie, em escala biologica: virus < bacteria < celula (#235)
+float agent_radius(int index)
+{
+    if (agents[index].species == SPECIES_VIRUS)
+    {
+        return (float)VIRUS_RADIUS;
+    }
+
+    if (agents[index].species == SPECIES_CELL)
+    {
+        return (float)CELL_RADIUS;
+    }
+
+    return (float)BACTERIA_RADIUS;
+}
+
 // registra o evento de audio do quadro; o main toca e zera a pendencia (#31)
 static void emit_sfx(SfxEvent kind)
 {
@@ -279,16 +295,19 @@ int pick_target(float x, float y)
 // contato e sobreposicao de circulos; a consulta e pura, quem trata o tempo e a #11
 int touching_agent()
 {
-    float reach = (float)(PLAYER_RADIUS + AGENT_RADIUS);
+    float reach;
     int i;
 
     for (i = 0; i < agents_count; i++)
     {
-        // agente neutralizado nao encosta mais no nanobo
-        if (!agents[i].active)
+        // agente neutralizado nao encosta mais no nanobo; a celula do paciente
+        // nao fere o nanobo, entao nao conta como contato (#235)
+        if (!agents[i].active || agents[i].species == SPECIES_CELL)
         {
             continue;
         }
+
+        reach = (float)PLAYER_RADIUS + agent_radius(i);
 
         if (squared_distance(agents[i].x, agents[i].y, player.x, player.y) <= reach * reach)
         {
@@ -451,7 +470,7 @@ static void hit_projectiles()
 {
     int i;
     int j;
-    float reach = (float)(PROJECTILE_RADIUS + AGENT_RADIUS);
+    float reach;
 
     for (i = 0; i < MAX_PROJECTILES; i++)
     {
@@ -467,6 +486,8 @@ static void hit_projectiles()
                 continue;
             }
 
+            reach = (float)PROJECTILE_RADIUS + agent_radius(j);
+
             if (squared_distance(projectiles[i].x, projectiles[i].y, agents[j].x, agents[j].y) > reach * reach)
             {
                 continue;
@@ -476,6 +497,13 @@ static void hit_projectiles()
             if (agents[j].species != SPECIES_CELL && agents[j].layers == 0)
             {
                 hint_target = j;
+            }
+
+            // levar tiro acorda o invasor que vagava (#235)
+            if (agents[j].species != SPECIES_CELL && agents[j].ai_state == AI_WANDER)
+            {
+                agents[j].ai_state = AI_ALERT;
+                agents[j].lost_timer = 0.0f;
             }
 
             // atacar a celula do paciente custa vitais do paciente, com qualquer
@@ -699,6 +727,7 @@ int pick_target_at(float x, float y)
     {
         float dist_cursor;
         float dist_player;
+        float tolerance;
 
         // agente neutralizado nao e candidato do scanner
         if (!agents[i].active)
@@ -708,7 +737,10 @@ int pick_target_at(float x, float y)
 
         dist_cursor = squared_distance(agents[i].x, agents[i].y, x, y);
 
-        if (dist_cursor > CURSOR_SCAN_TOLERANCE * CURSOR_SCAN_TOLERANCE)
+        // a celula grande aceita o clique em toda a area dela (#235)
+        tolerance = fmaxf(CURSOR_SCAN_TOLERANCE, agent_radius(i) + 8.0f);
+
+        if (dist_cursor > tolerance * tolerance)
         {
             continue;
         }
@@ -982,6 +1014,7 @@ static void place_agents()
                 agents[i].y = player.y + TUTORIAL_OFFSET_Y;
                 hint_target = i;
                 tutorial_index = i;
+                agents[i].ai_state = AI_HOLD;
                 break;
             }
         }
@@ -1032,7 +1065,7 @@ static void pick_new_direction(int index)
 static void repel_touching_agents()
 {
     int i;
-    float reach = (float)(PLAYER_RADIUS + AGENT_RADIUS);
+    float reach;
 
     if (defense_timer <= 0.0)
     {
@@ -1056,6 +1089,7 @@ static void repel_touching_agents()
             continue;
         }
 
+        reach = (float)PLAYER_RADIUS + agent_radius(i);
         dx = agents[i].x - player.x;
         dy = agents[i].y - player.y;
         dist = sqrtf(dx * dx + dy * dy);
@@ -1077,6 +1111,9 @@ static void repel_touching_agents()
         }
 
         agents[i].impulse_timer = (float)DEFENSE_PUSH_TIME;
+
+        // o empurrao arranca o coco da celula que ele colonizava (#235)
+        agents[i].colonizing = false;
     }
 }
 
@@ -1130,6 +1167,17 @@ static void reset_agent(int index)
     agents[index].dose_timer = 0.0f;
     agents[index].resistant = false;
     agents[index].division_timer = random_division_time();
+
+    // IA comeca vagando; a primeira investida ou toxina vem depois do intervalo (#235)
+    agents[index].ai_state = AI_WANDER;
+    agents[index].lost_timer = 0.0f;
+    agents[index].attack_timer = BACILLUS_LUNGE_INTERVAL;
+    agents[index].windup = 0.0f;
+    agents[index].lunge_timer = 0.0f;
+    agents[index].target_cell = -1;
+    agents[index].colonizing = false;
+    agents[index].colonize_time = 0.0f;
+    agents[index].cell_health = CELL_HEALTH;
 
     // virus nasce lisogenico com o tempo cheio; quem nao e virus ignora (#84)
     agents[index].virus_state = VIRUS_LYSOGENIC;
@@ -1635,10 +1683,11 @@ static float clamp_to_world(float value, float limit)
 // mantem o agente dentro do mundo e inverte o sentido quando ele bate
 static void bounce_agent_off_bounds(int index)
 {
-    float min_x = (float)AGENT_RADIUS;
-    float max_x = (float)(WORLD_W - AGENT_RADIUS);
-    float min_y = (float)AGENT_RADIUS;
-    float max_y = (float)(WORLD_H - AGENT_RADIUS);
+    float r = agent_radius(index);
+    float min_x = r;
+    float max_x = (float)WORLD_W - r;
+    float min_y = r;
+    float max_y = (float)WORLD_H - r;
 
     if (agents[index].x < min_x)
     {
@@ -1668,8 +1717,8 @@ static void collide_agents()
 {
     int i;
     int j;
-    float min_dist = (float)(AGENT_RADIUS * 2);
-    float player_reach = (float)(PLAYER_RADIUS + AGENT_RADIUS);
+    float min_dist;
+    float player_reach;
 
     for (i = 0; i < agents_count; i++)
     {
@@ -1684,7 +1733,9 @@ static void collide_agents()
             continue;
         }
 
-        // agente x nanobo: o nanobo e fixo, o agente recua a sobreposicao inteira
+        // agente x nanobo: o nanobo e fixo, o agente recua a sobreposicao inteira;
+        // a celula do paciente e fixa e quem recua e o nanobo (#235)
+        player_reach = (float)PLAYER_RADIUS + agent_radius(i);
         dx = agents[i].x - player.x;
         dy = agents[i].y - player.y;
 
@@ -1703,17 +1754,25 @@ static void collide_agents()
                 ny = dy / dist;
             }
 
-            agents[i].x += nx * (player_reach - dist);
-            agents[i].y += ny * (player_reach - dist);
-
-            // quem esta no empurrao da defesa mantem a direcao (#17)
-            if (agents[i].impulse_timer <= 0.0f)
+            if (agents[i].species == SPECIES_CELL)
             {
-                agents[i].dx = nx;
-                agents[i].dy = ny;
+                player.x -= nx * (player_reach - dist);
+                player.y -= ny * (player_reach - dist);
             }
+            else
+            {
+                agents[i].x += nx * (player_reach - dist);
+                agents[i].y += ny * (player_reach - dist);
 
-            bounce_agent_off_bounds(i);
+                // quem esta no empurrao da defesa mantem a direcao (#17)
+                if (agents[i].impulse_timer <= 0.0f)
+                {
+                    agents[i].dx = nx;
+                    agents[i].dy = ny;
+                }
+
+                bounce_agent_off_bounds(i);
+            }
         }
 
         // agente x agente
@@ -1726,6 +1785,7 @@ static void collide_agents()
                 continue;
             }
 
+            min_dist = agent_radius(i) + agent_radius(j);
             dx = agents[j].x - agents[i].x;
             dy = agents[j].y - agents[i].y;
 
@@ -1747,12 +1807,26 @@ static void collide_agents()
                 ny = dy / dist;
             }
 
-            push = (min_dist - dist) / 2.0f;
+            push = min_dist - dist;
 
-            agents[i].x -= nx * push;
-            agents[i].y -= ny * push;
-            agents[j].x += nx * push;
-            agents[j].y += ny * push;
+            // a celula do paciente e fixa: o outro recua a sobreposicao inteira (#235)
+            if (agents[i].species == SPECIES_CELL && agents[j].species != SPECIES_CELL)
+            {
+                agents[j].x += nx * push;
+                agents[j].y += ny * push;
+            }
+            else if (agents[j].species == SPECIES_CELL && agents[i].species != SPECIES_CELL)
+            {
+                agents[i].x -= nx * push;
+                agents[i].y -= ny * push;
+            }
+            else
+            {
+                agents[i].x -= nx * push / 2.0f;
+                agents[i].y -= ny * push / 2.0f;
+                agents[j].x += nx * push / 2.0f;
+                agents[j].y += ny * push / 2.0f;
+            }
 
             if (agents[i].impulse_timer <= 0.0f)
             {
@@ -1797,7 +1871,7 @@ static void divide_bacteria(int index)
     int alive = 0;
     int slot = agents_count;
     float angle;
-    float offset = 2.0f * (float)AGENT_RADIUS;
+    float offset = 2.0f * agent_radius(index);
 
     agents[index].division_timer = random_division_time();
 
@@ -1822,6 +1896,15 @@ static void divide_bacteria(int index)
     agents[slot].impulse_timer = 0.0f;
     agents[slot].division_timer = random_division_time();
     agents[slot].host_cell = -1;
+
+    // a filha nasce livre: vagando, sem celula e sem ataque em curso (#235)
+    agents[slot].ai_state = AI_WANDER;
+    agents[slot].target_cell = -1;
+    agents[slot].colonizing = false;
+    agents[slot].colonize_time = 0.0f;
+    agents[slot].windup = 0.0f;
+    agents[slot].lunge_timer = 0.0f;
+    agents[slot].attack_timer = BACILLUS_LUNGE_INTERVAL;
 
     angle = ((float)rand() / ((float)RAND_MAX + 1.0f)) * 2.0f * (float)M_PI;
     agents[slot].x = clamp_to_world(agents[index].x + cosf(angle) * offset, (float)WORLD_W);
@@ -1853,6 +1936,215 @@ static void update_division(int index, double dt)
     }
 }
 
+// vagar: anda reto e troca de direcao quando o tempo do agente acaba
+static void wander(int index, float dt)
+{
+    agents[index].direction_timer -= dt;
+
+    if (agents[index].direction_timer <= 0.0f)
+    {
+        pick_new_direction(index);
+    }
+}
+
+// celula do paciente ativa mais perto do agente; -1 quando nao sobrou nenhuma (#235)
+static int nearest_cell(int index)
+{
+    int i;
+    int best = -1;
+    float best_d = 0.0f;
+
+    for (i = 0; i < agents_count; i++)
+    {
+        float d;
+
+        if (!agents[i].active || agents[i].species != SPECIES_CELL)
+        {
+            continue;
+        }
+
+        d = squared_distance(agents[i].x, agents[i].y, agents[index].x, agents[index].y);
+
+        if (best == -1 || d < best_d)
+        {
+            best = i;
+            best_d = d;
+        }
+    }
+
+    return best;
+}
+
+// alerta: o nanobo a ALERT_RANGE acorda o invasor; longe de LOSE_RANGE por
+// LOSE_TIME, ele volta a vagar (#235)
+static void update_alert(int index, float dist, float dt)
+{
+    if (match_time < AI_GRACE_TIME)
+    {
+        return;
+    }
+
+    if (dist <= ALERT_RANGE)
+    {
+        agents[index].ai_state = AI_ALERT;
+        agents[index].lost_timer = 0.0f;
+        return;
+    }
+
+    if (agents[index].ai_state != AI_ALERT || dist <= LOSE_RANGE)
+    {
+        agents[index].lost_timer = 0.0f;
+        return;
+    }
+
+    agents[index].lost_timer += dt;
+
+    if (agents[index].lost_timer >= LOSE_TIME)
+    {
+        agents[index].ai_state = AI_WANDER;
+        agents[index].lost_timer = 0.0f;
+    }
+}
+
+// bacilo (tem flagelo): persegue o nanobo e da investidas, sempre com aviso;
+// devolve a velocidade do quadro (#235)
+static float bacillus_ai(int index, float dx, float dy, float dist, float dt)
+{
+    Agent* a = &agents[index];
+
+    if (a->lunge_timer > 0.0f)
+    {
+        a->lunge_timer -= dt;
+        return BACILLUS_LUNGE_SPEED;
+    }
+
+    // aviso: o bacilo para e encolhe antes da investida
+    if (a->windup > 0.0f)
+    {
+        a->windup -= dt;
+
+        if (a->windup > 0.0f)
+        {
+            return 0.0f;
+        }
+
+        a->windup = 0.0f;
+        a->lunge_timer = BACILLUS_LUNGE_TIME;
+        a->attack_timer = BACILLUS_LUNGE_INTERVAL;
+
+        if (dist > 0.001f)
+        {
+            a->dx = dx / dist;
+            a->dy = dy / dist;
+        }
+
+        return BACILLUS_LUNGE_SPEED;
+    }
+
+    if (a->ai_state != AI_ALERT)
+    {
+        wander(index, dt);
+        return (float)a->speed;
+    }
+
+    if (dist > 0.001f)
+    {
+        a->dx = dx / dist;
+        a->dy = dy / dist;
+    }
+
+    a->attack_timer -= dt;
+
+    if (a->attack_timer <= 0.0f)
+    {
+        // a primeira investida abre o card do flagelo (#235)
+        a->windup = WINDUP_TIME;
+        queue_card(CARD_FLAGELLUM);
+        return 0.0f;
+    }
+
+    return BACILLUS_CHASE_SPEED;
+}
+
+// coco (sem flagelo): deriva ate a celula do paciente mais perto, gruda nela
+// e a destroi aos poucos; devolve a velocidade do quadro (#235)
+static float coccus_ai(int index, float dt)
+{
+    Agent* a = &agents[index];
+    int cell;
+    float cx;
+    float cy;
+    float cd;
+
+    if (a->colonizing)
+    {
+        cell = a->target_cell;
+
+        if (cell >= 0 && agents[cell].active)
+        {
+            a->colonize_time += dt;
+            agents[cell].cell_health -= COLONIZE_DAMAGE * dt;
+
+            if (agents[cell].cell_health <= 0.0f)
+            {
+                agents[cell].cell_health = 0.0f;
+                lose_patient_cell(cell);
+                a->colonizing = false;
+                a->target_cell = -1;
+                a->colonize_time = 0.0f;
+            }
+
+            return 0.0f;
+        }
+
+        a->colonizing = false;
+        a->target_cell = -1;
+        a->colonize_time = 0.0f;
+    }
+
+    cell = nearest_cell(index);
+
+    if (cell == -1)
+    {
+        wander(index, dt);
+        return (float)a->speed;
+    }
+
+    a->target_cell = cell;
+    cx = agents[cell].x - a->x;
+    cy = agents[cell].y - a->y;
+    cd = sqrtf(cx * cx + cy * cy);
+
+    if (cd <= agent_radius(index) + agent_radius(cell) + COLONIZE_REACH)
+    {
+        a->colonizing = true;
+        a->colonize_time = 0.0f;
+        return 0.0f;
+    }
+
+    a->dx = cx / cd;
+    a->dy = cy / cd;
+    return COCCUS_DRIFT_SPEED;
+}
+
+// cada bacteria age pela forma: o bacilo ameaca o nanobo e o coco ameaca o
+// paciente (#235)
+static float update_bacteria_ai(int index, float dt)
+{
+    float dx = player.x - agents[index].x;
+    float dy = player.y - agents[index].y;
+    float dist = sqrtf(dx * dx + dy * dy);
+
+    update_alert(index, dist, dt);
+
+    if (agents[index].shape == SHAPE_COCCUS)
+    {
+        return coccus_ai(index, dt);
+    }
+
+    return bacillus_ai(index, dx, dy, dist, dt);
+}
+
 void update_match(double dt)
 {
     float dir_x = 0.0f;
@@ -1867,6 +2159,7 @@ void update_match(double dt)
     for (int i = 0; i < agents_count; i++)
     {
         float speed_factor = 1.0f;
+        float move_speed = 0.0f;
 
         if (!agents[i].active)
             continue;
@@ -1882,10 +2175,24 @@ void update_match(double dt)
             continue;
         }
 
-        // a bacteria do tutorial espera o primeiro scan parada; o empurrao ainda a move (#219)
-        if (i == tutorial_index && agents[i].layers == 0 && agents[i].impulse_timer <= 0.0f)
+        // a celula do paciente e fixa: o endotelio forra o vaso (#235)
+        if (agents[i].species == SPECIES_CELL)
         {
             continue;
+        }
+
+        // agente segurado: a bacteria do tutorial espera o primeiro scan;
+        // o empurrao da defesa ainda move (#219, #235)
+        if (agents[i].ai_state == AI_HOLD)
+        {
+            if (i == tutorial_index && agents[i].layers > 0)
+            {
+                agents[i].ai_state = AI_WANDER;
+            }
+            else if (agents[i].impulse_timer <= 0.0f)
+            {
+                continue;
+            }
         }
 
         // durante o empurrao da defesa a direcao e a velocidade vem do impulso
@@ -1893,6 +2200,7 @@ void update_match(double dt)
         {
             agents[i].impulse_timer -= (float)dt;
             speed_factor = DEFENSE_PUSH_MULTIPLIER;
+            move_speed = (float)agents[i].speed;
 
             if (agents[i].impulse_timer <= 0.0f)
             {
@@ -1900,19 +2208,19 @@ void update_match(double dt)
                 pick_new_direction(i);
             }
         }
+        else if (agents[i].species == SPECIES_GRAM_POSITIVE
+            || agents[i].species == SPECIES_GRAM_NEGATIVE)
+        {
+            move_speed = update_bacteria_ai(i, (float)dt);
+        }
         else
         {
-            agents[i].direction_timer -= (float)dt;
-
-            // a direcao so muda quando o tempo do agente acaba, nunca a cada quadro
-            if (agents[i].direction_timer <= 0)
-            {
-                pick_new_direction(i);
-            }
+            wander(i, (float)dt);
+            move_speed = (float)agents[i].speed;
         }
 
-        agents[i].x += (float)(agents[i].dx * agents[i].speed * speed_factor * dt);
-        agents[i].y += (float)(agents[i].dy * agents[i].speed * speed_factor * dt);
+        agents[i].x += (float)(agents[i].dx * move_speed * speed_factor * dt);
+        agents[i].y += (float)(agents[i].dy * move_speed * speed_factor * dt);
 
         bounce_agent_off_bounds(i);
     }

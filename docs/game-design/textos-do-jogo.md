@@ -206,7 +206,7 @@ Desde 14/11 (#223), o painel "o que a partida mostrou" fala em linguagem de joga
 | CC-06a | Fungo · 1ª leitura de fungo | O fungo tem núcleo, como as nossas células: é um eucarionte. | 60 |
 | CC-06b | | Sua parede é de quitina, não de peptidoglicano: antibiótico não age. | 68 |
 | CC-06c | | A Perfuração abre poros na membrana dele, que tem ergosterol. | 61 |
-| CC-07a | Flagelo · 1ª investida de um bacilo (14/11) | O bacilo tem flagelo, um chicote que gira e o faz nadar. | 56 |
+| CC-07a | Flagelo · 1ª investida de um bacilo (14/11; no código desde a #235) | O bacilo tem flagelo, um chicote que gira e o faz nadar. | 56 |
 | CC-07b | | Por isso ele vem atrás de você e dá investidas. | 47 |
 | CC-07c | | O coco não tem flagelo: é levado pelo sangue e gruda no tecido. | 63 |
 | CC-08a | Biofilme · 1º biofilme formado (14/11) | Bactérias grudadas fazem uma camada pegajosa: o biofilme. | 57 |
