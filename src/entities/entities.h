@@ -6,8 +6,9 @@
 // quantos agentes o encontro da Fase 1 tem: 3 bacterias Gram+, 3 Gram- e 3 celulas
 #define NUM_AGENTES 9
 
-// capacidade do array de agentes: a maior fase define o tamanho (#M4)
-#define MAX_AGENTS 9
+// vagas do array de agentes: a fase nasce com ate 9 e a divisao binaria
+// ocupa as vagas seguintes, uma por filha (#217)
+#define MAX_AGENTS 24
 
 // quantas fases a partida tem hoje (#M4: Fase 1 e a Fase 2 minima de virus)
 #define PHASE_COUNT 2
@@ -114,6 +115,7 @@ typedef struct
     int host_cell; // indice da celula hospedeira, -1 sem celula (#89)
     int variant; // sprite sorteado no nascimento, de 0 a SPRITE_VARIANTS - 1 (#211)
     Shape shape; // coco ou bacilo; SHAPE_NONE fora das bacterias (#214)
+    float division_timer; // tempo ate a proxima divisao binaria, so bacteria (#217)
 } Agent;
 
 // composicao de uma fase: uma linha por agente que ela coloca no mundo (#M4)

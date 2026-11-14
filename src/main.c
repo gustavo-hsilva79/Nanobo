@@ -1354,7 +1354,7 @@ void draw_menu()
         bonus,
         sizeof(bonus),
         "identificar os %d agentes vale +%d pontos",
-        agents_total(),
+        agents_initial(),
         IDENTIFICATION_BONUS
     );
 
@@ -1648,7 +1648,7 @@ void draw_hud()
     }
 
     // identificados fica na linha do objetivo: e progresso do bonus, nao do combate
-    snprintf(line, sizeof(line), "identificados %d/%d", identified_count, agents_total());
+    snprintf(line, sizeof(line), "identificados %d/%d", identified_count, agents_initial());
     al_draw_text(font, UI_DIM, (float)(SCREEN_W - HUD_MARGIN), (float)hud_y(1),
         ALLEGRO_ALIGN_RIGHT, line);
 
@@ -2067,7 +2067,7 @@ void draw_results()
     // objetivos secundarios: identificacao e bonus
     draw_panel(140.0f, 106.0f, 360.0f, 52.0f, UI_INK, UI_FRAME);
 
-    snprintf(value, sizeof(value), "%d/%d", identified_count, agents_total());
+    snprintf(value, sizeof(value), "%d/%d", identified_count, agents_initial());
     draw_stat(left, 114.0f, right, "agentes identificados", value, UI_TEXT);
 
     if (identification_bonus_awarded())
@@ -2084,7 +2084,7 @@ void draw_results()
     draw_stat(left, 130.0f, right, "bônus de identificação", value, bonus_color);
 
     snprintf(line, sizeof(line), "identificar os %d agentes vale +%d pontos",
-        agents_total(), IDENTIFICATION_BONUS);
+        agents_initial(), IDENTIFICATION_BONUS);
     al_draw_text(font, UI_DIM, left, 146.0f, 0, line);
 
     // resumo educativo: so contadores da partida atual (#174, #202)
@@ -2422,7 +2422,12 @@ void handle_key_down(int key)
                 if (agents[i].layers == MAX_LAYERS && !agents[i].identified)
                 {
                     agents[i].identified = true;
-                    identified_count = identified_count + 1;
+
+                    // so os agentes iniciais contam, como no scan real (#217)
+                    if (i < agents_initial())
+                    {
+                        identified_count = identified_count + 1;
+                    }
                 }
             }
         }
@@ -2438,7 +2443,7 @@ void handle_key_down(int key)
             agents[i].identified = true;
         }
 
-        identified_count = agents_total();
+        identified_count = agents_initial();
 
         for (i = 0; i < agents_total(); i++)
         {

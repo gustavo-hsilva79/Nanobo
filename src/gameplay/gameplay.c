@@ -548,6 +548,14 @@ static void reveal_layer(int index)
     if (agents[index].layers == MAX_LAYERS && agents[index].identified == false)
     {
         agents[index].identified = true;
+
+        // a filha da divisao fica identificada, mas so os agentes iniciais
+        // contam para o bonus e para o resumo (#217)
+        if (index >= agents_initial())
+        {
+            return;
+        }
+
         identified_count = identified_count + 1;
         run_progress.identified = run_progress.identified + 1;
 
@@ -826,8 +834,10 @@ static const float valid_points[][2] =
 _Static_assert(sizeof(valid_points) / sizeof(valid_points[0]) == NUM_VALID_POINTS,
     "valid_points precisa ter NUM_VALID_POINTS linhas");
 
-// cada agente precisa de um ponto de nascimento proprio
-_Static_assert(MAX_AGENTS <= NUM_VALID_POINTS, "faltam pontos para todos os agentes");
+// cada agente da composicao precisa de um ponto de nascimento proprio;
+// as filhas da divisao nascem ao lado da mae, fora da tabela (#217)
+_Static_assert(NUM_AGENTES <= NUM_VALID_POINTS, "faltam pontos para os agentes da fase");
+_Static_assert(BACTERIA_CAP < MAX_AGENTS, "o teto de bacterias precisa caber no array");
 
 // sorteia um ponto valido e diferente para cada agente da fase
 static void place_agents()
@@ -987,6 +997,14 @@ static int species_speed(Species species)
     return AGENT_SPEED;
 }
 
+// tempo ate a proxima divisao: DIVISION_TIME com o sorteio de DIVISION_JITTER (#217)
+static float random_division_time(void)
+{
+    float unit = (float)rand() / ((float)RAND_MAX + 1.0f);
+
+    return DIVISION_TIME - DIVISION_JITTER + 2.0f * DIVISION_JITTER * unit;
+}
+
 // devolve o agente ao estado de partida nova: resistencia da especie, ativo de
 // novo e direcao propria; a posicao de nascimento quem sorteia e o place_agents
 static void reset_agent(int index)
@@ -999,6 +1017,7 @@ static void reset_agent(int index)
     agents[index].impulse_timer = 0.0f;
     agents[index].dose_timer = 0.0f;
     agents[index].resistant = false;
+    agents[index].division_timer = random_division_time();
 
     // virus nasce lisogenico com o tempo cheio; quem nao e virus ignora (#84)
     agents[index].virus_state = VIRUS_LYSOGENIC;
@@ -1218,7 +1237,7 @@ static void conclude_phase_if_ready()
     emit_sfx(SFX_EVENT_PHASE_DONE);
 
     // bonus de identificacao completa, so na conclusao e so uma vez (#67)
-    if (identified_count == agents_count)
+    if (identified_count == agents_initial())
     {
         score = score + IDENTIFICATION_BONUS;
         bonus_awarded = true;
@@ -1356,6 +1375,12 @@ int current_phase()
 int agents_total()
 {
     return agents_count;
+}
+
+// a composicao da fase, sem as filhas da divisao (#217)
+int agents_initial(void)
+{
+    return phases[phase_index].count;
 }
 
 // Verifica se a fase atual possui pelo menos uma bactéria.
@@ -1583,6 +1608,70 @@ static void collide_agents()
 }
 
 // a partida so anda no estado GAME; o mundo vem das constantes
+// divisao binaria: a filha nasce ao lado da mae, numa vaga nova do array, com a
+// resistencia e as camadas lidas dela, mas sem a dose que a mae recebeu (#217)
+static void divide_bacteria(int index)
+{
+    int i;
+    int alive = 0;
+    int slot = agents_count;
+    float angle;
+    float offset = 2.0f * (float)AGENT_RADIUS;
+
+    agents[index].division_timer = random_division_time();
+
+    for (i = 0; i < agents_count; i++)
+    {
+        if (agents[i].active && (agents[i].species == SPECIES_GRAM_POSITIVE
+            || agents[i].species == SPECIES_GRAM_NEGATIVE))
+        {
+            alive = alive + 1;
+        }
+    }
+
+    // teto de bacterias vivas ou array cheio: a mae espera a proxima volta
+    if (alive >= BACTERIA_CAP || slot >= MAX_AGENTS)
+    {
+        return;
+    }
+
+    agents[slot] = agents[index];
+    agents[slot].resistance = species_resistance(agents[slot].species);
+    agents[slot].dose_timer = 0.0f;
+    agents[slot].impulse_timer = 0.0f;
+    agents[slot].division_timer = random_division_time();
+    agents[slot].host_cell = -1;
+
+    angle = ((float)rand() / ((float)RAND_MAX + 1.0f)) * 2.0f * (float)M_PI;
+    agents[slot].x = clamp_to_world(agents[index].x + cosf(angle) * offset, (float)WORLD_W);
+    agents[slot].y = clamp_to_world(agents[index].y + sinf(angle) * offset, (float)WORLD_H);
+    pick_new_direction(slot);
+
+    agents_count = agents_count + 1;
+
+    // a filha e uma ameaca a mais na run (#M4)
+    run_progress.threats = run_progress.threats + 1;
+
+    set_feedback("uma bactéria se dividiu em duas");
+}
+
+// conta o tempo de divisao de cada bacteria viva (#217)
+static void update_division(int index, double dt)
+{
+    if (agents[index].species != SPECIES_GRAM_POSITIVE
+        && agents[index].species != SPECIES_GRAM_NEGATIVE)
+    {
+        return;
+    }
+
+    agents[index].division_timer -= (float)dt;
+
+    if (agents[index].division_timer <= 0.0f)
+    {
+        divide_bacteria(index);
+    }
+}
+
 void update_match(double dt)
 {
     float dir_x = 0.0f;
@@ -1597,6 +1686,7 @@ void update_match(double dt)
 
         update_virus(i, dt);
         update_dose(i, dt);
+        update_division(i, dt);
 
         // virus lisogenico ou pronto para o litico fica parado; so o
         // empurrao da defesa o move (#84); andar e regra do litico (#85)

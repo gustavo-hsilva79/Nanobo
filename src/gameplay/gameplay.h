@@ -65,6 +65,12 @@ _Static_assert(WORLD_W % 32 == 0 && WORLD_H % 32 == 0, "mundo precisa fechar no 
 // antibiotico de reserva: cargas por fase, que voltam no inicio de cada uma (#216)
 #define RESERVE_CHARGES 2
 
+// divisao binaria: cada bacteria viva se divide a cada 22 s, com 4 s de sorteio
+// para mais ou para menos, ate o teto de bacterias vivas na fase (#217)
+#define DIVISION_TIME 22.0f
+#define DIVISION_JITTER 4.0f
+#define BACTERIA_CAP 16
+
 // cursor a menos disso do nanobo cai na direcao do facing (#198)
 #define AIM_DEAD_ZONE 8.0f
 
@@ -215,6 +221,9 @@ void update_match(double dt);
 int phase_count(void);
 int current_phase(void);
 int agents_total(void);
+
+// agentes com que a fase nasceu: as filhas da divisao ficam de fora (#217)
+int agents_initial(void);
 bool phase_has_bacteria();
 bool has_next_phase(void);
 void start_next_phase(void);
