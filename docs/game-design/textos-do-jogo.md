@@ -70,6 +70,7 @@ Desenhado **em toda partida** — `MENU → BRIEFING → GAME`, e também depois
 | CT-11 | menu, painel do objetivo | `identificar os %d agentes vale +%d pontos` | 41 | #201 |
 | CT-11b | resultados, painel dos objetivos secundários | `bônus de vitais` · `+%d` | 15 | #218; ocupa a linha da CT-11 nos resultados |
 | CT-11c | HUD, linha 0 | vitais `%d` (de `0` a `100`), verde ≥ 60, âmbar ≥ 30, vermelho abaixo | até 3 | #218 |
+| CT-11d | mundo, acima do agente da dica | `botão direito: escanear` (some no primeiro scan; volta no tiro num invasor sem leitura) | 23 | #219 |
 | CT-12 | menu, rodapé | `enter ou clique para começar` | 28 | #201 |
 | CT-13 | menu, rodapé | `F11 tela cheia` | 14 | #201 |
 | CT-14 | HUD, linha 0 | `ameaças %d/%d` | 11 | #199 |

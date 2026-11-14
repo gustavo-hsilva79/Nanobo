@@ -1813,6 +1813,19 @@ void draw_game()
             view_y(agents[i].y) - AGENT_RADIUS, 0);
     }
 
+    // dica do tutorial presa ao agente: some no primeiro scan, volta no tiro sem leitura (#219)
+    if (tutorial_hint_target() != -1)
+    {
+        const char* hint = "botão direito: escanear";
+        int hint_w = al_get_text_width(font, hint);
+        float hx = floorf(view_x(agents[tutorial_hint_target()].x) - (float)hint_w / 2.0f);
+        float hy = view_y(agents[tutorial_hint_target()].y) - (float)AGENT_RADIUS - 18.0f;
+
+        al_draw_filled_rectangle(hx - 4.0f, hy - 3.0f, hx + (float)hint_w + 4.0f, hy + 11.0f, UI_INK);
+        al_draw_rectangle(hx - 3.5f, hy - 2.5f, hx + (float)hint_w + 3.5f, hy + 10.5f, UI_CYAN, 1.0f);
+        al_draw_text(font, UI_CYAN, hx, hy, 0, hint);
+    }
+
     // a sombra do nanobo segue a mesma regra dos agentes (#220)
     al_draw_filled_ellipse(view_x(player.x), view_y(player.y) + 13.0f,
         11.0f, 4.0f, CONTACT_SHADOW);

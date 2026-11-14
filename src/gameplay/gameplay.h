@@ -143,6 +143,9 @@ extern bool key_right;
 #define TUTORIAL_OFFSET_X 140.0f
 #define TUTORIAL_OFFSET_Y -40.0f
 
+// dica do tutorial no mundo: o agente onde ela aparece, -1 quando escondida (#219)
+int tutorial_hint_target(void);
+
 // textos das camadas do scanner pelo indice do agente (#214)
 // camada 1 = forma; camada 2 = coloracao, estrutura e nome
 const char* layer_one_text(int index);

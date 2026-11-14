@@ -63,6 +63,9 @@ static SfxEvent sfx_event_last = SFX_EVENT_NONE;
 // ultimo alvo lido pelo scanner: o painel do HUD mostra so ele
 static int scan_target = -1;
 
+// agente com a dica "botao direito: escanear"; -1 com a dica escondida (#219)
+static int hint_target = -1;
+
 // fase concluida: vira true uma vez e so o reset_match desliga (#26)
 static bool phase_finished = false;
 
@@ -398,6 +401,12 @@ static void hit_projectiles()
                 continue;
             }
 
+            // tiro num invasor sem leitura: a dica do scan volta, presa a ele (#219)
+            if (agents[j].species != SPECIES_CELL && agents[j].layers == 0)
+            {
+                hint_target = j;
+            }
+
             // atacar a celula do paciente custa vitais, com qualquer ferramenta (#14, #218)
             if (agents[j].species == SPECIES_CELL)
             {
@@ -531,6 +540,9 @@ static void reveal_layer(int index)
 {
     // o painel do HUD relembra o ultimo alvo, mesmo depois de andar
     scan_target = index;
+
+    // quem escaneou ja sabe o gesto: a dica some (#219)
+    hint_target = -1;
 
     if (agents[index].layers < MAX_LAYERS)
     {
@@ -863,6 +875,7 @@ static void place_agents()
             {
                 agents[i].x = player.x + TUTORIAL_OFFSET_X;
                 agents[i].y = player.y + TUTORIAL_OFFSET_Y;
+                hint_target = i;
                 break;
             }
         }
@@ -1300,6 +1313,9 @@ static void start_phase(int index)
     player.vx = 0.0f;
     player.vy = 0.0f;
 
+    // so a Fase 1 nasce com a dica; o place_agents liga ela na bacteria do tutorial
+    hint_target = -1;
+
     place_agents();
 
     key_up = false;
@@ -1387,6 +1403,17 @@ int agents_total()
 int agents_initial(void)
 {
     return phases[phase_index].count;
+}
+
+// a dica some sozinha quando o agente dela sai de cena (#219)
+int tutorial_hint_target(void)
+{
+    if (hint_target < 0 || hint_target >= agents_count || !agents[hint_target].active)
+    {
+        return -1;
+    }
+
+    return hint_target;
 }
 
 // Verifica se a fase atual possui pelo menos uma bactéria.
