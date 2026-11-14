@@ -66,6 +66,9 @@ static int scan_target = -1;
 // agente com a dica "botao direito: escanear"; -1 com a dica escondida (#219)
 static int hint_target = -1;
 
+// bacteria do tutorial: espera parada ate o primeiro scan; -1 fora da Fase 1 (#219)
+static int tutorial_index = -1;
+
 // fase concluida: vira true uma vez e so o reset_match desliga (#26)
 static bool phase_finished = false;
 
@@ -876,6 +879,7 @@ static void place_agents()
                 agents[i].x = player.x + TUTORIAL_OFFSET_X;
                 agents[i].y = player.y + TUTORIAL_OFFSET_Y;
                 hint_target = i;
+                tutorial_index = i;
                 break;
             }
         }
@@ -1315,6 +1319,7 @@ static void start_phase(int index)
 
     // so a Fase 1 nasce com a dica; o place_agents liga ela na bacteria do tutorial
     hint_target = -1;
+    tutorial_index = -1;
 
     place_agents();
 
@@ -1730,6 +1735,12 @@ void update_match(double dt)
         // virus lisogenico ou pronto para o litico fica parado; so o
         // empurrao da defesa o move (#84); andar e regra do litico (#85)
         if (agents[i].species == SPECIES_VIRUS && agents[i].impulse_timer <= 0.0f)
+        {
+            continue;
+        }
+
+        // a bacteria do tutorial espera o primeiro scan parada; o empurrao ainda a move (#219)
+        if (i == tutorial_index && agents[i].layers == 0 && agents[i].impulse_timer <= 0.0f)
         {
             continue;
         }
