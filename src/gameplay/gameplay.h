@@ -95,7 +95,8 @@ _Static_assert(WORLD_W % 32 == 0 && WORLD_H % 32 == 0, "mundo precisa fechar no 
 // drenagem por invasor vivo, piso entre as fases e bonus no fim da fase
 #define CONTACT_DAMAGE 8.0f
 #define CELL_SHOT_DAMAGE 15.0f
-#define THREAT_DRAIN 0.12f
+// a drenagem foi calibrada pelos bots do harness em 14/11: leitor 71%, chute 6% (#224)
+#define THREAT_DRAIN 0.68f
 #define VITALS_MIN_BETWEEN 60.0f
 #define VITALS_BONUS_RATE 0.5f
 

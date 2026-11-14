@@ -34,7 +34,7 @@ Este arquivo registra decisões já tomadas pela dupla. Quando uma decisão impo
   - as ameaças do HUD e da run somam as filhas.
 - **Sinais vitais (#218):**
   - o contato custa 8 e o tiro na célula do paciente custa 15, os dois com a invulnerabilidade de 1 s;
-  - cada invasor vivo drena 0,12/s (bactérias na Fase 1, vírus na Fase 2);
+  - cada invasor vivo drena 0,68/s (bactérias na Fase 1, vírus na Fase 2); era 0,12 e subiu na calibração da #224;
   - só a run nova enche a barra: entre as fases os vitais continuam, com piso de 60;
   - a conclusão paga vitais × 0,5, mostrado nos resultados como "bônus de vitais";
   - no HUD, a barra fica verde a partir de 60, âmbar a partir de 30 e vermelha abaixo disso.

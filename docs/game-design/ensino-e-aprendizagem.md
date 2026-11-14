@@ -74,6 +74,31 @@ São 6 cards. Cada um aparece uma única vez, pausa o jogo, tem 3 linhas de até
 - **Bot "chute"** (sem scan, arma ao acaso): no máximo 10%.
 - Não há teste com aluno antes de 02/12 (decisão do dono): a #38 e as #134–#138 ficam sem cumprir.
 
+#### Resultado dos bots (14/11, #224)
+
+Os bots rodam no harness, com o comando `harness.exe bots N`, sobre o `gameplay.c` real e as sementes 1000 a 1000+N. Os dois imitam quem joga pela primeira vez:
+- só enxergam os agentes dentro da câmera (640×256) e, sem nada à vista, exploram os pontos de nascimento;
+- erram a mira em até 14 px e reagem a cada 0,4 s;
+- desviam de quem encosta e usam a Reserva na resistente marcada com "R".
+
+O leitor, além disso, lê as duas camadas (0,8 s de leitura cada) e escolhe a arma pela segunda. O chute não escaneia e sorteia Ruptura ou Dissolução a cada tiro.
+
+| Drenagem por invasor vivo (/s) | Leitor vence | Chute vence | Leitor: tempo e vitais na vitória |
+|---:|---:|---:|---|
+| 0,12 (valor do design) | 100% | 28% | 44 s, 83 vitais |
+| 0,30 | 100% | 20% | 44 s, 59 vitais |
+| 0,50 | 94% | 10% | 43 s, 34 vitais |
+| 0,60 | 84% | 7% | 42 s, 25 vitais |
+| **0,68 (adotada)** | **71%** | **6%** | 40 s, 20 vitais |
+| 0,70 | 66% | 4% | 40 s, 18 vitais |
+
+300 partidas por linha até 0,50, 500 em 0,60 e 0,70, e 1000 em 0,68.
+
+- **Constante ajustada:** `THREAT_DRAIN` passou de 0,12 para **0,68**. As outras constantes da Etapa 1 ficaram como estão.
+- **Dano de contato não move a taxa:** o bot desvia perfeitamente, então o contato de 8 ou 12 vitais deu o mesmo resultado. Ele vale para pessoas, que não desviam assim.
+- **Por que o chute perde:** ele cria em média 0,6 resistência por partida e esgota a Reserva. Aí a resistente que sobra drena os vitais até zerar.
+- **Ressalva:** o bot ainda acha o caminho, mira e reage melhor que uma pessoa jogando pela primeira vez. Se as partidas do dono mostrarem que o leitor humano perde mais de 1 em 3, o primeiro ajuste é voltar a drenagem para 0,50 (leitor 94%, chute 10%).
+
 ## Correções desta revisão (03/11/2026)
 
 | # | Correção | O que substitui |
