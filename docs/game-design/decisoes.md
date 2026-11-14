@@ -40,6 +40,11 @@ Este arquivo registra decisões já tomadas pela dupla. Quando uma decisão impo
   - **células do paciente fixas:** o endotélio forra o vaso. Na colisão, quem recua é o outro agente ou o Nanobô, e a célula de 64 px vira obstáculo;
   - **o coco do tutorial fica segurado** (`AI_HOLD`) até o primeiro scan e depois segue para uma célula como os outros;
   - **até a arte nova**, os sprites atuais de 32 px são esticados para 64 (célula) e 16 (vírus).
+- **Calls de implementação (#237):**
+  - **biofilme com raio 72**, e não 40: com 40, a mancha ficaria quase toda escondida debaixo da célula de 64 px e dos cocos grudados nela;
+  - **os cards de biofilme e de endotoxina abrem no primeiro contato do Nanobô** com a mancha ou a nuvem, e não quando ela nasce. O card pausa a partida, e o conceito importa quando o jogador sente o efeito;
+  - **duas faixas de correnteza** na Fase 1 (y de 140 a 190 e de 330 a 380), longe do meio do vaso, onde o Nanobô nasce. Elas empurram para a direita, rumo ao destino, e não levam bacilos (que nadam), cocos colonizando nem a bactéria do tutorial segurada;
+  - **tecla de QA K** (só no Debug): cria um biofilme e uma nuvem perto do Nanobô.
 
 **Escopo e equipe**
 - Entram cinco frentes: game design, ensino, narrativa, arte e interface com textos. **Nada cede no prazo**; a ordem de corte do `kanban.md` é a rede de segurança.

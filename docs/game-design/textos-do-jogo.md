@@ -27,6 +27,8 @@
 | FB-15 | célula do paciente perdida (colonizada ou rompida) | `uma célula do paciente foi destruída: -20 vitais` | 47 | #234 |
 | FB-16 | toxina do coco acerta o Nanobô | `toxina do coco: -8 de integridade` | 33 | #236 |
 | FB-17 | a defesa destrói um projétil inimigo | `a defesa destruiu a toxina` | 26 | #236 |
+| FB-18 | primeira dose numa bactéria dentro do biofilme | `o biofilme protege a bactéria: ela pede mais uma dose` | 53 | #237 |
+| FB-19 | o Nanobô dentro da nuvem de endotoxina | `endotoxina da Gram-: saia da nuvem` | 34 | #237 |
 
 **Hífen, não menos tipográfico.** "Gram-" usa hífen ASCII (U+002D). O "−" (U+2212) que a spec traz não existe na fonte embutida (Latin-1): na tela ele saía como `^`, visto no QA de 03/11 e corrigido no commit `5e7cc75`. Ao editar estes textos, não reintroduza U+2212.
 
@@ -211,10 +213,10 @@ Desde 14/11 (#223), o painel "o que a partida mostrou" fala em linguagem de joga
 | CC-07a | Flagelo · 1ª investida de um bacilo (14/11; no código desde a #235) | O bacilo tem flagelo, um chicote que gira e o faz nadar. | 56 |
 | CC-07b | | Por isso ele vem atrás de você e dá investidas. | 47 |
 | CC-07c | | O coco não tem flagelo: é levado pelo sangue e gruda no tecido. | 63 |
-| CC-08a | Biofilme · 1º biofilme formado (14/11) | Bactérias grudadas fazem uma camada pegajosa: o biofilme. | 57 |
+| CC-08a | Biofilme · 1º contato do Nanobô com um biofilme (14/11; no código desde a #237) | Bactérias grudadas fazem uma camada pegajosa: o biofilme. | 57 |
 | CC-08b | | Ele protege as bactérias: dentro dele, o antibiótico age menos. | 63 |
 | CC-08c | | No biofilme a bactéria pede mais uma dose, e você anda devagar. | 63 |
-| CC-09a | Endotoxina · 1ª nuvem de endotoxina (14/11) | A membrana externa da Gram- tem uma toxina, o LPS. | 50 |
+| CC-09a | Endotoxina · 1º contato do Nanobô com uma nuvem (14/11; no código desde a #237) | A membrana externa da Gram- tem uma toxina, o LPS. | 50 |
 | CC-09b | | Quando a Gram- se rompe, até pelo antibiótico, o LPS se espalha. | 64 |
 | CC-09c | | Saia da nuvem: ela fere o Nanobô enquanto dura. | 47 |
 

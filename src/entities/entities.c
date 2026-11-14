@@ -1,5 +1,8 @@
 #include "entities.h"
 
+// NULL da tabela de correntezas das fases sem correnteza (#237)
+#include <stddef.h>
+
 // composicao da Fase 1: 3 bacterias Gram+, 3 Gram- e 3 celulas do paciente
 // as formas se cruzam com o Gram: 2 cocos e 1 bacilo Gram+, 1 coco e 2 bacilos Gram- (#214)
 // no vaso sanguineo, a celula do paciente e a do endotelio que forra o vaso
@@ -28,11 +31,19 @@ static const PhaseAgent phase_two_agents[] =
     { SPECIES_CELL, "Célula epitelial", 6, 0 }
 };
 
+// correnteza do sangue na Fase 1: duas faixas do vaso empurram para a direita;
+// as faixas evitam o meio, onde o nanobo nasce (#237)
+static const Current phase_one_currents[] =
+{
+    { 0.0f, 140.0f, 1920.0f, 190.0f, 40.0f, 0.0f },
+    { 0.0f, 330.0f, 1920.0f, 380.0f, 40.0f, 0.0f }
+};
+
 // a ordem das fases e a ordem do jogo: a run comeca na primeira
 const Phase phases[PHASE_COUNT] =
 {
-    { "Fase 1", phase_one_agents, NUM_AGENTES },
-    { "Fase 2", phase_two_agents, 6 }
+    { "Fase 1", phase_one_agents, NUM_AGENTES, phase_one_currents, 2 },
+    { "Fase 2", phase_two_agents, 6, NULL, 0 }
 };
 
 // o array nasce vazio: start_phase() preenche os slots da fase em cada run
@@ -48,6 +59,9 @@ Projectile projectiles[MAX_PROJECTILES];
 
 // nenhum projetil inimigo antes do primeiro ataque (#236)
 EnemyShot enemy_shots[MAX_ENEMY_SHOTS];
+
+// nenhum perigo no mapa antes do primeiro biofilme ou nuvem (#237)
+Hazard hazards[MAX_HAZARDS];
 
 // inicializar player
 Nanobo player = { .x = 960.0f, .y = 256.0f, .speed = 200.0f, .vx = 0.0f, .vy = 0.0f,

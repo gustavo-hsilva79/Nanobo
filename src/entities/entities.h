@@ -134,6 +134,7 @@ typedef struct
     bool colonizing; // coco preso numa celula, ferindo-a (#235)
     float colonize_time; // tempo colonizando, para o biofilme (#237)
     float cell_health; // vida da celula do paciente (#235)
+    bool biofilm_extra; // ja ganhou a dose a mais por estar no biofilme (#237)
 } Agent;
 
 // composicao de uma fase: uma linha por agente que ela coloca no mundo (#M4)
@@ -146,12 +147,25 @@ typedef struct
     Shape shape; // forma da bacteria; SHAPE_NONE fora das bacterias (#214)
 } PhaseAgent;
 
-// fase jogavel: titulo, composicao e quantos agentes ela tem
+// faixa de correnteza: retangulo do mundo e o empurrao em px/s (#237)
+typedef struct
+{
+    float x0;
+    float y0;
+    float x1;
+    float y1;
+    float vx;
+    float vy;
+} Current;
+
+// fase jogavel: titulo, composicao, quantos agentes ela tem e as correntezas
 typedef struct
 {
     const char* title;
     const PhaseAgent* members;
     int count;
+    const Current* currents;
+    int current_count;
 } Phase;
 
 extern const Phase phases[PHASE_COUNT];
@@ -232,6 +246,29 @@ typedef struct
 } EnemyShot;
 
 extern EnemyShot enemy_shots[MAX_ENEMY_SHOTS];
+
+// perigos no mapa: o biofilme da colonia de cocos e a nuvem de endotoxina da
+// Gram- eliminada (#237)
+#define MAX_HAZARDS 16
+
+typedef enum
+{
+    HAZARD_BIOFILM = 0,
+    HAZARD_ENDOTOXIN = 1
+} HazardKind;
+
+typedef struct
+{
+    bool active;
+    HazardKind kind;
+    float x;
+    float y;
+    float radius;
+    float life;  // segundos que faltam; o biofilme so conta depois da colonia
+    int owner;   // celula do biofilme; -1 na nuvem
+} Hazard;
+
+extern Hazard hazards[MAX_HAZARDS];
 
 // camera: canto superior esquerdo da faixa visivel do mundo
 typedef struct

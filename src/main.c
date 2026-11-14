@@ -1750,7 +1750,9 @@ static const char* card_titles[CARD_COUNT] =
 {
     "Coloração de Gram",
     "Resistência e Reserva",
-    "Flagelo"
+    "Flagelo",
+    "Biofilme",
+    "Endotoxina"
 };
 
 static const char* card_lines[CARD_COUNT][3] =
@@ -1769,6 +1771,16 @@ static const char* card_lines[CARD_COUNT][3] =
         "O bacilo tem flagelo, um chicote que gira e o faz nadar.",
         "Por isso ele vem atrás de você e dá investidas.",
         "O coco não tem flagelo: é levado pelo sangue e gruda no tecido."
+    },
+    {
+        "Bactérias grudadas fazem uma camada pegajosa: o biofilme.",
+        "Ele protege as bactérias: dentro dele, o antibiótico age menos.",
+        "No biofilme a bactéria pede mais uma dose, e você anda devagar."
+    },
+    {
+        "A membrana externa da Gram- tem uma toxina, o LPS.",
+        "Quando a Gram- se rompe, até pelo antibiótico, o LPS se espalha.",
+        "Saia da nuvem: ela fere o Nanobô enquanto dura."
     }
 };
 
@@ -2057,6 +2069,56 @@ void draw_game()
         UI_AMBER, 3);
     al_draw_text(font, UI_AMBER, view_x(DESTINATION_X),
         view_y(DESTINATION_Y) - 40, ALLEGRO_ALIGN_CENTRE, "destino");
+
+    // correnteza: tracos claros que andam na direcao do fluxo (#237)
+    {
+        const Phase* ph = &phases[current_phase() - 1];
+        int c;
+        int k;
+
+        for (c = 0; c < ph->current_count; c++)
+        {
+            const Current* cur = &ph->currents[c];
+            float w = cur->x1 - cur->x0;
+            float h = cur->y1 - cur->y0;
+
+            for (k = 0; k < 40; k++)
+            {
+                float sx = cur->x0 + fmodf((float)(k * 97) + (float)match_time * cur->vx, w);
+                float sy = cur->y0 + fmodf((float)(k * 37), h);
+
+                al_draw_line(view_x(sx), view_y(sy), view_x(sx) + 6.0f, view_y(sy),
+                    al_map_rgba_f(0.18f, 0.18f, 0.2f, 0.18f), 1.0f);
+            }
+        }
+    }
+
+    // perigos: biofilme amarelado e nuvem de endotoxina arroxeada, por baixo dos agentes (#237)
+    for (i = 0; i < MAX_HAZARDS; i++)
+    {
+        float a;
+
+        if (!hazards[i].active)
+        {
+            continue;
+        }
+
+        if (hazards[i].kind == HAZARD_BIOFILM)
+        {
+            a = 0.30f;
+            al_draw_filled_circle(view_x(hazards[i].x), view_y(hazards[i].y), hazards[i].radius,
+                al_map_rgba_f(0.62f * a, 0.66f * a, 0.30f * a, a));
+            al_draw_circle(view_x(hazards[i].x), view_y(hazards[i].y), hazards[i].radius,
+                al_map_rgba_f(0.8f * 0.6f, 0.85f * 0.6f, 0.45f * 0.6f, 0.6f), 1.0f);
+        }
+        else
+        {
+            a = 0.30f + 0.10f * sinf((float)match_time * 9.0f);
+            al_draw_filled_circle(view_x(hazards[i].x), view_y(hazards[i].y),
+                hazards[i].radius * (0.9f + 0.1f * (hazards[i].life / ENDOTOXIN_TIME)),
+                al_map_rgba_f(0.70f * a, 0.22f * a, 0.70f * a, a));
+        }
+    }
 
     for (i = 0; i < agents_total(); i++)
     {
@@ -2780,6 +2842,11 @@ void handle_key_down(int key)
                 agents[i].lysogenic_timer = 1.0f;
             }
         }
+    }
+    // K poe um biofilme e uma nuvem de endotoxina perto do nanobo (#237)
+    else if (key == ALLEGRO_KEY_K)
+    {
+        qa_spawn_hazards();
     }
     // J avanca uma camada do scan em todo agente, para conferir o desenho (#214)
     else if (key == ALLEGRO_KEY_J)

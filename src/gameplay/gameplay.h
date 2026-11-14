@@ -115,6 +115,17 @@ _Static_assert(WORLD_W % 32 == 0 && WORLD_H % 32 == 0, "mundo precisa fechar no 
 #define TOXIN_DAMAGE 8.0f
 #define ENEMY_SHOT_LIFE 4.0f
 #define SHIELD_RADIUS 22.0f
+
+// perigos (#237): o biofilme nasce de uma colonia com mais de BIOFILM_TIME,
+// deixa o nanobo lento e pede uma dose a mais; dura BIOFILM_LINGER depois da
+// colonia. A nuvem de endotoxina dura ENDOTOXIN_TIME e fere ENDOTOXIN_DPS por segundo
+#define BIOFILM_TIME 6.0f
+#define BIOFILM_RADIUS 72.0f
+#define BIOFILM_SLOW 0.5f
+#define BIOFILM_LINGER 10.0f
+#define ENDOTOXIN_RADIUS 36.0f
+#define ENDOTOXIN_TIME 2.5f
+#define ENDOTOXIN_DPS 10.0f
 #define COLONIZE_DAMAGE 5.0f
 #define COLONIZE_REACH 2.0f
 
@@ -194,6 +205,14 @@ int tutorial_hint_target(void);
 
 // raio de colisao do agente pela especie (#235)
 float agent_radius(int index);
+
+// velocidade do nanobo agora: BIOFILM_SLOW dentro do biofilme, 1 fora (#237)
+float player_slow_factor(void);
+
+#ifdef _DEBUG
+// tecla de QA K: um biofilme e uma nuvem de endotoxina perto do nanobo (#237)
+void qa_spawn_hazards(void);
+#endif
 
 // textos das camadas do scanner pelo indice do agente (#214)
 // camada 1 = forma; camada 2 = coloracao, estrutura e nome
@@ -283,6 +302,8 @@ typedef enum
     CARD_GRAM = 0,
     CARD_RESISTANCE = 1,
     CARD_FLAGELLUM = 2,
+    CARD_BIOFILM = 3,
+    CARD_ENDOTOXIN = 4,
     CARD_COUNT
 } ConceptCard;
 

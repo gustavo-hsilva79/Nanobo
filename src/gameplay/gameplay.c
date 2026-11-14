@@ -145,6 +145,64 @@ float agent_radius(int index)
     return (float)BACTERIA_RADIUS;
 }
 
+// declaradas aqui porque o hit_agent, que vem antes, ja as usa (#237)
+static void set_feedback(const char* text);
+static void queue_card(ConceptCard card);
+
+// perigo novo numa vaga livre; devolve a vaga ou -1 (#237)
+static int spawn_hazard(HazardKind kind, float x, float y, float radius, float life, int owner)
+{
+    int i;
+
+    for (i = 0; i < MAX_HAZARDS; i++)
+    {
+        if (!hazards[i].active)
+        {
+            hazards[i].active = true;
+            hazards[i].kind = kind;
+            hazards[i].x = x;
+            hazards[i].y = y;
+            hazards[i].radius = radius;
+            hazards[i].life = life;
+            hazards[i].owner = owner;
+            return i;
+        }
+    }
+
+    return -1;
+}
+
+// o ponto esta dentro de um perigo desse tipo? (#237)
+static bool inside_hazard(HazardKind kind, float x, float y)
+{
+    int i;
+
+    for (i = 0; i < MAX_HAZARDS; i++)
+    {
+        if (hazards[i].active && hazards[i].kind == kind
+            && squared_distance(x, y, hazards[i].x, hazards[i].y) <= hazards[i].radius * hazards[i].radius)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+#ifdef _DEBUG
+// so no Debug: perigos ao lado do nanobo para conferir o desenho (#237)
+void qa_spawn_hazards(void)
+{
+    spawn_hazard(HAZARD_BIOFILM, player.x - 110.0f, player.y, BIOFILM_RADIUS, BIOFILM_LINGER, -1);
+    spawn_hazard(HAZARD_ENDOTOXIN, player.x + 90.0f, player.y, ENDOTOXIN_RADIUS, ENDOTOXIN_TIME, -1);
+}
+#endif
+
+float player_slow_factor(void)
+{
+    return inside_hazard(HAZARD_BIOFILM, player.x, player.y) ? BIOFILM_SLOW : 1.0f;
+}
+
 // registra o evento de audio do quadro; o main toca e zera a pendencia (#31)
 static void emit_sfx(SfxEvent kind)
 {
@@ -361,12 +419,30 @@ bool hit_agent(int index)
         return false;
     }
 
+    // dentro do biofilme a bacteria pede uma dose a mais, uma vez (#237);
+    // a Reserva chega com a resistencia ja em 1 e nao passa por aqui
+    if ((agents[index].species == SPECIES_GRAM_POSITIVE || agents[index].species == SPECIES_GRAM_NEGATIVE)
+        && agents[index].resistance == BACTERIA_RESISTANCE && !agents[index].biofilm_extra
+        && inside_hazard(HAZARD_BIOFILM, agents[index].x, agents[index].y))
+    {
+        agents[index].resistance = agents[index].resistance + 1;
+        agents[index].biofilm_extra = true;
+        set_feedback("o biofilme protege a bactéria: ela pede mais uma dose");
+    }
+
     agents[index].resistance = agents[index].resistance - 1;
 
     if (agents[index].resistance <= 0)
     {
         agents[index].active = false;
         agents[index].dose_timer = 0.0f;
+
+        // a Gram- que se rompe solta o LPS da membrana externa: nuvem de endotoxina (#237)
+        if (agents[index].species == SPECIES_GRAM_NEGATIVE)
+        {
+            spawn_hazard(HAZARD_ENDOTOXIN, agents[index].x, agents[index].y,
+                ENDOTOXIN_RADIUS, ENDOTOXIN_TIME, -1);
+        }
 
         // o acerto que neutralizou e o unico evento que pontua (#66)
         score = score + SCORE_PER_THREAT;
@@ -1178,6 +1254,7 @@ static void reset_agent(int index)
     agents[index].colonizing = false;
     agents[index].colonize_time = 0.0f;
     agents[index].cell_health = CELL_HEALTH;
+    agents[index].biofilm_extra = false;
 
     // virus nasce lisogenico com o tempo cheio; quem nao e virus ignora (#84)
     agents[index].virus_state = VIRUS_LYSOGENIC;
@@ -1528,6 +1605,12 @@ static void start_phase(int index)
     for (i = 0; i < MAX_ENEMY_SHOTS; i++)
     {
         enemy_shots[i].active = false;
+    }
+
+    // nem perigos no mapa (#237)
+    for (i = 0; i < MAX_HAZARDS; i++)
+    {
+        hazards[i].active = false;
     }
 
     scan_target = -1;
@@ -1910,6 +1993,7 @@ static void divide_bacteria(int index)
     agents[slot].windup = 0.0f;
     agents[slot].lunge_timer = 0.0f;
     agents[slot].attack_timer = BACILLUS_LUNGE_INTERVAL;
+    agents[slot].biofilm_extra = false;
 
     angle = ((float)rand() / ((float)RAND_MAX + 1.0f)) * 2.0f * (float)M_PI;
     agents[slot].x = clamp_to_world(agents[index].x + cosf(angle) * offset, (float)WORLD_W);
@@ -1938,6 +2022,151 @@ static void update_division(int index, double dt)
     if (agents[index].division_timer <= 0.0f)
     {
         divide_bacteria(index);
+    }
+}
+
+// a celula ja tem biofilme em volta? (#237)
+static bool cell_has_biofilm(int cell)
+{
+    int i;
+
+    for (i = 0; i < MAX_HAZARDS; i++)
+    {
+        if (hazards[i].active && hazards[i].kind == HAZARD_BIOFILM && hazards[i].owner == cell)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+// algum coco ainda coloniza essa celula? (#237)
+static bool cell_colonized(int cell)
+{
+    int i;
+
+    if (cell < 0 || !agents[cell].active)
+    {
+        return false;
+    }
+
+    for (i = 0; i < agents_count; i++)
+    {
+        if (agents[i].active && agents[i].colonizing && agents[i].target_cell == cell)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+// tempo de vida dos perigos e o dano da nuvem no nanobo (#237)
+static double endotoxin_feedback_timer = 0.0;
+
+static void update_hazards(double dt)
+{
+    int i;
+    bool in_cloud = false;
+
+    for (i = 0; i < MAX_HAZARDS; i++)
+    {
+        if (!hazards[i].active)
+        {
+            continue;
+        }
+
+        // o biofilme fica enquanto a colonia vive e dura BIOFILM_LINGER depois
+        if (hazards[i].kind == HAZARD_BIOFILM && cell_colonized(hazards[i].owner))
+        {
+            hazards[i].life = BIOFILM_LINGER;
+            continue;
+        }
+
+        hazards[i].life -= (float)dt;
+
+        if (hazards[i].life <= 0.0f)
+        {
+            hazards[i].active = false;
+            continue;
+        }
+
+        if (hazards[i].kind == HAZARD_ENDOTOXIN
+            && squared_distance(player.x, player.y, hazards[i].x, hazards[i].y)
+                <= hazards[i].radius * hazards[i].radius)
+        {
+            in_cloud = true;
+        }
+    }
+
+    // os cards abrem quando o nanobo sente o perigo pela primeira vez (#237)
+    if (player_slow_factor() < 1.0f)
+    {
+        queue_card(CARD_BIOFILM);
+    }
+
+    // a nuvem fere direto, sem invulnerabilidade; o aviso sai a cada meio segundo
+    if (in_cloud && player.health > 0.0f)
+    {
+        queue_card(CARD_ENDOTOXIN);
+        player.health = fmaxf(player.health - ENDOTOXIN_DPS * (float)dt, 0.0f);
+        endotoxin_feedback_timer -= dt;
+
+        if (endotoxin_feedback_timer <= 0.0)
+        {
+            endotoxin_feedback_timer = 0.5;
+            emit_sfx(SFX_EVENT_DAMAGE);
+            set_feedback("endotoxina da Gram-: saia da nuvem");
+        }
+    }
+    else
+    {
+        endotoxin_feedback_timer = 0.0;
+    }
+}
+
+// correnteza da fase: empurra o nanobo, os cocos soltos e as toxinas (#237)
+static void apply_currents(double dt)
+{
+    int c;
+    int i;
+    const Current* list = phases[phase_index].currents;
+
+    for (c = 0; c < phases[phase_index].current_count; c++)
+    {
+        const Current* k = &list[c];
+
+        if (player.x >= k->x0 && player.x <= k->x1 && player.y >= k->y0 && player.y <= k->y1)
+        {
+            player.x += k->vx * (float)dt;
+            player.y += k->vy * (float)dt;
+        }
+
+        for (i = 0; i < agents_count; i++)
+        {
+            if (!agents[i].active || agents[i].shape != SHAPE_COCCUS || agents[i].colonizing
+                || agents[i].ai_state == AI_HOLD)
+            {
+                continue;
+            }
+
+            if (agents[i].x >= k->x0 && agents[i].x <= k->x1 && agents[i].y >= k->y0 && agents[i].y <= k->y1)
+            {
+                agents[i].x += k->vx * (float)dt;
+                agents[i].y += k->vy * (float)dt;
+            }
+        }
+
+        for (i = 0; i < MAX_ENEMY_SHOTS; i++)
+        {
+            if (enemy_shots[i].active && enemy_shots[i].x >= k->x0 && enemy_shots[i].x <= k->x1
+                && enemy_shots[i].y >= k->y0 && enemy_shots[i].y <= k->y1)
+            {
+                enemy_shots[i].x += k->vx * (float)dt;
+                enemy_shots[i].y += k->vy * (float)dt;
+            }
+        }
     }
 }
 
@@ -2089,6 +2318,13 @@ static float coccus_ai(int index, float dt)
         {
             a->colonize_time += dt;
             agents[cell].cell_health -= COLONIZE_DAMAGE * dt;
+
+            // colonia antiga forma biofilme em volta da celula, um por celula (#237)
+            if (a->colonize_time >= BIOFILM_TIME && !cell_has_biofilm(cell))
+            {
+                spawn_hazard(HAZARD_BIOFILM, agents[cell].x, agents[cell].y,
+                    BIOFILM_RADIUS, BIOFILM_LINGER, cell);
+            }
 
             if (agents[cell].cell_health <= 0.0f)
             {
@@ -2443,8 +2679,11 @@ void update_match(double dt)
     player.vy = approach(player.vy, dir_y * player.speed,
         (dir_y != 0.0f ? PLAYER_ACCEL : PLAYER_DECEL) * (float)dt);
 
-    player.x = player.x + player.vx * (float)dt;
-    player.y = player.y + player.vy * (float)dt;
+    // no biofilme o nanobo anda pela metade (#237)
+    player.x = player.x + player.vx * player_slow_factor() * (float)dt;
+    player.y = player.y + player.vy * player_slow_factor() * (float)dt;
+
+    apply_currents(dt);
 
     // o nanobo nao sai do mundo
     player.x = clamp_to_world(player.x, (float)WORLD_W);
@@ -2453,6 +2692,7 @@ void update_match(double dt)
     repel_touching_agents();
     update_projectiles(dt);
     update_enemy_shots(dt);
+    update_hazards(dt);
     update_camera();
 
     int touched = touching_agent();
