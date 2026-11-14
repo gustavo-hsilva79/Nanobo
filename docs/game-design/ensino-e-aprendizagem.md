@@ -131,6 +131,29 @@ A drenagem saiu. Os bots passaram a enfrentar a IA nova (bacilo que persegue e i
   - Atirar no coco colonizando pede se posicionar do lado de fora da célula, uma decisão que a fase passa a cobrar.
 - **Duração:** o leitor vence em 97 s, dentro da meta antiga de 60 a 150 s.
 
+#### Calibração da Fase 2 com os bots (14/11, #89)
+
+O harness ganhou o modo `bots2 N vitais`, que joga só a Fase 2 começando com os vitais dados. São dois bots, com a mesma visão, mira, leitura e reação dos da Fase 1:
+- o **leitor** lê a célula que pisca, aplica a Lise e prende os vírus livres;
+- o **chute** não escaneia, então a Lise nunca dispara para ele.
+
+O bot contorna a célula que bloqueia o caminho, como quem joga. Sem isso, ele ficava preso atrás da célula vizinha e o resultado parecia mais difícil do que é.
+
+| Configuração (500 a 1000 partidas) | Leitor, 77 vitais | Leitor, 60 vitais | Chute, 77 vitais | Chute, 60 vitais |
+|---|---:|---:|---:|---:|
+| lisogênico 12/20/28 s, células livres em pontos sorteados | 100% | 100% | 63% | 0% |
+| + células livres vizinhas das infectadas (140 px) | 100% | 100% | 9% | 0% |
+| **+ lisogênico 10/14/18 s (adotado)** | **100%** (0,75 célula rompida, 25 s) | **99%** | **9%** | **0%** |
+| lisogênico 5 s, escalonado em 2 s | 99% | 88% | 11% | 0% |
+
+- **O que a Fase 2 cobra:** ler. Sem leitura não há Lise, e as três células infectadas rompem (−60 dos vitais). Começando no piso de 60, quem não lê sempre perde.
+- **Por que o leitor vence quase sempre:** os vírus não perseguem (decisão do dono: "deriva e rajada"), e a Lise resolve a célula a tempo. A integridade nunca foi o que derrubou um bot. A pressão vem do relógio de cada célula e da cadeia de infecção.
+- **Na run inteira:** o leitor vence a Fase 1 em 64% das vezes e a Fase 2 em cerca de 99%, então chega ao fim em cerca de 63%. O chute fica perto de 0%.
+- **Alavancas, se as partidas do dono pedirem uma Fase 2 mais dura:**
+  - encurtar o lisogênico;
+  - pôr mais células vizinhas;
+  - aumentar a deriva do vírus livre.
+
 ## Correções desta revisão (03/11/2026)
 
 | # | Correção | O que substitui |

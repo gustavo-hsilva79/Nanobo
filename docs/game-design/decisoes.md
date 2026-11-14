@@ -53,6 +53,14 @@ Este arquivo registra decisões já tomadas pela dupla. Quando uma decisão impo
   - **os cards de biofilme e de endotoxina abrem no primeiro contato do Nanobô** com a mancha ou a nuvem, e não quando ela nasce. O card pausa a partida, e o conceito importa quando o jogador sente o efeito;
   - **duas faixas de correnteza** na Fase 1 (y de 140 a 190 e de 330 a 380), longe do meio do vaso, onde o Nanobô nasce. Elas empurram para a direita, rumo ao destino, e não levam bacilos (que nadam), cocos colonizando nem a bactéria do tutorial segurada;
   - **tecla de QA K** (só no Debug): cria um biofilme e uma nuvem perto do Nanobô.
+- **Calls de implementação da Fase 2 (#85–#89, 14/11):** detalhe em `fase2-virus.md` (§"Implementação de 14/11"):
+  - **lisogênico de 10 s, com os três da fase escalonados em 10, 14 e 18 s**, e eclipse de 2 s. Pela regra de 11/11 os três começavam com 12 s cheios e romperiam juntos antes de o jogador cruzar o mapa; o escalonamento e os 10 s saíram dos bots;
+  - **célula livre vizinha da infectada (140 px)**, como no epitélio. Sem isso, quem não lê o scan sobrevivia às três rupturas e vencia 63% das vezes começando com 77 de vitais;
+  - **a Neutralização não fere a célula do paciente**: anticorpo não ataca célula, então ensinar o contrário seria errado. O custo de errar o tiro é a recarga;
+  - **a Lise não dispara** sem uma célula infectada lida no caminho, como o jogo pede ("numa célula saudável ela não dispara"). Basta uma camada lida, porque a 1ª já mostra a infecção;
+  - **o vírus da rajada que acerta o Nanobô cai livre**, porque continua sendo vírus. Só a defesa o destrói;
+  - **o vírus de dentro não se lê sozinho**: ler a infectada até o fim o identifica, e a infectada que sai de cena sem leitura sai da meta do bônus com o vírus dela;
+  - **a Fase 2 usa o mapa da Fase 1 num tom frio com véu verde-azulado** até o mapa das vias aéreas (Etapa 3).
 
 **Escopo e equipe**
 - Entram cinco frentes: game design, ensino, narrativa, arte e interface com textos. **Nada cede no prazo**; a ordem de corte do `kanban.md` é a rede de segurança.

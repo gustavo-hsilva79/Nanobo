@@ -35,6 +35,38 @@ Decisões do dono em 13/11, que valem acima do texto de 11/11 abaixo:
   - a Lise continua custando 5 dos vitais.
 - **Tamanho:** o vírus tem 16×16 (raio 7) e a célula 64×64 (raio 28), em escala biológica.
 
+**Implementação de 14/11 (#85–#89), vigente.** O que está no build, acima do texto mais antigo deste arquivo:
+
+- **Composição (#89):**
+  - 3 vírus lisogênicos, cada um dentro da sua célula do epitélio, e 2 células livres;
+  - cada célula livre nasce a 140 px de uma infectada (`NEIGHBOR_GAP`), do lado do meio do mapa, como no epitélio contínuo. Quando a infectada rompe, a rajada chega na vizinha;
+  - duas faixas de muco (y de 100 a 150 e de 360 a 410) levam o Nanobô e os vírus livres para a direita, rumo à garganta.
+- **Estados (#84, #85):** `VIRUS_LYSOGENIC` e `VIRUS_ECLIPSE` ficam dentro da célula; `VIRUS_FREE` deriva no muco.
+  - **Lisogênico:** **10 s** (`LYSOGENIC_TIME`, era 12; calibrado com os bots). Os três da fase começam escalonados em 10, 14 e 18 s (`LYSOGENIC_STAGGER` 4 s), para o jogador ter como chegar em cada um.
+  - **Eclipse:** **2 s** (`ECLIPSE_TIME`). A célula pulsa vermelha com três cópias do vírus dentro: é o aviso de que vai romper.
+  - **Fim do eclipse:** a célula rompe, sai de cena e custa 20 dos vitais. Saem 6 vírus numa rajada radial a 110 px/s, que voam 1 s (`BURST_FLIGHT`) e caem livres.
+  - **Vírus de dentro:** não anda, não encosta no Nanobô, não leva tiro e não aparece no scan. Quem se lê é a célula. Ele vira a rajada, então sai da conta das ameaças, e cada vírus da rajada conta como ameaça desde que sai, ainda em voo.
+- **Vírus livre (#85):** deriva a 25 px/s (`VIRUS_DRIFT_SPEED`), sem motor; a correnteza do muco o leva. Ao tocar uma célula saudável ele entra nela e fica lisogênico com o tempo cheio, e a célula precisa ser lida de novo. O contato fere o Nanobô (10).
+- **Rajada (#86):**
+  - o vírus da rajada que acerta o Nanobô tira 6 de integridade e cai livre ali mesmo;
+  - a defesa o destrói, e esse vírus não nasce;
+  - o teto é de 12 vírus vivos: o vírus que cai acima do teto se perde;
+  - o vírus livre ocupa uma vaga do array fora da composição, reaproveitando as vagas vazias.
+- **Ferramentas (#88):** a Fase 2 tem só a Neutralização (tecla 1) e a Lise (tecla 2).
+  - **Neutralização:** anticorpos. Prendem o vírus livre (+10). Não alcançam o vírus dentro da célula (FB-21) e **não ferem a célula do paciente**: anticorpo não ataca célula, então o tiro nela não custa vitais.
+  - **Lise:** só dispara quando a primeira coisa no caminho do tiro é uma célula infectada com pelo menos uma camada lida. Numa célula saudável ou sem leitura ela não dispara e não gasta a recarga.
+    - O acerto tira a célula sem rompê-la (−5 vitais) e elimina o vírus de dentro (+10).
+    - A Lise também age no eclipse, a última janela.
+  - **Antibiótico:** não existe na Fase 2. No código, ele não age em vírus (FB-27).
+- **Scanner (#87):**
+  - a célula infectada mostra o estado e o tempo nas duas camadas (RT-12, RT-13);
+  - depois da leitura, um arco âmbar em volta dela mostra o tempo que falta;
+  - ler a infectada até a 2ª camada identifica também o vírus da fase que está dentro;
+  - o vírus livre se lê como qualquer agente (RT-09 a RT-11).
+- **Bônus de identificação:** a meta passa a ser os agentes iniciais menos a célula infectada que saiu de cena sem leitura (rompida ou pela Lise) e o vírus dela (`identification_goal`). Isso cumpre a regra de 13/11.
+- **Conclusão:** zero vírus vivos, inclusive dentro de células e em voo, e o Nanobô no destino.
+- **Calibração com os bots (#89):** a tabela está em `ensino-e-aprendizagem.md`.
+
 ## Estados
 
 O vírus tem dois estados, e os dois são legíveis **no mundo, sem scanner** — é o que permite ao jogador decidir se vale gastar a leitura antes de se aproximar.

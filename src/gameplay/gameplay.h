@@ -130,6 +130,27 @@ _Static_assert(WORLD_W % 32 == 0 && WORLD_H % 32 == 0, "mundo precisa fechar no 
 #define COLONIZE_DAMAGE 5.0f
 #define COLONIZE_REACH 2.0f
 
+// Fase 2, os virus (#85-#89, revisao de 14/11): o lisogenico espera dentro da
+// celula; o eclipse avisa que ela vai romper; a celula rompe numa rajada radial
+// de virus que voam BURST_FLIGHT e caem livres no muco. O virus livre nao tem
+// motor: deriva devagar e infecta a celula livre que toca. Os tres virus da fase
+// comecam com tempos escalonados, LYSOGENIC_STAGGER a mais cada um
+#define ECLIPSE_TIME 2.0f
+#define LYSOGENIC_STAGGER 4.0f
+#define VIRUS_DRIFT_SPEED 25
+#define BURST_COUNT 6
+#define BURST_SPEED 110.0f
+#define BURST_FLIGHT 1.0f
+#define VIRION_DAMAGE 6.0f
+#define VIRUS_CAP 12
+
+// a Lise tira a celula infectada antes de ela romper: custa poucos vitais (#88)
+#define LYSE_VITALS 5.0f
+
+// cenario da Fase 2 (#89): cada celula livre nasce a este tanto de uma celula
+// infectada, como no epitelio; a vizinha e a proxima infectada quando a outra rompe
+#define NEIGHBOR_GAP 140.0f
+
 // raio de colisao em escala biologica: virus < bacteria < celula do paciente (#235)
 #define VIRUS_RADIUS 7
 #define BACTERIA_RADIUS 14
@@ -165,6 +186,9 @@ typedef struct
     int reserve_on_resistant; // cargas de Reserva gastas numa resistente (#223)
     int reserve_on_common;    // cargas de Reserva gastas numa bacteria comum (#223)
     int shape_guesses;        // antibiotico errado depois de ler so a forma (#223)
+    int viruses_neutralized;  // virus livres presos pelos anticorpos (#88)
+    int cells_lysed;          // celulas infectadas tiradas pela Lise antes de romper (#88)
+    int cells_burst;          // celulas que romperam no ciclo litico (#86)
 } MatchProgress;
 
 extern MatchProgress progress;
@@ -236,7 +260,12 @@ void shoot();
 void shoot_toward(float x, float y);
 
 // ferramentas: a roda alterna entre as da fase; 1, 2 e 3 escolhem direto (#198, #216)
+// na Fase 2 as teclas 1 e 2 sao a Neutralizacao e a Lise (#88)
 void toggle_module();
+void select_tool(int slot);
+
+// fase com virus: as ferramentas sao os anticorpos e a Lise (#88)
+bool phase_has_viruses(void);
 
 // Reserva: so existe em fase com bacteria; cargas que restam nesta fase (#216)
 bool reserve_available(void);
@@ -249,14 +278,26 @@ int touching_agent();
 bool virus_is_lysogenic(int index);
 float virus_lysogenic_left(int index);
 
+// virus dentro de uma celula (lisogenico ou eclipse): nao anda, nao encosta e
+// nao leva tiro; quem o alcanca e a Lise na celula (#85, #88)
+bool virus_inside(int index);
+
+// virus dentro da celula; -1 quando ela esta saudavel (#85)
+int cell_virus(int cell);
+
 // acerto valido no agente: devolve true quando esse acerto o neutralizou (#49)
 bool hit_agent(int index);
 
 // mensagem educacional da ultima decisao; NULL quando nao ha nada a mostrar (#178)
 const char* feedback_text();
 
-// total de ameacas da fase, mesmo depois de neutralizadas (#19)
+// total de ameacas da fase, mesmo depois de neutralizadas (#19); conta as filhas
+// da divisao e os virus que caem da rajada (#217, #86)
 int threats_total();
+
+// meta do bonus de identificacao: os agentes iniciais, menos a celula infectada
+// que saiu de cena sem leitura e o virus dela (fase2-virus.md, 13/11)
+int identification_goal(void);
 
 // true quando o bonus de identificacao foi pago na conclusao (#67)
 bool identification_bonus_awarded();
@@ -305,6 +346,8 @@ typedef enum
     CARD_FLAGELLUM = 2,
     CARD_BIOFILM = 3,
     CARD_ENDOTOXIN = 4,
+    CARD_VIRUS = 5,
+    CARD_CYCLE = 6,
     CARD_COUNT
 } ConceptCard;
 

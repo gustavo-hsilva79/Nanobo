@@ -119,6 +119,12 @@ O fundo é escuro e de baixo contraste de propósito: os sprites precisam contin
 | Moldura de painel (9-slice) | 24×24 | 1 | interface |
 | Ilustrações de narrativa | 160×90 | 1 cada | abertura (4), interlúdios (2), final (1) |
 | Mapa da Fase 2 — vias aéreas (brônquio: cílios e muco) | 1920×512 | — | `assets/backgrounds/` |
+
+> **Fase 2 no build desde 14/11 (#85–#89), sem arquivo novo.** Até a arte da Etapa 3:
+> - o mapa da Fase 1 é desenhado num tom frio (`MAP_TINT_AIRWAY`) com um véu verde-azulado;
+> - a célula infectada é o sprite da célula com o vírus de 14 px piscando dentro, sobre um disco escuro. No eclipse, a célula pulsa vermelha com três cópias;
+> - o vírus da rajada é o sprite do vírus reduzido a 12 px;
+> - os ícones da Neutralização (o Y do anticorpo) e da Lise (a célula com o poro) são desenhados por código, como a cápsula da Reserva.
 | Mapa da Fase 3 — pulmão (alvéolos e capilares) | 1920×512 | — | `assets/backgrounds/` |
 | Fonte pixel TTF (licença OFL, com acentos) | — | — | `assets/fonts/`; a licença é registrada aqui |
 

@@ -19,16 +19,19 @@ static const PhaseAgent phase_one_agents[] =
     { SPECIES_CELL, "Célula endotelial", 9, 0, SHAPE_NONE }
 };
 
-// Fase 2: os tres virus e as celulas que eles precisam preservar (#M4)
-// cada virus nasce ligado a uma celula hospedeira pelo id dela (#89)
+// Fase 2, vias aereas: tres virus lisogenicos dentro de celulas do epitelio e
+// duas celulas livres (gdd.md, 13/11); cada virus nasce dentro da celula
+// hospedeira, ligada pelo id dela (#89)
 static const PhaseAgent phase_two_agents[] =
 {
-    { SPECIES_VIRUS, "Vírus da fase", 1, 4 },
-    { SPECIES_VIRUS, "Vírus da fase", 2, 5 },
-    { SPECIES_VIRUS, "Vírus da fase", 3, 6 },
+    { SPECIES_VIRUS, "Vírus respiratório", 1, 4 },
+    { SPECIES_VIRUS, "Vírus respiratório", 2, 5 },
+    { SPECIES_VIRUS, "Vírus respiratório", 3, 6 },
     { SPECIES_CELL, "Célula epitelial", 4, 0 },
     { SPECIES_CELL, "Célula epitelial", 5, 0 },
-    { SPECIES_CELL, "Célula epitelial", 6, 0 }
+    { SPECIES_CELL, "Célula epitelial", 6, 0 },
+    { SPECIES_CELL, "Célula epitelial", 7, 0 },
+    { SPECIES_CELL, "Célula epitelial", 8, 0 }
 };
 
 // correnteza do sangue na Fase 1: duas faixas do vaso empurram para a direita;
@@ -39,11 +42,19 @@ static const Current phase_one_currents[] =
     { 0.0f, 330.0f, 1920.0f, 380.0f, 40.0f, 0.0f }
 };
 
+// muco das vias aereas: os cilios empurram o muco rumo a garganta; duas faixas
+// levam o nanobo e os virus livres para a direita (#89, revisao de 14/11)
+static const Current phase_two_currents[] =
+{
+    { 0.0f, 100.0f, 1920.0f, 150.0f, 40.0f, 0.0f },
+    { 0.0f, 360.0f, 1920.0f, 410.0f, 40.0f, 0.0f }
+};
+
 // a ordem das fases e a ordem do jogo: a run comeca na primeira
 const Phase phases[PHASE_COUNT] =
 {
     { "Fase 1", phase_one_agents, NUM_AGENTES, phase_one_currents, 2 },
-    { "Fase 2", phase_two_agents, 6, NULL, 0 }
+    { "Fase 2", phase_two_agents, 8, phase_two_currents, 2 }
 };
 
 // o array nasce vazio: start_phase() preenche os slots da fase em cada run

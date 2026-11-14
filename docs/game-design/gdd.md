@@ -64,7 +64,7 @@ Cada fase tem mapa, ponto de partida e destino próprios. O mapa da Fase 1 conti
   - as leveduras brotam a cada cerca de 20 s, com teto de 12;
   - a hifa do bolor cresce 1 segmento a cada cerca de 5 s, até 5 segmentos. Acertar a **base** mata a colônia, e acertar a ponta só corta um segmento. Com a hifa no tamanho máximo, a colônia solta esporos e nasce outra, até 4 colônias.
 - **Vírus (Fase 2):**
-  - o lisogênico fica dentro da célula, piscando, por 12 s;
+  - o lisogênico fica dentro da célula, piscando, por 10 s (os três da fase escalonados em 10, 14 e 18 s; calibrado na #89), e o eclipse dura 2 s;
   - depois do eclipse, a célula se rompe e solta 6 vírus numa **rajada radial**; eles ferem o Nanobô e depois derivam no muco como vírus **livres**, que infectam células livres ao tocá-las (14/11);
   - a **Lise** elimina a célula infectada já lida: custa poucos vitais, mas impede a eclosão;
   - o antibiótico não age em vírus;
@@ -211,9 +211,12 @@ Os agentes nascem em pontos fixos do mundo, sorteados a cada partida sem repetir
 
 ### Fase 2 — vírus
 
-A Fase 2 mínima entrou no build de 04/11 para fechar o fluxo entre fases (#71/#76): **3 vírus e 3 células saudáveis**, no mesmo mapa e destino da Fase 1. O vírus tem **1 ponto de resistência** e **qualquer arma o neutraliza**; o contato tira vida e a defesa o empurra, como na bactéria.
-
-O ciclo lisogênico/lítico, a multiplicação de até 3 vírus e as consequências de combate do ciclo continuam no M5 (#83–#91); a Fase 2 completa do GDD é essa, não a mínima.
+A Fase 2 do 2.0 entrou no build em 14/11 (#85–#89).
+- **Composição:** 3 vírus lisogênicos dentro de células do epitélio e 2 células livres, cada uma vizinha de uma infectada.
+- **Ciclo:** o vírus fica lisogênico (10, 14 e 18 s), entra no eclipse (2 s) e rompe a célula numa rajada de 6 vírus livres, que derivam no muco e infectam a célula livre que tocam.
+- **Ferramentas:** a Neutralização prende o vírus livre; a Lise tira a célula infectada já lida (−5 vitais) antes de ela romper.
+- **Mapa:** até o das vias aéreas (Etapa 3), é o mapa da Fase 1 num tom frio.
+- **Regras completas:** `fase2-virus.md` (§"Implementação de 14/11").
 
 ## Combate e consequências
 

@@ -31,6 +31,14 @@ float patient_vitals = PATIENT_VITALS_MAX;
 // quantos agentes a fase atual colocou no mundo (#M4)
 static int agents_count = 0;
 
+// ameacas que a fase ja teve: a composicao, as filhas da divisao e os virus
+// que caem da rajada (#19, #217, #86)
+static int phase_threats = 0;
+
+// agentes iniciais que sairam de cena sem leitura: a celula infectada que rompeu
+// ou levou a Lise, e o virus de dentro; saem da meta do bonus (fase2-virus.md, 13/11)
+static int bonus_excluded = 0;
+
 // indice da fase corrente: 0 = Fase 1 (#M4)
 static int phase_index = 0;
 
@@ -145,9 +153,35 @@ float agent_radius(int index)
     return (float)BACTERIA_RADIUS;
 }
 
+// virus dentro de uma celula: lisogenico ou no eclipse (#85)
+bool virus_inside(int index)
+{
+    return agents[index].species == SPECIES_VIRUS && agents[index].virus_state != VIRUS_FREE;
+}
+
+// virus que esta dentro da celula; -1 quando ela esta saudavel (#85)
+int cell_virus(int cell)
+{
+    int i;
+
+    for (i = 0; i < agents_count; i++)
+    {
+        if (agents[i].active && virus_inside(i) && agents[i].host_cell == cell)
+        {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
 // declaradas aqui porque o hit_agent, que vem antes, ja as usa (#237)
 static void set_feedback(const char* text);
 static void queue_card(ConceptCard card);
+
+// a rajada do virus usa o mesmo array dos projeteis inimigos (#86)
+static int fire_enemy_shot(EnemyShotKind kind, float x, float y, float dx, float dy,
+    float speed, float damage);
 
 // perigo novo numa vaga livre; devolve a vaga ou -1 (#237)
 static int spawn_hazard(HazardKind kind, float x, float y, float radius, float life, int owner)
@@ -249,14 +283,28 @@ const char* layer_one_text(int index)
 
     if (species == SPECIES_CELL)
     {
+        int v = cell_virus(index);
+
+        // celula infectada: a leitura mostra o estado e o tempo do virus (#87)
+        if (v != -1 && agents[v].virus_state == VIRUS_ECLIPSE)
+        {
+            return "célula infectada · eclipse: vai romper";
+        }
+
+        if (v != -1)
+        {
+            snprintf(text, sizeof(text), "célula infectada · vírus lisogênico · %d s",
+                (int)ceilf(agents[v].lysogenic_timer));
+            return text;
+        }
+
         return "célula do paciente · eucarionte";
     }
 
-    // o virus nao tem coloracao de Gram: a camada 1 diz o que ele e (#M4)
+    // o virus nao tem coloracao de Gram nem motor: a camada 1 diz o que ele e (#87)
     if (species == SPECIES_VIRUS)
     {
-        snprintf(text, sizeof(text), "vírus · %s", agents[index].name);
-        return text;
+        return "vírus livre · deriva no muco";
     }
 
     if (agents[index].shape == SHAPE_BACILLUS)
@@ -290,7 +338,22 @@ const char* layer_two_text(int index)
 
     if (species == SPECIES_VIRUS)
     {
-        return "Vírus precisa de uma célula hospedeira para se multiplicar";
+        return "acelular: sem parede, ribossomos nem metabolismo";
+    }
+
+    // celula infectada: o ciclo do virus, sem recomendar a ferramenta (#87)
+    if (cell_virus(index) != -1)
+    {
+        int v = cell_virus(index);
+
+        if (agents[v].virus_state == VIRUS_ECLIPSE)
+        {
+            return "eclipse · o vírus fez cópias dentro da célula";
+        }
+
+        snprintf(text, sizeof(text), "lisogênico · %d s · o vírus espera dentro da célula",
+            (int)ceilf(agents[v].lysogenic_timer));
+        return text;
     }
 
     return "núcleo guarda o DNA · mitocôndrias · não atacar";
@@ -309,7 +372,12 @@ const char* layer_two_reason(int index)
 
     if (species == SPECIES_VIRUS)
     {
-        return "a célula hospedeira é o que ele usa para se multiplicar";
+        return "só se multiplica dentro de uma célula do paciente";
+    }
+
+    if (cell_virus(index) != -1)
+    {
+        return "no lítico a célula se rompe e solta novos vírus";
     }
 
     return "eucarionte: tem núcleo, como as células do corpo";
@@ -326,8 +394,9 @@ int pick_target(float x, float y)
     {
         float dist;
 
-        // agente neutralizado nao e candidato do scanner
-        if (!agents[i].active)
+        // agente neutralizado nao e candidato do scanner; o virus de dentro se
+        // le pela celula (#87)
+        if (!agents[i].active || virus_inside(i))
         {
             continue;
         }
@@ -359,8 +428,9 @@ int touching_agent()
     for (i = 0; i < agents_count; i++)
     {
         // agente neutralizado nao encosta mais no nanobo; a celula do paciente
-        // nao fere o nanobo, entao nao conta como contato (#235)
-        if (!agents[i].active || agents[i].species == SPECIES_CELL)
+        // nao fere o nanobo, entao nao conta como contato (#235); o virus de
+        // dentro da celula tambem nao (#85)
+        if (!agents[i].active || agents[i].species == SPECIES_CELL || virus_inside(i))
         {
             continue;
         }
@@ -387,12 +457,13 @@ static int laser_for_species(Species species)
     return LASER_GRAM_NEGATIVE;
 }
 
-// a arma atinge a especie? o virus da Fase 2 minima aceita as duas (#M4)
+// a arma atinge a especie? antibiotico nao age em virus: o virus nao tem parede
+// nem metabolismo; so os anticorpos o prendem (#88)
 static bool weapon_affects(Laser laser, Species species)
 {
     if (species == SPECIES_VIRUS)
     {
-        return true;
+        return laser == LASER_NEUTRALIZE;
     }
 
     return (int)laser == laser_for_species(species);
@@ -541,6 +612,85 @@ void dismiss_card(void)
     }
 }
 
+// agente inicial que sai de cena sem identificacao sai da meta do bonus (#86, #88)
+static void exclude_from_goal(int index)
+{
+    if (index >= 0 && index < agents_initial() && !agents[index].identified)
+    {
+        bonus_excluded = bonus_excluded + 1;
+    }
+}
+
+// Lise: a celula infectada sai de cena sem romper; o virus de dentro vai junto
+// e conta como ameaca eliminada; o paciente perde LYSE_VITALS (#88)
+static void lyse_cell(int cell, int v)
+{
+    exclude_from_goal(cell);
+    exclude_from_goal(v);
+    hit_agent(v);
+    agents[cell].active = false;
+    patient_vitals = fmaxf(patient_vitals - LYSE_VITALS, 0.0f);
+    progress.correct_decisions = progress.correct_decisions + 1;
+    progress.cells_lysed = progress.cells_lysed + 1;
+    emit_sfx_at(SFX_EVENT_NEUTRALIZED, agents[cell].x, agents[cell].y);
+    set_feedback("Lise: a célula infectada saiu sem romper: -5 vitais");
+}
+
+// anticorpos e Lise (#88): a Neutralizacao prende o virus livre e nao fere a
+// celula; a Lise tira a celula infectada ja lida, antes de ela romper
+static void virus_tool_hit(Laser laser, int j)
+{
+    int v = agents[j].species == SPECIES_CELL ? cell_virus(j) : -1;
+
+    if (laser == LASER_NEUTRALIZE)
+    {
+        if (agents[j].species == SPECIES_VIRUS)
+        {
+            progress.correct_decisions = progress.correct_decisions + 1;
+            progress.viruses_neutralized = progress.viruses_neutralized + 1;
+            hit_agent(j);
+            queue_card(CARD_VIRUS);
+            emit_sfx_at(SFX_EVENT_NEUTRALIZED, agents[j].x, agents[j].y);
+            set_feedback("anticorpos prenderam o vírus: +10 pontos");
+        }
+        else if (v != -1)
+        {
+            progress.wrong_decisions = progress.wrong_decisions + 1;
+            emit_sfx_at(SFX_EVENT_WRONG, agents[j].x, agents[j].y);
+            set_feedback("o vírus está dentro da célula: use a Lise");
+        }
+        else
+        {
+            emit_sfx_at(SFX_EVENT_WRONG, agents[j].x, agents[j].y);
+            set_feedback("anticorpos não se prendem à célula do paciente");
+        }
+
+        return;
+    }
+
+    if (v != -1 && agents[j].layers > 0)
+    {
+        lyse_cell(j, v);
+        return;
+    }
+
+    emit_sfx_at(SFX_EVENT_WRONG, agents[j].x, agents[j].y);
+
+    if (v != -1)
+    {
+        set_feedback("leia a célula antes da Lise");
+    }
+    else if (agents[j].species == SPECIES_VIRUS)
+    {
+        progress.wrong_decisions = progress.wrong_decisions + 1;
+        set_feedback("a Lise age na célula infectada, não no vírus livre");
+    }
+    else
+    {
+        set_feedback("a Lise só age em célula infectada");
+    }
+}
+
 // um projetil contra os agentes: o primeiro que cruzar leva o acerto e o projetil some (#49)
 static void hit_projectiles()
 {
@@ -557,7 +707,8 @@ static void hit_projectiles()
 
         for (j = 0; j < agents_count; j++)
         {
-            if (!agents[j].active)
+            // o virus de dentro da celula nao leva tiro: quem leva e a celula (#88)
+            if (!agents[j].active || virus_inside(j))
             {
                 continue;
             }
@@ -582,9 +733,14 @@ static void hit_projectiles()
                 agents[j].lost_timer = 0.0f;
             }
 
-            // atacar a celula do paciente custa vitais do paciente, com qualquer
-            // ferramenta; a integridade do nanobo nao muda (#14, #234)
-            if (agents[j].species == SPECIES_CELL)
+            // Fase 2: anticorpos e Lise tem regra propria (#88)
+            if (projectiles[i].laser == LASER_NEUTRALIZE || projectiles[i].laser == LASER_LYSE)
+            {
+                virus_tool_hit(projectiles[i].laser, j);
+            }
+            // atacar a celula do paciente com antibiotico custa vitais do paciente;
+            // a integridade do nanobo nao muda (#14, #234)
+            else if (agents[j].species == SPECIES_CELL)
             {
                 progress.cell_attacks = progress.cell_attacks + 1;
                 patient_vitals = fmaxf(patient_vitals - CELL_SHOT_VITALS, 0.0f);
@@ -678,8 +834,14 @@ static void hit_projectiles()
                 fire_lock_timer = FIRE_LOCK_TIME;
                 emit_sfx_at(SFX_EVENT_WRONG, agents[j].x, agents[j].y);
 
+                // antibiotico em virus: ele nao tem parede nem metabolismo (#88)
+                if (agents[j].species == SPECIES_VIRUS)
+                {
+                    queue_card(CARD_VIRUS);
+                    set_feedback("antibiótico não age em vírus");
+                }
                 // quem leu so a forma chutou o grupo: o feedback aponta a coloracao (#215)
-                if (agents[j].layers == 1)
+                else if (agents[j].layers == 1)
                 {
                     progress.shape_guesses = progress.shape_guesses + 1;
                     set_feedback("a forma não define o grupo: veja a coloração");
@@ -746,6 +908,16 @@ static void reveal_layer(int index)
         emit_sfx_at(SFX_EVENT_SCAN, agents[index].x, agents[index].y);
     }
 
+    // a primeira leitura de virus e de celula infectada abre os cards da Fase 2 (#87)
+    if (agents[index].species == SPECIES_VIRUS)
+    {
+        queue_card(CARD_VIRUS);
+    }
+    else if (agents[index].species == SPECIES_CELL && cell_virus(index) != -1)
+    {
+        queue_card(CARD_CYCLE);
+    }
+
     if (agents[index].layers == MAX_LAYERS && agents[index].identified == false)
     {
         agents[index].identified = true;
@@ -766,6 +938,20 @@ static void reveal_layer(int index)
 
         identified_count = identified_count + 1;
         run_progress.identified = run_progress.identified + 1;
+
+        // a celula infectada lida ate o fim identifica o virus da fase que esta
+        // dentro dela: ele nao se le sozinho (#87)
+        if (agents[index].species == SPECIES_CELL)
+        {
+            int v = cell_virus(index);
+
+            if (v != -1 && v < agents_initial() && !agents[v].identified)
+            {
+                agents[v].identified = true;
+                identified_count = identified_count + 1;
+                run_progress.identified = run_progress.identified + 1;
+            }
+        }
 
         // o resumo conta leitura de agente Gram+ e Gram-, uma vez por agente (#200)
         if (agents[index].species == SPECIES_GRAM_POSITIVE)
@@ -805,8 +991,9 @@ int pick_target_at(float x, float y)
         float dist_player;
         float tolerance;
 
-        // agente neutralizado nao e candidato do scanner
-        if (!agents[i].active)
+        // agente neutralizado nao e candidato do scanner; o virus de dentro se
+        // le pela celula (#87)
+        if (!agents[i].active || virus_inside(i))
         {
             continue;
         }
@@ -892,6 +1079,53 @@ int defense_state()
     return 0;
 }
 
+// primeiro agente no caminho de um tiro que sai do nanobo; -1 sem nenhum (#88)
+static int first_agent_on_ray(float dx, float dy)
+{
+    int i;
+    int best = -1;
+    float best_t = 0.0f;
+
+    for (i = 0; i < agents_count; i++)
+    {
+        float ax;
+        float ay;
+        float t;
+        float side2;
+        float reach;
+
+        if (!agents[i].active || virus_inside(i))
+        {
+            continue;
+        }
+
+        ax = agents[i].x - player.x;
+        ay = agents[i].y - player.y;
+        t = ax * dx + ay * dy;
+
+        if (t < 0.0f)
+        {
+            continue;
+        }
+
+        side2 = ax * ax + ay * ay - t * t;
+        reach = agent_radius(i) + (float)PROJECTILE_RADIUS;
+
+        if (side2 > reach * reach)
+        {
+            continue;
+        }
+
+        if (best == -1 || t < best_t)
+        {
+            best = i;
+            best_t = t;
+        }
+    }
+
+    return best;
+}
+
 // dispara um projetil na direcao (dx, dy) ja normalizada, respeitando defesa e cooldown (#63, #64)
 static void fire(float dx, float dy)
 {
@@ -933,6 +1167,28 @@ static void fire(float dx, float dy)
         set_feedback("Reserva esgotada");
         emit_sfx(SFX_EVENT_WRONG);
         return;
+    }
+
+    // a Lise so dispara contra a celula infectada ja lida, a primeira coisa no
+    // caminho do tiro; numa celula saudavel ela nao dispara (#88)
+    if (player.laser == LASER_LYSE)
+    {
+        int first = first_agent_on_ray(dx, dy);
+        int v = (first != -1 && agents[first].species == SPECIES_CELL) ? cell_virus(first) : -1;
+
+        if (v == -1)
+        {
+            set_feedback("a Lise só age em célula infectada");
+            emit_sfx(SFX_EVENT_WRONG);
+            return;
+        }
+
+        if (agents[first].layers == 0)
+        {
+            set_feedback("leia a célula antes da Lise");
+            emit_sfx(SFX_EVENT_WRONG);
+            return;
+        }
     }
 
     for (i = 0; i < MAX_PROJECTILES; i++)
@@ -1008,9 +1264,63 @@ void shoot_toward(float x, float y)
     fire(dx / dist, dy / dist);
 }
 
+// fase com virus: as ferramentas sao os anticorpos e a Lise (#88)
+bool phase_has_viruses(void)
+{
+    int i;
+
+    for (i = 0; i < phases[phase_index].count; i++)
+    {
+        if (phases[phase_index].members[i].species == SPECIES_VIRUS)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+// teclas 1, 2 e 3: a ferramenta daquela posicao na fase atual (#216, #88)
+void select_tool(int slot)
+{
+    if (phase_has_viruses())
+    {
+        if (slot == 0)
+        {
+            player.laser = LASER_NEUTRALIZE;
+        }
+        else if (slot == 1)
+        {
+            player.laser = LASER_LYSE;
+        }
+
+        return;
+    }
+
+    if (slot == 0)
+    {
+        player.laser = LASER_GRAM_POSITIVE;
+    }
+    else if (slot == 1)
+    {
+        player.laser = LASER_GRAM_NEGATIVE;
+    }
+    else if (slot == 2 && reserve_available())
+    {
+        player.laser = LASER_RESERVE;
+    }
+}
+
 // roda do mouse passa para a proxima ferramenta da fase (#198, #216)
 void toggle_module()
 {
+    // Fase 2: alterna entre os anticorpos e a Lise (#88)
+    if (phase_has_viruses())
+    {
+        player.laser = player.laser == LASER_NEUTRALIZE ? LASER_LYSE : LASER_NEUTRALIZE;
+        return;
+    }
+
     if (player.laser == LASER_GRAM_POSITIVE)
     {
         player.laser = LASER_GRAM_NEGATIVE;
@@ -1154,7 +1464,7 @@ static void repel_touching_agents()
         float dy;
         float dist;
 
-        if (!agents[i].active)
+        if (!agents[i].active || virus_inside(i))
         {
             continue;
         }
@@ -1217,6 +1527,12 @@ static int species_speed(Species species)
     if (species == SPECIES_CELL)
     {
         return CELL_SPEED;
+    }
+
+    // o virus livre nao tem motor: so deriva devagar no muco (#85)
+    if (species == SPECIES_VIRUS)
+    {
+        return VIRUS_DRIFT_SPEED;
     }
 
     return AGENT_SPEED;
@@ -1291,27 +1607,204 @@ float virus_lysogenic_left(int index)
     return agents[index].lysogenic_timer;
 }
 
-// conta o tempo do virus lisogenico e marca o fim uma vez so (#84)
-// a multiplicacao e o eclipse ficam para a #85/#86
+// nome do virus da fase, para o virus que cai da rajada (#86)
+static const char* phase_virus_name(void)
+{
+    int i;
+
+    for (i = 0; i < phases[phase_index].count; i++)
+    {
+        if (phases[phase_index].members[i].species == SPECIES_VIRUS)
+        {
+            return phases[phase_index].members[i].name;
+        }
+    }
+
+    return "Vírus";
+}
+
+// virus que caiu da rajada: entra livre no muco numa vaga de fora da composicao,
+// ate o teto de virus da fase; acima do teto ele se perde (#86)
+static void spawn_free_virus(float x, float y)
+{
+    int i;
+    int alive = 0;
+    int slot = -1;
+
+    for (i = 0; i < agents_count; i++)
+    {
+        if (agents[i].active && agents[i].species == SPECIES_VIRUS)
+        {
+            alive = alive + 1;
+        }
+        else if (!agents[i].active && i >= agents_initial() && slot == -1)
+        {
+            slot = i;
+        }
+    }
+
+    if (alive >= VIRUS_CAP)
+    {
+        return;
+    }
+
+    if (slot == -1)
+    {
+        if (agents_count >= MAX_AGENTS)
+        {
+            return;
+        }
+
+        slot = agents_count;
+        agents_count = agents_count + 1;
+    }
+
+    agents[slot].name = phase_virus_name();
+    agents[slot].id = 100 + slot;
+    agents[slot].species = SPECIES_VIRUS;
+    agents[slot].shape = SHAPE_NONE;
+    reset_agent(slot);
+    agents[slot].virus_state = VIRUS_FREE;
+    agents[slot].lysogenic_timer = 0.0f;
+    agents[slot].host_cell = -1;
+    agents[slot].generation = 1;
+    agents[slot].x = fminf(fmaxf(x, (float)VIRUS_RADIUS), (float)WORLD_W - (float)VIRUS_RADIUS);
+    agents[slot].y = fminf(fmaxf(y, (float)VIRUS_RADIUS), (float)WORLD_H - (float)VIRUS_RADIUS);
+
+    // a vaga reaproveitada nao pode herdar a ultima leitura do painel
+    if (scan_target == slot)
+    {
+        scan_target = -1;
+    }
+
+    // cada virus que cai e uma ameaca a mais na fase e na run
+    phase_threats = phase_threats + 1;
+    run_progress.threats = run_progress.threats + 1;
+}
+
+// virus livre que toca uma celula saudavel entra nela e fica lisogenico, com o
+// tempo cheio; a celula precisa ser lida de novo (#85, revisao de 13/11)
+static void infect_on_touch(int index)
+{
+    int c;
+
+    for (c = 0; c < agents_count; c++)
+    {
+        float reach;
+
+        if (!agents[c].active || agents[c].species != SPECIES_CELL || cell_virus(c) != -1)
+        {
+            continue;
+        }
+
+        reach = agent_radius(index) + agent_radius(c) + 1.0f;
+
+        if (squared_distance(agents[index].x, agents[index].y, agents[c].x, agents[c].y) > reach * reach)
+        {
+            continue;
+        }
+
+        agents[index].virus_state = VIRUS_LYSOGENIC;
+        agents[index].lysogenic_timer = LYSOGENIC_TIME;
+        agents[index].host_cell = c;
+        agents[index].x = agents[c].x;
+        agents[index].y = agents[c].y;
+        agents[index].impulse_timer = 0.0f;
+        agents[c].layers = 0;
+
+        if (scan_target == index)
+        {
+            scan_target = -1;
+        }
+
+        emit_sfx_at(SFX_EVENT_WRONG, agents[c].x, agents[c].y);
+        set_feedback("um vírus entrou numa célula: ela está infectada");
+        return;
+    }
+}
+
+// fim do eclipse: a celula rompe e solta a rajada radial. O virus de dentro vira
+// a rajada, entao sai da conta, e cada virus da rajada entra quando cai livre (#86)
+static void burst_cell(int index)
+{
+    int cell = agents[index].host_cell;
+    float cx = agents[cell].x;
+    float cy = agents[cell].y;
+    float turn = ((float)rand() / ((float)RAND_MAX + 1.0f)) * 2.0f * (float)M_PI;
+    int k;
+
+    exclude_from_goal(cell);
+    exclude_from_goal(index);
+    agents[index].active = false;
+    agents[index].host_cell = -1;
+    phase_threats = phase_threats - 1;
+    run_progress.threats = run_progress.threats - 1;
+    progress.cells_burst = progress.cells_burst + 1;
+    lose_patient_cell(cell);
+
+    for (k = 0; k < BURST_COUNT; k++)
+    {
+        float a = turn + (float)k * 2.0f * (float)M_PI / (float)BURST_COUNT;
+        int s = fire_enemy_shot(SHOT_VIRION, cx, cy, cosf(a), sinf(a), BURST_SPEED, VIRION_DAMAGE);
+
+        if (s != -1)
+        {
+            enemy_shots[s].life = BURST_FLIGHT;
+        }
+    }
+
+    queue_card(CARD_CYCLE);
+    set_feedback("a célula se rompeu: 6 vírus livres (ciclo lítico)");
+}
+
+// ciclo do virus da Fase 2 (#84, #85, #86): dentro da celula ele conta o
+// lisogenico, depois o eclipse, e no fim do eclipse a celula rompe; livre, ele
+// infecta a celula saudavel que tocar
 static void update_virus(int index, double dt)
 {
+    int cell;
+
     if (agents[index].species != SPECIES_VIRUS)
     {
         return;
     }
 
-    if (agents[index].virus_state != VIRUS_LYSOGENIC)
+    if (agents[index].virus_state == VIRUS_FREE)
+    {
+        infect_on_touch(index);
+        return;
+    }
+
+    cell = agents[index].host_cell;
+
+    // sem celula viva em volta, o virus fica livre no muco
+    if (cell < 0 || !agents[cell].active)
+    {
+        agents[index].virus_state = VIRUS_FREE;
+        agents[index].host_cell = -1;
+        agents[index].lysogenic_timer = 0.0f;
+        return;
+    }
+
+    // dentro da celula ele acompanha a hospedeira
+    agents[index].x = agents[cell].x;
+    agents[index].y = agents[cell].y;
+    agents[index].lysogenic_timer -= (float)dt;
+
+    if (agents[index].lysogenic_timer > 0.0f)
     {
         return;
     }
 
-    agents[index].lysogenic_timer -= (float)dt;
-
-    if (agents[index].lysogenic_timer <= 0.0f)
+    // fim do lisogenico: o eclipse abre uma vez so (#85)
+    if (agents[index].virus_state == VIRUS_LYSOGENIC)
     {
-        agents[index].lysogenic_timer = 0.0f;
-        agents[index].virus_state = VIRUS_LYTIC_READY;
+        agents[index].virus_state = VIRUS_ECLIPSE;
+        agents[index].lysogenic_timer = ECLIPSE_TIME;
+        return;
     }
+
+    burst_cell(index);
 }
 
 // prazo da segunda dose: ao zerar, a bacteria fica resistente ao antibiotico
@@ -1358,11 +1851,29 @@ static void update_dose(int index, double dt)
     }
 }
 
-// quantas ameacas ainda estao ativas: celula saudavel nao conta (#26)
+// virus da rajada ainda no ar: ja sao ameacas, e caem livres no fim do voo (#86)
+static int virions_in_flight(void)
+{
+    int s;
+    int n = 0;
+
+    for (s = 0; s < MAX_ENEMY_SHOTS; s++)
+    {
+        if (enemy_shots[s].active && enemy_shots[s].kind == SHOT_VIRION)
+        {
+            n = n + 1;
+        }
+    }
+
+    return n;
+}
+
+// quantas ameacas ainda estao ativas: celula saudavel nao conta (#26); o virus
+// da rajada no ar conta (#86)
 int threats_left()
 {
     int i;
-    int total = 0;
+    int total = virions_in_flight();
 
     for (i = 0; i < agents_count; i++)
     {
@@ -1375,21 +1886,17 @@ int threats_left()
     return total;
 }
 
-// total de ameacas da fase: celula saudavel nao conta (#19)
+// total de ameacas da fase: celula saudavel nao conta (#19); filhas e virus da
+// rajada somam quando aparecem (#217, #86)
 int threats_total()
 {
-    int i;
-    int total = 0;
+    return phase_threats + virions_in_flight();
+}
 
-    for (i = 0; i < agents_count; i++)
-    {
-        if (agents[i].species != SPECIES_CELL)
-        {
-            total = total + 1;
-        }
-    }
-
-    return total;
+// meta do bonus: os iniciais menos quem saiu de cena sem leitura (#86, #88)
+int identification_goal(void)
+{
+    return agents_initial() - bonus_excluded;
 }
 
 // o bonus de +15 foi pago nesta conclusao? a tela de resultados le isso (#67)
@@ -1488,7 +1995,7 @@ static void conclude_phase_if_ready()
     score = score + vitals_bonus;
 
     // bonus de identificacao completa, so na conclusao e so uma vez (#67)
-    if (identified_count == agents_initial())
+    if (identified_count == identification_goal())
     {
         score = score + IDENTIFICATION_BONUS;
         bonus_awarded = true;
@@ -1538,6 +2045,19 @@ static void start_phase(int index)
         }
     }
 
+    // ameacas da fase: os invasores da composicao; filhas e virus da rajada
+    // somam depois (#217, #86)
+    phase_threats = 0;
+    bonus_excluded = 0;
+
+    for (i = 0; i < agents_count; i++)
+    {
+        if (agents[i].species != SPECIES_CELL)
+        {
+            phase_threats = phase_threats + 1;
+        }
+    }
+
     // a run soma o que cada fase acrescenta (#M4)
     run_progress.threats = run_progress.threats + threats_total();
     run_progress.agents = run_progress.agents + agents_count;
@@ -1557,6 +2077,64 @@ static void start_phase(int index)
 
     place_agents();
 
+    // os virus da fase nascem dentro da celula hospedeira, com os tempos
+    // escalonados: o jogador tem como chegar a cada um (#89)
+    {
+        int n = 0;
+
+        for (i = 0; i < agents_count; i++)
+        {
+            if (agents[i].species == SPECIES_VIRUS && agents[i].host_cell != -1)
+            {
+                agents[i].x = agents[agents[i].host_cell].x;
+                agents[i].y = agents[agents[i].host_cell].y;
+                agents[i].lysogenic_timer = LYSOGENIC_TIME + (float)n * LYSOGENIC_STAGGER;
+                n = n + 1;
+            }
+        }
+    }
+
+    // cada celula livre nasce vizinha de uma infectada, do lado do meio do mapa:
+    // quando a infectada rompe, a rajada chega nela (#89)
+    if (phase_has_viruses())
+    {
+        int host = 0;
+
+        for (i = 0; i < agents_count; i++)
+        {
+            int k;
+            int seen = 0;
+            int cell = -1;
+
+            if (agents[i].species != SPECIES_CELL || cell_virus(i) != -1)
+            {
+                continue;
+            }
+
+            for (k = 0; k < agents_count && cell == -1; k++)
+            {
+                if (agents[k].species == SPECIES_CELL && cell_virus(k) != -1)
+                {
+                    if (seen == host)
+                    {
+                        cell = k;
+                    }
+
+                    seen = seen + 1;
+                }
+            }
+
+            if (cell == -1)
+            {
+                break;
+            }
+
+            agents[i].x = agents[cell].x + (agents[cell].x < (float)WORLD_W / 2.0f ? NEIGHBOR_GAP : -NEIGHBOR_GAP);
+            agents[i].y = agents[cell].y;
+            host = host + 1;
+        }
+    }
+
     key_up = false;
     key_down = false;
     key_left = false;
@@ -1575,6 +2153,9 @@ static void start_phase(int index)
     progress.reserve_on_resistant = 0;
     progress.reserve_on_common = 0;
     progress.shape_guesses = 0;
+    progress.viruses_neutralized = 0;
+    progress.cells_lysed = 0;
+    progress.cells_burst = 0;
 
     phase_finished = false;
     bonus_awarded = false;
@@ -1591,7 +2172,13 @@ static void start_phase(int index)
     // as cargas da Reserva voltam a cada fase; fora da Fase 1 ela nao existe (#216)
     reserve_left = RESERVE_CHARGES;
 
-    if (player.laser == LASER_RESERVE && !reserve_available())
+    // cada fase mostra so as suas ferramentas: a Fase 2 comeca nos anticorpos (#88)
+    if (phase_has_viruses())
+    {
+        player.laser = LASER_NEUTRALIZE;
+    }
+    else if (player.laser != LASER_GRAM_NEGATIVE
+        && (player.laser != LASER_RESERVE || !reserve_available()))
     {
         player.laser = LASER_GRAM_POSITIVE;
     }
@@ -1816,7 +2403,8 @@ static void collide_agents()
         float nx;
         float ny;
 
-        if (!agents[i].active)
+        // o virus de dentro da celula nao colide: ele esta nela (#85)
+        if (!agents[i].active || virus_inside(i))
         {
             continue;
         }
@@ -1868,7 +2456,7 @@ static void collide_agents()
         {
             float push;
 
-            if (!agents[j].active)
+            if (!agents[j].active || virus_inside(j))
             {
                 continue;
             }
@@ -2002,7 +2590,8 @@ static void divide_bacteria(int index)
 
     agents_count = agents_count + 1;
 
-    // a filha e uma ameaca a mais na run (#M4)
+    // a filha e uma ameaca a mais na fase e na run (#M4)
+    phase_threats = phase_threats + 1;
     run_progress.threats = run_progress.threats + 1;
 
     set_feedback("uma bactéria se dividiu em duas");
@@ -2126,7 +2715,8 @@ static void update_hazards(double dt)
     }
 }
 
-// correnteza da fase: empurra o nanobo, os cocos soltos e as toxinas (#237)
+// correnteza da fase: empurra o nanobo, os cocos soltos, os virus livres e os
+// projeteis inimigos (#237, #89)
 static void apply_currents(double dt)
 {
     int c;
@@ -2145,7 +2735,10 @@ static void apply_currents(double dt)
 
         for (i = 0; i < agents_count; i++)
         {
-            if (!agents[i].active || agents[i].shape != SHAPE_COCCUS || agents[i].colonizing
+            bool carried = agents[i].shape == SHAPE_COCCUS
+                || (agents[i].species == SPECIES_VIRUS && agents[i].virus_state == VIRUS_FREE);
+
+            if (!agents[i].active || !carried || agents[i].colonizing
                 || agents[i].ai_state == AI_HOLD)
             {
                 continue;
@@ -2368,8 +2961,9 @@ static float coccus_ai(int index, float dt)
     return COCCUS_DRIFT_SPEED;
 }
 
-// projetil inimigo novo numa vaga livre; sem vaga, o ataque se perde (#236)
-static void fire_enemy_shot(EnemyShotKind kind, float x, float y, float dx, float dy,
+// projetil inimigo novo numa vaga livre; devolve a vaga, ou -1 quando nao ha
+// vaga e o ataque se perde (#236)
+static int fire_enemy_shot(EnemyShotKind kind, float x, float y, float dx, float dy,
     float speed, float damage)
 {
     int i;
@@ -2387,9 +2981,11 @@ static void fire_enemy_shot(EnemyShotKind kind, float x, float y, float dx, floa
             enemy_shots[i].speed = speed;
             enemy_shots[i].damage = damage;
             enemy_shots[i].life = ENEMY_SHOT_LIFE;
-            return;
+            return i;
         }
     }
+
+    return -1;
 }
 
 // toxina do coco: com o nanobo a TOXIN_RANGE, avisa e solta uma toxina a cada
@@ -2452,6 +3048,12 @@ static void update_enemy_shots(double dt)
         if (enemy_shots[i].life <= 0.0f || enemy_shots[i].x < 0.0f || enemy_shots[i].y < 0.0f
             || enemy_shots[i].x > (float)WORLD_W || enemy_shots[i].y > (float)WORLD_H)
         {
+            // o virus da rajada termina o voo e cai livre no muco (#86)
+            if (enemy_shots[i].kind == SHOT_VIRION)
+            {
+                spawn_free_virus(enemy_shots[i].x, enemy_shots[i].y);
+            }
+
             enemy_shots[i].active = false;
             continue;
         }
@@ -2464,7 +3066,8 @@ static void update_enemy_shots(double dt)
         {
             enemy_shots[i].active = false;
             emit_sfx_at(SFX_EVENT_HIT, enemy_shots[i].x, enemy_shots[i].y);
-            set_feedback("a defesa destruiu a toxina");
+            set_feedback(enemy_shots[i].kind == SHOT_VIRION
+                ? "a defesa destruiu o vírus da rajada" : "a defesa destruiu a toxina");
             continue;
         }
 
@@ -2474,7 +3077,14 @@ static void update_enemy_shots(double dt)
 
             if (damage_player(enemy_shots[i].damage))
             {
-                set_feedback("toxina do coco: -8 de integridade");
+                set_feedback(enemy_shots[i].kind == SHOT_VIRION
+                    ? "vírus da rajada: -6 de integridade" : "toxina do coco: -8 de integridade");
+            }
+
+            // o virus que bate no nanobo continua sendo virus: cai livre ali (#86)
+            if (enemy_shots[i].kind == SHOT_VIRION)
+            {
+                spawn_free_virus(enemy_shots[i].x, enemy_shots[i].y);
             }
         }
     }
@@ -2522,9 +3132,9 @@ void update_match(double dt)
         update_dose(i, dt);
         update_division(i, dt);
 
-        // virus lisogenico ou pronto para o litico fica parado; so o
-        // empurrao da defesa o move (#84); andar e regra do litico (#85)
-        if (agents[i].species == SPECIES_VIRUS && agents[i].impulse_timer <= 0.0f)
+        // o virus de dentro da celula nao anda: acompanha a hospedeira; a celula
+        // pode ter rompido neste quadro (#85, #86)
+        if (!agents[i].active || virus_inside(i))
         {
             continue;
         }

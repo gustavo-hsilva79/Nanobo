@@ -53,19 +53,21 @@ typedef enum
 // virus da Fase 2 minima: um acerto de qualquer arma neutraliza (#M4)
 #define VIRUS_RESISTANCE 1
 
-// tempo do virus parado e piscando antes do ciclo litico, em segundos (#84)
-// valor de partida a validar no PoC (fase2-virus.md)
-#define LYSOGENIC_TIME 12.0f
+// tempo do virus lisogenico dentro da celula antes do eclipse, em segundos (#84);
+// era 12 s, e os bots da Fase 2 pediram 10 (#89)
+#define LYSOGENIC_TIME 10.0f
 
 // meio periodo do piscar do virus lisogenico: opaco, depois semitransparente (#84)
 #define LYSOGENIC_BLINK 0.25f
 
-// estado do virus da Fase 2: nasce lisogenico e fica pronto para o litico (#84)
-// a #85 consome o VIRUS_LYTIC_READY e abre o eclipse
+// estado do virus da Fase 2 (#84, #85, revisao de 14/11): dentro da celula ele
+// e lisogenico e depois entra no eclipse; a celula rompe e os virus saem livres,
+// derivando no muco ate infectar outra celula
 typedef enum
 {
     VIRUS_LYSOGENIC = 0,
-    VIRUS_LYTIC_READY = 1
+    VIRUS_ECLIPSE = 1,
+    VIRUS_FREE = 2
 } VirusState;
 
 // sprites por especie, sorteados no nascimento do agente (#211)
@@ -73,12 +75,15 @@ typedef enum
 #define SPRITE_VARIANTS 2
 
 // ferramenta escolhida pelo jogador: Ruptura (Gram+), Dissolucao (Gram-) e,
-// so na Fase 1, a Reserva, que elimina qualquer bacteria com uma dose (#62, #216)
+// so na Fase 1, a Reserva, que elimina qualquer bacteria com uma dose (#62, #216);
+// na Fase 2, a Neutralizacao (anticorpos no virus livre) e a Lise (celula infectada) (#88)
 typedef enum
 {
     LASER_GRAM_POSITIVE = 0,
     LASER_GRAM_NEGATIVE = 1,
-    LASER_RESERVE = 2
+    LASER_RESERVE = 2,
+    LASER_NEUTRALIZE = 3,
+    LASER_LYSE = 4
 } Laser;
 
 // quantos projeteis podem existir ao mesmo tempo
@@ -119,7 +124,7 @@ typedef struct
     float impulse_timer; // tempo restante do empurrao da defesa (#17)
     bool active;
     VirusState virus_state; // so vale para SPECIES_VIRUS (#84)
-    float lysogenic_timer; // tempo ate o virus ficar pronto para o litico (#84)
+    float lysogenic_timer; // tempo que falta do lisogenico ou do eclipse (#84, #85)
     int generation; // 0 nos virus da fase; a eclosao soma 1 (#86)
     int host_cell; // indice da celula hospedeira, -1 sem celula (#89)
     int variant; // sprite sorteado no nascimento, de 0 a SPRITE_VARIANTS - 1 (#211)

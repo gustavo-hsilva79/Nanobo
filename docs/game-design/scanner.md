@@ -93,10 +93,15 @@ O texto da segunda camada é a informação curta de scanner aprovada em `docs/g
 | 2 | Bactéria Gram-negativa | “Gram- · parede fina sob membrana externa” e “A membrana externa adicional distingue este grupo.” |
 | 1 | Célula saudável própria | “célula do organismo · Célula epitelial”, sem amostra de coloração |
 | 2 | Célula saudável própria | “célula saudável do próprio organismo: preserve-a” e “preserve a célula: as duas armas ferem o próprio organismo” |
-| 1 | Vírus da Fase 2 | “vírus · Vírus da fase”, sem amostra de coloração |
-| 2 | Vírus da Fase 2 | “Vírus precisa de uma célula hospedeira para se multiplicar” e “a célula hospedeira é o que ele usa para se multiplicar” |
+| 1 | Vírus livre (Fase 2) | “vírus livre · deriva no muco”, sem amostra de coloração |
+| 2 | Vírus livre (Fase 2) | “acelular: sem parede, ribossomos nem metabolismo” e “só se multiplica dentro de uma célula do paciente” |
+| 1 | Célula infectada (Fase 2) | “célula infectada · vírus lisogênico · %d s” (no eclipse, “célula infectada · eclipse: vai romper”) |
+| 2 | Célula infectada (Fase 2) | “lisogênico · %d s · o vírus espera dentro da célula” (no eclipse, “eclipse · o vírus fez cópias dentro da célula”) e “no lítico a célula se rompe e solta novos vírus” |
 
 O vírus não tem coloração de Gram: sem amostra e sem anel; a categoria do painel é vírus.
+- **Vírus dentro da célula (#87):** não é alvo do scan. Lê-se a célula, que passa a ter a categoria “célula infectada” depois da 1ª camada e ganha no mundo um arco âmbar com o tempo que falta.
+- **Identificação:** ler a infectada até a 2ª camada identifica também o vírus da fase que está dentro.
+- **Nova infecção:** quando um vírus livre infecta uma célula já lida, as camadas dela voltam a zero.
 
 O “Gram-” usa hífen ASCII (U+002D): a fonte embutida não tem o menos tipográfico (U+2212), que sai como `^` na tela.
 

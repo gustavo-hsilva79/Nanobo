@@ -32,7 +32,7 @@
 | 14/11 | nova amostra de arte (Nanobô 48×48, coco, silhueta, célula do paciente 64×64) **aprovada** (#225), antes do prazo de 19/11 |
 | 15–19/11 | **Etapa 1:** Fase 1 nova com a arte atual (forma, tratamento de 2 doses e resistência, Reserva, divisão, vitais, tutorial no mundo, mapa escurecido e game feel); **amostra de arte** em 18/11 |
 | 20–21/11 | instalador de fumaça (Release empacotado numa pasta limpa); regras da Fase 2 |
-| 20–23/11 | **Etapa 2:** Fase 2 nas vias aéreas (eclipse, eclosão de vírus livres, infecção, Neutralização, Lise) |
+| 20–23/11 | **Etapa 2:** Fase 2 nas vias aéreas (eclipse, eclosão de vírus livres, infecção, Neutralização, Lise). **Implementada em 14/11** (#85–#89), com os bots da Fase 2; falta a validação de ponta a ponta (#91) |
 | 23–25/11 | **Fase 3** no pulmão (levedura, bolor, Perfuração, carga de esporos pelo estado do paciente) |
 | 24–28/11 | **Etapa 3:** arte (personagens, tiros, impactos, mapas 2 e 3), interface nova no `main.c`, narrativa, textos e Top 10 com entrada de nome |
 | 29/11–01/12 | **Etapa 4:** calibração com bots, QA automatizado, memória (#117/#118) e instalador final em máquina limpa |

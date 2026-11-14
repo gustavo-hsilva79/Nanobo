@@ -29,6 +29,18 @@
 | FB-17 | a defesa destrói um projétil inimigo | `a defesa destruiu a toxina` | 26 | #236 |
 | FB-18 | primeira dose numa bactéria dentro do biofilme | `o biofilme protege a bactéria: ela pede mais uma dose` | 53 | #237 |
 | FB-19 | o Nanobô dentro da nuvem de endotoxina | `endotoxina da Gram-: saia da nuvem` | 34 | #237 |
+| FB-20 | Neutralização prende um vírus livre | `anticorpos prenderam o vírus: +10 pontos` | 40 | #88 |
+| FB-21 | Neutralização numa célula infectada | `o vírus está dentro da célula: use a Lise` | 41 | #88 (FB2-09) |
+| FB-22 | Neutralização numa célula saudável (sem custo) | `anticorpos não se prendem à célula do paciente` | 46 | #88 |
+| FB-23 | Lise numa célula infectada ainda não lida (não dispara) | `leia a célula antes da Lise` | 27 | #88 |
+| FB-24 | Lise sem célula infectada no caminho (não dispara) | `a Lise só age em célula infectada` | 33 | #88 |
+| FB-25 | projétil da Lise acerta um vírus livre | `a Lise age na célula infectada, não no vírus livre` | 50 | #88 |
+| FB-26 | Lise tira a célula infectada | `Lise: a célula infectada saiu sem romper: -5 vitais` | 51 | #88 |
+| FB-27 | antibiótico num vírus | `antibiótico não age em vírus` | 28 | #88 (FB2-08) |
+| FB-28 | vírus livre infecta uma célula | `um vírus entrou numa célula: ela está infectada` | 47 | #85 |
+| FB-29 | a célula infectada rompe no fim do eclipse | `a célula se rompeu: 6 vírus livres (ciclo lítico)` | 49 | #86 (FB2-10, com os 6 de 14/11) |
+| FB-30 | a defesa destrói um vírus da rajada | `a defesa destruiu o vírus da rajada` | 35 | #86 |
+| FB-31 | vírus da rajada acerta o Nanobô | `vírus da rajada: -6 de integridade` | 34 | #86 |
 
 **Hífen, não menos tipográfico.** "Gram-" usa hífen ASCII (U+002D). O "−" (U+2212) que a spec traz não existe na fonte embutida (Latin-1): na tela ele saía como `^`, visto no QA de 03/11 e corrigido no commit `5e7cc75`. Ao editar estes textos, não reintroduza U+2212.
 
@@ -102,6 +114,7 @@ Desenhado **em toda partida** — `MENU → BRIEFING → GAME`, e também depois
 | CT-34 | resultados | `enter também continua` | 21 | #202 |
 | CT-35 | vitória | `Vitória` | 7 | #202 |
 | CT-36 | HUD, linha 0 | `Ruptura` / `Dissolução` / `Reserva %d/%d` (`Reserva 2/2`) | 7 / 10 / 11 | decisão 03/11 (noite); #216 |
+| CT-36b | HUD, linha 0, Fase 2 | `Neutralização` / `Lise` | 13 / 4 | #88 |
 | CT-37 | resultados, painel novo | `o que a partida mostrou` | 23 | #202, build de 04/11 |
 | CT-38 | resultados, painel novo | `bactérias identificadas: %d Gram+ · %d Gram-` (`bactérias identificadas: 1 Gram+ · 1 Gram-`) | 42 | #174/#202, build de 04/11 |
 | CT-39 | resultados, painel novo | `acertos de arma: %d · erros: %d` (`acertos de arma: 1 · erros: 0`) | 29 | #174/#202, build de 04/11 |
@@ -109,7 +122,7 @@ Desenhado **em toda partida** — `MENU → BRIEFING → GAME`, e também depois
 | CT-41 | resultados, frase de revisão | `reveja a estrutura lida no scan` / `reveja: as duas armas ferem a célula` / `sem erro de arma nesta partida` | 31 / 36 / 30 | #174/#202, build de 04/11 |
 | CT-42 | HUD, linha 1, Fase 2 | `objetivo: neutralizar os vírus e chegar ao destino` | 50 | Fase 2 mínima (04/11) |
 | CT-43 | scanner, camada 1, vírus | `clique de novo para concluir a leitura` | 38 | Fase 2 mínima (04/11) |
-| CT-44 | scanner, categoria | `vírus` | 5 | Fase 2 mínima (04/11) |
+| CT-44 | scanner, categoria | `vírus` / `célula infectada` (depois da leitura) | 5 / 16 | Fase 2 mínima (04/11); #87 |
 | CT-45 | resultados, título | `Fase %d concluída` | 17 | Fase 2 mínima (04/11) |
 | CT-46 | vitória / game over | `tempo total` / `recorde` | 11 / 7 | Recorde mínimo (04/11) |
 | CT-47 | menu, rodapé | `recorde %d` | 10 | Recorde mínimo (04/11) |
@@ -145,9 +158,12 @@ Desenhado **em toda partida** — `MENU → BRIEFING → GAME`, e também depois
 | RT-06 | scanner, linha de estado | ` · alvo sob o cursor` (ciano) / ` · última leitura` (apagado) | 20 / 17 | #199, build de 04/11 |
 | RT-07 | scanner, camada 2, revisão bactéria (Gram+ e Gram-) | `procarionte · sem núcleo: DNA solto no nucleoide` | 48 | #214, OA1 |
 | RT-08b | scanner, camada 2, revisão célula | `eucarionte: tem núcleo, como as células do corpo` | 48 | #214, OA1 |
-| RT-09 | scanner, camada 1, vírus | `vírus · Vírus da fase` | 21 | Fase 2 mínima (04/11) |
-| RT-10 | scanner, camada 2, vírus | `Vírus precisa de uma célula hospedeira para se multiplicar` | 58 | Fase 2 mínima (04/11) |
-| RT-11 | scanner, camada 2, revisão, vírus | `a célula hospedeira é o que ele usa para se multiplicar` | 55 | Fase 2 mínima (04/11) |
+| RT-09 | scanner, camada 1, vírus livre | `vírus livre · deriva no muco` | 28 | #87 |
+| RT-10 | scanner, camada 2, vírus livre | `acelular: sem parede, ribossomos nem metabolismo` | 48 | #87 (OA6) |
+| RT-11 | scanner, camada 2, revisão, vírus livre | `só se multiplica dentro de uma célula do paciente` | 49 | #87 |
+| RT-12 | scanner, camada 1, célula infectada | `célula infectada · vírus lisogênico · %d s` (`... · 10 s`) / `célula infectada · eclipse: vai romper` | 42 / 38 | #87 |
+| RT-13 | scanner, camada 2, célula infectada | `lisogênico · %d s · o vírus espera dentro da célula` / `eclipse · o vírus fez cópias dentro da célula` | 51 / 45 | #87 (OA7) |
+| RT-14 | scanner, camada 2, revisão, célula infectada | `no lítico a célula se rompe e solta novos vírus` | 47 | #87 |
 
 **Limite:** a fonte embutida é de **8 px por caractere** (medido com `al_get_text_width`, não estimado) e a área útil do painel do scanner é de 588 px, a partir de `text_x = 36`. A linha mais longa desenhada na fase é a RT-04 com *Streptococcus pyogenes*: **68 caracteres** (544 px) mais a amostra de 12 px, 556 px no total (medido em 13/11, #214). A mais longa do briefing tem 54 (432 px, dentro dos 548 px do painel) e a dos resultados, 36 (288 px). Nenhuma passa da área do painel em 640×360. A RT-08 (revisão Gram- separada) saiu em 13/11: Gram+ e Gram- compartilham a RT-07, porque a revisão agora fala do procarionte, não do grupo.
 
@@ -172,9 +188,12 @@ Desde 14/11 (#223), o painel "o que a partida mostrou" fala em linguagem de joga
 | RR-02 | 2, fase com bactéria | `tratamentos completos: %d · resistentes: %d` | 41 | `treatments_completed`, `resistances` |
 | RR-03 | 3, fase com bactéria | `nenhum antibiótico errado` / `antibiótico errado: %d (%d pela forma)` | 25 / 38 | `wrong_decisions`, `shape_guesses` |
 | RR-04 | 4, fase com bactéria | `Reserva guardada: nenhuma carga gasta` / `Reserva: %d na resistente, %d na comum` | 37 / 36 | `reserve_on_resistant`, `reserve_on_common` |
-| RR-05 | 5, fase com bactéria; 3, fase de vírus | `células do paciente feridas: %d` | 30 | `cell_attacks` |
-| RR-06 | 1, fase de vírus | `vírus não têm coloração de Gram` | 31 | — |
-| RR-07 | 2, fase de vírus | `vírus neutralizados: %d de %d` | 27 | ameaças da fase |
+| RR-05 | 5, fase com bactéria | `células do paciente feridas: %d` | 30 | `cell_attacks` |
+| RR-06 | 1, fase de vírus | `anticorpos: %d vírus livres presos` | 34 | `viruses_neutralized` (#88) |
+| RR-07 | 2, fase de vírus | `Lise: %d células contidas antes de romper` | 40 | `cells_lysed` (#88) |
+| RR-08 | 3, fase de vírus | `ciclo lítico: %d células romperam` | 32 | `cells_burst` (#86) |
+| RR-09 | 4, fase de vírus | `ameaças eliminadas: %d de %d` | 28 | ameaças da fase, com os vírus da rajada |
+| RR-10 | 5, fase de vírus | `vírus não têm parede nem ribossomos` | 35 | — (OA6) |
 
 **Leitura dos contadores:** um tratamento completo é uma bactéria eliminada com as duas doses do antibiótico certo. A Reserva não conta como tratamento, e o relatório a separa entre a gasta numa resistente e a gasta numa bactéria comum. `shape_guesses` conta o antibiótico errado dado depois de ler só a forma (FB-05).
 
@@ -188,7 +207,9 @@ Desde 14/11 (#223), o painel "o que a partida mostrou" fala em linguagem de joga
 
 ### 3.1 Cards de conceito
 
-> **No código desde 14/11 (#222):** CC-01 abre na primeira leitura completa de bactéria e CC-02 na primeira bactéria resistente. Cada card aparece uma vez por partida, sobre a fase parada, com as linhas desenhadas a partir de x = 56 num painel de 576 px; a maior (CC-02a, 66 caracteres) ocupa 528 px. CC-03 a CC-06 entram com as Fases 2 e 3.
+> **No código desde 14/11 (#222):** CC-01 abre na primeira leitura completa de bactéria e CC-02 na primeira bactéria resistente. Cada card aparece uma vez por partida, sobre a fase parada, com as linhas desenhadas a partir de x = 56 num painel de 576 px; a maior (CC-02a, 66 caracteres) ocupa 528 px. CC-05 e CC-06 entram com a Fase 3.
+>
+> **Fase 2 no código desde 14/11 (#87, #88):** CC-03 abre na primeira leitura de um vírus livre, no primeiro vírus preso pelos anticorpos ou no primeiro antibiótico num vírus. CC-04 abre na primeira leitura de uma célula infectada ou na primeira célula que rompe, para quem não leu. Títulos: `Vírus não é célula` (18) e `Lisogênico e lítico` (19).
 
 | ID | Card / quando aparece | Linha | Car. |
 |---|---|---|---:|

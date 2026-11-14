@@ -61,6 +61,12 @@ _Static_assert(HUD_LINES * HUD_LINE_H + 2 * HUD_MARGIN <= PANEL_H, "HUD nao cabe
 
 // mapa recuado e silhueta neutra: os agentes precisam se destacar do vermelho (#220)
 #define MAP_TINT        al_map_rgb_f(0.68f, 0.62f, 0.66f)
+
+// Fase 2 nas vias aereas: ate o mapa proprio (Etapa 3), o mesmo PNG num tom
+// frio de mucosa, com um veu verde-azulado, para a fase nova nao parecer o vaso
+// da Fase 1 (#89)
+#define MAP_TINT_AIRWAY al_map_rgb_f(0.46f, 0.60f, 0.62f)
+#define MAP_VEIL_AIRWAY al_map_rgba_f(0.06f * 0.34f, 0.24f * 0.34f, 0.26f * 0.34f, 0.34f)
 #define MAP_VEIL        al_map_rgba_f(0.05f * 0.28f, 0.07f * 0.28f, 0.11f * 0.28f, 0.28f)
 #define SILHOUETTE_FILL al_map_rgb(86, 104, 132)
 #define SILHOUETTE_EDGE al_map_rgb(170, 190, 215)
@@ -1039,9 +1045,10 @@ void draw_scan_panel()
         state = "Identificação concluída";
     }
 
+    // a celula infectada so aparece como tal depois da leitura (#87)
     if (agents[target].species == SPECIES_CELL)
     {
-        category = "célula";
+        category = agents[target].layers > 0 && cell_virus(target) != -1 ? "célula infectada" : "célula";
     }
     else if (agents[target].species == SPECIES_VIRUS)
     {
@@ -1752,7 +1759,9 @@ static const char* card_titles[CARD_COUNT] =
     "Resistência e Reserva",
     "Flagelo",
     "Biofilme",
-    "Endotoxina"
+    "Endotoxina",
+    "Vírus não é célula",
+    "Lisogênico e lítico"
 };
 
 static const char* card_lines[CARD_COUNT][3] =
@@ -1781,6 +1790,16 @@ static const char* card_lines[CARD_COUNT][3] =
         "A membrana externa da Gram- tem uma toxina, o LPS.",
         "Quando a Gram- se rompe, até pelo antibiótico, o LPS se espalha.",
         "Saia da nuvem: ela fere o Nanobô enquanto dura."
+    },
+    {
+        "O vírus não tem parede, ribossomos nem metabolismo próprio.",
+        "Ele só se multiplica dentro de uma célula. Antibiótico não o atinge.",
+        "A Neutralização leva anticorpos, que se prendem ao vírus livre."
+    },
+    {
+        "Lisogênico: o vírus fica dentro da célula, sem destruí-la ainda.",
+        "Lítico: ele faz cópias, a célula se rompe e libera novos vírus.",
+        "A Lise destrói a célula infectada, como faz o linfócito T."
     }
 };
 
@@ -1821,6 +1840,26 @@ void draw_reserve_icon(float x, float y)
         3.0f, 3.0f, UI_TEXT);
     al_draw_rounded_rectangle(x + 1.5f, y + 5.5f, x + 14.5f, y + 10.5f,
         3.0f, 3.0f, UI_INK, 1.0f);
+}
+
+// icone provisorio da Neutralizacao: o Y do anticorpo (#88)
+void draw_antibody_icon(float x, float y)
+{
+    al_draw_line(x + 8.0f, y + 15.0f, x + 8.0f, y + 8.0f, UI_INK, 4.0f);
+    al_draw_line(x + 8.0f, y + 8.0f, x + 3.0f, y + 2.0f, UI_INK, 4.0f);
+    al_draw_line(x + 8.0f, y + 8.0f, x + 13.0f, y + 2.0f, UI_INK, 4.0f);
+    al_draw_line(x + 8.0f, y + 15.0f, x + 8.0f, y + 8.0f, UI_CYAN, 2.0f);
+    al_draw_line(x + 8.0f, y + 8.0f, x + 3.0f, y + 2.0f, UI_CYAN, 2.0f);
+    al_draw_line(x + 8.0f, y + 8.0f, x + 13.0f, y + 2.0f, UI_CYAN, 2.0f);
+}
+
+// icone provisorio da Lise: a celula com o poro aberto pelo linfocito T (#88)
+void draw_lyse_icon(float x, float y)
+{
+    al_draw_filled_circle(x + 8.0f, y + 8.0f, 7.0f, UI_INK);
+    al_draw_circle(x + 8.0f, y + 8.0f, 5.5f, UI_GREEN, 1.5f);
+    al_draw_line(x + 4.0f, y + 4.0f, x + 12.0f, y + 12.0f, UI_RED, 2.0f);
+    al_draw_line(x + 12.0f, y + 4.0f, x + 4.0f, y + 12.0f, UI_RED, 2.0f);
 }
 
 void draw_hud()
@@ -1916,6 +1955,16 @@ void draw_hud()
     // o HUD diz qual arma esta ativa pelo nome, nao so a cor (#199)
     module_name = player.laser == LASER_GRAM_POSITIVE ? "Ruptura" : "Dissolução";
 
+    // Fase 2: anticorpos e Lise (#88)
+    if (player.laser == LASER_NEUTRALIZE)
+    {
+        module_name = "Neutralização";
+    }
+    else if (player.laser == LASER_LYSE)
+    {
+        module_name = "Lise";
+    }
+
     // Reserva: nome com as cargas e a palavra de estado quando acabam (#216)
     if (player.laser == LASER_RESERVE)
     {
@@ -1949,6 +1998,14 @@ void draw_hud()
     {
         draw_reserve_icon((float)x_icon, (float)(hud_y(0) - 4));
     }
+    else if (player.laser == LASER_NEUTRALIZE)
+    {
+        draw_antibody_icon((float)x_icon, (float)(hud_y(0) - 4));
+    }
+    else if (player.laser == LASER_LYSE)
+    {
+        draw_lyse_icon((float)x_icon, (float)(hud_y(0) - 4));
+    }
     else
     {
         al_draw_bitmap(laser_icon, (float)x_icon, (float)(hud_y(0) - 4), 0);
@@ -1977,7 +2034,7 @@ void draw_hud()
     }
 
     // identificados fica na linha do objetivo: e progresso do bonus, nao do combate
-    snprintf(line, sizeof(line), "identificados %d/%d", identified_count, agents_initial());
+    snprintf(line, sizeof(line), "identificados %d/%d", identified_count, identification_goal());
     al_draw_text(font, UI_DIM, (float)(SCREEN_W - HUD_MARGIN), (float)hud_y(1),
         ALLEGRO_ALIGN_RIGHT, line);
 
@@ -2059,8 +2116,10 @@ void draw_game()
 
     // mapa do mundo deslocado pela camera, atras de destino, agentes e nanobo
     // recuado: escurecido e com um veu azulado, sem mudar o PNG (#220)
-    al_draw_tinted_bitmap(world_map, MAP_TINT, -floorf(camera.x), -floorf(camera.y), 0);
-    al_draw_filled_rectangle(0.0f, 0.0f, (float)SCREEN_W, (float)PLAY_H, MAP_VEIL);
+    al_draw_tinted_bitmap(world_map, phase_has_viruses() ? MAP_TINT_AIRWAY : MAP_TINT,
+        -floorf(camera.x), -floorf(camera.y), 0);
+    al_draw_filled_rectangle(0.0f, 0.0f, (float)SCREEN_W, (float)PLAY_H,
+        phase_has_viruses() ? MAP_VEIL_AIRWAY : MAP_VEIL);
 
     // destino da fase: anel e rotulo visiveis desde o inicio (#26)
     al_draw_filled_circle(view_x(DESTINATION_X), view_y(DESTINATION_Y), DESTINATION_RADIUS,
@@ -2122,8 +2181,9 @@ void draw_game()
 
     for (i = 0; i < agents_total(); i++)
     {
-        // agente neutralizado sai do desenho
-        if (!agents[i].active)
+        // agente neutralizado sai do desenho; o virus de dentro da celula e
+        // desenhado junto com ela (#85)
+        if (!agents[i].active || virus_inside(i))
         {
             continue;
         }
@@ -2131,9 +2191,10 @@ void draw_game()
         is_bacteria = agents[i].species == SPECIES_GRAM_POSITIVE
             || agents[i].species == SPECIES_GRAM_NEGATIVE;
 
-        // sombra de contato: o agente deixa de parecer colado no fundo (#220)
-        al_draw_filled_ellipse(view_x(agents[i].x), view_y(agents[i].y) + 12.0f,
-            12.0f, 4.0f, CONTACT_SHADOW);
+        // sombra de contato: o agente deixa de parecer colado no fundo (#220);
+        // no tamanho de cada especie, do virus de 16 px a celula de 64 (#235)
+        al_draw_filled_ellipse(view_x(agents[i].x), view_y(agents[i].y) + 0.85f * agent_radius(i),
+            0.85f * agent_radius(i), 0.3f * agent_radius(i), CONTACT_SHADOW);
 
         // bacteria sem leitura: silhueta azulada, sem forma nem cor que entregue o grupo (#220)
         // o virus fica de fora: o estado dele e lido no mundo, sem scanner (#84)
@@ -2181,16 +2242,50 @@ void draw_game()
                 + (agents[i].species == SPECIES_CELL ? 8.0f : 2.0f);
             ALLEGRO_COLOR tint = al_map_rgb_f(1.0f, 1.0f, 1.0f);
 
-            // virus lisogenico pisca: opaco e semitransparente a cada LYSOGENIC_BLINK (#84)
-            if (virus_is_lysogenic(i) && (int)(match_time / LYSOGENIC_BLINK) % 2 == 1)
-            {
-                tint = al_map_rgba_f(0.35f, 0.35f, 0.35f, 0.35f);
-            }
-
             al_draw_tinted_scaled_bitmap(bmp, tint, 0.0f, 0.0f,
                 (float)al_get_bitmap_width(bmp), (float)al_get_bitmap_height(bmp),
                 view_x(agents[i].x) - size / 2.0f, view_y(agents[i].y) - size / 2.0f,
                 size, size, 0);
+        }
+
+        // celula infectada (#85, #87): o virus pisca la dentro, no ritmo de
+        // LYSOGENIC_BLINK; no eclipse ele ja fez copias e a celula pulsa vermelha,
+        // o aviso de que vai romper; depois da leitura, o arco ambar mostra o tempo
+        if (agents[i].species == SPECIES_CELL && cell_virus(i) != -1)
+        {
+            int v = cell_virus(i);
+            float cx = view_x(agents[i].x);
+            float cy = view_y(agents[i].y);
+            ALLEGRO_BITMAP* vb = species_sprite(SPECIES_VIRUS, agents[v].variant);
+            float vw = (float)al_get_bitmap_width(vb);
+            float vh = (float)al_get_bitmap_height(vb);
+            bool eclipse = agents[v].virus_state == VIRUS_ECLIPSE;
+
+            if (eclipse)
+            {
+                float a = 0.22f + 0.18f * sinf((float)match_time * 18.0f);
+
+                al_draw_filled_circle(cx, cy, agent_radius(i) + 2.0f,
+                    al_map_rgba_f(0.9f * a, 0.2f * a, 0.25f * a, a));
+                al_draw_circle(cx, cy, agent_radius(i) + 4.0f, UI_RED, 2.0f);
+                al_draw_scaled_bitmap(vb, 0.0f, 0.0f, vw, vh, cx + 2.0f, cy - 16.0f, 12.0f, 12.0f, 0);
+                al_draw_scaled_bitmap(vb, 0.0f, 0.0f, vw, vh, cx - 14.0f, cy - 4.0f, 12.0f, 12.0f, 0);
+                al_draw_scaled_bitmap(vb, 0.0f, 0.0f, vw, vh, cx + 4.0f, cy + 4.0f, 12.0f, 12.0f, 0);
+            }
+            else if ((int)(match_time / LYSOGENIC_BLINK) % 2 == 0)
+            {
+                // fundo escuro: o virus nao se perde entre as organelas
+                al_draw_filled_circle(cx + 11.0f, cy - 7.0f, 9.0f, al_map_rgba_f(0.04f, 0.06f, 0.1f, 0.75f));
+                al_draw_scaled_bitmap(vb, 0.0f, 0.0f, vw, vh, cx + 4.0f, cy - 14.0f, 14.0f, 14.0f, 0);
+            }
+
+            if (agents[i].layers > 0 && !eclipse)
+            {
+                float left = fminf(agents[v].lysogenic_timer / LYSOGENIC_TIME, 1.0f);
+
+                al_draw_arc(cx, cy, agent_radius(i) + 6.0f, -ALLEGRO_PI / 2.0f,
+                    left * 2.0f * ALLEGRO_PI, UI_AMBER, 2.0f);
+            }
         }
 
         // celula colonizada: barra curta da vida dela, acima do sprite (#235)
@@ -2265,6 +2360,19 @@ void draw_game()
                 px + (float)PROJECTILE_RADIUS,
                 py + (float)PROJECTILE_RADIUS, UI_TEXT);
         }
+        else if (projectiles[i].laser == LASER_NEUTRALIZE)
+        {
+            // Neutralizacao: o Y do anticorpo (#88)
+            al_draw_line(px, py + 4.0f, px, py, UI_TEXT, 1.5f);
+            al_draw_line(px, py, px - 3.0f, py - 3.0f, UI_TEXT, 1.5f);
+            al_draw_line(px, py, px + 3.0f, py - 3.0f, UI_TEXT, 1.5f);
+        }
+        else if (projectiles[i].laser == LASER_LYSE)
+        {
+            // Lise: um X, o poro que o linfocito T abre na celula (#88)
+            al_draw_line(px - 3.0f, py - 3.0f, px + 3.0f, py + 3.0f, UI_TEXT, 2.0f);
+            al_draw_line(px + 3.0f, py - 3.0f, px - 3.0f, py + 3.0f, UI_TEXT, 2.0f);
+        }
         else if (projectiles[i].laser == LASER_RESERVE)
         {
             // Reserva: losango, a terceira forma neutra (#216)
@@ -2289,6 +2397,16 @@ void draw_game()
 
         px = view_x(enemy_shots[i].x);
         py = view_y(enemy_shots[i].y);
+
+        // virus da rajada: o proprio sprite do virus, pequeno, em voo (#86)
+        if (enemy_shots[i].kind == SHOT_VIRION)
+        {
+            al_draw_scaled_bitmap(virus_sprite, 0.0f, 0.0f,
+                (float)al_get_bitmap_width(virus_sprite), (float)al_get_bitmap_height(virus_sprite),
+                px - 6.0f, py - 6.0f, 12.0f, 12.0f, 0);
+            continue;
+        }
+
         al_draw_filled_circle(px, py, (float)ENEMY_SHOT_RADIUS + 1.0f, UI_INK);
         al_draw_filled_circle(px, py, (float)ENEMY_SHOT_RADIUS, al_map_rgb(170, 230, 90));
         al_draw_filled_circle(px - 1.0f, py - 1.0f, 1.0f, al_map_rgb(235, 255, 200));
@@ -2358,7 +2476,8 @@ void draw_game()
             }
 
             used += snprintf(line + used, sizeof(line) - (size_t)used, " %d:%s%.1f",
-                agents[i].id, virus_is_lysogenic(i) ? "L" : "R",
+                agents[i].id, agents[i].virus_state == VIRUS_LYSOGENIC ? "L"
+                    : agents[i].virus_state == VIRUS_ECLIPSE ? "E" : "F",
                 agents[i].lysogenic_timer);
         }
 
@@ -2400,20 +2519,28 @@ void results_report_line(int row, char* line, size_t size)
 
     line[0] = '\0';
 
-    // fase sem bacteria (Fase 2 minima): o relatorio fala dos virus e das celulas
-    if (!phase_has_bacteria())
+    // fase de virus: anticorpos, Lise e ciclo litico (#88)
+    if (phase_has_viruses())
     {
         if (row == 0)
         {
-            snprintf(line, size, "vírus não têm coloração de Gram");
+            snprintf(line, size, "anticorpos: %d vírus livres presos", progress.viruses_neutralized);
         }
         else if (row == 1)
         {
-            snprintf(line, size, "vírus neutralizados: %d de %d", neutralized, threats_total());
+            snprintf(line, size, "Lise: %d células contidas antes de romper", progress.cells_lysed);
         }
         else if (row == 2)
         {
-            snprintf(line, size, "células do paciente feridas: %d", progress.cell_attacks);
+            snprintf(line, size, "ciclo lítico: %d células romperam", progress.cells_burst);
+        }
+        else if (row == 3)
+        {
+            snprintf(line, size, "ameaças eliminadas: %d de %d", neutralized, threats_total());
+        }
+        else
+        {
+            snprintf(line, size, "vírus não têm parede nem ribossomos");
         }
 
         return;
@@ -2490,7 +2617,7 @@ void draw_results()
     // objetivos secundarios: identificacao e bonus
     draw_panel(140.0f, 106.0f, 360.0f, 52.0f, UI_INK, UI_FRAME);
 
-    snprintf(value, sizeof(value), "%d/%d", identified_count, agents_initial());
+    snprintf(value, sizeof(value), "%d/%d", identified_count, identification_goal());
     draw_stat(left, 114.0f, right, "agentes identificados", value, UI_TEXT);
 
     if (identification_bonus_awarded())
@@ -2793,17 +2920,18 @@ void handle_key_down(int key)
     {
         activate_defense();
     }
+    // 1, 2 e 3 escolhem a ferramenta da posicao na fase atual (#216, #88)
     else if (key == ALLEGRO_KEY_1)
     {
-        player.laser = LASER_GRAM_POSITIVE;
+        select_tool(0);
     }
     else if (key == ALLEGRO_KEY_2)
     {
-        player.laser = LASER_GRAM_NEGATIVE;
+        select_tool(1);
     }
-    else if (key == ALLEGRO_KEY_3 && reserve_available())
+    else if (key == ALLEGRO_KEY_3)
     {
-        player.laser = LASER_RESERVE;
+        select_tool(2);
     }
 #ifdef _DEBUG
     // teclas de QA: so existem no Debug, nunca no Release (#76)
@@ -2820,6 +2948,12 @@ void handle_key_down(int key)
                 hit_agent(i);
                 hit_agent(i);
             }
+        }
+
+        // virus da rajada no ar seguraria a conclusao (#86)
+        for (i = 0; i < MAX_ENEMY_SHOTS; i++)
+        {
+            enemy_shots[i].active = false;
         }
 
         player.x = DESTINATION_X;
