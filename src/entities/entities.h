@@ -144,8 +144,8 @@ extern int identified_count;
 // raio de colisao do nanobo em pixels (metade do sprite de 32x32)
 #define PLAYER_RADIUS 16
 
-// vida maxima do player
-#define PLAYER_MAX_HEALTH 3
+// sinais vitais do paciente: a barra do HUD vai de 0 a 100 (#218)
+#define PLAYER_MAX_HEALTH 100.0f
 
 // aceleracao e frenagem do nanobo em pixels por segundo ao quadrado (#179)
 #define PLAYER_ACCEL 1200.0f
@@ -169,7 +169,7 @@ typedef struct
     float vx;    // velocidade atual em x, sobe e desce pelo delta time (#179)
     float vy;    // velocidade atual em y, sobe e desce pelo delta time (#179)
     Facing facing;
-    int health;
+    float health; // sinais vitais do paciente, de 0 a PLAYER_MAX_HEALTH (#218)
     Laser laser; // LASER_* escolhido pelo jogador (#62)
 } Nanobo;
 

@@ -18,14 +18,12 @@
 | FB-05 | antibiótico errado depois de ler só a forma (camada 1) | `a forma não define o grupo: veja a coloração` | 44 | #215 (FB2-02) |
 | FB-06 | Dissolução em Gram+ | `a Gram+ não tem membrana externa para a Dissolução` | 50 | #215 (FB2-04) |
 | FB-07 | Ruptura em Gram- | `a membrana externa barrou a Ruptura` | 35 | #215 (FB2-03) |
-| FB-08 | célula própria ferida pela Ruptura | `no jogo, a Ruptura fere a célula própria: -1 vida` | 49 | spec + D1 |
-| FB-09 | célula própria ferida pela Dissolução | `no jogo, a Dissolução fere a célula própria: -1 vida` | 52 | spec + D1 |
-| FB-09b | célula própria ferida pela Reserva | `no jogo, a Reserva fere a célula própria: -1 vida` | 49 | #216 |
+| FB-08 | célula do paciente ferida por qualquer ferramenta (-15 vitais) | `você feriu uma célula do paciente: ela tem núcleo, não é bactéria` | 65 | #218 (FB2-01); substitui as três versões por arma |
 | FB-11 | Reserva elimina uma resistente | `a Reserva eliminou a resistente: +10 pontos` | 43 | #216 |
 | FB-12 | Reserva gasta numa bactéria comum | `Reserva numa bactéria comum: guarde para a resistente` | 53 | #216 (uso racional) |
 | FB-13 | disparo da Reserva sem carga | `Reserva esgotada` | 16 | #216 (FB2-07) |
 | FB-14 | uma bactéria se dividiu | `uma bactéria se dividiu em duas` | 31 | #217 (FB2-13) |
-| FB-10 | contato com bactéria | `contato com bactéria: -1 de vida` | 32 | já existia (#11) |
+| FB-10 | contato com invasor (bactéria ou vírus) | `contato com invasor: -8 vitais` | 30 | #11; #218 |
 
 **Hífen, não menos tipográfico.** "Gram-" usa hífen ASCII (U+002D). O "−" (U+2212) que a spec traz não existe na fonte embutida (Latin-1): na tela ele saía como `^`, visto no QA de 03/11 e corrigido no commit `5e7cc75`. Ao editar estes textos, não reintroduza U+2212.
 
@@ -69,7 +67,9 @@ Desenhado **em toda partida** — `MENU → BRIEFING → GAME`, e também depois
 | CT-08b | menu, grupo 3 | `2: Dissolução - age na camada externa` | 36 | decisão 03/11 (noite) |
 | CT-09 | menu, painel do objetivo | `Objetivo da missão` | 18 | #201 |
 | CT-10 | menu, painel do objetivo | `neutralizar as %d bactérias e chegar ao destino` | 47 | #201 |
-| CT-11 | menu, painel do objetivo; resultados | `identificar os %d agentes vale +%d pontos` | 41 | #201 |
+| CT-11 | menu, painel do objetivo | `identificar os %d agentes vale +%d pontos` | 41 | #201 |
+| CT-11b | resultados, painel dos objetivos secundários | `bônus de vitais` · `+%d` | 15 | #218; ocupa a linha da CT-11 nos resultados |
+| CT-11c | HUD, linha 0 | vitais `%d` (de `0` a `100`), verde ≥ 60, âmbar ≥ 30, vermelho abaixo | até 3 | #218 |
 | CT-12 | menu, rodapé | `enter ou clique para começar` | 28 | #201 |
 | CT-13 | menu, rodapé | `F11 tela cheia` | 14 | #201 |
 | CT-14 | HUD, linha 0 | `ameaças %d/%d` | 11 | #199 |
@@ -119,7 +119,7 @@ Desenhado **em toda partida** — `MENU → BRIEFING → GAME`, e também depois
 | CT-59 | vitória, linha de estatística | `pontuação final` | 15 | varredura de 05/11 |
 | CT-60 | vitória, rodapé | `enter também começa de novo` | 27 | varredura de 05/11 |
 | CT-61 | game over, título | `GAME OVER` | 9 | varredura de 05/11 |
-| CT-62 | game over, subtítulo | `suas 3 vidas acabaram` | 21 | varredura de 05/11 |
+| CT-62 | game over, subtítulo | `os sinais vitais do paciente zeraram` | 36 | #218 |
 | CT-63 | game over, rodapé | `enter também reinicia` | 21 | varredura de 05/11 |
 
 **Conferência de 05/11/2026.** A varredura cobriu os literais passados a `al_draw_text` em `src/main.c` e as mensagens de `set_feedback` em `src/gameplay/gameplay.c`. Os 16 que faltavam estão em CT-48–CT-63. O título `NANOBÔ` é o caso especial da §2.1 (bitmap montado por `make_text_bitmap`) e as linhas de QA sob `#ifdef _DEBUG` não entram na tabela.

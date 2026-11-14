@@ -91,6 +91,14 @@ _Static_assert(WORLD_W % 32 == 0 && WORLD_H % 32 == 0, "mundo precisa fechar no 
 // tempo de invulnerabilidade depois de levar dano (#11)
 #define INVULNERABILITY_TIME 1.0
 
+// sinais vitais (#218): custo do contato e do tiro na celula do paciente,
+// drenagem por invasor vivo, piso entre as fases e bonus no fim da fase
+#define CONTACT_DAMAGE 8.0f
+#define CELL_SHOT_DAMAGE 15.0f
+#define THREAT_DRAIN 0.12f
+#define VITALS_MIN_BETWEEN 60.0f
+#define VITALS_BONUS_RATE 0.5f
+
 // tempo da partida em segundos, so conta dentro do estado GAME
 extern double match_time;
 
@@ -180,6 +188,9 @@ int threats_total();
 
 // true quando o bonus de identificacao foi pago na conclusao (#67)
 bool identification_bonus_awarded();
+
+// pontos que os vitais renderam na conclusao da fase, 0 antes dela (#218)
+int vitals_bonus_awarded(void);
 
 // true quando o disparo esta liberado agora (#19)
 bool attack_ready();

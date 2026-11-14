@@ -69,6 +69,9 @@ static bool phase_finished = false;
 // bonus de identificacao pago na conclusao, lido pela tela de resultados (#67)
 static bool bonus_awarded = false;
 
+// pontos dos vitais pagos na conclusao, lidos pela tela de resultados (#218)
+static int vitals_bonus = 0;
+
 // mensagem educacional da ultima decisao e o tempo que ela ainda fica na tela (#178)
 static const char* feedback = NULL;
 static double feedback_timer = 0.0;
@@ -329,8 +332,9 @@ bool hit_agent(int index)
     return false;
 }
 
-// dano no player: 1 de vida, respeitando a invulnerabilidade da #11; devolve se o dano aconteceu
-static bool damage_player()
+// dano nos vitais do paciente, respeitando a invulnerabilidade da #11;
+// devolve se o dano aconteceu (#218)
+static bool damage_player(float amount)
 {
     if (player.health <= 0)
     {
@@ -342,11 +346,11 @@ static bool damage_player()
         return false;
     }
 
-    player.health--;
+    player.health = player.health - amount;
 
-    if (player.health < 0)
+    if (player.health < 0.0f)
     {
-        player.health = 0;
+        player.health = 0.0f;
     }
 
     invulnerability_timer = INVULNERABILITY_TIME;
@@ -394,26 +398,15 @@ static void hit_projectiles()
                 continue;
             }
 
-            // atacar a celula saudavel custa 1 de vida ao player (#14, #178)
+            // atacar a celula do paciente custa vitais, com qualquer ferramenta (#14, #218)
             if (agents[j].species == SPECIES_CELL)
             {
                 progress.cell_attacks = progress.cell_attacks + 1;
 
-                // a mensagem so promete a vida perdida quando o dano aconteceu (#178)
-                if (damage_player())
+                // a mensagem so aparece quando o dano aconteceu (#178)
+                if (damage_player(CELL_SHOT_DAMAGE))
                 {
-                    if (projectiles[i].laser == LASER_GRAM_POSITIVE)
-                    {
-                        set_feedback("no jogo, a Ruptura fere a célula própria: -1 vida");
-                    }
-                    else if (projectiles[i].laser == LASER_GRAM_NEGATIVE)
-                    {
-                        set_feedback("no jogo, a Dissolução fere a célula própria: -1 vida");
-                    }
-                    else
-                    {
-                        set_feedback("no jogo, a Reserva fere a célula própria: -1 vida");
-                    }
+                    set_feedback("você feriu uma célula do paciente: ela tem núcleo, não é bactéria");
                 }
             }
             else if (projectiles[i].laser == LASER_RESERVE
@@ -1157,6 +1150,12 @@ bool identification_bonus_awarded()
     return bonus_awarded;
 }
 
+// pontos que os vitais renderam na conclusao (#218)
+int vitals_bonus_awarded(void)
+{
+    return vitals_bonus;
+}
+
 // o disparo esta liberado agora? o HUD usa para o indicador do ataque (#19)
 bool attack_ready()
 {
@@ -1236,6 +1235,10 @@ static void conclude_phase_if_ready()
     phase_finished = true;
     emit_sfx(SFX_EVENT_PHASE_DONE);
 
+    // o paciente mais estavel rende mais: vitais x 0,5 no fim da fase (#218)
+    vitals_bonus = (int)(player.health * VITALS_BONUS_RATE);
+    score = score + vitals_bonus;
+
     // bonus de identificacao completa, so na conclusao e so uma vez (#67)
     if (identified_count == agents_initial())
     {
@@ -1293,7 +1296,6 @@ static void start_phase(int index)
 
     player.x = (float)WORLD_W / 2.0f;
     player.y = (float)WORLD_H / 2.0f;
-    player.health = PLAYER_MAX_HEALTH;
     player.facing = PLAYER_FACING_DOWN;
     player.vx = 0.0f;
     player.vy = 0.0f;
@@ -1316,6 +1318,7 @@ static void start_phase(int index)
 
     phase_finished = false;
     bonus_awarded = false;
+    vitals_bonus = 0;
     feedback = NULL;
     feedback_timer = 0.0;
     match_time = 0;
@@ -1356,6 +1359,9 @@ void reset_match()
     run_progress.agents = 0;
     run_progress.identified = 0;
     run_progress.reserve_spent = 0;
+
+    // os vitais so enchem numa run nova; entre as fases eles continuam (#218)
+    player.health = PLAYER_MAX_HEALTH;
 
     start_phase(0);
 }
@@ -1411,6 +1417,12 @@ void start_next_phase()
 {
     if (has_next_phase())
     {
+        // o interludio recupera o paciente ate no minimo 60 (#218)
+        if (player.health < VITALS_MIN_BETWEEN)
+        {
+            player.health = VITALS_MIN_BETWEEN;
+        }
+
         start_phase(phase_index + 1);
     }
 }
@@ -1792,6 +1804,17 @@ void update_match(double dt)
         }
     }
 
+    // cada invasor vivo drena os vitais do paciente: esperar tem custo (#218)
+    if (player.health > 0.0f && !phase_finished)
+    {
+        player.health = player.health - THREAT_DRAIN * (float)threats_left() * (float)dt;
+
+        if (player.health < 0.0f)
+        {
+            player.health = 0.0f;
+        }
+    }
+
     // direcao pedida pelas teclas: a diagonal soma os dois eixos, como antes (#179)
     if (key_up)
     {
@@ -1841,9 +1864,9 @@ void update_match(double dt)
         && defense_timer <= 0.0)
     {
         // contato a cada quadro nao pode reescrever a mensagem sem dano novo (#178)
-        if (damage_player())
+        if (damage_player(CONTACT_DAMAGE))
         {
-            set_feedback("contato com bactéria: -1 de vida");
+            set_feedback("contato com invasor: -8 vitais");
         }
     }
 

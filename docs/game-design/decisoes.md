@@ -32,6 +32,12 @@ Este arquivo registra decisões já tomadas pela dupla. Quando uma decisão impo
   - a filha herda a resistência e as camadas lidas, mas não a dose;
   - o bônus de identificação e o "identificados x/9" contam só os 9 agentes iniciais;
   - as ameaças do HUD e da run somam as filhas.
+- **Sinais vitais (#218):**
+  - o contato custa 8 e o tiro na célula do paciente custa 15, os dois com a invulnerabilidade de 1 s;
+  - cada invasor vivo drena 0,12/s (bactérias na Fase 1, vírus na Fase 2);
+  - só a run nova enche a barra: entre as fases os vitais continuam, com piso de 60;
+  - a conclusão paga vitais × 0,5, mostrado nos resultados como "bônus de vitais";
+  - no HUD, a barra fica verde a partir de 60, âmbar a partir de 30 e vermelha abaixo disso.
 - **Trava do antibiótico errado (call de 13/11, #215):** a perseguição saiu, mas a trava de 2 s do disparo ficou. Sem ela, chutar a arma custaria só 1 s de recarga, e a simulação de 01/11 mostrou que o chute vence quando o erro sai barato. A bactéria não muda; só o disparo trava. A resistência perde 5 pontos, sem deixar a pontuação negativa. Os bots da #224 conferem se a trava basta.
 - **Fase 2:** vias aéreas; vírus livres na eclosão, que infectam células livres; **Lise** para a célula infectada (custa poucos vitais); teto de 12 vírus (`fase2-virus.md`).
 - **Fase 3:** pulmão; levedura (*Cryptococcus*, brotamento) e bolor (*Aspergillus*, hifas e esporos); a parede de quitina impede o antibiótico; **Perfuração** é o antifúngico. A carga de esporos depende do estado do paciente ao fim da Fase 2 e das cargas de Reserva gastas, e o jogo não afirma que o antibiótico causa aspergilose. A Perfuração **não** custa vitais (o dono não escolheu o efeito colateral).

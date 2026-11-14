@@ -37,6 +37,10 @@ _Static_assert(HUD_LINES * HUD_LINE_H + 2 * HUD_MARGIN <= PANEL_H, "HUD nao cabe
 #define UI_SEG_H 6
 #define UI_SEG_GAP 2
 #define UI_BAR_W (UI_BAR_SEGMENTS * UI_SEG_W + (UI_BAR_SEGMENTS - 1) * UI_SEG_GAP)
+
+// barra dos sinais vitais no HUD e a faixa em que ela fica vermelha (#218)
+#define VITALS_BAR_W 48
+#define VITALS_LOW 30.0f
 #define TITLE_SCALE 3
 
 // cartoes do briefing de entrada (#103)
@@ -87,7 +91,7 @@ int hud_y(int line)
 ALLEGRO_FONT* font = NULL;
 ALLEGRO_BITMAP* nanobo = NULL;
 
-// coracao do HUD de vida (#19)
+// coracao do HUD: icone dos sinais vitais (#19, #218)
 ALLEGRO_BITMAP* heart_icon = NULL;
 
 // icones da interface: scanner, as duas armas e a defesa
@@ -1515,8 +1519,10 @@ void draw_reserve_icon(float x, float y)
 
 void draw_hud()
 {
-    int i;
     int x;
+    float bar_x;
+    float fill;
+    ALLEGRO_COLOR vitals_color;
     int heart_y;
     int total_seconds;
     int x_score;
@@ -1543,22 +1549,33 @@ void draw_hud()
     // coracao centrado na altura do texto, nao topo a topo
     heart_y = hud_y(0) + (al_get_font_line_height(font) - al_get_bitmap_height(heart_icon)) / 2;
 
-    for (i = 0; i < PLAYER_MAX_HEALTH; i++)
+    // sinais vitais: coracao, barra com a cor da faixa e o numero (#218)
+    if (player.health >= VITALS_MIN_BETWEEN)
     {
-        float hx = (float)HUD_MARGIN + (float)i * (float)(al_get_bitmap_width(heart_icon) + 2);
-
-        if (i < player.health)
-        {
-            al_draw_bitmap(heart_icon, hx, (float)heart_y, 0);
-        }
-        else
-        {
-            al_draw_tinted_bitmap(heart_icon, al_map_rgba_f(0.25f, 0.25f, 0.25f, 1.0f),
-                hx, (float)heart_y, 0);
-        }
+        vitals_color = UI_GREEN;
+    }
+    else if (player.health >= VITALS_LOW)
+    {
+        vitals_color = UI_AMBER;
+    }
+    else
+    {
+        vitals_color = UI_RED;
     }
 
-    x = HUD_MARGIN + PLAYER_MAX_HEALTH * (al_get_bitmap_width(heart_icon) + 2) + UI_GAP;
+    al_draw_bitmap(heart_icon, (float)HUD_MARGIN, (float)heart_y, 0);
+    bar_x = (float)(HUD_MARGIN + al_get_bitmap_width(heart_icon) + 4);
+    fill = (float)VITALS_BAR_W * player.health / PLAYER_MAX_HEALTH;
+    al_draw_filled_rectangle(bar_x, (float)(hud_y(0) + 1), bar_x + (float)VITALS_BAR_W,
+        (float)(hud_y(0) + 1 + UI_SEG_H), UI_SLOT);
+    al_draw_filled_rectangle(bar_x, (float)(hud_y(0) + 1), bar_x + fill,
+        (float)(hud_y(0) + 1 + UI_SEG_H), vitals_color);
+
+    // arredonda para cima: o numero so mostra 0 quando os vitais zeraram
+    snprintf(line, sizeof(line), "%d", (int)ceilf(player.health));
+    al_draw_text(font, vitals_color, bar_x + (float)VITALS_BAR_W + 4.0f, (float)hud_y(0), 0, line);
+
+    x = (int)bar_x + VITALS_BAR_W + 4 + 3 * 8 + UI_GAP;
 
     // ameacas com contador: seis blocos de 6 px nao dizem quantas restam
     snprintf(line, sizeof(line), "ameaças %d/%d", threats_total() - threats_left(), threats_total());
@@ -2083,9 +2100,10 @@ void draw_results()
 
     draw_stat(left, 130.0f, right, "bônus de identificação", value, bonus_color);
 
-    snprintf(line, sizeof(line), "identificar os %d agentes vale +%d pontos",
-        agents_initial(), IDENTIFICATION_BONUS);
-    al_draw_text(font, UI_DIM, left, 146.0f, 0, line);
+    // o bonus dos vitais fecha o painel dos objetivos secundarios (#218)
+    snprintf(value, sizeof(value), "+%d", vitals_bonus_awarded());
+    draw_stat(left, 146.0f, right, "bônus de vitais", value,
+        vitals_bonus_awarded() > 0 ? UI_GREEN : UI_DIM);
 
     // resumo educativo: so contadores da partida atual (#174, #202)
     draw_panel(140.0f, 162.0f, 360.0f, 92.0f, UI_INK, UI_FRAME);
@@ -2184,7 +2202,7 @@ void draw_game_over()
     al_draw_text(font, UI_RED, SCREEN_W / 2, 30, ALLEGRO_ALIGN_CENTRE, "GAME OVER");
     draw_rule((float)SCREEN_W / 2, 44.0f, 200.0f, al_map_rgb(150, 60, 60));
     al_draw_text(font, UI_DIM, SCREEN_W / 2, 52, ALLEGRO_ALIGN_CENTRE,
-        "suas 3 vidas acabaram");
+        "os sinais vitais do paciente zeraram");
 
     draw_panel(140.0f, 72.0f, 360.0f, 96.0f, UI_INK, UI_FRAME);
 
@@ -2718,7 +2736,7 @@ int main()
                 {
                     update_match(deltaTime);
 
-                    if (player.health == 0)
+                    if (player.health <= 0.0f)
                     {
                         // game over nao grava recorde: so a vitoria entra (#34/#82)
                         game_set_scene(GAME_SCENE_GAME_OVER);
