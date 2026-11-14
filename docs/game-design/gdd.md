@@ -108,7 +108,7 @@ O agente volta a vagar se o Nanobô ficar a mais de 320 px por 3 s. Todo ataque 
 
 ### Arte e interface
 
-- Pixel art à mão, com amostra aprovada pelo dono antes do resto. A amostra de 14/11 foi recusada: a nova (até 19/11) traz Nanobô, coco, silhueta e célula do paciente com o detalhe da referência do dono (luz de borda, brilho especular, contorno escuro).
+- Pixel art à mão, com amostra aprovada pelo dono antes do resto. A primeira amostra de 14/11 foi recusada; a segunda, com Nanobô, coco, silhueta e célula do paciente no detalhe da referência do dono (luz de borda, brilho especular, contorno escuro), foi **aprovada no mesmo dia** (#225, descrita em `decisoes.md`).
 - **Nanobô:** 48×48, cabeça arredondada com visor escuro e olhos ciano, núcleo dourado, braços curtos, antenas com ponta ciano e **propulsão magnética** (anel ciano que pulsa embaixo, sem hélice nem parte móvel que machuque o corpo).
 - **Escala dos sprites (14/11):**
 

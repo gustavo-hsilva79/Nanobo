@@ -95,7 +95,7 @@ O fundo é escuro e de baixo contraste de propósito: os sprites precisam contin
 
 > **Revisão de 14/11:**
 > - a amostra de 14/11 foi recusada;
-> - a nova amostra, até 19/11, traz o Nanobô 48×48 com o detalhe da referência do dono e propulsão magnética, o coco e a silhueta refeitos e a célula do paciente 64×64;
+> - a amostra 2, **aprovada em 14/11** (#225), traz o Nanobô 48×48 com o detalhe da referência do dono e propulsão magnética, o coco e a silhueta refeitos e a célula do paciente 64×64. Os arquivos ficam em `../Nanobo-testes/arte-amostra/amostra2_*` e ainda não entram no jogo: a arte final é da Etapa 3;
 > - os tamanhos da tabela abaixo seguem a escala biológica decidida em 14/11: vírus 16, bactéria 32, levedura 40, colônia de bolor 48, Nanobô 48, célula do paciente 64, toxina e esporo 8×8;
 > - o Nanobô passa a ter spritesheet de 384×192 (4 direções × 8 quadros de 48 px);
 > - entram os sprites de toxina e esporo (8×8, 2 quadros) e as manchas de biofilme e de nuvem de endotoxina (desenhadas por código, translúcidas).

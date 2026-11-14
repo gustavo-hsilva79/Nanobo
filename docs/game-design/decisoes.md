@@ -33,6 +33,14 @@ Este arquivo registra decisões já tomadas pela dupla. Quando uma decisão impo
   - a amostra de 14/11 foi recusada;
   - o Nanobô vai a 48×48, com o detalhe da referência e propulsão magnética;
   - coco e silhueta são refeitos.
+- **Amostra 2 aprovada (14/11, #225):** o dono aprovou a segunda amostra no mesmo dia. Ela vira o estilo da arte final:
+  - **Nanobô 48×48, de frente:** cabeça larga com visor escuro e dois olhos ciano, antenas com ponta ciano redonda (a da direita mais alta), corpo em ovo com placas, núcleo dourado no peito e braços curtos e redondos;
+  - **propulsão magnética:** uma faixa ciano na base do corpo emite o campo, e um anel ciano flutua embaixo, com faíscas. Não há hélice nem peça que gira;
+  - **coco 32×32:** três esferas cinza neutro, com especular, luz de retorno e sombra de contato entre elas. O tingimento do Gram multiplica por cima;
+  - **silhueta 32×32:** disco de holograma com linhas de varredura e um "?" no centro, sem forma nem cor que entregue o grupo;
+  - **célula do paciente 64×64:** membrana dupla, citoplasma em cúpula com grânulos, núcleo com cromatina e nucléolo, três mitocôndrias com cristas e o retículo em volta do núcleo;
+  - **estilo:** contorno escuro de 1 px, luz no alto à esquerda e paleta fora do vermelho do mapa;
+  - os arquivos ficam em `../Nanobo-testes/arte-amostra/` (`amostra2_*`), gerados pelo `amostra2.lua`. As outras três direções e os 8 quadros do Nanobô entram na Etapa 3.
 - **Escala biológica dos sprites:** vírus 16, bactéria 32, levedura 40, Nanobô 48 e célula do paciente 64, com colisão por espécie.
 - **Ordem:** a Fase 1 primeiro (15–18/11), a nova amostra em 17–19/11, e as Fases 2 e 3 já nascem com a IA delas.
 - **Calls de implementação (#235):**
@@ -97,7 +105,7 @@ Este arquivo registra decisões já tomadas pela dupla. Quando uma decisão impo
 - A identificação deixa de ser condição de vitória.
 
 **Arte e interface**
-- Pixel art à mão, desenhada por Claude. Uma amostra (Nanobô, coco e silhueta) vai para aprovação até 18/11.
+- Pixel art à mão, desenhada por Claude. A amostra 2 (Nanobô, coco, silhueta e célula do paciente) foi aprovada em 14/11 (#225).
 - O mapa da Fase 1 é desenhado escurecido e dessaturado (o PNG não muda). As Fases 2 e 3 ganham mapas próprios desenhados por Claude, que o dono pode melhorar com IA de imagem.
 - **Sprites das bactérias** neutros por forma, com 2 variantes cada (#211 reescopada). O Gram vem do tingimento depois da 2ª camada.
 - **Tiros:** um sprite de 12×12 com 2 quadros por arma, em cor neutra (a forma mostra o mecanismo). As animações de impacto são 3 por resultado (dose certa, sem efeito, eliminado). O recuo do Nanobô é feito em código.
