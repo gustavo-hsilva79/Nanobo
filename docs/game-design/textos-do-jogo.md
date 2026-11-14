@@ -20,6 +20,10 @@
 | FB-07 | Ruptura em Gram- | `a membrana externa barrou a Ruptura` | 35 | #215 (FB2-03) |
 | FB-08 | célula própria ferida pela Ruptura | `no jogo, a Ruptura fere a célula própria: -1 vida` | 49 | spec + D1 |
 | FB-09 | célula própria ferida pela Dissolução | `no jogo, a Dissolução fere a célula própria: -1 vida` | 52 | spec + D1 |
+| FB-09b | célula própria ferida pela Reserva | `no jogo, a Reserva fere a célula própria: -1 vida` | 49 | #216 |
+| FB-11 | Reserva elimina uma resistente | `a Reserva eliminou a resistente: +10 pontos` | 43 | #216 |
+| FB-12 | Reserva gasta numa bactéria comum | `Reserva numa bactéria comum: guarde para a resistente` | 53 | #216 (uso racional) |
+| FB-13 | disparo da Reserva sem carga | `Reserva esgotada` | 16 | #216 (FB2-07) |
 | FB-10 | contato com bactéria | `contato com bactéria: -1 de vida` | 32 | já existia (#11) |
 
 **Hífen, não menos tipográfico.** "Gram-" usa hífen ASCII (U+002D). O "−" (U+2212) que a spec traz não existe na fonte embutida (Latin-1): na tela ele saía como `^`, visto no QA de 03/11 e corrigido no commit `5e7cc75`. Ao editar estes textos, não reintroduza U+2212.
@@ -59,7 +63,7 @@ Desenhado **em toda partida** — `MENU → BRIEFING → GAME`, e também depois
 | CT-04 | menu, grupo 2 | `Combate` | 7 | #201 |
 | CT-05 | menu, grupo 2 | `botão esquerdo atirar · botão direito escanear` | 46 | #201 |
 | CT-06 | menu, grupo 3 | `Equipamentos` | 12 | #201 |
-| CT-07 | menu, grupo 3 | `1 e 2 ou roda: trocar de arma` | 29 | #201 + decisão 03/11 |
+| CT-07 | menu, grupo 3 | `1, 2, 3 ou roda: trocar de arma` | 31 | #201 + #216 |
 | CT-08 | menu, grupo 3 | `1: Ruptura - age na parede celular` | 34 | decisão 03/11 (noite) |
 | CT-08b | menu, grupo 3 | `2: Dissolução - age na camada externa` | 36 | decisão 03/11 (noite) |
 | CT-09 | menu, painel do objetivo | `Objetivo da missão` | 18 | #201 |
@@ -70,7 +74,7 @@ Desenhado **em toda partida** — `MENU → BRIEFING → GAME`, e também depois
 | CT-14 | HUD, linha 0 | `ameaças %d/%d` | 11 | #199 |
 | CT-15 | HUD, linha 1 | `identificados %d/%d` | 17 | #199 |
 | CT-16 | HUD, linha 0 | `pontos %d` | 9 | #199 |
-| CT-17 | HUD, linha 0 | `pronto` / `recarga` / `travado` / `defesa` | 6 / 7 / 7 / 6 | #199; RF-06 |
+| CT-17 | HUD, linha 0 | `pronto` / `recarga` / `travado` / `defesa` / `esgotada` | 6 / 7 / 7 / 6 / 8 | #199; #215 (trava); #216 (Reserva sem carga) |
 | CT-18 | scanner, sem alvo | `Nenhum alvo` | 11 | #199 |
 | CT-19 | scanner, sem alvo | `Aproxime-se de um agente para escanear.` | 39 | #199 |
 | CT-20 | scanner, qualquer estado | `botão direito sobre o agente` | 28 | #199 |
@@ -88,7 +92,7 @@ Desenhado **em toda partida** — `MENU → BRIEFING → GAME`, e também depois
 | CT-33 | resultados | `não obtido` | 10 | #202 |
 | CT-34 | resultados | `enter também continua` | 21 | #202 |
 | CT-35 | vitória | `Vitória` | 7 | #202 |
-| CT-36 | HUD, linha 0 | `Ruptura` / `Dissolução` | 7 / 10 | decisão 03/11 (noite) |
+| CT-36 | HUD, linha 0 | `Ruptura` / `Dissolução` / `Reserva %d/%d` (`Reserva 2/2`) | 7 / 10 / 11 | decisão 03/11 (noite); #216 |
 | CT-37 | resultados, painel novo | `o que a partida mostrou` | 23 | #202, build de 04/11 |
 | CT-38 | resultados, painel novo | `bactérias identificadas: %d Gram+ · %d Gram-` (`bactérias identificadas: 1 Gram+ · 1 Gram-`) | 42 | #174/#202, build de 04/11 |
 | CT-39 | resultados, painel novo | `acertos de arma: %d · erros: %d` (`acertos de arma: 1 · erros: 0`) | 29 | #174/#202, build de 04/11 |

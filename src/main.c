@@ -1300,7 +1300,7 @@ void draw_menu()
         col_x,
         controls_y + 102.0f,
         0,
-        "1 e 2 ou roda: trocar de arma"
+        "1, 2, 3 ou roda: trocar de arma"
     );
 
     al_draw_text(
@@ -1501,6 +1501,18 @@ void draw_destination_hint()
 // HUD: vitais, objetivo e painel do scanner em dois blocos
 // ---------------------------------------------------------------
 
+// icone provisorio da Reserva no HUD: capsula de 16x16 em duas metades (#216)
+void draw_reserve_icon(float x, float y)
+{
+    al_draw_filled_rounded_rectangle(x + 1.0f, y + 5.0f, x + 15.0f, y + 11.0f,
+        3.0f, 3.0f, UI_AMBER);
+    al_draw_filled_rectangle(x + 8.0f, y + 5.0f, x + 12.0f, y + 11.0f, UI_TEXT);
+    al_draw_filled_rounded_rectangle(x + 8.0f, y + 5.0f, x + 15.0f, y + 11.0f,
+        3.0f, 3.0f, UI_TEXT);
+    al_draw_rounded_rectangle(x + 1.5f, y + 5.5f, x + 14.5f, y + 10.5f,
+        3.0f, 3.0f, UI_INK, 1.0f);
+}
+
 void draw_hud()
 {
     int i;
@@ -1518,6 +1530,7 @@ void draw_hud()
     char timer_text[16];
     const char* state_text;
     const char* module_name;
+    char reserve_text[24];
     ALLEGRO_BITMAP* laser_icon;
 
     al_draw_filled_rectangle(0.0f, (float)SCAN_PANEL_Y, (float)SCREEN_W, (float)SCREEN_H, UI_INK);
@@ -1574,6 +1587,19 @@ void draw_hud()
     // o HUD diz qual arma esta ativa pelo nome, nao so a cor (#199)
     module_name = player.laser == LASER_GRAM_POSITIVE ? "Ruptura" : "Dissolução";
 
+    // Reserva: nome com as cargas e a palavra de estado quando acabam (#216)
+    if (player.laser == LASER_RESERVE)
+    {
+        snprintf(reserve_text, sizeof(reserve_text), "Reserva %d/%d",
+            reserve_charges_left(), RESERVE_CHARGES);
+        module_name = reserve_text;
+
+        if (reserve_charges_left() <= 0 && defense_state() != 1)
+        {
+            state_text = "esgotada";
+        }
+    }
+
     total_seconds = (int)match_time;
     snprintf(timer_text, sizeof(timer_text), "%02d:%02d", total_seconds / 60, total_seconds % 60);
     snprintf(score_text, sizeof(score_text), "pontos %d", score);
@@ -1588,7 +1614,16 @@ void draw_hud()
     al_draw_text(font, UI_TEXT, (float)x_score, (float)hud_y(0), 0, score_text);
     al_draw_text(font, UI_DIM, (float)x_time, (float)hud_y(0), 0, timer_text);
     al_draw_text(font, UI_TEXT, (float)x_weapon, (float)hud_y(0), 0, module_name);
-    al_draw_bitmap(laser_icon, (float)x_icon, (float)(hud_y(0) - 4), 0);
+
+    // a Reserva ainda nao tem icone proprio (Etapa 3): uma capsula provisoria
+    if (player.laser == LASER_RESERVE)
+    {
+        draw_reserve_icon((float)x_icon, (float)(hud_y(0) - 4));
+    }
+    else
+    {
+        al_draw_bitmap(laser_icon, (float)x_icon, (float)(hud_y(0) - 4), 0);
+    }
     draw_cooldown_bar((float)x_bar, (float)(hud_y(0) + 1),
         fire_locked() ? fire_lock_left() : attack_cooldown_left());
     al_draw_text(font, UI_DIM, (float)x_word, (float)hud_y(0), 0, state_text);
@@ -1800,6 +1835,14 @@ void draw_game()
                 py - (float)PROJECTILE_RADIUS,
                 px + (float)PROJECTILE_RADIUS,
                 py + (float)PROJECTILE_RADIUS, UI_TEXT);
+        }
+        else if (projectiles[i].laser == LASER_RESERVE)
+        {
+            // Reserva: losango, a terceira forma neutra (#216)
+            float r = (float)PROJECTILE_RADIUS + 1.0f;
+
+            al_draw_filled_triangle(px - r, py, px, py - r, px + r, py, UI_TEXT);
+            al_draw_filled_triangle(px - r, py, px, py + r, px + r, py, UI_TEXT);
         }
         else
         {
@@ -2322,6 +2365,10 @@ void handle_key_down(int key)
     else if (key == ALLEGRO_KEY_2)
     {
         player.laser = LASER_GRAM_NEGATIVE;
+    }
+    else if (key == ALLEGRO_KEY_3 && reserve_available())
+    {
+        player.laser = LASER_RESERVE;
     }
 #ifdef _DEBUG
     // teclas de QA: so existem no Debug, nunca no Release (#76)

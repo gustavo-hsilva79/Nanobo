@@ -53,6 +53,9 @@ static double attack_cooldown_timer = 0.0;
 // trava do disparo depois de arma errada (RF-06)
 static double fire_lock_timer = 0.0;
 
+// cargas de Reserva que restam na fase atual (#216)
+static int reserve_left = RESERVE_CHARGES;
+
 // ultimo evento de audio e quantos ja sairam: o main toca um som por id (#31)
 static unsigned int sfx_event_count = 0;
 static SfxEvent sfx_event_last = SFX_EVENT_NONE;
@@ -403,10 +406,36 @@ static void hit_projectiles()
                     {
                         set_feedback("no jogo, a Ruptura fere a célula própria: -1 vida");
                     }
-                    else
+                    else if (projectiles[i].laser == LASER_GRAM_NEGATIVE)
                     {
                         set_feedback("no jogo, a Dissolução fere a célula própria: -1 vida");
                     }
+                    else
+                    {
+                        set_feedback("no jogo, a Reserva fere a célula própria: -1 vida");
+                    }
+                }
+            }
+            else if (projectiles[i].laser == LASER_RESERVE
+                && (agents[j].species == SPECIES_GRAM_POSITIVE
+                    || agents[j].species == SPECIES_GRAM_NEGATIVE))
+            {
+                bool was_resistant = agents[j].resistant;
+
+                // Reserva: uma dose elimina qualquer bacteria, resistente ou nao;
+                // gasta numa comum, o feedback lembra o uso racional (#216)
+                progress.correct_decisions = progress.correct_decisions + 1;
+                agents[j].resistance = 1;
+                hit_agent(j);
+                emit_sfx(SFX_EVENT_NEUTRALIZED);
+
+                if (was_resistant)
+                {
+                    set_feedback("a Reserva eliminou a resistente: +10 pontos");
+                }
+                else
+                {
+                    set_feedback("Reserva numa bactéria comum: guarde para a resistente");
                 }
             }
             else if (weapon_affects(projectiles[i].laser, agents[j].species)
@@ -672,6 +701,14 @@ static void fire(float dx, float dy)
         return;
     }
 
+    // Reserva sem carga nao dispara: avisa e nao gasta a recarga (#216)
+    if (player.laser == LASER_RESERVE && reserve_left <= 0)
+    {
+        set_feedback("Reserva esgotada");
+        emit_sfx(SFX_EVENT_WRONG);
+        return;
+    }
+
     for (i = 0; i < MAX_PROJECTILES; i++)
     {
         if (!projectiles[i].active)
@@ -698,6 +735,13 @@ static void fire(float dx, float dy)
 
     attack_cooldown_timer = ATTACK_COOLDOWN;
     emit_sfx(SFX_EVENT_SHOT);
+
+    // a carga e a dose: sai no disparo, acerte ou nao (#216)
+    if (player.laser == LASER_RESERVE)
+    {
+        reserve_left = reserve_left - 1;
+        run_progress.reserve_spent = run_progress.reserve_spent + 1;
+    }
 }
 
 // dispara na direcao do facing, o caminho que o teclado usava (#63, #64)
@@ -738,17 +782,32 @@ void shoot_toward(float x, float y)
     fire(dx / dist, dy / dist);
 }
 
-// roda do mouse alterna os modulos A e B (#198)
+// roda do mouse passa para a proxima ferramenta da fase (#198, #216)
 void toggle_module()
 {
     if (player.laser == LASER_GRAM_POSITIVE)
     {
         player.laser = LASER_GRAM_NEGATIVE;
     }
+    else if (player.laser == LASER_GRAM_NEGATIVE && reserve_available())
+    {
+        player.laser = LASER_RESERVE;
+    }
     else
     {
         player.laser = LASER_GRAM_POSITIVE;
     }
+}
+
+// a Reserva e ferramenta da Fase 1: so aparece onde ha bacteria (#216)
+bool reserve_available(void)
+{
+    return phase_has_bacteria();
+}
+
+int reserve_charges_left(void)
+{
+    return reserve_left;
 }
 
 // pontos validos do cenario, a regra de cada um esta em docs/game-design/gdd.md
@@ -1247,6 +1306,14 @@ static void start_phase(int index)
     attack_cooldown_timer = 0.0;
     fire_lock_timer = 0.0;
 
+    // as cargas da Reserva voltam a cada fase; fora da Fase 1 ela nao existe (#216)
+    reserve_left = RESERVE_CHARGES;
+
+    if (player.laser == LASER_RESERVE && !reserve_available())
+    {
+        player.laser = LASER_GRAM_POSITIVE;
+    }
+
     // fase nova comeca sem projetil na tela
     for (i = 0; i < MAX_PROJECTILES; i++)
     {
@@ -1269,6 +1336,7 @@ void reset_match()
     run_progress.neutralized = 0;
     run_progress.agents = 0;
     run_progress.identified = 0;
+    run_progress.reserve_spent = 0;
 
     start_phase(0);
 }

@@ -62,6 +62,9 @@ _Static_assert(WORLD_W % 32 == 0 && WORLD_H % 32 == 0, "mundo precisa fechar no 
 // pontos perdidos por resistencia criada; a pontuacao nao fica negativa (#215)
 #define RESISTANCE_PENALTY 5
 
+// antibiotico de reserva: cargas por fase, que voltam no inicio de cada uma (#216)
+#define RESERVE_CHARGES 2
+
 // cursor a menos disso do nanobo cai na direcao do facing (#198)
 #define AIM_DEAD_ZONE 8.0f
 
@@ -107,6 +110,7 @@ typedef struct
     int neutralized; // ameacas neutralizadas na run
     int agents;      // agentes das fases ja jogadas
     int identified;  // agentes identificados na run
+    int reserve_spent; // cargas de Reserva gastas na run, para a Fase 3 (#216)
 } RunProgress;
 
 extern RunProgress run_progress;
@@ -145,8 +149,12 @@ int defense_state();
 void shoot();
 void shoot_toward(float x, float y);
 
-// modulo A e B: a roda do mouse alterna, 1 e 2 escolhem direto (#198)
+// ferramentas: a roda alterna entre as da fase; 1, 2 e 3 escolhem direto (#198, #216)
 void toggle_module();
+
+// Reserva: so existe em fase com bacteria; cargas que restam nesta fase (#216)
+bool reserve_available(void);
+int reserve_charges_left(void);
 
 // contato: index do agente que o nanobo esta encostando, -1 quando nenhum
 int touching_agent();

@@ -71,11 +71,13 @@ typedef enum
 // o mesmo numero em todo grupo, senao a variante vira pista do Gram
 #define SPRITE_VARIANTS 2
 
-// raio escolhido pelo jogador: roxo para Gram+, vermelho para Gram- (#62)
+// ferramenta escolhida pelo jogador: Ruptura (Gram+), Dissolucao (Gram-) e,
+// so na Fase 1, a Reserva, que elimina qualquer bacteria com uma dose (#62, #216)
 typedef enum
 {
     LASER_GRAM_POSITIVE = 0,
-    LASER_GRAM_NEGATIVE = 1
+    LASER_GRAM_NEGATIVE = 1,
+    LASER_RESERVE = 2
 } Laser;
 
 // quantos projeteis podem existir ao mesmo tempo
