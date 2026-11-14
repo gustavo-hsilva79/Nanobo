@@ -2276,108 +2276,71 @@ void draw_pause()
 // ---------------------------------------------------------------
 
 
-void results_oa1_text(char* line, size_t size)
+// relatorio da fase em linguagem de jogador: cada linha retoma um conteudo
+// com os numeros da partida, sem os codigos internos dos objetivos (#223)
+void results_report_line(int row, char* line, size_t size)
 {
-    // Verifica se o objetivo de identificação de Gram se aplica à fase atual.
+    int neutralized = threats_total() - threats_left();
+    int reserve_spent = progress.reserve_on_resistant + progress.reserve_on_common;
+
+    line[0] = '\0';
+
+    // fase sem bacteria (Fase 2 minima): o relatorio fala dos virus e das celulas
     if (!phase_has_bacteria())
     {
-        snprintf(line, size,
-            "OA1 Gram: nao aplicavel nesta fase.");
+        if (row == 0)
+        {
+            snprintf(line, size, "vírus não têm coloração de Gram");
+        }
+        else if (row == 1)
+        {
+            snprintf(line, size, "vírus neutralizados: %d de %d", neutralized, threats_total());
+        }
+        else if (row == 2)
+        {
+            snprintf(line, size, "células do paciente feridas: %d", progress.cell_attacks);
+        }
+
         return;
     }
 
-    if (progress.scans_gram_positive > 0 &&
-        progress.scans_gram_negative > 0)
+    if (row == 0)
     {
-        snprintf(line, size,
-            "OA1 Gram: identificou os dois grupos.");
+        snprintf(line, size, "lidas até a coloração: %d Gram+ e %d Gram-",
+            progress.scans_gram_positive, progress.scans_gram_negative);
     }
-    else if (progress.scans_gram_positive > 0)
+    else if (row == 1)
     {
-        snprintf(line, size,
-            "OA1 Gram: identificou Gram+; faltou Gram-.");
+        snprintf(line, size, "tratamentos completos: %d · resistentes: %d",
+            progress.treatments_completed, progress.resistances);
     }
-    else if (progress.scans_gram_negative > 0)
+    else if (row == 2)
     {
-        snprintf(line, size,
-            "OA1 Gram: identificou Gram-; faltou Gram+.");
+        if (progress.wrong_decisions == 0)
+        {
+            snprintf(line, size, "nenhum antibiótico errado");
+        }
+        else
+        {
+            snprintf(line, size, "antibiótico errado: %d (%d pela forma)",
+                progress.wrong_decisions, progress.shape_guesses);
+        }
     }
-    else
+    else if (row == 3)
     {
-        snprintf(line, size,
-            "OA1 Gram: nenhuma bactéria identificada.");
-    }
-}
-
-// Exibe o resultado da identificação dos grupos para o objetivo de comparação estrutural.
-void results_oa2_text(char* line, size_t size)
-{
-    // Verifica se existem bactérias na fase atual.
-    if (!phase_has_bacteria())
-    {
-        snprintf(line, size,
-            "OA2 Estrutura: nao aplicavel nesta fase.");
-        return;
-    }
-
-    if (progress.scans_gram_positive > 0 &&
-        progress.scans_gram_negative > 0)
-    {
-        snprintf(line, size,
-            "OA2: dados de Gram+ e Gram-.");
-    }
-    else if (progress.scans_gram_positive > 0)
-    {
-        snprintf(line, size,
-            "OA2 Estrutura: dados parciais (Gram+).");
-    }
-    else if (progress.scans_gram_negative > 0)
-    {
-        snprintf(line, size,
-            "OA2 Estrutura: dados parciais (Gram-).");
+        if (reserve_spent == 0)
+        {
+            snprintf(line, size, "Reserva guardada: nenhuma carga gasta");
+        }
+        else
+        {
+            snprintf(line, size, "Reserva: %d na resistente, %d na comum",
+                progress.reserve_on_resistant, progress.reserve_on_common);
+        }
     }
     else
     {
-        snprintf(line, size,
-            "OA2 Estrutura: sem dados para comparação.");
-    }
-}
-
-void results_oa3_text(char* line, size_t size)
-{
-    if (progress.wrong_decisions == 0 &&
-        progress.correct_decisions > 0)
-    {
-        snprintf(line, size,
-            "OA3 Armas: %d acertos, nenhum erro.",
-            progress.correct_decisions);
-    }
-    else if (progress.wrong_decisions > 0)
-    {
-        snprintf(line, size,
-            "OA3 Armas: %d acertos, %d erros.",
-            progress.correct_decisions,
-            progress.wrong_decisions);
-    }
-    else
-    {
-        snprintf(line, size,
-            "OA3 Armas: sem acertos registrados.");
-    }
-}
-
-void results_oa4_text(char* line, size_t size)
-{
-    if (progress.cell_attacks == 0)
-    {
-        snprintf(line, size,
-            "OA4 Células: nenhum ataque registrado.");
-    }
-    else
-    {
-        snprintf(line, size,
-            "OA4 Células: %d ataques; revise a proteção.",
-            progress.cell_attacks);
+        snprintf(line, size, "células do paciente feridas: %d", progress.cell_attacks);
     }
 }
 
@@ -2392,6 +2355,7 @@ void draw_results()
     float left = 152.0f;
     float right = (float)SCREEN_W - 152.0f;
     float row;
+    int report_row;
     ALLEGRO_COLOR bonus_color;
 
     snprintf(line, sizeof(line), "Fase %d concluída", current_phase());
@@ -2438,27 +2402,15 @@ void draw_results()
     al_draw_text(font, UI_AMBER, left, 170.0f, 0, "o que a partida mostrou");
 
 
-    row = 186.0f;
+    // relatorio da fase: cinco linhas com os numeros da partida (#223)
+    row = 184.0f;
 
-    // OA1: identificacao dos grupos pela coloracao de Gram.
-    results_oa1_text(line, sizeof(line));
-    al_draw_text(font, UI_TEXT, left, row, 0, line);
-    row = row + 16.0f;
-
-    // OA2: dados dos grupos disponiveis para comparacao estrutural.
-    results_oa2_text(line, sizeof(line));
-    al_draw_text(font, UI_TEXT, left, row, 0, line);
-    row = row + 16.0f;
-
-    // OA3: registro de acertos e erros nas armas utilizadas.
-    results_oa3_text(line, sizeof(line));
-    al_draw_text(font, UI_TEXT, left, row, 0, line);
-    row = row + 16.0f;
-
-    // OA4: registro de ataques que atingiram celulas proprias.
-    results_oa4_text(line, sizeof(line));
-    al_draw_text(font, UI_TEXT, left, row, 0, line);
-
+    for (report_row = 0; report_row < 5; report_row++)
+    {
+        results_report_line(report_row, line, sizeof(line));
+        al_draw_text(font, UI_TEXT, left, row, 0, line);
+        row = row + 14.0f;
+    }
 
     draw_buttons(buttons, count);
 

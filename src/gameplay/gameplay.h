@@ -113,6 +113,11 @@ typedef struct
     int correct_decisions;   // disparos com o modulo certo no alvo
     int wrong_decisions;     // disparos com o modulo errado no alvo
     int cell_attacks;        // disparos que acertaram uma celula propria
+    int treatments_completed; // bacterias eliminadas com as duas doses certas (#223)
+    int resistances;          // bacterias que ficaram resistentes (#223)
+    int reserve_on_resistant; // cargas de Reserva gastas numa resistente (#223)
+    int reserve_on_common;    // cargas de Reserva gastas numa bacteria comum (#223)
+    int shape_guesses;        // antibiotico errado depois de ler so a forma (#223)
 } MatchProgress;
 
 extern MatchProgress progress;

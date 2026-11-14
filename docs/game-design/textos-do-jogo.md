@@ -157,34 +157,21 @@ Regras que valem para todo texto novo:
 - Nenhum texto desenhado pode ter maiúscula acentuada. `NANOBÔ` é exceção registrada: é o nome do jogo, desenhado em bitmap ampliado 3×, onde o glifo é legível mas não correto.
 - Antes de commitar texto novo, rodar `python -c "print([c for c in 'TEXTO' if ord(c) > 0xFF])"` (codepoint fora de Latin-1 vira `^` na tela).
 
-## 2.2 Resumo por objetivo de aprendizagem (resultados, Issue #210)
+## 2.2 Relatório da fase (resultados, #210 e #223)
 
-O painel de resultados apresenta uma mensagem independente para cada objetivo de aprendizagem. As mensagens são geradas com base nos contadores da partida atual (`MatchProgress`).
+Desde 14/11 (#223), o painel "o que a partida mostrou" fala em linguagem de jogador, sem os códigos internos "OA1:" a "OA4:". São cinco linhas de 14 px, uma por conteúdo, com os números da partida (`MatchProgress`), geradas por `results_report_line` em `src/main.c`. A maior linha tem 41 caracteres (328 px) e cabe nos 344 px do painel. As mensagens OA-01 a OA-04 da #210 saíram do código.
 
-| ID | Local | Texto | Caracteres | Condição / origem |
+| ID | Linha | Texto | Caracteres | Contador |
 |---|---|---|---:|---|
-| OA-01 | resultados | `OA1 Gram: identificou os dois grupos.` | 37 | Gram+ e Gram- identificados; #210 |
-| OA-01 | resultados | `OA1 Gram: identificou Gram+; faltou Gram-.` | 42 | Somente Gram+ identificado; #210 |
-| OA-01 | resultados | `OA1 Gram: identificou Gram-; faltou Gram+.` | 42 | Somente Gram- identificado; #210 |
-| OA-01 | resultados | `OA1 Gram: nenhuma bactéria identificada.` | 40 | Nenhum dos grupos identificado; #210 |
-| OA-02 | resultados | `OA2 Estrutura: identificou os dois grupos.` | 42 | Evidência de identificação dos dois grupos; #210 |
-| OA-02 | resultados | `OA2 Estrutura: identificou apenas Gram+.` | 40 | Evidência de identificação somente de Gram+; #210 |
-| OA-02 | resultados | `OA2 Estrutura: identificou apenas Gram-.` | 40 | Evidência de identificação somente de Gram-; #210 |
-| OA-02 | resultados | `OA2 Estrutura: sem grupos identificados.` | 40 | Nenhum grupo identificado; #210 |
-| OA-03 | resultados | `OA3 Armas: sem erros nas escolhas registradas.` | 46 | Acertos registrados e nenhum erro; #210 |
-| OA-03 | resultados | `OA3 Armas: %d acertos e %d erros; revise a escolha.` | 51 | Pelo menos um erro de arma; #210 |
-| OA-03 | resultados | `OA3 Armas: nenhuma escolha registrada.` | 38 | Nenhum acerto ou erro registrado; #210 |
-| OA-04 | resultados | `OA4 Células: nenhum ataque registrado.` | 38 | Nenhum ataque a célula; #210 |
-| OA-04 | resultados | `OA4 Células: %d ataques; revise a proteção.` | 43 | Um ou mais ataques a células; #210 |
+| RR-01 | 1, fase com bactéria | `lidas até a coloração: %d Gram+ e %d Gram-` | 40 | `scans_gram_positive`, `scans_gram_negative` |
+| RR-02 | 2, fase com bactéria | `tratamentos completos: %d · resistentes: %d` | 41 | `treatments_completed`, `resistances` |
+| RR-03 | 3, fase com bactéria | `nenhum antibiótico errado` / `antibiótico errado: %d (%d pela forma)` | 25 / 38 | `wrong_decisions`, `shape_guesses` |
+| RR-04 | 4, fase com bactéria | `Reserva guardada: nenhuma carga gasta` / `Reserva: %d na resistente, %d na comum` | 37 / 36 | `reserve_on_resistant`, `reserve_on_common` |
+| RR-05 | 5, fase com bactéria; 3, fase de vírus | `células do paciente feridas: %d` | 30 | `cell_attacks` |
+| RR-06 | 1, fase de vírus | `vírus não têm coloração de Gram` | 31 | — |
+| RR-07 | 2, fase de vírus | `vírus neutralizados: %d de %d` | 27 | ameaças da fase |
 
-**Regras de interpretação dos contadores:**
-
-- OA1 utiliza `scans_gram_positive` e `scans_gram_negative` como evidência de identificação dos grupos.
-- OA2 utiliza os mesmos contadores como evidência para retomar a comparação estrutural. A identificação não comprova, isoladamente, compreensão das diferenças estruturais.
-- OA3 utiliza `correct_decisions` e `wrong_decisions`, que contabilizam acertos de projéteis em ameaças, não decisões independentes por alvo.
-- OA4 utiliza `cell_attacks`, que contabiliza projéteis que atingiram células próprias. Esse contador não representa necessariamente perda efetiva de vida.
-
-**Regra de independência:** cada objetivo apresenta sua própria mensagem. Um erro em OA3 não pode ocultar uma dificuldade em OA4, e vice-versa.
+**Leitura dos contadores:** um tratamento completo é uma bactéria eliminada com as duas doses do antibiótico certo. A Reserva não conta como tratamento, e o relatório a separa entre a gasta numa resistente e a gasta numa bactéria comum. `shape_guesses` conta o antibiótico errado dado depois de ler só a forma (FB-05).
 
 **Regra de tipografia:** seguir a seção 2.1. Utilizar hífen ASCII em `Gram-` e evitar maiúsculas acentuadas.
 

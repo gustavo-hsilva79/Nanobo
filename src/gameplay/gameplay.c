@@ -492,6 +492,16 @@ static void hit_projectiles()
             {
                 bool was_resistant = agents[j].resistant;
 
+                // o relatorio separa a Reserva bem usada da gasta numa comum (#223)
+                if (was_resistant)
+                {
+                    progress.reserve_on_resistant = progress.reserve_on_resistant + 1;
+                }
+                else
+                {
+                    progress.reserve_on_common = progress.reserve_on_common + 1;
+                }
+
                 // Reserva: uma dose elimina qualquer bacteria, resistente ou nao;
                 // gasta numa comum, o feedback lembra o uso racional (#216)
                 progress.correct_decisions = progress.correct_decisions + 1;
@@ -531,6 +541,12 @@ static void hit_projectiles()
                 {
                     emit_sfx_at(SFX_EVENT_NEUTRALIZED, agents[j].x, agents[j].y);
 
+                    // duas doses do antibiotico certo: tratamento completo (#223)
+                    if (agents[j].species != SPECIES_VIRUS)
+                    {
+                        progress.treatments_completed = progress.treatments_completed + 1;
+                    }
+
                     // sem identificacao a ameaca sai da cena e o bonus de 9/9 fica impossivel
                     if (agents[j].identified)
                     {
@@ -560,6 +576,7 @@ static void hit_projectiles()
                 // quem leu so a forma chutou o grupo: o feedback aponta a coloracao (#215)
                 if (agents[j].layers == 1)
                 {
+                    progress.shape_guesses = progress.shape_guesses + 1;
                     set_feedback("a forma não define o grupo: veja a coloração");
                 }
                 else if (agents[j].species == SPECIES_GRAM_NEGATIVE)
@@ -1193,6 +1210,7 @@ static void update_dose(int index, double dt)
 
     // a primeira resistente abre o card da resistencia e da Reserva (#222)
     queue_card(CARD_RESISTANCE);
+    progress.resistances = progress.resistances + 1;
 
     // resistencia criada custa pontos, sem deixar a pontuacao negativa (#215)
     score = score - RESISTANCE_PENALTY;
@@ -1423,6 +1441,11 @@ static void start_phase(int index)
     progress.correct_decisions = 0;
     progress.wrong_decisions = 0;
     progress.cell_attacks = 0;
+    progress.treatments_completed = 0;
+    progress.resistances = 0;
+    progress.reserve_on_resistant = 0;
+    progress.reserve_on_common = 0;
+    progress.shape_guesses = 0;
 
     phase_finished = false;
     bonus_awarded = false;
