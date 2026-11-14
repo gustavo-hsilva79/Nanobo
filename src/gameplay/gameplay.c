@@ -25,6 +25,9 @@ double run_time = 0;
 // pontos da partida atual: so a neutralizacao de uma ameaca soma (#66)
 int score = 0;
 
+// vitais do paciente: so a run nova enche; entre as fases ha o piso de 60 (#234)
+float patient_vitals = PATIENT_VITALS_MAX;
+
 // quantos agentes a fase atual colocou no mundo (#M4)
 static int agents_count = 0;
 
@@ -363,8 +366,8 @@ bool hit_agent(int index)
     return false;
 }
 
-// dano nos vitais do paciente, respeitando a invulnerabilidade da #11;
-// devolve se o dano aconteceu (#218)
+// dano na integridade do nanobo, respeitando a invulnerabilidade da #11;
+// devolve se o dano aconteceu (#218, #234)
 static bool damage_player(float amount)
 {
     if (player.health <= 0)
@@ -475,16 +478,14 @@ static void hit_projectiles()
                 hint_target = j;
             }
 
-            // atacar a celula do paciente custa vitais, com qualquer ferramenta (#14, #218)
+            // atacar a celula do paciente custa vitais do paciente, com qualquer
+            // ferramenta; a integridade do nanobo nao muda (#14, #234)
             if (agents[j].species == SPECIES_CELL)
             {
                 progress.cell_attacks = progress.cell_attacks + 1;
-
-                // a mensagem so aparece quando o dano aconteceu (#178)
-                if (damage_player(CELL_SHOT_DAMAGE))
-                {
-                    set_feedback("você feriu uma célula do paciente: ela tem núcleo, não é bactéria");
-                }
+                patient_vitals = fmaxf(patient_vitals - CELL_SHOT_VITALS, 0.0f);
+                emit_sfx_at(SFX_EVENT_WRONG, agents[j].x, agents[j].y);
+                set_feedback("você feriu uma célula do paciente: ela tem núcleo, não é bactéria");
             }
             else if (projectiles[i].laser == LASER_RESERVE
                 && (agents[j].species == SPECIES_GRAM_POSITIVE
@@ -1339,7 +1340,7 @@ static void conclude_phase_if_ready()
 {
     float reach = (float)(PLAYER_RADIUS + DESTINATION_RADIUS);
 
-    if (phase_finished || player.health <= 0)
+    if (phase_finished || player.health <= 0 || patient_vitals <= 0.0f)
     {
         return;
     }
@@ -1358,7 +1359,7 @@ static void conclude_phase_if_ready()
     emit_sfx(SFX_EVENT_PHASE_DONE);
 
     // o paciente mais estavel rende mais: vitais x 0,5 no fim da fase (#218)
-    vitals_bonus = (int)(player.health * VITALS_BONUS_RATE);
+    vitals_bonus = (int)(patient_vitals * VITALS_BONUS_RATE);
     score = score + vitals_bonus;
 
     // bonus de identificacao completa, so na conclusao e so uma vez (#67)
@@ -1421,6 +1422,9 @@ static void start_phase(int index)
     player.facing = PLAYER_FACING_DOWN;
     player.vx = 0.0f;
     player.vy = 0.0f;
+
+    // a integridade do nanobo enche em cada fase; os vitais do paciente nao (#234)
+    player.health = PLAYER_MAX_HEALTH;
 
     // so a Fase 1 nasce com a dica; o place_agents liga ela na bacteria do tutorial
     hint_target = -1;
@@ -1491,8 +1495,8 @@ void reset_match()
     run_progress.identified = 0;
     run_progress.reserve_spent = 0;
 
-    // os vitais so enchem numa run nova; entre as fases eles continuam (#218)
-    player.health = PLAYER_MAX_HEALTH;
+    // os vitais do paciente so enchem numa run nova; entre as fases continuam (#218, #234)
+    patient_vitals = PATIENT_VITALS_MAX;
 
     // cada card aparece uma vez por partida (#222)
     for (int c = 0; c < CARD_COUNT; c++)
@@ -1567,9 +1571,9 @@ void start_next_phase()
     if (has_next_phase())
     {
         // o interludio recupera o paciente ate no minimo 60 (#218)
-        if (player.health < VITALS_MIN_BETWEEN)
+        if (patient_vitals < VITALS_MIN_BETWEEN)
         {
-            player.health = VITALS_MIN_BETWEEN;
+            patient_vitals = VITALS_MIN_BETWEEN;
         }
 
         start_phase(phase_index + 1);
@@ -1769,6 +1773,22 @@ static void collide_agents()
 }
 
 // a partida so anda no estado GAME; o mundo vem das constantes
+// celula do paciente perdida (colonizada ate o fim, ou rompida pelo virus):
+// ela some e os vitais do paciente caem (#234)
+void lose_patient_cell(int index)
+{
+    if (index < 0 || index >= agents_count || !agents[index].active
+        || agents[index].species != SPECIES_CELL)
+    {
+        return;
+    }
+
+    agents[index].active = false;
+    patient_vitals = fmaxf(patient_vitals - CELL_LOSS_VITALS, 0.0f);
+    emit_sfx_at(SFX_EVENT_DAMAGE, agents[index].x, agents[index].y);
+    set_feedback("uma célula do paciente foi destruída: -20 vitais");
+}
+
 // divisao binaria: a filha nasce ao lado da mae, numa vaga nova do array, com a
 // resistencia e as camadas lidas dela, mas sem a dose que a mae recebeu (#217)
 static void divide_bacteria(int index)
@@ -1965,16 +1985,6 @@ void update_match(double dt)
         }
     }
 
-    // cada invasor vivo drena os vitais do paciente: esperar tem custo (#218)
-    if (player.health > 0.0f && !phase_finished)
-    {
-        player.health = player.health - THREAT_DRAIN * (float)threats_left() * (float)dt;
-
-        if (player.health < 0.0f)
-        {
-            player.health = 0.0f;
-        }
-    }
 
     // direcao pedida pelas teclas: a diagonal soma os dois eixos, como antes (#179)
     if (key_up)
@@ -2027,7 +2037,7 @@ void update_match(double dt)
         // contato a cada quadro nao pode reescrever a mensagem sem dano novo (#178)
         if (damage_player(CONTACT_DAMAGE))
         {
-            set_feedback("contato com invasor: -8 vitais");
+            set_feedback("contato com invasor: -10 de integridade");
         }
     }
 

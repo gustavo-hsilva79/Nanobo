@@ -38,8 +38,8 @@ _Static_assert(HUD_LINES * HUD_LINE_H + 2 * HUD_MARGIN <= PANEL_H, "HUD nao cabe
 #define UI_SEG_GAP 2
 #define UI_BAR_W (UI_BAR_SEGMENTS * UI_SEG_W + (UI_BAR_SEGMENTS - 1) * UI_SEG_GAP)
 
-// barra dos sinais vitais no HUD e a faixa em que ela fica vermelha (#218)
-#define VITALS_BAR_W 48
+// largura de cada barra do HUD (integridade e vitais) e a faixa vermelha (#218, #234)
+#define VITALS_BAR_W 36
 #define VITALS_LOW 30.0f
 #define TITLE_SCALE 3
 
@@ -90,6 +90,9 @@ int hud_y(int line)
 // recursos do jogo, carregados uma vez antes do loop
 ALLEGRO_FONT* font = NULL;
 ALLEGRO_BITMAP* nanobo = NULL;
+
+// game over pelos vitais do paciente (true) ou pela integridade do nanobo (#234)
+bool game_over_patient = false;
 
 // coracao do HUD: icone dos sinais vitais (#19, #218)
 ALLEGRO_BITMAP* heart_icon = NULL;
@@ -1834,12 +1837,21 @@ void draw_hud()
     // coracao centrado na altura do texto, nao topo a topo
     heart_y = hud_y(0) + (al_get_font_line_height(font) - al_get_bitmap_height(heart_icon)) / 2;
 
-    // sinais vitais: coracao, barra com a cor da faixa e o numero (#218)
-    if (player.health >= VITALS_MIN_BETWEEN)
+    // duas barras (#234): escudo + integridade do nanobo em ciano;
+    // coracao + vitais do paciente na cor da faixa
+    al_draw_bitmap(defense_icon, (float)HUD_MARGIN, (float)heart_y, 0);
+    bar_x = (float)(HUD_MARGIN + al_get_bitmap_width(defense_icon) + 4);
+    fill = (float)VITALS_BAR_W * player.health / PLAYER_MAX_HEALTH;
+    al_draw_filled_rectangle(bar_x, (float)(hud_y(0) + 1), bar_x + (float)VITALS_BAR_W,
+        (float)(hud_y(0) + 1 + UI_SEG_H), UI_SLOT);
+    al_draw_filled_rectangle(bar_x, (float)(hud_y(0) + 1), bar_x + fill,
+        (float)(hud_y(0) + 1 + UI_SEG_H), UI_CYAN);
+
+    if (patient_vitals >= VITALS_MIN_BETWEEN)
     {
         vitals_color = UI_GREEN;
     }
-    else if (player.health >= VITALS_LOW)
+    else if (patient_vitals >= VITALS_LOW)
     {
         vitals_color = UI_AMBER;
     }
@@ -1848,19 +1860,16 @@ void draw_hud()
         vitals_color = UI_RED;
     }
 
-    al_draw_bitmap(heart_icon, (float)HUD_MARGIN, (float)heart_y, 0);
-    bar_x = (float)(HUD_MARGIN + al_get_bitmap_width(heart_icon) + 4);
-    fill = (float)VITALS_BAR_W * player.health / PLAYER_MAX_HEALTH;
+    x = (int)bar_x + VITALS_BAR_W + 8;
+    al_draw_bitmap(heart_icon, (float)x, (float)heart_y, 0);
+    bar_x = (float)(x + al_get_bitmap_width(heart_icon) + 4);
+    fill = (float)VITALS_BAR_W * patient_vitals / PATIENT_VITALS_MAX;
     al_draw_filled_rectangle(bar_x, (float)(hud_y(0) + 1), bar_x + (float)VITALS_BAR_W,
         (float)(hud_y(0) + 1 + UI_SEG_H), UI_SLOT);
     al_draw_filled_rectangle(bar_x, (float)(hud_y(0) + 1), bar_x + fill,
         (float)(hud_y(0) + 1 + UI_SEG_H), vitals_color);
 
-    // arredonda para cima: o numero so mostra 0 quando os vitais zeraram
-    snprintf(line, sizeof(line), "%d", (int)ceilf(player.health));
-    al_draw_text(font, vitals_color, bar_x + (float)VITALS_BAR_W + 4.0f, (float)hud_y(0), 0, line);
-
-    x = (int)bar_x + VITALS_BAR_W + 4 + 3 * 8 + UI_GAP;
+    x = (int)bar_x + VITALS_BAR_W + UI_GAP;
 
     // ameacas com contador: seis blocos de 6 px nao dizem quantas restam
     snprintf(line, sizeof(line), "ameaças %d/%d", threats_total() - threats_left(), threats_total());
@@ -2481,7 +2490,8 @@ void draw_game_over()
     al_draw_text(font, UI_RED, SCREEN_W / 2, 30, ALLEGRO_ALIGN_CENTRE, "GAME OVER");
     draw_rule((float)SCREEN_W / 2, 44.0f, 200.0f, al_map_rgb(150, 60, 60));
     al_draw_text(font, UI_DIM, SCREEN_W / 2, 52, ALLEGRO_ALIGN_CENTRE,
-        "os sinais vitais do paciente zeraram");
+        game_over_patient ? "os sinais vitais do paciente zeraram"
+                          : "o Nanobô foi danificado e saiu do corpo");
 
     draw_panel(140.0f, 72.0f, 360.0f, 96.0f, UI_INK, UI_FRAME);
 
@@ -3054,8 +3064,11 @@ int main()
                 {
                     update_match(deltaTime);
 
-                    if (player.health <= 0.0f)
+                    if (player.health <= 0.0f || patient_vitals <= 0.0f)
                     {
+                        // a tela diz qual barra zerou (#234)
+                        game_over_patient = patient_vitals <= 0.0f;
+
                         // game over nao grava recorde: so a vitoria entra (#34/#82)
                         game_set_scene(GAME_SCENE_GAME_OVER);
                     }

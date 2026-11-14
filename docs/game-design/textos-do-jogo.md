@@ -23,7 +23,8 @@
 | FB-12 | Reserva gasta numa bactéria comum | `Reserva numa bactéria comum: guarde para a resistente` | 53 | #216 (uso racional) |
 | FB-13 | disparo da Reserva sem carga | `Reserva esgotada` | 16 | #216 (FB2-07) |
 | FB-14 | uma bactéria se dividiu | `uma bactéria se dividiu em duas` | 31 | #217 (FB2-13) |
-| FB-10 | contato com invasor (bactéria ou vírus) | `contato com invasor: -8 vitais` | 30 | #11; #218 |
+| FB-10 | contato com invasor (bactéria ou vírus) | `contato com invasor: -10 de integridade` | 39 | #11; #218; #234 (duas barras) |
+| FB-15 | célula do paciente perdida (colonizada ou rompida) | `uma célula do paciente foi destruída: -20 vitais` | 47 | #234 |
 
 **Hífen, não menos tipográfico.** "Gram-" usa hífen ASCII (U+002D). O "−" (U+2212) que a spec traz não existe na fonte embutida (Latin-1): na tela ele saía como `^`, visto no QA de 03/11 e corrigido no commit `5e7cc75`. Ao editar estes textos, não reintroduza U+2212.
 
@@ -69,7 +70,7 @@ Desenhado **em toda partida** — `MENU → BRIEFING → GAME`, e também depois
 | CT-10 | menu, painel do objetivo | `neutralizar as %d bactérias e chegar ao destino` | 47 | #201 |
 | CT-11 | menu, painel do objetivo | `identificar os %d agentes vale +%d pontos` | 41 | #201 |
 | CT-11b | resultados, painel dos objetivos secundários | `bônus de vitais` · `+%d` | 15 | #218; ocupa a linha da CT-11 nos resultados |
-| CT-11c | HUD, linha 0 | vitais `%d` (de `0` a `100`), verde ≥ 60, âmbar ≥ 30, vermelho abaixo | até 3 | #218 |
+| CT-11c | HUD, linha 0 | duas barras de 36 px sem número: escudo + integridade do Nanobô (ciano) e coração + vitais do paciente (verde ≥ 60, âmbar ≥ 30, vermelho abaixo) | — | #218; #234 |
 | CT-11d | mundo, acima do agente da dica | `botão direito: escanear` (some no primeiro scan; volta no tiro num invasor sem leitura) | 23 | #219 |
 | CT-11e | card de conceito, rótulo e aviso | `conceito` / `enter ou clique para continuar` | 8 / 30 | #222 |
 | CT-11f | card de conceito, títulos da Fase 1 | `Coloração de Gram` (CC-01) / `Resistência e Reserva` (CC-02) | 17 / 21 | #222; linhas em §3.1 |
@@ -122,7 +123,7 @@ Desenhado **em toda partida** — `MENU → BRIEFING → GAME`, e também depois
 | CT-59 | vitória, linha de estatística | `pontuação final` | 15 | varredura de 05/11 |
 | CT-60 | vitória, rodapé | `enter também começa de novo` | 27 | varredura de 05/11 |
 | CT-61 | game over, título | `GAME OVER` | 9 | varredura de 05/11 |
-| CT-62 | game over, subtítulo | `os sinais vitais do paciente zeraram` | 36 | #218 |
+| CT-62 | game over, subtítulo | `os sinais vitais do paciente zeraram` (vitais em 0) / `o Nanobô foi danificado e saiu do corpo` (integridade em 0) | 36 / 39 | #218; #234 |
 | CT-63 | game over, rodapé | `enter também reinicia` | 21 | varredura de 05/11 |
 
 **Conferência de 05/11/2026.** A varredura cobriu os literais passados a `al_draw_text` em `src/main.c` e as mensagens de `set_feedback` em `src/gameplay/gameplay.c`. Os 16 que faltavam estão em CT-48–CT-63. O título `NANOBÔ` é o caso especial da §2.1 (bitmap montado por `make_text_bitmap`) e as linhas de QA sob `#ifdef _DEBUG` não entram na tabela.

@@ -91,12 +91,14 @@ _Static_assert(WORLD_W % 32 == 0 && WORLD_H % 32 == 0, "mundo precisa fechar no 
 // tempo de invulnerabilidade depois de levar dano (#11)
 #define INVULNERABILITY_TIME 1.0
 
-// sinais vitais (#218): custo do contato e do tiro na celula do paciente,
-// drenagem por invasor vivo, piso entre as fases e bonus no fim da fase
-#define CONTACT_DAMAGE 8.0f
-#define CELL_SHOT_DAMAGE 15.0f
-// a drenagem foi calibrada pelos bots do harness em 14/11: leitor 71%, chute 6% (#224)
-#define THREAT_DRAIN 0.68f
+// duas barras (#234): a integridade do nanobo (player.health) cai com o que
+// o fere; os vitais do paciente caem quando uma celula dele e perdida ou ferida.
+// nao ha drenagem por tempo: a pressao vem dos invasores (revisao de 14/11)
+#define CONTACT_DAMAGE 10.0f
+#define PATIENT_VITALS_MAX 100.0f
+#define CELL_SHOT_VITALS 15.0f
+#define CELL_LOSS_VITALS 20.0f
+#define CELL_HEALTH 100.0f
 #define VITALS_MIN_BETWEEN 60.0f
 #define VITALS_BONUS_RATE 0.5f
 
@@ -137,6 +139,12 @@ extern RunProgress run_progress;
 
 // pontos da partida atual: a neutralizacao de uma ameaca soma (#66)
 extern int score;
+
+// vitais do paciente, de 0 a PATIENT_VITALS_MAX; atravessam as fases (#234)
+extern float patient_vitals;
+
+// celula do paciente perdida: some, e os vitais caem CELL_LOSS_VITALS (#234)
+void lose_patient_cell(int index);
 
 // teclas seguradas agora, o main escreve isso na entrada e o update le pra mover
 extern bool key_up;
