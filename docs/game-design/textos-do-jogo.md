@@ -2,7 +2,7 @@
 
 > **Criado em:** 03/11/2026. Fontes das regras: `docs/game-design/ensino-e-aprendizagem.md` (§"Feedback por situação" e §"Regras para qualquer texto"), `docs/game-design/decisoes.md` (armas, coloração e camada 1, 03/11 noite) e as issues #105, #198 e #200.
 > Todo texto novo entra aqui com ID, tela, limite de caracteres e de onde vem a regra. Nenhum texto usa PBP, transpeptidase, LPS ou ligações cruzadas.
-> **Atualizado em:** 05/11/2026 — varredura completa contra `src/main.c` e `src/gameplay/gameplay.c`: 16 strings que faltavam entraram (CT-48–CT-63) e a tabela voltou a espelhar o código. Texto novo entra aqui no mesmo commit; a conferência está no fim da seção 2.
+> **Atualizado em:** 15/11/2026 — conferência por script contra `src/main.c` e `src/gameplay/gameplay.c` (#212): o registro espelha o build. Texto novo entra aqui no mesmo commit; o passo de conferência está no fim da seção 2.
 
 ## 1. Feedback da decisão (HUD da fase, `src/gameplay/gameplay.c`)
 
@@ -117,10 +117,7 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 | CT-36 | HUD, linha 0, à direita | `Ruptura · parede` / `Dissolução · membrana` / `Reserva %d/%d · resistente` (`Reserva 2/2 · resistente`) | 16 / 21 / 24 | decisão 03/11 (noite); #216; a ferramenta com o alvo dela em 15/11 (#243) |
 | CT-36b | HUD, linha 0, Fase 2 | `Neutralização · vírus livre` / `Lise · célula infectada` | 27 / 23 | #88; #243 |
 | CT-37 | resultados, painel novo | `o que a partida mostrou` | 23 | #202, build de 04/11 |
-| CT-38 | resultados, painel novo | `bactérias identificadas: %d Gram+ · %d Gram-` (`bactérias identificadas: 1 Gram+ · 1 Gram-`) | 42 | #174/#202, build de 04/11 |
-| CT-39 | resultados, painel novo | `acertos de arma: %d · erros: %d` (`acertos de arma: 1 · erros: 0`) | 29 | #174/#202, build de 04/11 |
-| CT-40 | resultados, painel novo | `ataques à célula: %d` (`ataques à célula: 0`) | 19 | #174/#202, build de 04/11 |
-| CT-41 | resultados, frase de revisão | `reveja a estrutura lida no scan` / `reveja: as duas armas ferem a célula` / `sem erro de arma nesta partida` | 31 / 36 / 30 | #174/#202, build de 04/11 |
+| CT-38 a CT-41 | — | contadores e frase de revisão do painel de 04/11 | — | saíram com o relatório por objetivo (#210, #223); os textos atuais são as RR-01 a RR-10 da §2.2 |
 | CT-42 | HUD, linha 1, Fase 2 | `neutralize os vírus e vá ao destino` | 35 | Fase 2 mínima (04/11); encurtada em 15/11 (#243) |
 | CT-43 | scanner, camada 1, vírus | `clique de novo para concluir a leitura` | 38 | Fase 2 mínima (04/11) |
 | CT-44 | scanner, categoria | `vírus` / `célula infectada` (depois da leitura) | 5 / 16 | Fase 2 mínima (04/11); #87 |
@@ -154,7 +151,10 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 | CT-72 | vitória, gravação falhou | `não foi possível gravar o recorde` | 33 | #80 |
 | CT-73 | nome padrão no ranking | `Jogador` (nome vazio) / `Recorde` (recorde antigo importado) | 7 / 7 | #78, #81 |
 
-**Conferência de 05/11/2026.** A varredura cobriu os literais passados a `al_draw_text` em `src/main.c` e as mensagens de `set_feedback` em `src/gameplay/gameplay.c`. Os 16 que faltavam estão em CT-48–CT-63. O título `NANOBÔ` é o caso especial da §2.1 (bitmap montado por `make_text_bitmap`) e as linhas de QA sob `#ifdef _DEBUG` não entram na tabela.
+**Conferência no QA (#212, desde 15/11).** Na raiz do repositório, rode `python -I ../Nanobo-testes/conferir_textos.py .`. O script cruza todo literal de string de `src/main.c` e `src/gameplay/gameplay.c` com este registro, nos dois sentidos: lista o texto desenhado sem linha aqui e a linha daqui cujo texto saiu do código.
+- **Resultado esperado:** `0 literais sem linha no registro, 0 linhas sem texto no codigo`, com código de saída 0.
+- **Fica de fora:** o que não é desenhado (mensagens de `_Static_assert`, `printf` de erro, caminhos e o formato do arquivo do ranking) e as linhas de QA sob `#ifdef _DEBUG`. O título `NANOBÔ` é o caso especial da §2.1, um bitmap montado por `make_text_bitmap`.
+- **Histórico:** a varredura de 05/11 foi manual e trouxe a CT-48 a CT-63. A de 15/11 tirou a CT-38 a CT-41, que tinham saído do código, e registrou os nomes das bactérias (RT-05c).
 
 ### Textos do scanner (`src/main.c` + `src/gameplay/gameplay.c`)
 
@@ -165,6 +165,7 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 | RT-03 | scanner, camada 1, célula | `célula do paciente · eucarionte` (sem amostra de cor) | 31 | #214, design 2.0 |
 | RT-04 | scanner, camada 2, Gram+ (amostra roxa) | `Gram+ · parede grossa, sem membrana externa · %s` (`... · Streptococcus pyogenes`) | 46 + nome (até 68) | #214, design 2.0 |
 | RT-05 | scanner, camada 2, Gram- (amostra rosa) | `Gram- · parede fina sob membrana externa · %s` (`... · Pseudomonas aeruginosa`) | 43 + nome (até 65) | #214, design 2.0 |
+| RT-05c | scanner, camada 2, o `%s` da RT-04 e da RT-05 (`phases[]` em `src/entities/entities.c`) | Gram+: `Staphylococcus aureus` / `Streptococcus pyogenes` / `Bacillus cereus`; Gram-: `Neisseria meningitidis` / `Escherichia coli` / `Pseudomonas aeruginosa` | 21 / 22 / 15; 22 / 16 / 22 | #214; registrado na #212 |
 | RT-05b | scanner, camada 2, célula | `núcleo guarda o DNA · mitocôndrias · não atacar` | 47 | #214, design 2.0 |
 | RT-06 | scanner, linha de estado | ` · alvo sob o cursor` (ciano) / ` · última leitura` (apagado) | 20 / 17 | #199, build de 04/11 |
 | RT-07 | scanner, camada 2, revisão bactéria (Gram+ e Gram-) | `procarionte · sem núcleo: DNA solto no nucleoide` | 48 | #214, OA1 |
