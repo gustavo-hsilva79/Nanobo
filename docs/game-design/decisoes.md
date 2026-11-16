@@ -425,6 +425,25 @@ O M4 continua centrado na Fase 1; a **Fase 2 mínima** existe para fechar o flux
 - **Recorde só na Vitória.** A melhor pontuação é a de uma execução vencida. Game Over não grava recorde; abandonar pelo menu também não. `finish_run()` deixa de ser chamado no Game Over (`src/main.c:2108`) — pendente no build de 04/11, que ainda grava. Vale para o recorde mínimo e para o Top 10 (#34, #82).
 - **Sem corte de escopo em 05/11.** A Fase 2 completa (#55/#83–#88/#91) e o Top 10 (#34/#77–#82/#197) continuam no M5. O marco fica com 85 issues e 228 SP brutos; 195 SP sem as oito agrupadoras.
 
+### Top 10 (15/11/2026, #77–#81 e #197)
+
+Substitui o recorde mínimo de 04/11. As regras de #34 continuam: 10 posições, nome de até 10 caracteres, empate com o registro mais antigo em cima e gravação só na Vitória.
+- **Local do arquivo (#77):** `ranking.txt` na pasta de dados do usuário (`%APPDATA%\Nanobo\`, pela `al_get_standard_path`), para gravar mesmo com o jogo instalado em Arquivos de Programas. Se a pasta não abrir, o arquivo fica ao lado do jogo (`nanobo_ranking.txt`).
+- **Formato (#77):** texto. A 1ª linha é `NANOBO-RANKING 1`, e cada uma das seguintes é `pontos nome`, com o nome em UTF-8.
+- **Arquivo fora do esperado (#77, #78):**
+  - ausente: ranking vazio, e o recorde antigo (`nanobo_hiscore.txt`) entra como o registro "Recorde", para a troca não apagar o que já foi conquistado;
+  - vazio ou sem o cabeçalho: ranking vazio;
+  - linha inválida (sem número, número negativo ou sem nome): ignorada;
+  - a leitura ordena de novo e, no empate, mantém a ordem do arquivo.
+- **Inserção (#79):** com o ranking cheio, só entra quem passa o último; empatar com ele não basta.
+- **Gravação (#80):** o jogo grava num `.tmp` e só então troca pelo arquivo antigo, para não deixar um ranking pela metade. Se falhar, o ranking fica na memória e a Vitória avisa.
+- **Nome (#81):**
+  - é pedido na Vitória só quando a pontuação entra no Top 10, e ENTER ou ESC confirmam;
+  - vazio vira "Jogador";
+  - aceita só os caracteres que a fonte desenha (Latin-1), e a maiúscula acentuada vira minúscula, porque a fonte erra o glifo dela (§2.1 de `textos-do-jogo.md`).
+- **Exibição (#197):** um painel, sem cena nova. Na Vitória, o registro novo fica em destaque; no menu, o painel abre pelo botão RECORDES e fecha com ENTER, ESC ou clique.
+- **Limitação conhecida:** o gameplay abre o arquivo com `fopen`, que não aceita caminho fora do ASCII. Com um nome de usuário acentuado, a gravação falha e a Vitória avisa.
+
 ### Refatoração pós-entrega (06/11/2026)
 
 - **Estrutura-alvo enxuta.** As cinco casas continuam: `main.c` (loop, recursos, entrada e composição das telas), `entities/`, `gameplay/`, `core/` e `scenes/`. A Wave 2 acrescenta só `src/ui/` (menus, HUD, painel do scanner, resultados, botões e textos) e `src/render/` (mapa, agentes, projéteis, destino e mira). `app/`, `input/`, `resources/` e `persistence/` não entram.

@@ -376,10 +376,43 @@ bool phase_has_bacteria();
 bool has_next_phase(void);
 void start_next_phase(void);
 
-// fim da run: grava o recorde so na vitoria, quando a pontuacao supera o melhor (#M4)
-void finish_run(void);
-int hi_score(void);
+// Top 10 (#34, #77-#82): nome de ate 10 caracteres, empate deixa o registro
+// mais antigo em cima e so a vitoria grava. O arquivo e texto: a 1a linha e
+// "NANOBO-RANKING 1" e cada uma das seguintes e "pontos nome"
+#define RANKING_SIZE 10
+#define RANKING_NAME_CHARS 10
+#define RANKING_NAME_BYTES (RANKING_NAME_CHARS * 2 + 1)
+
+typedef struct
+{
+    int score;
+    char name[RANKING_NAME_BYTES]; // UTF-8, ate RANKING_NAME_CHARS caracteres
+} RankingEntry;
+
+// onde fica o arquivo: o main passa a pasta de dados do usuario (#77)
+void ranking_set_path(const char* path);
+
+// le o ranking (#78); arquivo ausente, vazio ou de outro formato vale ranking
+// vazio, e a linha invalida e ignorada. Sem arquivo novo, o recorde antigo
+// (nanobo_hiscore.txt) entra como o primeiro registro
 void load_hi_score(void);
+
+int ranking_count(void);
+const RankingEntry* ranking_entry(int position);
+
+// a pontuacao entra no Top 10? cheio, so entra quem passa o ultimo (#79)
+bool ranking_qualifies(int score);
+
+// insere e devolve a posicao (0 a 9), ou -1 quando nao entra (#79); o nome
+// vazio vira "Jogador"
+int ranking_insert(int score, const char* name);
+
+// grava o ranking num arquivo temporario e troca pelo antigo (#80); false
+// quando nao deu para gravar, e o ranking em memoria fica como esta
+bool ranking_save(void);
+
+// maior pontuacao do ranking; 0 sem registro
+int hi_score(void);
 
 // ultimo alvo lido pelo scanner, -1 antes da primeira leitura
 int last_scan_target();

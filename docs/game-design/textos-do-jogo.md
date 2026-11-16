@@ -125,7 +125,7 @@ Desenhado **em toda partida** — `MENU → BRIEFING → GAME`, e também depois
 | CT-44 | scanner, categoria | `vírus` / `célula infectada` (depois da leitura) | 5 / 16 | Fase 2 mínima (04/11); #87 |
 | CT-45 | resultados, título | `Fase %d concluída` | 17 | Fase 2 mínima (04/11) |
 | CT-46 | vitória / game over | `tempo total` / `recorde` | 11 / 7 | Recorde mínimo (04/11) |
-| CT-47 | menu, rodapé | `recorde %d` | 10 | Recorde mínimo (04/11) |
+| CT-47 | menu, rodapé | `recorde %d · %s` (`recorde 1234 · Jogador`) / `nenhum recorde ainda` | até 29 / 20 | Top 10 (#34), 15/11 |
 | CT-48 | menu, subtítulo | `DEFENDA O ORGANISMO` | 19 | varredura de 05/11 |
 | CT-49 | menu, rodapé do painel de controles | `interprete as informações do scanner antes de atacar` | 52 | varredura de 05/11 |
 | CT-50 | HUD, linha 1, Fase 1 | `objetivo: neutralizar as bactérias e chegar ao destino` | 54 | varredura de 05/11 |
@@ -142,6 +142,16 @@ Desenhado **em toda partida** — `MENU → BRIEFING → GAME`, e também depois
 | CT-61 | game over, título | `GAME OVER` | 9 | varredura de 05/11 |
 | CT-62 | game over, subtítulo | `os sinais vitais do paciente zeraram` (vitais em 0) / `o Nanobô foi danificado e saiu do corpo` (integridade em 0) | 36 / 39 | #218; #234 |
 | CT-63 | game over, rodapé | `enter também reinicia` | 21 | varredura de 05/11 |
+| CT-64 | menu, botão | `RECORDES` | 8 | #197 |
+| CT-65 | painel do Top 10, título | `Top 10` | 6 | #197 |
+| CT-66 | painel do Top 10, vazio | `nenhum recorde ainda` / `vença uma partida` | 20 / 17 | #197 |
+| CT-67 | painel do Top 10 no menu, rodapé | `enter ou esc fecha` | 18 | #197 |
+| CT-68 | vitória, entrada de nome | `novo recorde no Top 10!` | 23 | #81 |
+| CT-69 | vitória, entrada de nome | `digite seu nome e tecle enter` | 29 | #81 |
+| CT-70 | vitória, depois do nome | `posição %d no Top 10` | 20 | #81 |
+| CT-71 | vitória, fora do Top 10 | `a pontuação não entrou no Top 10` | 32 | #79 |
+| CT-72 | vitória, gravação falhou | `não foi possível gravar o recorde` | 33 | #80 |
+| CT-73 | nome padrão no ranking | `Jogador` (nome vazio) / `Recorde` (recorde antigo importado) | 7 / 7 | #78, #81 |
 
 **Conferência de 05/11/2026.** A varredura cobriu os literais passados a `al_draw_text` em `src/main.c` e as mensagens de `set_feedback` em `src/gameplay/gameplay.c`. Os 16 que faltavam estão em CT-48–CT-63. O título `NANOBÔ` é o caso especial da §2.1 (bitmap montado por `make_text_bitmap`) e as linhas de QA sob `#ifdef _DEBUG` não entram na tabela.
 

@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
+#include <string.h>
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
@@ -213,6 +214,18 @@ float mouse_y = 0.0f;
 // botao focado na tela atual e a ultima cena desenhada
 int ui_focus = 0;
 int briefing_card = 0;
+
+// Top 10 na interface (#81, #197): entrada de nome na Vitoria, painel do
+// ranking no menu e destaque do registro novo; nenhuma cena nova
+bool name_entry_active = false;
+char name_entry[RANKING_NAME_BYTES] = "";
+int name_entry_chars = 0;
+int ranking_highlight = -1;
+bool ranking_save_failed = false;
+bool ranking_panel_open = false;
+
+// o painel do Top 10 aparece no menu e na vitoria (#197)
+void draw_ranking_panel(float x, float y, float w, int highlight);
 
 // overlay de depuracao da interface: F1 liga e desliga, so existe no Debug
 bool show_debug = false;
@@ -780,7 +793,8 @@ int button_hit(const UiButton* button, float x, float y)
 const UiButton* screen_buttons(int* count)
 {
     static const UiButton menu_items[] = {
-        { (float)BUTTON_X, (float)BUTTON_Y, (float)BUTTON_W, (float)BUTTON_H, "INICIAR" }
+        { (float)BUTTON_X - 90.0f, (float)BUTTON_Y, (float)BUTTON_W, (float)BUTTON_H, "INICIAR" },
+        { (float)BUTTON_X + 90.0f, (float)BUTTON_Y, (float)BUTTON_W, (float)BUTTON_H, "RECORDES" }
     };
     static const UiButton pause_items[] = {
         { 240.0f, 170.0f, 160.0f, 28.0f, "CONTINUAR" }
@@ -793,7 +807,7 @@ const UiButton* screen_buttons(int* count)
         { 330.0f, 198.0f, 140.0f, 28.0f, "PULAR" }
     };
     static const UiButton victory_items[] = {
-        { 240.0f, 212.0f, 160.0f, 28.0f, "NOVA PARTIDA" }
+        { 240.0f, 268.0f, 160.0f, 28.0f, "NOVA PARTIDA" }
     };
     static const UiButton over_items[] = {
         { 240.0f, 204.0f, 160.0f, 28.0f, "NOVA PARTIDA" }
@@ -804,6 +818,7 @@ const UiButton* screen_buttons(int* count)
     switch (game_get_scene())
     {
         case GAME_SCENE_MENU:
+            *count = 2;
             return menu_items;
 
         case GAME_SCENE_BRIEFING:
@@ -881,6 +896,13 @@ void activate_button(int index)
     switch (game_get_scene())
     {
         case GAME_SCENE_MENU:
+            // RECORDES abre o painel do Top 10 por cima do menu (#197)
+            if (index == 1)
+            {
+                ranking_panel_open = true;
+                break;
+            }
+
             reset_match();
             briefing_card = 0;
             game_set_scene(GAME_SCENE_BRIEFING);
@@ -912,7 +934,13 @@ void activate_button(int index)
             }
             else
             {
-                finish_run();
+                // so a vitoria grava (#34): o nome e pedido quando a pontuacao
+                // entra no Top 10 (#81)
+                name_entry_active = ranking_qualifies(score);
+                name_entry[0] = '\0';
+                name_entry_chars = 0;
+                ranking_highlight = -1;
+                ranking_save_failed = false;
                 game_set_scene(GAME_SCENE_VICTORY);
             }
             break;
@@ -1173,7 +1201,7 @@ void draw_menu()
 {
     char objective[96];
     char bonus[96];
-    char record[32];
+    char record[48];
     int count;
 
     const UiButton* buttons = screen_buttons(&count);
@@ -1406,8 +1434,15 @@ void draw_menu()
         "enter ou clique para começar"
     );
 
-    // recorde lido do arquivo no inicio do jogo (#M4)
-    snprintf(record, sizeof(record), "recorde %d", hi_score());
+    // o melhor do Top 10, com o nome (#34)
+    if (ranking_count() > 0)
+    {
+        snprintf(record, sizeof(record), "recorde %d · %s", hi_score(), ranking_entry(0)->name);
+    }
+    else
+    {
+        snprintf(record, sizeof(record), "nenhum recorde ainda");
+    }
     al_draw_text(font, UI_DIM, SCREEN_W / 2, BUTTON_Y + 52, ALLEGRO_ALIGN_CENTRE, record);
 
     al_draw_text(
@@ -1418,6 +1453,15 @@ void draw_menu()
         ALLEGRO_ALIGN_RIGHT,
         "F11 tela cheia"
     );
+
+    // painel do Top 10 por cima do menu, aberto pelo RECORDES (#197)
+    if (ranking_panel_open)
+    {
+        al_draw_filled_rectangle(0.0f, 0.0f, (float)SCREEN_W, (float)SCREEN_H,
+            al_map_rgba_f(0.0f, 0.0f, 0.0f, 0.6f));
+        draw_ranking_panel(177.0f, 70.0f, 286.0f, -1);
+        al_draw_text(font, UI_DIM, SCREEN_W / 2, 264, ALLEGRO_ALIGN_CENTRE, "enter ou esc fecha");
+    }
 }
 
 
@@ -2639,43 +2683,194 @@ void draw_results()
 #endif
 }
 
+// painel do Top 10 (#197): posicao, nome e pontos; o registro novo em ambar
+void draw_ranking_panel(float x, float y, float w, int highlight)
+{
+    char line[32];
+    int i;
+
+    draw_panel(x, y, w, 184.0f, UI_INK, UI_FRAME);
+    al_draw_text(font, UI_AMBER, x + w / 2.0f, y + 8.0f, ALLEGRO_ALIGN_CENTRE, "Top 10");
+
+    if (ranking_count() == 0)
+    {
+        al_draw_text(font, UI_DIM, x + w / 2.0f, y + 86.0f, ALLEGRO_ALIGN_CENTRE,
+            "nenhum recorde ainda");
+        al_draw_text(font, UI_DIM, x + w / 2.0f, y + 102.0f, ALLEGRO_ALIGN_CENTRE,
+            "vença uma partida");
+        return;
+    }
+
+    for (i = 0; i < ranking_count(); i++)
+    {
+        const RankingEntry* e = ranking_entry(i);
+        float row = y + 28.0f + (float)i * 15.0f;
+        ALLEGRO_COLOR color = i == highlight ? UI_AMBER : UI_TEXT;
+
+        if (i == highlight)
+        {
+            al_draw_filled_rectangle(x + 4.0f, row - 3.0f, x + w - 4.0f, row + 11.0f, UI_HOVER);
+        }
+
+        snprintf(line, sizeof(line), "%2d", i + 1);
+        al_draw_text(font, UI_DIM, x + 12.0f, row, 0, line);
+        al_draw_text(font, color, x + 40.0f, row, 0, e->name);
+        snprintf(line, sizeof(line), "%d", e->score);
+        al_draw_text(font, color, x + w - 12.0f, row, ALLEGRO_ALIGN_RIGHT, line);
+    }
+}
+
+// confirma o nome digitado: insere no Top 10 e grava (#79, #80, #81)
+void confirm_name_entry()
+{
+    if (!name_entry_active)
+    {
+        return;
+    }
+
+    name_entry_active = false;
+    ranking_highlight = ranking_insert(score, name_entry);
+    ranking_save_failed = !ranking_save();
+}
+
+// caractere digitado na entrada de nome: ate 10 caracteres do Latin-1, que a
+// fonte desenha; maiuscula acentuada vira minuscula, porque a fonte erra o
+// glifo dela (#81)
+void handle_key_char(int keycode, int unichar)
+{
+    char bytes[8];
+    int len;
+
+    if (game_get_scene() != GAME_SCENE_VICTORY || !name_entry_active)
+    {
+        return;
+    }
+
+    if (keycode == ALLEGRO_KEY_BACKSPACE)
+    {
+        size_t n = strlen(name_entry);
+
+        if (n == 0)
+        {
+            return;
+        }
+
+        // volta ate o inicio do ultimo caractere UTF-8
+        n--;
+        while (n > 0 && ((unsigned char)name_entry[n] & 0xC0) == 0x80)
+        {
+            n--;
+        }
+
+        name_entry[n] = '\0';
+        name_entry_chars = name_entry_chars - 1;
+        return;
+    }
+
+    if (unichar < 32 || unichar == 127 || unichar > 0xFF || (unichar >= 0x80 && unichar < 0xA0))
+    {
+        return;
+    }
+
+    if (unichar >= 0xC0 && unichar <= 0xDE && unichar != 0xD7)
+    {
+        unichar = unichar + 0x20;
+    }
+
+    if (name_entry_chars >= RANKING_NAME_CHARS)
+    {
+        return;
+    }
+
+    len = (int)al_utf8_encode(bytes, unichar);
+
+    if (strlen(name_entry) + (size_t)len >= sizeof(name_entry))
+    {
+        return;
+    }
+
+    bytes[len] = '\0';
+    strcat_s(name_entry, sizeof(name_entry), bytes);
+    name_entry_chars = name_entry_chars + 1;
+}
+
 void draw_victory()
 {
-    char value[32];
+    char value[48];
     char timer_text[16];
     int total_seconds = (int)run_time;
     int count;
     const UiButton* buttons = screen_buttons(&count);
-    float left = 152.0f;
-    float right = (float)SCREEN_W - 152.0f;
+    float left = 36.0f;
+    float right = 302.0f;
 
-    al_draw_text(font, UI_TEXT, SCREEN_W / 2, 30, ALLEGRO_ALIGN_CENTRE, "Vitória");
-    draw_rule((float)SCREEN_W / 2, 44.0f, 200.0f, UI_FRAME);
-    al_draw_text(font, UI_DIM, SCREEN_W / 2, 52, ALLEGRO_ALIGN_CENTRE,
+    al_draw_text(font, UI_TEXT, SCREEN_W / 2, 18, ALLEGRO_ALIGN_CENTRE, "Vitória");
+    draw_rule((float)SCREEN_W / 2, 32.0f, 200.0f, UI_FRAME);
+    al_draw_text(font, UI_DIM, SCREEN_W / 2, 38, ALLEGRO_ALIGN_CENTRE,
         "você defendeu o organismo");
 
-    draw_panel(140.0f, 72.0f, 360.0f, 116.0f, UI_INK, UI_FRAME);
+    // o resultado da run, a esquerda
+    draw_panel(24.0f, 58.0f, 290.0f, 92.0f, UI_INK, UI_FRAME);
 
     snprintf(value, sizeof(value), "%d", score);
-    draw_stat(left, 82.0f, right, "pontuação final", value, UI_AMBER);
+    draw_stat(left, 68.0f, right, "pontuação final", value, UI_AMBER);
 
     snprintf(value, sizeof(value), "%d/%d", run_progress.neutralized, run_progress.threats);
-    draw_stat(left, 102.0f, right, "ameaças neutralizadas", value, UI_TEXT);
+    draw_stat(left, 86.0f, right, "ameaças neutralizadas", value, UI_TEXT);
 
     snprintf(value, sizeof(value), "%d/%d", run_progress.identified, run_progress.agents);
-    draw_stat(left, 122.0f, right, "agentes identificados", value, UI_TEXT);
+    draw_stat(left, 104.0f, right, "agentes identificados", value, UI_TEXT);
 
     snprintf(timer_text, sizeof(timer_text), "%02d:%02d", total_seconds / 60,
         total_seconds % 60);
-    draw_stat(left, 142.0f, right, "tempo total", timer_text, UI_TEXT);
+    draw_stat(left, 122.0f, right, "tempo total", timer_text, UI_TEXT);
 
-    snprintf(value, sizeof(value), "%d", hi_score());
-    draw_stat(left, 162.0f, right, "recorde", value, UI_AMBER);
+    // o Top 10, a direita, com o registro novo em destaque (#197)
+    draw_ranking_panel(330.0f, 58.0f, 286.0f, ranking_highlight);
 
-    draw_buttons(buttons, count);
+    // entrada do nome quando a pontuacao entra no Top 10 (#81)
+    draw_panel(24.0f, 158.0f, 290.0f, 84.0f, UI_INK, name_entry_active ? UI_AMBER : UI_FRAME);
 
-    al_draw_text(font, UI_DIM, SCREEN_W / 2, 256, ALLEGRO_ALIGN_CENTRE,
-        "enter também começa de novo");
+    if (name_entry_active)
+    {
+        float tx = 40.0f;
+        bool blink = (int)(al_get_time() * 2.0) % 2 == 0;
+
+        al_draw_text(font, UI_AMBER, 169.0f, 168.0f, ALLEGRO_ALIGN_CENTRE, "novo recorde no Top 10!");
+        al_draw_text(font, UI_DIM, 169.0f, 186.0f, ALLEGRO_ALIGN_CENTRE, "digite seu nome e tecle enter");
+        al_draw_filled_rectangle(tx, 204.0f, 298.0f, 222.0f, UI_PANEL);
+        al_draw_rectangle(tx + 0.5f, 204.5f, 297.5f, 221.5f, UI_FRAME, 1.0f);
+        al_draw_text(font, UI_TEXT, tx + 6.0f, 209.0f, 0, name_entry);
+
+        if (blink && name_entry_chars < RANKING_NAME_CHARS)
+        {
+            al_draw_text(font, UI_CYAN, tx + 6.0f + (float)al_get_text_width(font, name_entry), 209.0f, 0, "_");
+        }
+    }
+    else if (ranking_highlight >= 0)
+    {
+        snprintf(value, sizeof(value), "posição %d no Top 10", ranking_highlight + 1);
+        al_draw_text(font, UI_GREEN, 169.0f, 186.0f, ALLEGRO_ALIGN_CENTRE, value);
+
+        if (ranking_save_failed)
+        {
+            al_draw_text(font, UI_RED, 169.0f, 206.0f, ALLEGRO_ALIGN_CENTRE,
+                "não foi possível gravar o recorde");
+        }
+    }
+    else
+    {
+        al_draw_text(font, UI_DIM, 169.0f, 194.0f, ALLEGRO_ALIGN_CENTRE,
+            "a pontuação não entrou no Top 10");
+    }
+
+    // com o nome sendo digitado, o botao espera a confirmacao
+    if (!name_entry_active)
+    {
+        draw_buttons(buttons, count);
+        al_draw_text(font, UI_DIM, SCREEN_W / 2, 304, ALLEGRO_ALIGN_CENTRE,
+            "enter também começa de novo");
+    }
 }
 
 void draw_game_over()
@@ -2804,6 +2999,41 @@ void handle_key_down(int key)
     // fora do jogo quem responde e a interface: foco e confirmacao
     if (scene != GAME_SCENE_GAME)
     {
+        // nome sendo digitado: enter ou esc confirmam; o resto e texto (#81)
+        if (scene == GAME_SCENE_VICTORY && name_entry_active)
+        {
+            if (key == ALLEGRO_KEY_ENTER || key == ALLEGRO_KEY_PAD_ENTER || key == ALLEGRO_KEY_ESCAPE)
+            {
+                confirm_name_entry();
+            }
+
+            return;
+        }
+
+        // painel do Top 10 no menu: enter ou esc fecham (#197)
+        if (scene == GAME_SCENE_MENU && ranking_panel_open)
+        {
+            if (key == ALLEGRO_KEY_ENTER || key == ALLEGRO_KEY_ESCAPE)
+            {
+                ranking_panel_open = false;
+            }
+
+            return;
+        }
+
+        // botoes lado a lado: as setas laterais tambem andam o foco (#243)
+        if (scene != GAME_SCENE_BRIEFING && (key == ALLEGRO_KEY_LEFT || key == ALLEGRO_KEY_A))
+        {
+            ui_move_focus(-1);
+            return;
+        }
+
+        if (scene != GAME_SCENE_BRIEFING && (key == ALLEGRO_KEY_RIGHT || key == ALLEGRO_KEY_D))
+        {
+            ui_move_focus(1);
+            return;
+        }
+
         if (key == ALLEGRO_KEY_UP || key == ALLEGRO_KEY_W)
         {
             ui_move_focus(-1);
@@ -3080,6 +3310,18 @@ void handle_mouse_click(int button, float x, float y)
         return;
     }
 
+    // o painel do Top 10 fecha com um clique; o nome sendo digitado espera o enter
+    if (game_get_scene() == GAME_SCENE_MENU && ranking_panel_open)
+    {
+        ranking_panel_open = false;
+        return;
+    }
+
+    if (game_get_scene() == GAME_SCENE_VICTORY && name_entry_active)
+    {
+        return;
+    }
+
     buttons = screen_buttons(&count);
 
     if (buttons == NULL)
@@ -3153,8 +3395,31 @@ void sync_music()
     }
 }
 
+// arquivo do Top 10 em %APPDATA%/Nanobo; se a pasta nao der, fica o padrao,
+// ao lado do jogo (#77)
+void setup_ranking_path()
+{
+    ALLEGRO_PATH* dir = al_get_standard_path(ALLEGRO_USER_DATA_PATH);
+
+    if (dir == NULL)
+    {
+        return;
+    }
+
+    if (al_make_directory(al_path_cstr(dir, ALLEGRO_NATIVE_PATH_SEP)))
+    {
+        al_set_path_filename(dir, "ranking.txt");
+        ranking_set_path(al_path_cstr(dir, ALLEGRO_NATIVE_PATH_SEP));
+    }
+
+    al_destroy_path(dir);
+}
+
 int main()
 {
+    // o nome da pasta de dados do usuario sai daqui (#77)
+    al_set_app_name("Nanobo");
+
     if (!al_init())
     {
         printf("couldn't initialize allegro\n");
@@ -3238,7 +3503,10 @@ int main()
         return 1;
     }
 
-    // o recorde é lido uma vez, antes do primeiro desenho do menu (#M4)
+    // o Top 10 e lido uma vez, antes do primeiro desenho do menu, da pasta de
+    // dados do usuario: grava mesmo com o jogo instalado em Arquivos de
+    // Programas (#77, #78)
+    setup_ranking_path();
     load_hi_score();
 
     al_register_event_source(queue, al_get_mouse_event_source());
@@ -3310,6 +3578,11 @@ int main()
 
             case ALLEGRO_EVENT_KEY_UP:
                 handle_key_up(event.keyboard.keycode);
+                break;
+
+            // texto da entrada de nome, com a repeticao do teclado (#81)
+            case ALLEGRO_EVENT_KEY_CHAR:
+                handle_key_char(event.keyboard.keycode, event.keyboard.unichar);
                 break;
 
             case ALLEGRO_EVENT_MOUSE_BUTTON_DOWN:

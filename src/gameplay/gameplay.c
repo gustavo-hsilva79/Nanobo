@@ -4,11 +4,14 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "../entities/entities.h"
 
-// arquivo do recorde, ao lado do executavel, sem pasta nova (#M4)
-#define HI_SCORE_FILE "nanobo_hiscore.txt"
+// Top 10 (#77): cabecalho de versao, o recorde antigo e o nome padrao
+#define RANKING_HEADER "NANOBO-RANKING 1"
+#define LEGACY_HI_SCORE_FILE "nanobo_hiscore.txt"
+#define RANKING_DEFAULT_NAME "Jogador"
 
 // a invulnerabilidade precisa existir para o dano nao virar por quadro
 _Static_assert(INVULNERABILITY_TIME > 0.0, "invulnerabilidade precisa ser positiva");
@@ -42,8 +45,11 @@ static int bonus_excluded = 0;
 // indice da fase corrente: 0 = Fase 1 (#M4)
 static int phase_index = 0;
 
-// melhor pontuacao entre execucoes, lida e gravada em arquivo (#M4)
-static int best_score = 0;
+// Top 10 em memoria e o caminho do arquivo; sem a pasta do usuario, o arquivo
+// fica ao lado do jogo (#34, #77)
+static RankingEntry ranking[RANKING_SIZE];
+static int ranking_len = 0;
+static char ranking_path[512] = "nanobo_ranking.txt";
 
 // contadores do resumo educativo: zerados no reset_match, so memoria (#200)
 MatchProgress progress = { 0 };
@@ -2303,50 +2309,250 @@ void start_next_phase()
     }
 }
 
-// melhor pontuacao ja feita, lida do arquivo no inicio do jogo (#M4)
+// maior pontuacao do ranking, mostrada no menu (#34)
 int hi_score()
 {
-    return best_score;
+    return ranking_len > 0 ? ranking[0].score : 0;
 }
 
-// le o recorde do disco; arquivo ausente ou invalido vale zero
-void load_hi_score()
+void ranking_set_path(const char* path)
+{
+    if (path != NULL && path[0] != '\0')
+    {
+        snprintf(ranking_path, sizeof(ranking_path), "%s", path);
+    }
+}
+
+int ranking_count(void)
+{
+    return ranking_len;
+}
+
+const RankingEntry* ranking_entry(int position)
+{
+    if (position < 0 || position >= ranking_len)
+    {
+        return NULL;
+    }
+
+    return &ranking[position];
+}
+
+// copia o nome ate RANKING_NAME_CHARS caracteres UTF-8, sem caractere de
+// controle nem espaco nas pontas; vazio vira o nome padrao (#81)
+static void clean_name(const char* src, char* dst)
+{
+    size_t in = 0;
+    size_t out = 0;
+    int chars = 0;
+
+    while (src != NULL && src[in] == ' ')
+    {
+        in++;
+    }
+
+    while (src != NULL && src[in] != '\0' && src[in] != '\n' && src[in] != '\r')
+    {
+        unsigned char c = (unsigned char)src[in];
+        size_t len = 1;
+        size_t k;
+
+        // controle e byte solto de continuacao ficam de fora
+        if (c < 32 || c == 127 || (c >= 0x80 && c < 0xC0))
+        {
+            in++;
+            continue;
+        }
+
+        if (c >= 0xF0)
+        {
+            len = 4;
+        }
+        else if (c >= 0xE0)
+        {
+            len = 3;
+        }
+        else if (c >= 0xC0)
+        {
+            len = 2;
+        }
+
+        if (chars >= RANKING_NAME_CHARS || out + len >= (size_t)RANKING_NAME_BYTES)
+        {
+            break;
+        }
+
+        for (k = 0; k < len && src[in + k] != '\0'; k++)
+        {
+            dst[out + k] = src[in + k];
+        }
+
+        // caractere cortado no fim da linha: nao entra
+        if (k < len)
+        {
+            break;
+        }
+
+        out = out + len;
+        in = in + len;
+        chars = chars + 1;
+    }
+
+    while (out > 0 && dst[out - 1] == ' ')
+    {
+        out--;
+    }
+
+    dst[out] = '\0';
+
+    if (out == 0)
+    {
+        snprintf(dst, RANKING_NAME_BYTES, "%s", RANKING_DEFAULT_NAME);
+    }
+}
+
+bool ranking_qualifies(int value)
+{
+    if (value < 0)
+    {
+        return false;
+    }
+
+    if (ranking_len < RANKING_SIZE)
+    {
+        return true;
+    }
+
+    // empatar com o ultimo nao basta: o registro mais antigo fica
+    return value > ranking[RANKING_SIZE - 1].score;
+}
+
+int ranking_insert(int value, const char* name)
+{
+    int pos = 0;
+    int i;
+
+    if (!ranking_qualifies(value))
+    {
+        return -1;
+    }
+
+    // empate: o novo fica depois de todos os iguais (#34)
+    while (pos < ranking_len && ranking[pos].score >= value)
+    {
+        pos++;
+    }
+
+    // desce quem esta abaixo; com o ranking cheio, o 11o cai fora
+    i = ranking_len < RANKING_SIZE ? ranking_len : RANKING_SIZE - 1;
+
+    for (; i > pos; i--)
+    {
+        ranking[i] = ranking[i - 1];
+    }
+
+    ranking[pos].score = value;
+    clean_name(name, ranking[pos].name);
+
+    if (ranking_len < RANKING_SIZE)
+    {
+        ranking_len = ranking_len + 1;
+    }
+
+    return pos;
+}
+
+// o recorde antigo (um inteiro em nanobo_hiscore.txt) vira o primeiro
+// registro, para a troca nao apagar o que ja foi conquistado (#78)
+static void load_legacy_record(void)
 {
     FILE* file = NULL;
     int value = 0;
 
-    if (fopen_s(&file, HI_SCORE_FILE, "r") == 0 && file != NULL)
+    if (fopen_s(&file, LEGACY_HI_SCORE_FILE, "r") != 0 || file == NULL)
     {
-        if (fscanf_s(file, "%d", &value) != 1 || value < 0)
-        {
-            value = 0;
-        }
-
-        fclose(file);
+        return;
     }
 
-    best_score = value;
+    if (fscanf_s(file, "%d", &value) == 1 && value > 0)
+    {
+        ranking_insert(value, "Recorde");
+    }
+
+    fclose(file);
 }
 
-// grava a melhor pontuacao quando a run termina em vitoria; sem arquivo, so memoria
-void finish_run()
+void load_hi_score()
 {
     FILE* file = NULL;
+    char line[128];
 
-    if (score <= best_score)
+    ranking_len = 0;
+
+    if (fopen_s(&file, ranking_path, "r") != 0 || file == NULL)
     {
+        load_legacy_record();
         return;
     }
 
-    best_score = score;
-
-    if (fopen_s(&file, HI_SCORE_FILE, "w") != 0 || file == NULL)
+    // sem o cabecalho o arquivo e de outro formato: vale ranking vazio
+    if (fgets(line, sizeof(line), file) == NULL
+        || strncmp(line, RANKING_HEADER, strlen(RANKING_HEADER)) != 0)
     {
+        fclose(file);
         return;
     }
 
-    fprintf(file, "%d\n", best_score);
+    while (ranking_len < RANKING_SIZE && fgets(line, sizeof(line), file) != NULL)
+    {
+        char* rest = NULL;
+        long value = strtol(line, &rest, 10);
+
+        // sem numero, numero fora da faixa ou sem o espaco antes do nome: ignorada
+        if (rest == line || value < 0 || value > 9999999 || *rest != ' ')
+        {
+            continue;
+        }
+
+        // a insercao ordena e, no empate, mantem a ordem do arquivo
+        ranking_insert((int)value, rest + 1);
+    }
+
     fclose(file);
+}
+
+bool ranking_save(void)
+{
+    FILE* file = NULL;
+    char temp[sizeof(ranking_path) + 8];
+    int i;
+    bool ok;
+
+    snprintf(temp, sizeof(temp), "%s.tmp", ranking_path);
+
+    if (fopen_s(&file, temp, "w") != 0 || file == NULL)
+    {
+        return false;
+    }
+
+    ok = fprintf(file, "%s\n", RANKING_HEADER) > 0;
+
+    for (i = 0; i < ranking_len && ok; i++)
+    {
+        ok = fprintf(file, "%d %s\n", ranking[i].score, ranking[i].name) > 0;
+    }
+
+    ok = fclose(file) == 0 && ok;
+
+    // o arquivo antigo so sai depois que o novo ficou inteiro
+    if (!ok)
+    {
+        remove(temp);
+        return false;
+    }
+
+    remove(ranking_path);
+    return rename(temp, ranking_path) == 0;
 }
 
 // mantem um valor dentro do mundo, respeitando o raio do nanobo
