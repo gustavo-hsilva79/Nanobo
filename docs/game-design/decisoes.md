@@ -435,7 +435,8 @@ O M4 continua centrado na Fase 1; a **Fase 2 mínima** existe para fechar o flux
 ### Top 10 (15/11/2026, #77–#82 e #197)
 
 Substitui o recorde mínimo de 04/11. As regras de #34 continuam: 10 posições, nome de até 10 caracteres, empate com o registro mais antigo em cima e gravação só na Vitória.
-- **Local do arquivo (#77):** `ranking.txt` na pasta de dados do usuário (`%APPDATA%\Nanobo\`, pela `al_get_standard_path`), para gravar mesmo com o jogo instalado em Arquivos de Programas. Se a pasta não abrir, o arquivo fica ao lado do jogo (`nanobo_ranking.txt`).
+- **Local do arquivo (#77):** `nanobo_ranking.txt` na pasta do jogo, junto de `assets/` e do recorde antigo, por decisão do dono em 15/11. O caminho é relativo, como o dos assets. Antes ficava em `%APPDATA%\Nanobo\ranking.txt`.
+  - **Consequência para o instalador (#43):** em `Arquivos de Programas` o Windows não deixa um usuário comum gravar. Por isso o instalador precisa pôr o jogo numa pasta gravável, como a instalação por usuário em `%LOCALAPPDATA%\Programs\Nanobo`; senão a Vitória avisa que não gravou.
 - **Formato (#77):** texto. A 1ª linha é `NANOBO-RANKING 1`, e cada uma das seguintes é `pontos nome`, com o nome em UTF-8.
 - **Arquivo fora do esperado (#77, #78):**
   - ausente: ranking vazio, e o recorde antigo (`nanobo_hiscore.txt`) entra como o registro "Recorde", para a troca não apagar o que já foi conquistado;
@@ -449,7 +450,7 @@ Substitui o recorde mínimo de 04/11. As regras de #34 continuam: 10 posições,
   - vazio vira "Jogador";
   - aceita só os caracteres que a fonte desenha (Latin-1), e a maiúscula acentuada vira minúscula, porque a fonte erra o glifo dela (§2.1 de `textos-do-jogo.md`).
 - **Exibição (#197):** um painel, sem cena nova. Na Vitória, o registro novo fica em destaque; no menu, o painel abre pelo botão RECORDES e fecha com ENTER, ESC ou clique.
-- **Limitação conhecida:** o gameplay abre o arquivo com `fopen`, que não aceita caminho fora do ASCII. Com um nome de usuário acentuado, a gravação falha e a Vitória avisa.
+- **Caminho com acento:** com o caminho relativo, o `fopen` funciona mesmo dentro de uma pasta acentuada (o repositório fica em `2° Semestre`). A limitação do caminho absoluto em `%APPDATA%` saiu junto com ele.
 - **Validação ponta a ponta (#82, 15/11):** feita em duas frentes.
   - **Harness** (`../Nanobo-testes/`, 17 casos do Top 10, 328/328): ranking vazio, parcial e cheio; corte com o ranking cheio, inclusive o empate com o último; empate com o mais antigo em cima; nome com corte em 10 caracteres, vazio e com acento; gravar e reler; arquivo sem cabeçalho, vazio ou com linhas inválidas; importação do recorde antigo.
   - **Jogo** (Debug, `qa_jogo.ps1`, teclas F e G):

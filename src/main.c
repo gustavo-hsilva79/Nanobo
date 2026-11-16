@@ -3466,29 +3466,9 @@ void sync_music()
     }
 }
 
-// arquivo do Top 10 em %APPDATA%/Nanobo; se a pasta nao der, fica o padrao,
-// ao lado do jogo (#77)
-void setup_ranking_path()
-{
-    ALLEGRO_PATH* dir = al_get_standard_path(ALLEGRO_USER_DATA_PATH);
-
-    if (dir == NULL)
-    {
-        return;
-    }
-
-    if (al_make_directory(al_path_cstr(dir, ALLEGRO_NATIVE_PATH_SEP)))
-    {
-        al_set_path_filename(dir, "ranking.txt");
-        ranking_set_path(al_path_cstr(dir, ALLEGRO_NATIVE_PATH_SEP));
-    }
-
-    al_destroy_path(dir);
-}
-
 int main()
 {
-    // o nome da pasta de dados do usuario sai daqui (#77)
+    // o titulo da janela sai do nome do app
     al_set_app_name("Nanobo");
 
     if (!al_init())
@@ -3574,10 +3554,8 @@ int main()
         return 1;
     }
 
-    // o Top 10 e lido uma vez, antes do primeiro desenho do menu, da pasta de
-    // dados do usuario: grava mesmo com o jogo instalado em Arquivos de
-    // Programas (#77, #78)
-    setup_ranking_path();
+    // o Top 10 e lido uma vez, antes do primeiro desenho do menu, do
+    // nanobo_ranking.txt na pasta do jogo, junto dos assets (#77, #78; dono, 15/11)
     load_hi_score();
 
     al_register_event_source(queue, al_get_mouse_event_source());

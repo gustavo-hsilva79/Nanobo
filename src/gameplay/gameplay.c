@@ -45,8 +45,8 @@ static int bonus_excluded = 0;
 // indice da fase corrente: 0 = Fase 1 (#M4)
 static int phase_index = 0;
 
-// Top 10 em memoria e o caminho do arquivo; sem a pasta do usuario, o arquivo
-// fica ao lado do jogo (#34, #77)
+// Top 10 em memoria e o caminho do arquivo: na pasta do jogo, relativo como
+// os assets, por decisao do dono em 15/11 (#34, #77)
 static RankingEntry ranking[RANKING_SIZE];
 static int ranking_len = 0;
 static char ranking_path[512] = "nanobo_ranking.txt";
