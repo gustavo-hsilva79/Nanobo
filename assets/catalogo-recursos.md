@@ -6,7 +6,7 @@ Inventário dos recursos necessários à execução atual, para orientar o carre
 
 | Recurso | Uso atual | Local |
 |---|---|---|
-| Sprite do Nanobô (32×32, 4 direções × 8 quadros) | Personagem do jogador | `assets/sprites/nanobo_spritesheet.png` (256×128, 4 linhas × 8 quadros de 32×32), o bitmap que `load_resources()` abre e `draw_game()` recorta (#30); `nanobo.png` fica como histórico |
+| Sprite do Nanobô (48×48, 4 direções × 8 quadros) | Personagem do jogador | `assets/sprites/nanobo_spritesheet.png` (384×192, 4 linhas × 8 quadros de 48×48, #240), o bitmap que `load_resources()` abre e `draw_game()` recorta; `nanobo.png` fica como histórico |
 | Bactéria Gram-positiva (32×32) | Agente `SPECIES_GRAM_POSITIVE` | `assets/sprites/bacteria_gram_positiva.png`; idem |
 | Bactéria Gram-negativa (32×32) | Agente `SPECIES_GRAM_NEGATIVE` | `assets/sprites/bacteria_gram_negativa.png`; idem |
 | Célula saudável própria (32×32) | Agente `SPECIES_CELL` | `assets/sprites/celula_propria.png`; idem |
@@ -25,7 +25,7 @@ Inventário dos recursos necessários à execução atual, para orientar o carre
 
 ## Arte final criada
 
-Os oito sprites de agente (as quatro espécies, cada uma com as variantes A e B), o coração, os quatro ícones de interface e o mapa do mundo são carregados pelo jogo. O bitmap do jogador é `assets/sprites/nanobo_spritesheet.png` (256×128, quatro direções × 8 quadros), desenhado por região; `nanobo.png` fica como histórico. A arte antiga de fundo (`fundo_microscopico.png`) ficou como referência. Os recursos anteriores a 04/11 têm a fonte `.aseprite` editável ao lado do `.png`; os três novos (ícones neutros e vírus) foram gerados por script e ainda não têm `.aseprite` (pendência de arte). O `.png` é o arquivo que o jogo carrega.
+Os oito sprites de agente (as quatro espécies, cada uma com as variantes A e B), o coração, os quatro ícones de interface e o mapa do mundo são carregados pelo jogo. O bitmap do jogador é `assets/sprites/nanobo_spritesheet.png` (384×192, quatro direções × 8 quadros de 48 px, #240), desenhado por região; `nanobo.png` fica como histórico. A arte antiga de fundo (`fundo_microscopico.png`) ficou como referência. Os recursos anteriores a 04/11 têm a fonte `.aseprite` editável ao lado do `.png`; os três novos (ícones neutros e vírus) foram gerados por script e ainda não têm `.aseprite` (pendência de arte). O `.png` é o arquivo que o jogo carrega.
 
 Todos os sprites usam a mesma paleta, o mesmo tamanho de pixel e a mesma direção de luz (cima-esquerda), para manter a coesão visual.
 
@@ -51,8 +51,8 @@ A forma e o tamanho também separam os agentes: as bactérias são pequenas e si
 
 | Arquivo | Conteúdo |
 |---|---|
-| `assets/sprites/nanobo_spritesheet.png` | Folha de **256×128**: 4 linhas (cima, baixo, esquerda, direita) × 8 quadros de 32×32 |
-| `assets/sprites/nanobo_spritesheet.aseprite` | Fonte editável da arte antiga (uma direção); a folha de quatro direções é gerada por `Nanobo-testes/gerar_spritesheet.py` |
+| `assets/sprites/nanobo_spritesheet.png` | Folha de **384×192** (15/11, #240): 4 linhas (costas, frente, esquerda, direita) × 8 quadros de 48×48. Os quadros 1 a 4 são o parado: o corpo sobe e desce 1 px e o anel magnético pulsa. Os quadros 5 a 8 são o andar: o anel brilha mais, as faíscas ficam para trás e, de lado, o corpo inclina 1 px para a frente |
+| `assets/sprites/nanobo_spritesheet.aseprite` | Fonte da folha, gerada por `../Nanobo-testes/gerar_spritesheet_48.lua` (Aseprite) a partir da amostra aprovada (#225). A direita é o espelho da esquerda; a folha antiga de 32 px (`gerar_spritesheet.py`) fica no histórico do git |
 
 | Etiqueta | Quadros | Duração | Movimento |
 |---|---|---|---|
@@ -122,7 +122,7 @@ O fundo é escuro e de baixo contraste de propósito: os sprites precisam contin
 
 | Asset | Tamanho | Quadros | Observação |
 |---|---|---|---|
-| Nanobô (spritesheet) | 256×128 | 4 direções × 8 | mantém o contrato atual de `player_frame()` |
+| Nanobô (spritesheet) | 384×192 | 4 direções × 8 | **feito em 15/11 (#240)**; `player_frame()` mantém o contrato, com quadro de 48 px (`PLAYER_FRAME`) |
 | Coco neutro (2 variantes) | 32×32 | 4 de pulso | o Gram vem do tingimento depois da 2ª camada; substitui `bacteria_gram_*` e `*_b` |
 | Bacilo neutro (2 variantes) | 32×32 | 4 de pulso | idem |
 | Silhueta neutra | 32×32 | 1 | substitui o disco cinza desenhado por primitiva |

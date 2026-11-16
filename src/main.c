@@ -2365,13 +2365,13 @@ void draw_game()
         al_draw_text(font, UI_CYAN, hx, hy, 0, hint);
     }
 
-    // a sombra do nanobo segue a mesma regra dos agentes (#220)
-    al_draw_filled_ellipse(view_x(player.x), view_y(player.y) + 13.0f,
-        11.0f, 4.0f, CONTACT_SHADOW);
+    // a sombra do nanobo fica sob o anel magnetico, que flutua embaixo (#220, #240)
+    al_draw_filled_ellipse(view_x(player.x), view_y(player.y) + 21.0f,
+        13.0f, 3.0f, CONTACT_SHADOW);
 
     // o nanobo e desenhado onde o mundo deixou ele, ja descontada a camera
     // a linha do spritesheet e a direcao quando a arte tem as quatro (#30)
-    int nanobo_row = (al_get_bitmap_height(nanobo) >= 4 * 32) ? (int)player.facing : 0;
+    int nanobo_row = (al_get_bitmap_height(nanobo) >= 4 * PLAYER_FRAME) ? (int)player.facing : 0;
 
     // o nanobo pisca enquanto a invulnerabilidade dura (#221)
     if (invulnerability_left() > 0.0f && (int)(invulnerability_left() * 12.0f) % 2 == 1)
@@ -2379,18 +2379,21 @@ void draw_game()
         nanobo_tint = al_map_rgba_f(0.3f, 0.3f, 0.3f, 0.3f);
     }
 
-    al_draw_tinted_bitmap_region(nanobo, nanobo_tint, (float)(player_frame() * 32),
-        (float)(nanobo_row * 32), 32.0f, 32.0f,
-        view_x(player.x) - PLAYER_RADIUS, view_y(player.y) - PLAYER_RADIUS, 0);
+    // quadro de 48 px centrado no nanobo: a cabeca e o corpo ficam no circulo
+    // de colisao e o anel magnetico flutua logo abaixo (#240)
+    al_draw_tinted_bitmap_region(nanobo, nanobo_tint, (float)(player_frame() * PLAYER_FRAME),
+        (float)(nanobo_row * PLAYER_FRAME), (float)PLAYER_FRAME, (float)PLAYER_FRAME,
+        view_x(player.x) - (float)PLAYER_FRAME / 2.0f, view_y(player.y) - (float)PLAYER_FRAME / 2.0f, 0);
 
-    // anel da defesa: ciano enquanto protege, apagado durante a recarga (#17)
+    // anel da defesa: ciano enquanto protege, apagado durante a recarga (#17);
+    // no raio do escudo que destroi os projeteis (#236)
     if (defense_state() == 1)
     {
-        al_draw_circle(view_x(player.x), view_y(player.y), PLAYER_RADIUS + 2, UI_CYAN, 2);
+        al_draw_circle(view_x(player.x), view_y(player.y), SHIELD_RADIUS, UI_CYAN, 2);
     }
     else if (defense_state() == 2)
     {
-        al_draw_circle(view_x(player.x), view_y(player.y), PLAYER_RADIUS + 2,
+        al_draw_circle(view_x(player.x), view_y(player.y), SHIELD_RADIUS,
             UI_FRAME, 2);
     }
 

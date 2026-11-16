@@ -178,8 +178,12 @@ extern const Phase phases[PHASE_COUNT];
 extern Agent agents[MAX_AGENTS];
 extern int identified_count;
 
-// raio de colisao do nanobo em pixels (metade do sprite de 32x32)
-#define PLAYER_RADIUS 16
+// raio de colisao do nanobo em pixels: o sprite de 48x48 tem a cabeca e o corpo
+// num circulo de 18; o anel magnetico embaixo nao conta (#240)
+#define PLAYER_RADIUS 18
+
+// lado do quadro do spritesheet do nanobo: 48 px, 8 quadros por direcao (#240)
+#define PLAYER_FRAME 48
 
 // sinais vitais do paciente: a barra do HUD vai de 0 a 100 (#218)
 #define PLAYER_MAX_HEALTH 100.0f

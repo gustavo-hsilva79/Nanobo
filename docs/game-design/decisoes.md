@@ -33,6 +33,11 @@ Este arquivo registra decisões já tomadas pela dupla. Quando uma decisão impo
   - a amostra de 14/11 foi recusada;
   - o Nanobô vai a 48×48, com o detalhe da referência e propulsão magnética;
   - coco e silhueta são refeitos.
+- **Spritesheet do Nanobô em 48×48 (15/11, #240):**
+  - frente, costas e perfil desenhados no estilo da amostra 2; a direita é o espelho da esquerda;
+  - a propulsão é o anel que pulsa no parado e brilha ao andar;
+  - `PLAYER_RADIUS` passou de 16 para 18, e o alcance do destino foi de 40 para 42 px;
+  - com o robô maior, o bot leitor da Fase 1 vence 60% (era 64%), ainda dentro da meta.
 - **Amostra 2 aprovada (14/11, #225):** o dono aprovou a segunda amostra no mesmo dia. Ela vira o estilo da arte final:
   - **Nanobô 48×48, de frente:** cabeça larga com visor escuro e dois olhos ciano, antenas com ponta ciano redonda (a da direita mais alta), corpo em ovo com placas, núcleo dourado no peito e braços curtos e redondos;
   - **propulsão magnética:** uma faixa ciano na base do corpo emite o campo, e um anel ciano flutua embaixo, com faíscas. Não há hélice nem peça que gira;

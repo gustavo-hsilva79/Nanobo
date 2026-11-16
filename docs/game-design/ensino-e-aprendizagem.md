@@ -122,6 +122,7 @@ A drenagem saiu. Os bots passaram a enfrentar a IA nova (bacilo que persegue e i
 | + alerta 280 px, investida a cada 1,5 s ou a 220 px/s, toxina a 140 px/s | 82–86% | 10–14% | 50–53 s |
 | divisão 16 ± 3 s | 73% | 3% | 77 s, 84 vitais |
 | **divisão 12 ± 3 s (adotada, 1000 partidas)** | **64%** | **2%** | 97 s, 77 vitais |
+| + Nanobô de 48 px, raio de colisão 18 (15/11, #240) | 60% | 2% | 96 s, 79 vitais |
 
 - **Constante ajustada:** `DIVISION_TIME` passou de 22 para **12 s** e `DIVISION_JITTER` de 4 para **3 s**. As demais ficaram nos valores da especificação.
 - **Por que só a divisão move a taxa:** o bot desvia e se defende bem, então dano e agressividade de cada invasor mudam pouco. O que pesa é quantos invasores existem ao mesmo tempo.
