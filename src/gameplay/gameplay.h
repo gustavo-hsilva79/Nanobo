@@ -395,7 +395,8 @@ typedef struct
 void ranking_set_path(const char* path);
 
 // le o ranking (#78); arquivo ausente, vazio ou de outro formato vale ranking
-// vazio, e a linha invalida e ignorada. Sem arquivo novo, o recorde antigo
+// vazio, e a linha invalida e ignorada. Sem o arquivo, vale a copia .bak de
+// uma gravacao interrompida. Sem nenhum dos dois, o recorde antigo
 // (nanobo_hiscore.txt) entra como o primeiro registro
 void load_hi_score(void);
 
@@ -409,8 +410,9 @@ bool ranking_qualifies(int score);
 // vazio vira "Jogador"
 int ranking_insert(int score, const char* name);
 
-// grava o ranking num arquivo temporario e troca pelo antigo (#80); false
-// quando nao deu para gravar, e o ranking em memoria fica como esta
+// grava o ranking num arquivo temporario e troca pelo antigo, que passa por
+// uma copia .bak durante a troca (#80); false quando nao deu para gravar, e o
+// arquivo antigo e o ranking em memoria ficam como estao
 bool ranking_save(void);
 
 // maior pontuacao do ranking; 0 sem registro

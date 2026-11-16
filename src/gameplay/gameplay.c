@@ -2482,14 +2482,37 @@ static void load_legacy_record(void)
     fclose(file);
 }
 
+// abre o ranking; sem o arquivo, tenta a copia .bak que a gravacao
+// interrompida entre as duas trocas de nome deixa para tras
+static FILE* open_ranking_file(void)
+{
+    FILE* file = NULL;
+    char backup[sizeof(ranking_path) + 8];
+
+    if (fopen_s(&file, ranking_path, "r") == 0 && file != NULL)
+    {
+        return file;
+    }
+
+    snprintf(backup, sizeof(backup), "%s.bak", ranking_path);
+
+    if (fopen_s(&file, backup, "r") == 0 && file != NULL)
+    {
+        return file;
+    }
+
+    return NULL;
+}
+
 void load_hi_score()
 {
     FILE* file = NULL;
     char line[128];
 
     ranking_len = 0;
+    file = open_ranking_file();
 
-    if (fopen_s(&file, ranking_path, "r") != 0 || file == NULL)
+    if (file == NULL)
     {
         load_legacy_record();
         return;
@@ -2525,10 +2548,13 @@ bool ranking_save(void)
 {
     FILE* file = NULL;
     char temp[sizeof(ranking_path) + 8];
+    char backup[sizeof(ranking_path) + 8];
     int i;
     bool ok;
+    bool had_old;
 
     snprintf(temp, sizeof(temp), "%s.tmp", ranking_path);
+    snprintf(backup, sizeof(backup), "%s.bak", ranking_path);
 
     if (fopen_s(&file, temp, "w") != 0 || file == NULL)
     {
@@ -2551,8 +2577,24 @@ bool ranking_save(void)
         return false;
     }
 
-    remove(ranking_path);
-    return rename(temp, ranking_path) == 0;
+    // o antigo vira .bak antes da troca: nenhum passo deixa o ranking sem copia
+    remove(backup);
+    had_old = rename(ranking_path, backup) == 0;
+
+    if (rename(temp, ranking_path) != 0)
+    {
+        // a troca falhou: o antigo volta para o lugar e o novo e descartado
+        if (had_old)
+        {
+            rename(backup, ranking_path);
+        }
+
+        remove(temp);
+        return false;
+    }
+
+    remove(backup);
+    return true;
 }
 
 // mantem um valor dentro do mundo, respeitando o raio do nanobo

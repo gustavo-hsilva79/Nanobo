@@ -445,6 +445,8 @@ Substitui o recorde mínimo de 04/11. As regras de #34 continuam: 10 posições,
   - a leitura ordena de novo e, no empate, mantém a ordem do arquivo.
 - **Inserção (#79):** com o ranking cheio, só entra quem passa o último; empatar com ele não basta.
 - **Gravação (#80):** o jogo grava num `.tmp` e só então troca pelo arquivo antigo, para não deixar um ranking pela metade. Se falhar, o ranking fica na memória e a Vitória avisa.
+  - **Troca sem janela de perda (16/11, auditoria):** o antigo vira `nanobo_ranking.txt.bak`, o `.tmp` assume o nome e o `.bak` é apagado. Se a troca falha (arquivo preso pelo sistema ou pelo OneDrive), o antigo volta para o lugar. Se o jogo cai entre os dois passos, a leitura usa o `.bak`. Antes, o arquivo era apagado antes do `rename`, e uma falha ali perdia o Top 10 inteiro.
+  - **Harness:** 4 casos novos (334/334); o código antigo falha nos 4.
 - **Nome (#81):**
   - é pedido na Vitória só quando a pontuação entra no Top 10, e ENTER ou ESC confirmam;
   - vazio vira "Jogador";
