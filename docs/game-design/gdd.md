@@ -126,7 +126,7 @@ O agente volta a vagar se o Nanobô ficar a mais de 320 px por 3 s. Todo ataque 
   A colisão passa a ser por espécie (`agent_radius`), e não mais `AGENT_RADIUS` para todos.
 - Agentes com contorno escuro e cores fora do vermelho.
 - Um sprite de tiro por arma (a forma mostra o mecanismo: Ruptura é uma cunha, Dissolução uma gota, Neutralização um anticorpo em Y, Perfuração um anel) e 3 animações de impacto por resultado (dose certa, sem efeito, eliminado).
-- **Fonte:** TTF pixel com licença OFL.
+- **Fonte:** a embutida do Allegro (8 px por caractere), mantida em 15/11. A TTF pixel foi testada e descartada (`decisoes.md`).
 - **HUD:**
   - mais baixo que os 104 px atuais;
   - barra de vitais;

@@ -154,7 +154,6 @@ O fundo é escuro e de baixo contraste de propósito: os sprites precisam contin
 > - o vírus da rajada é o sprite do vírus reduzido a 12 px;
 > - os ícones da Neutralização (o Y do anticorpo) e da Lise (a célula com o poro) são desenhados por código, como a cápsula da Reserva.
 | Mapa da Fase 3 — pulmão (alvéolos e capilares) | 1920×512 | — | `assets/backgrounds/` |
-| Fonte pixel TTF (licença OFL, com acentos) | — | — | `assets/fonts/`; a licença é registrada aqui |
 
 ## Recursos previstos
 
@@ -163,7 +162,7 @@ O fundo é escuro e de baixo contraste de propósito: os sprites precisam contin
 | Sprites e animações | Arte final dos agentes, **sprite neutro das bactérias** e spritesheet animado do Nanobô | `assets/sprites/` | Agentes carregados; spritesheet animado carregado e desenhado (#30); o disco cinza até a camada 1 é desenhado por primitiva, sem asset novo |
 | Cenários | Mapa do mundo da Fase 1, 1920×512 | `assets/backgrounds/` | Criado e carregado (`ca4845a`) |
 | Ícones de interface | Armas (Ruptura/Dissolução), scanner, vida e defesa | `assets/sprites/` | Scanner, vida, defesa e as duas armas prontos; o HUD desenha `icone_ruptura.png` e `icone_dissolucao.png` |
-| Fontes | Tipografia final da interface | `assets/fonts/` | [PENDÊNCIA] Fonte ainda não escolhida; a fonte embutida atual é provisória |
+| Fontes | Tipografia final da interface | `assets/fonts/` | Fonte embutida do Allegro mantida como final (15/11). A Pixelify Sans foi testada e descartada; `assets/fonts/` fica só com o `.gitkeep` |
 | Música | Trilha da partida | `assets/audio/music/` | Presente: `fundo.wav`, 16 s em loop (705 644 B), WAV PCM 22 050 Hz mono 16 bits, carregado por `load_resources()` (#32) |
 | Efeitos sonoros | Feedback de ações e eventos | `assets/audio/sfx/` | Presente: 6 WAVs PCM 22 050 Hz mono 16 bits (4 a 11,5 KB) — `scanner`, `disparo`, `impacto`, `neutralizacao`, `penalidade` e `defesa` — gerados por `../Nanobo-testes/gerar_audio.py` e carregados por `load_resources()` (#31) |
 | Dados auxiliares | Configuração ou dados externos, caso necessários | `assets/data/` | [PENDÊNCIA] Nenhum arquivo necessário identificado até o momento |

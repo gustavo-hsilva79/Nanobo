@@ -122,7 +122,8 @@ Este arquivo registra decisões já tomadas pela dupla. Quando uma decisão impo
 - O mapa da Fase 1 é desenhado escurecido e dessaturado (o PNG não muda). As Fases 2 e 3 ganham mapas próprios desenhados por Claude, que o dono pode melhorar com IA de imagem.
 - **Sprites das bactérias** neutros por forma, com 2 variantes cada (#211 reescopada). O Gram vem do tingimento depois da 2ª camada.
 - **Tiros:** um sprite de 12×12 com 2 quadros por arma, em cor neutra (a forma mostra o mecanismo). As animações de impacto são 3 por resultado (dose certa, sem efeito, eliminado). O recuo do Nanobô é feito em código.
-- Fonte TTF pixel com licença OFL; HUD mais baixo, com a ficha do scanner só quando há alvo; ←/→ entre botões lado a lado.
+- HUD mais baixo, com a ficha do scanner só quando há alvo; ←/→ entre botões lado a lado.
+- **Fonte embutida do Allegro mantida (15/11, decisão do dono).** A Pixelify Sans (OFL) foi testada no jogo de 8 a 20 px. Só fica nítida em 20 px, e de 12 a 16 px os glifos saem irregulares. A troca saiu da #243, e a regra de não usar maiúscula acentuada (§2.1 de `textos-do-jogo.md`) continua valendo.
 
 ### Precedência entre fontes (03/11/2026)
 
