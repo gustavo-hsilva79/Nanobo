@@ -1465,9 +1465,10 @@ void draw_menu()
     if (ranking_panel_open)
     {
         al_draw_filled_rectangle(0.0f, 0.0f, (float)SCREEN_W, (float)SCREEN_H,
-            al_map_rgba_f(0.0f, 0.0f, 0.0f, 0.6f));
-        draw_ranking_panel(177.0f, 70.0f, 286.0f, -1);
-        al_draw_text(font, UI_DIM, SCREEN_W / 2, 264, ALLEGRO_ALIGN_CENTRE, "enter ou esc fecha");
+            al_map_rgba_f(0.0f, 0.0f, 0.0f, 0.85f));
+        // painel de 184 px: termina em 244 e o rodape fica acima dos botoes (y 261)
+        draw_ranking_panel(177.0f, 60.0f, 286.0f, -1);
+        al_draw_text(font, UI_DIM, SCREEN_W / 2, 250, ALLEGRO_ALIGN_CENTRE, "enter ou esc fecha");
     }
 }
 
