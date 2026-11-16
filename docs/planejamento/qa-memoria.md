@@ -184,3 +184,15 @@ A #118 continua **aberta** até esses dois cenários serem medidos. Se ficarem p
 - **Leitura:** carregado, o mapa custa cerca de 15 MB. O Allegro guarda uma cópia da textura em memória, além da imagem decodificada.
 - **O que mudou:** `load_phase_map()` em `src/main.c` libera o mapa da fase anterior antes de abrir o da fase nova, no primeiro quadro dela. Na carga, o jogo só confere se o arquivo da Fase 2 existe. A Fase 3 segue a mesma regra, então os mapas novos não somam no pico.
 - **CSVs:** `mem_f2.csv`, `mem_sem_a.csv`, `mem_sem_b.csv`, `mem_rel.csv` e `mem_dbg.csv`, no scratchpad da sessão de 14/11/2026 (fora do repositório).
+
+## 15/11/2026 — fechamento da Etapa 3 (#239)
+
+- **Build:** `Release|x64` da branch `feat/etapa1-fase1-ensino`, com a arte final (#240–#242), o HUD de 40 px com a faixa do mundo de 320 px (#243) e o Top 10 na pasta do jogo.
+- **Método:** `medir_memoria.ps1 -Seconds 40 -EveryMs 250`, iniciado antes do jogo; 95 amostras. O roteiro passou pela carga, pelo painel RECORDES e pela Fase 1, com o Nanobô andando, um scan e um tiro.
+
+| Build e situação | Pico (MB) | Privada no pico (MB) | Observação |
+|---|---:|---:|---|
+| Release, carga, menu e Fase 1 | **78,49** | 100,08 | abaixo dos 80,03 MB de 14/11; 74,86 MB no fim da janela |
+
+- **Leitura:** a arte nova e a faixa maior não aumentaram o pico. A troca para a Fase 2 já foi medida em 14/11 (um mapa por vez) e não mudou desde então.
+- **CSV:** `mem_rel_15-11.csv`, no scratchpad da sessão de 15/11/2026 (fora do repositório).
