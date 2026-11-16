@@ -105,6 +105,18 @@ ALLEGRO_BITMAP* ruptura_icon = NULL;
 ALLEGRO_BITMAP* dissolucao_icon = NULL;
 ALLEGRO_BITMAP* defense_icon = NULL;
 
+// icones da Reserva, da Neutralizacao e da Lise, no traco das armas (#242)
+ALLEGRO_BITMAP* reserve_icon = NULL;
+ALLEGRO_BITMAP* antibody_icon = NULL;
+ALLEGRO_BITMAP* lyse_icon = NULL;
+
+// tiros: uma linha por ferramenta, na ordem do Laser, x 2 quadros de 12x12;
+// impactos: 3 linhas (dose certa, sem efeito, eliminado) x 4 quadros de 24x24 (#242)
+ALLEGRO_BITMAP* shots_sheet = NULL;
+ALLEGRO_BITMAP* impacts_sheet = NULL;
+#define SHOT_FRAME 12
+#define IMPACT_FRAME 24
+
 // titulo do menu montado a partir da fonte, desenhado ampliado
 ALLEGRO_BITMAP* title_bitmap = NULL;
 
@@ -446,6 +458,23 @@ bool load_resources()
         return false;
     }
 
+    reserve_icon = al_load_bitmap("assets/sprites/icone_reserva.png");
+    antibody_icon = al_load_bitmap("assets/sprites/icone_neutralizacao.png");
+    lyse_icon = al_load_bitmap("assets/sprites/icone_lise.png");
+    if (!reserve_icon || !antibody_icon || !lyse_icon)
+    {
+        printf("couldn't load tool icons\n");
+        return false;
+    }
+
+    shots_sheet = al_load_bitmap("assets/sprites/tiros.png");
+    impacts_sheet = al_load_bitmap("assets/sprites/impactos.png");
+    if (!shots_sheet || !impacts_sheet)
+    {
+        printf("couldn't load shots or impacts\n");
+        return false;
+    }
+
     title_bitmap = make_text_bitmap("NANOBÔ", al_map_rgb(255, 255, 255));
     if (!title_bitmap)
     {
@@ -559,6 +588,36 @@ void free_resources()
     {
         al_destroy_bitmap(defense_icon);
         defense_icon = NULL;
+    }
+
+    if (reserve_icon)
+    {
+        al_destroy_bitmap(reserve_icon);
+        reserve_icon = NULL;
+    }
+
+    if (antibody_icon)
+    {
+        al_destroy_bitmap(antibody_icon);
+        antibody_icon = NULL;
+    }
+
+    if (lyse_icon)
+    {
+        al_destroy_bitmap(lyse_icon);
+        lyse_icon = NULL;
+    }
+
+    if (shots_sheet)
+    {
+        al_destroy_bitmap(shots_sheet);
+        shots_sheet = NULL;
+    }
+
+    if (impacts_sheet)
+    {
+        al_destroy_bitmap(impacts_sheet);
+        impacts_sheet = NULL;
     }
 
     if (dissolucao_icon)
@@ -1470,7 +1529,8 @@ void draw_destination_hint()
 #define FEEL_SHAKE_TIME 0.25f
 #define FEEL_FLASH_TIME 0.20f
 #define FEEL_RING_TIME 0.30f
-#define FEEL_IMPACT_TIME 0.12f
+// o impacto e uma animacao de 4 quadros de 60 ms (#242)
+#define FEEL_IMPACT_TIME 0.24f
 #define FEEL_POP_TIME 0.80f
 #define FEEL_PARTICLE_TIME 0.45f
 #define FEEL_PARTICLES 12
@@ -1506,6 +1566,9 @@ float feel_impact_time = 0.0f;
 float feel_impact_x = 0.0f;
 float feel_impact_y = 0.0f;
 bool feel_impact_dull = false;
+
+// linha da folha de impactos: 0 dose certa, 1 sem efeito, 2 eliminado (#242)
+int feel_impact_kind = 0;
 float feel_pop_time = 0.0f;
 float feel_pop_x = 0.0f;
 float feel_pop_y = 0.0f;
@@ -1568,6 +1631,7 @@ void feel_trigger()
         feel_impact_x = x;
         feel_impact_y = y;
         feel_impact_dull = kind == SFX_EVENT_WRONG;
+        feel_impact_kind = feel_impact_dull ? 1 : 0;
     }
     else if (kind == SFX_EVENT_DAMAGE)
     {
@@ -1579,6 +1643,7 @@ void feel_trigger()
         feel_impact_x = x;
         feel_impact_y = y;
         feel_impact_dull = false;
+        feel_impact_kind = 2;
         feel_pop_time = FEEL_POP_TIME;
         feel_pop_x = x;
         feel_pop_y = y;
@@ -1661,15 +1726,20 @@ void draw_feel_world()
             al_map_rgba_f(0.49f * a, 0.98f * a, 1.0f * a, a), 2.0f);
     }
 
+    // impacto do resultado: dose certa, sem efeito ou eliminado, 4 quadros (#242)
     if (feel_impact_time > 0.0f)
     {
-        float a = feel_impact_time / FEEL_IMPACT_TIME;
-        float r = (float)AGENT_RADIUS + 2.0f + (1.0f - a) * 8.0f;
-        ALLEGRO_COLOR c = feel_impact_dull
-            ? al_map_rgba_f(0.45f * a, 0.5f * a, 0.55f * a, a)
-            : al_map_rgba_f(a, a, a, a);
+        int frame = (int)((1.0f - feel_impact_time / FEEL_IMPACT_TIME) * 4.0f);
 
-        al_draw_circle(view_x(feel_impact_x), view_y(feel_impact_y), r, c, 2.0f);
+        if (frame > 3)
+        {
+            frame = 3;
+        }
+
+        al_draw_bitmap_region(impacts_sheet, (float)(frame * IMPACT_FRAME),
+            (float)(feel_impact_kind * IMPACT_FRAME), (float)IMPACT_FRAME, (float)IMPACT_FRAME,
+            view_x(feel_impact_x) - (float)IMPACT_FRAME / 2.0f,
+            view_y(feel_impact_y) - (float)IMPACT_FRAME / 2.0f, 0);
     }
 
     for (i = 0; i < FEEL_PARTICLES; i++)
@@ -1775,38 +1845,6 @@ void draw_concept_card()
 
     al_draw_text(font, UI_DIM, (float)SCREEN_W / 2.0f, 174.0f, ALLEGRO_ALIGN_CENTRE,
         "enter ou clique para continuar");
-}
-
-// icone provisorio da Reserva no HUD: capsula de 16x16 em duas metades (#216)
-void draw_reserve_icon(float x, float y)
-{
-    al_draw_filled_rounded_rectangle(x + 1.0f, y + 5.0f, x + 15.0f, y + 11.0f,
-        3.0f, 3.0f, UI_AMBER);
-    al_draw_filled_rectangle(x + 8.0f, y + 5.0f, x + 12.0f, y + 11.0f, UI_TEXT);
-    al_draw_filled_rounded_rectangle(x + 8.0f, y + 5.0f, x + 15.0f, y + 11.0f,
-        3.0f, 3.0f, UI_TEXT);
-    al_draw_rounded_rectangle(x + 1.5f, y + 5.5f, x + 14.5f, y + 10.5f,
-        3.0f, 3.0f, UI_INK, 1.0f);
-}
-
-// icone provisorio da Neutralizacao: o Y do anticorpo (#88)
-void draw_antibody_icon(float x, float y)
-{
-    al_draw_line(x + 8.0f, y + 15.0f, x + 8.0f, y + 8.0f, UI_INK, 4.0f);
-    al_draw_line(x + 8.0f, y + 8.0f, x + 3.0f, y + 2.0f, UI_INK, 4.0f);
-    al_draw_line(x + 8.0f, y + 8.0f, x + 13.0f, y + 2.0f, UI_INK, 4.0f);
-    al_draw_line(x + 8.0f, y + 15.0f, x + 8.0f, y + 8.0f, UI_CYAN, 2.0f);
-    al_draw_line(x + 8.0f, y + 8.0f, x + 3.0f, y + 2.0f, UI_CYAN, 2.0f);
-    al_draw_line(x + 8.0f, y + 8.0f, x + 13.0f, y + 2.0f, UI_CYAN, 2.0f);
-}
-
-// icone provisorio da Lise: a celula com o poro aberto pelo linfocito T (#88)
-void draw_lyse_icon(float x, float y)
-{
-    al_draw_filled_circle(x + 8.0f, y + 8.0f, 7.0f, UI_INK);
-    al_draw_circle(x + 8.0f, y + 8.0f, 5.5f, UI_GREEN, 1.5f);
-    al_draw_line(x + 4.0f, y + 4.0f, x + 12.0f, y + 12.0f, UI_RED, 2.0f);
-    al_draw_line(x + 12.0f, y + 4.0f, x + 4.0f, y + 12.0f, UI_RED, 2.0f);
 }
 
 void draw_hud()
@@ -1943,15 +1981,15 @@ void draw_hud()
     // a Reserva ainda nao tem icone proprio (Etapa 3): uma capsula provisoria
     if (player.laser == LASER_RESERVE)
     {
-        draw_reserve_icon((float)x_icon, (float)(hud_y(0) - 4));
+        al_draw_bitmap(reserve_icon, (float)x_icon, (float)(hud_y(0) - 4), 0);
     }
     else if (player.laser == LASER_NEUTRALIZE)
     {
-        draw_antibody_icon((float)x_icon, (float)(hud_y(0) - 4));
+        al_draw_bitmap(antibody_icon, (float)x_icon, (float)(hud_y(0) - 4), 0);
     }
     else if (player.laser == LASER_LYSE)
     {
-        draw_lyse_icon((float)x_icon, (float)(hud_y(0) - 4));
+        al_draw_bitmap(lyse_icon, (float)x_icon, (float)(hud_y(0) - 4), 0);
     }
     else
     {
@@ -2296,9 +2334,13 @@ void draw_game()
             UI_FRAME, 2);
     }
 
-    // projetil de cor neutra: Ruptura e quadrado, Dissolucao e circulo (RF-04)
+    // projetil de cor neutra, a forma mostra o mecanismo (RF-04, #242): cunha
+    // da Ruptura, gota da Dissolucao, losango da Reserva, Y da Neutralizacao e
+    // anel da Lise; o desenho aponta para a direita e gira na direcao do voo
     for (i = 0; i < MAX_PROJECTILES; i++)
     {
+        int frame = (int)(match_time / 0.08) % 2;
+
         if (!projectiles[i].active)
         {
             continue;
@@ -2307,38 +2349,11 @@ void draw_game()
         px = view_x(projectiles[i].x);
         py = view_y(projectiles[i].y);
 
-        if (projectiles[i].laser == LASER_GRAM_POSITIVE)
-        {
-            al_draw_filled_rectangle(px - (float)PROJECTILE_RADIUS,
-                py - (float)PROJECTILE_RADIUS,
-                px + (float)PROJECTILE_RADIUS,
-                py + (float)PROJECTILE_RADIUS, UI_TEXT);
-        }
-        else if (projectiles[i].laser == LASER_NEUTRALIZE)
-        {
-            // Neutralizacao: o Y do anticorpo (#88)
-            al_draw_line(px, py + 4.0f, px, py, UI_TEXT, 1.5f);
-            al_draw_line(px, py, px - 3.0f, py - 3.0f, UI_TEXT, 1.5f);
-            al_draw_line(px, py, px + 3.0f, py - 3.0f, UI_TEXT, 1.5f);
-        }
-        else if (projectiles[i].laser == LASER_LYSE)
-        {
-            // Lise: um X, o poro que o linfocito T abre na celula (#88)
-            al_draw_line(px - 3.0f, py - 3.0f, px + 3.0f, py + 3.0f, UI_TEXT, 2.0f);
-            al_draw_line(px + 3.0f, py - 3.0f, px - 3.0f, py + 3.0f, UI_TEXT, 2.0f);
-        }
-        else if (projectiles[i].laser == LASER_RESERVE)
-        {
-            // Reserva: losango, a terceira forma neutra (#216)
-            float r = (float)PROJECTILE_RADIUS + 1.0f;
-
-            al_draw_filled_triangle(px - r, py, px, py - r, px + r, py, UI_TEXT);
-            al_draw_filled_triangle(px - r, py, px, py + r, px + r, py, UI_TEXT);
-        }
-        else
-        {
-            al_draw_filled_circle(px, py, (float)PROJECTILE_RADIUS, UI_TEXT);
-        }
+        al_draw_tinted_scaled_rotated_bitmap_region(shots_sheet,
+            (float)(frame * SHOT_FRAME), (float)((int)projectiles[i].laser * SHOT_FRAME),
+            (float)SHOT_FRAME, (float)SHOT_FRAME, al_map_rgb_f(1.0f, 1.0f, 1.0f),
+            (float)SHOT_FRAME / 2.0f, (float)SHOT_FRAME / 2.0f, px, py, 1.0f, 1.0f,
+            atan2f(projectiles[i].dy, projectiles[i].dx), 0);
     }
 
     // projeteis inimigos: a toxina e uma gota verde-amarela com contorno (#236, #241)
