@@ -7,21 +7,27 @@ Inventário dos recursos necessários à execução atual, para orientar o carre
 | Recurso | Uso atual | Local |
 |---|---|---|
 | Sprite do Nanobô (48×48, 4 direções × 8 quadros) | Personagem do jogador | `assets/sprites/nanobo_spritesheet.png` (384×192, 4 linhas × 8 quadros de 48×48, #240), o bitmap que `load_resources()` abre e `draw_game()` recorta; `nanobo.png` fica como histórico |
-| Bactéria Gram-positiva (32×32) | Agente `SPECIES_GRAM_POSITIVE` | `assets/sprites/bacteria_gram_positiva.png`; idem |
-| Bactéria Gram-negativa (32×32) | Agente `SPECIES_GRAM_NEGATIVE` | `assets/sprites/bacteria_gram_negativa.png`; idem |
-| Célula saudável própria (32×32) | Agente `SPECIES_CELL` | `assets/sprites/celula_propria.png`; idem |
+| Coco neutro, 2 variantes (32×32) | Bactéria de forma coco, Gram+ ou Gram−; o Gram vem do tingimento depois da 2ª camada | `assets/sprites/coco_a.png` (cacho) e `coco_b.png` (cadeia) (15/11, #241) |
+| Bacilo neutro, 2 variantes (32×32) | Bactéria de forma bacilo, Gram+ ou Gram− | `assets/sprites/bacilo_a.png` (bastão com flagelo) e `bacilo_b.png` (par de bastões) (15/11, #241) |
+| Silhueta (32×32) | Bactéria sem leitura: disco de holograma com "?" | `assets/sprites/silhueta.png` (15/11, #241) |
+| Célula do paciente, 2 variantes (64×64) | Agente `SPECIES_CELL` | `assets/sprites/celula_paciente_a.png` e `celula_paciente_b.png` (15/11, #241) |
+| Toxina (8×8) | Projétil do coco | `assets/sprites/toxina.png` (15/11, #241) |
 | Ícone de coração (16×16) | HUD de vida | `assets/sprites/icone_coracao.png`; idem |
 | Ícone de scanner (16×16) | Cabeçalho do painel do scanner e bloco "como jogar" do menu | `assets/sprites/icone_scanner.png`; idem |
 | Ícone da arma Ruptura (16×16) | Indicador da arma na HUD: parede de tijolos, cor neutra e forma própria (04/11) | `assets/sprites/icone_ruptura.png` |
 | Ícone da arma Dissolução (16×16) | Indicador da arma na HUD: anéis concêntricos, cor neutra e forma própria (04/11) | `assets/sprites/icone_dissolucao.png` |
-| Vírus da Fase 2 (32×32) | Agente `SPECIES_VIRUS`: corpo laranja com espinhos e núcleo | `assets/sprites/virus_fase2.png` |
-| Variantes B das quatro espécies (32×32) | Segunda variante sorteada por agente no nascimento (#211) | `assets/sprites/bacteria_gram_positiva_b.png`, `bacteria_gram_negativa_b.png`, `celula_propria_b.png` e `virus_fase2_b.png`, com o `.aseprite` ao lado |
+| Vírus, 2 variantes (16×16) | Agente `SPECIES_VIRUS`, o vírus dentro da célula infectada e o vírus da rajada: capsídeo laranja com espículas | `assets/sprites/virus_a.png` (icosaédrico) e `virus_b.png` (redondo) (15/11, #241) |
 | Ícone de defesa (16×16) | Linha de controles do menu | `assets/sprites/icone_defesa.png`; idem |
 | Fonte embutida do Allegro | Todo o texto da interface: HUD, painel do scanner, menu, pausa e telas de fim | `al_create_builtin_font()` em `src/main.c`; não há arquivo de fonte |
 | Mapa do mundo da Fase 1 (1920×512) | Fundo do mundo, desenhado atrás de destino, agentes e Nanobô | `assets/backgrounds/mapa_fase1.png`; idem |
 | Mapa do mundo da Fase 2 (1920×512) | Fundo da Fase 2: interior do brônquio | `assets/backgrounds/mapa_fase2.png`; idem (14/11, #89) |
 
-`load_resources()` abre os dezesseis bitmaps, a fonte e, quando o áudio está instalado, os seis efeitos de `assets/audio/sfx/*.wav` e a música `assets/audio/music/fundo.wav`. `free_resources()` libera os dezesseis bitmaps na ordem inversa, depois os seis efeitos e a música — os samples saem antes de `al_uninstall_audio()` — e por fim a fonte. O título do menu (`NANOBÔ`) é um bitmap montado em tempo de carregamento a partir da fonte (`make_text_bitmap`), também liberado ali. O projétil é desenhado com primitivas do Allegro, sem bitmap; com a cor neutra, os dois projéteis se distinguem pela **forma**: quadrado na Ruptura, círculo na Dissolução. Os ícones `icone_laser_roxo.png` e `icone_laser_vermelho.png` saíram do `load_resources()` e continuam no disco como histórico.
+`load_resources()` abre os dezesseis bitmaps, mais o mapa da fase atual por `load_phase_map()`, a fonte e, quando o áudio está instalado, os seis efeitos de `assets/audio/sfx/*.wav` e a música `assets/audio/music/fundo.wav`. `free_resources()` libera os bitmaps na ordem inversa, depois os seis efeitos e a música — os samples saem antes de `al_uninstall_audio()` — e por fim a fonte. O título do menu (`NANOBÔ`) é um bitmap montado em tempo de carregamento a partir da fonte (`make_text_bitmap`), também liberado ali. O projétil é desenhado com primitivas do Allegro, sem bitmap; com a cor neutra, os dois projéteis se distinguem pela **forma**: quadrado na Ruptura, círculo na Dissolução. Os ícones `icone_laser_roxo.png` e `icone_laser_vermelho.png` saíram do `load_resources()` e continuam no disco como histórico.
+
+**Agentes finais (15/11, #241):**
+- os sprites da tabela acima são gerados por `../Nanobo-testes/gerar_agentes.lua` (Aseprite), no estilo da amostra aprovada (#225): contorno escuro de 1 px, luz no alto à esquerda, especular e luz de retorno;
+- já nascem no tamanho da escala biológica, então o jogo não estica nenhum, e as bactérias já vêm em cinza neutro, sem a cópia cinza feita na carga (`make_grey_copy` saiu);
+- os sprites antigos (`bacteria_gram_*`, `celula_propria*`, `virus_fase2*`) ficam no disco como histórico, fora do `load_resources()`.
 
 ## Arte final criada
 
@@ -29,7 +35,9 @@ Os oito sprites de agente (as quatro espécies, cada uma com as variantes A e B)
 
 Todos os sprites usam a mesma paleta, o mesmo tamanho de pixel e a mesma direção de luz (cima-esquerda), para manter a coesão visual.
 
-### Agentes da Fase 1 — 32×32, PNG com transparência
+### Agentes da Fase 1 — 32×32, PNG com transparência (histórico até 14/11)
+
+> Fora do jogo desde 15/11 (#241): os agentes finais estão na tabela do início.
 
 | Arquivo | Agente | Cor | Forma | Pista visual do envelope |
 |---|---|---|---|---|

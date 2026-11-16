@@ -66,8 +66,6 @@ _Static_assert(HUD_LINES * HUD_LINE_H + 2 * HUD_MARGIN <= PANEL_H, "HUD nao cabe
 #define MAP_TINT_AIRWAY al_map_rgb_f(0.9f, 0.86f, 0.9f)
 
 #define MAP_VEIL        al_map_rgba_f(0.05f * 0.28f, 0.07f * 0.28f, 0.11f * 0.28f, 0.28f)
-#define SILHOUETTE_FILL al_map_rgb(86, 104, 132)
-#define SILHOUETTE_EDGE al_map_rgb(170, 190, 215)
 #define CONTACT_SHADOW  al_map_rgba_f(0.0f, 0.0f, 0.0f, 0.35f)
 
 // tingimento do sprite cinza da bacteria depois da camada 2 (#214)
@@ -110,22 +108,22 @@ ALLEGRO_BITMAP* defense_icon = NULL;
 // titulo do menu montado a partir da fonte, desenhado ampliado
 ALLEGRO_BITMAP* title_bitmap = NULL;
 
-// a arte de cada especie da Fase 1
-ALLEGRO_BITMAP* gram_positive = NULL;
-ALLEGRO_BITMAP* gram_negative = NULL;
+// celula do paciente (64x64) e virus (16x16), duas variantes cada, ja no
+// tamanho da escala biologica (#211, #241)
 ALLEGRO_BITMAP* cell_sprite = NULL;
 ALLEGRO_BITMAP* virus_sprite = NULL;
-
-// segunda variante de cada especie (#211)
-ALLEGRO_BITMAP* gram_positive_b = NULL;
-ALLEGRO_BITMAP* gram_negative_b = NULL;
 ALLEGRO_BITMAP* cell_sprite_b = NULL;
 ALLEGRO_BITMAP* virus_sprite_b = NULL;
 
-// bacterias em cinza, uma por forma e variante: a cor de Gram vem do tingimento (#214)
-// o coco sai do cacho e da cadeia, o bacilo do bastao e do par de bastoes
+// bacterias em cinza neutro, uma por forma e variante: a cor de Gram vem do
+// tingimento (#214). O coco e o cacho e a cadeia; o bacilo e o bastao com
+// flagelo e o par de bastoes (#241)
 ALLEGRO_BITMAP* coccus_grey[SPRITE_VARIANTS] = { NULL };
 ALLEGRO_BITMAP* bacillus_grey[SPRITE_VARIANTS] = { NULL };
+
+// silhueta do agente sem leitura e toxina do coco (#241)
+ALLEGRO_BITMAP* silhouette_sprite = NULL;
+ALLEGRO_BITMAP* toxin_sprite = NULL;
 
 // mapa do mundo da fase atual (1920x512), sempre atras do resto. So um fica na
 // memoria por vez: cada mapa custa cerca de 15 MB carregado, e os dois juntos
@@ -361,56 +359,6 @@ ALLEGRO_BITMAP* make_text_bitmap(const char* text, ALLEGRO_COLOR color)
     return bmp;
 }
 
-// copia em tons de cinza de um sprite, para ser tingida na hora de desenhar (#214)
-// o PNG carregado ja tem alfa pre-multiplicado, e a copia mantem isso
-ALLEGRO_BITMAP* make_grey_copy(ALLEGRO_BITMAP* source)
-{
-    ALLEGRO_BITMAP* copy;
-    ALLEGRO_BITMAP* old_target = al_get_target_bitmap();
-    int w = al_get_bitmap_width(source);
-    int h = al_get_bitmap_height(source);
-    int x;
-    int y;
-
-    copy = al_create_bitmap(w, h);
-    if (!copy)
-    {
-        return NULL;
-    }
-
-    al_set_target_bitmap(copy);
-    al_lock_bitmap(source, ALLEGRO_PIXEL_FORMAT_ANY, ALLEGRO_LOCK_READONLY);
-    al_lock_bitmap(copy, ALLEGRO_PIXEL_FORMAT_ANY, ALLEGRO_LOCK_WRITEONLY);
-
-    for (y = 0; y < h; y++)
-    {
-        for (x = 0; x < w; x++)
-        {
-            float r;
-            float g;
-            float b;
-            float a;
-            float grey;
-
-            al_unmap_rgba_f(al_get_pixel(source, x, y), &r, &g, &b, &a);
-
-            // luminancia com um pouco mais de brilho, para o tingimento aparecer
-            grey = (0.299f * r + 0.587f * g + 0.114f * b) * 1.35f;
-            if (grey > a)
-            {
-                grey = a;
-            }
-
-            al_put_pixel(x, y, al_map_rgba_f(grey, grey, grey, a));
-        }
-    }
-
-    al_unlock_bitmap(copy);
-    al_unlock_bitmap(source);
-    al_set_target_bitmap(old_target);
-    return copy;
-}
-
 // carrega tudo que o jogo precisa antes do loop por frame
 bool load_resources()
 {
@@ -428,70 +376,38 @@ bool load_resources()
         return false;
     }
 
-    gram_positive = al_load_bitmap("assets/sprites/bacteria_gram_positiva.png");
-    if (!gram_positive)
-    {
-        printf("couldn't load gram positive\n");
-        return false;
-    }
-
-    gram_negative = al_load_bitmap("assets/sprites/bacteria_gram_negativa.png");
-    if (!gram_negative)
-    {
-        printf("couldn't load gram negative\n");
-        return false;
-    }
-
-    cell_sprite = al_load_bitmap("assets/sprites/celula_propria.png");
-    if (!cell_sprite)
+    // agentes finais da #241: cada um no tamanho da sua especie
+    cell_sprite = al_load_bitmap("assets/sprites/celula_paciente_a.png");
+    cell_sprite_b = al_load_bitmap("assets/sprites/celula_paciente_b.png");
+    if (!cell_sprite || !cell_sprite_b)
     {
         printf("couldn't load cell\n");
         return false;
     }
 
-    virus_sprite = al_load_bitmap("assets/sprites/virus_fase2.png");
-    if (!virus_sprite)
+    virus_sprite = al_load_bitmap("assets/sprites/virus_a.png");
+    virus_sprite_b = al_load_bitmap("assets/sprites/virus_b.png");
+    if (!virus_sprite || !virus_sprite_b)
     {
         printf("couldn't load virus\n");
         return false;
     }
 
-    gram_positive_b = al_load_bitmap("assets/sprites/bacteria_gram_positiva_b.png");
-    if (!gram_positive_b)
-    {
-        printf("couldn't load gram positive variant\n");
-        return false;
-    }
-
-    gram_negative_b = al_load_bitmap("assets/sprites/bacteria_gram_negativa_b.png");
-    if (!gram_negative_b)
-    {
-        printf("couldn't load gram negative variant\n");
-        return false;
-    }
-
-    cell_sprite_b = al_load_bitmap("assets/sprites/celula_propria_b.png");
-    if (!cell_sprite_b)
-    {
-        printf("couldn't load cell variant\n");
-        return false;
-    }
-
-    virus_sprite_b = al_load_bitmap("assets/sprites/virus_fase2_b.png");
-    if (!virus_sprite_b)
-    {
-        printf("couldn't load virus variant\n");
-        return false;
-    }
-
-    // a camada 1 mostra a forma sem a cor: copias cinza das bacterias (#214)
-    coccus_grey[0] = make_grey_copy(gram_positive);
-    coccus_grey[1] = make_grey_copy(gram_positive_b);
-    bacillus_grey[0] = make_grey_copy(gram_negative);
-    bacillus_grey[1] = make_grey_copy(gram_negative_b);
+    coccus_grey[0] = al_load_bitmap("assets/sprites/coco_a.png");
+    coccus_grey[1] = al_load_bitmap("assets/sprites/coco_b.png");
+    bacillus_grey[0] = al_load_bitmap("assets/sprites/bacilo_a.png");
+    bacillus_grey[1] = al_load_bitmap("assets/sprites/bacilo_b.png");
     if (!coccus_grey[0] || !coccus_grey[1] || !bacillus_grey[0] || !bacillus_grey[1])
     {
-        printf("couldn't create grey bacteria\n");
+        printf("couldn't load bacteria\n");
+        return false;
+    }
+
+    silhouette_sprite = al_load_bitmap("assets/sprites/silhueta.png");
+    toxin_sprite = al_load_bitmap("assets/sprites/toxina.png");
+    if (!silhouette_sprite || !toxin_sprite)
+    {
+        printf("couldn't load silhouette or toxin\n");
         return false;
     }
 
@@ -582,16 +498,16 @@ void free_resources()
         world_map_phase = 0;
     }
 
-    if (gram_positive)
+    if (silhouette_sprite)
     {
-        al_destroy_bitmap(gram_positive);
-        gram_positive = NULL;
+        al_destroy_bitmap(silhouette_sprite);
+        silhouette_sprite = NULL;
     }
 
-    if (gram_negative)
+    if (toxin_sprite)
     {
-        al_destroy_bitmap(gram_negative);
-        gram_negative = NULL;
+        al_destroy_bitmap(toxin_sprite);
+        toxin_sprite = NULL;
     }
 
     if (cell_sprite)
@@ -604,18 +520,6 @@ void free_resources()
     {
         al_destroy_bitmap(virus_sprite);
         virus_sprite = NULL;
-    }
-
-    if (gram_positive_b)
-    {
-        al_destroy_bitmap(gram_positive_b);
-        gram_positive_b = NULL;
-    }
-
-    if (gram_negative_b)
-    {
-        al_destroy_bitmap(gram_negative_b);
-        gram_negative_b = NULL;
     }
 
     if (cell_sprite_b)
@@ -1462,14 +1366,10 @@ void draw_menu()
 // variante 1 usa o segundo desenho da especie; qualquer outra, o primeiro (#211)
 ALLEGRO_BITMAP* species_sprite(Species species, int variant)
 {
-    if (species == SPECIES_GRAM_POSITIVE)
+    // bacteria: o sprite cinza da forma; quem desenha usa o bacteria_sprite (#214)
+    if (species == SPECIES_GRAM_POSITIVE || species == SPECIES_GRAM_NEGATIVE)
     {
-        return variant == 1 ? gram_positive_b : gram_positive;
-    }
-
-    if (species == SPECIES_GRAM_NEGATIVE)
-    {
-        return variant == 1 ? gram_negative_b : gram_negative;
+        return coccus_grey[variant == 1 ? 1 : 0];
     }
 
     if (species == SPECIES_VIRUS)
@@ -2252,10 +2152,9 @@ void draw_game()
         // o virus fica de fora: o estado dele e lido no mundo, sem scanner (#84)
         if (is_bacteria && agents[i].layers == 0)
         {
-            al_draw_filled_circle(view_x(agents[i].x), view_y(agents[i].y),
-                agent_radius(i) - 1.0f, SILHOUETTE_FILL);
-            al_draw_circle(view_x(agents[i].x), view_y(agents[i].y),
-                agent_radius(i) - 1.0f, SILHOUETTE_EDGE, 1.0f);
+            // disco de holograma com "?": ainda nao se sabe o que e (#241)
+            al_draw_bitmap(silhouette_sprite, view_x(agents[i].x) - (float)AGENT_RADIUS,
+                view_y(agents[i].y) - (float)AGENT_RADIUS, 0);
             draw_treatment_marks(i);
             continue;
         }
@@ -2286,8 +2185,8 @@ void draw_game()
             continue;
         }
 
-        // virus e celula em escala biologica: o sprite e esticado ao tamanho
-        // da especie, 16 px o virus e 64 px a celula (#235)
+        // virus e celula em escala biologica: 16 px o virus e 64 px a celula,
+        // e o sprite ja tem esse tamanho (#235, #241)
         {
             ALLEGRO_BITMAP* bmp = species_sprite(agents[i].species, agents[i].variant);
             float size = 2.0f * agent_radius(i)
@@ -2442,7 +2341,7 @@ void draw_game()
         }
     }
 
-    // projeteis inimigos: a toxina e uma gota verde-amarela com contorno (#236)
+    // projeteis inimigos: a toxina e uma gota verde-amarela com contorno (#236, #241)
     for (i = 0; i < MAX_ENEMY_SHOTS; i++)
     {
         if (!enemy_shots[i].active)
@@ -2462,9 +2361,8 @@ void draw_game()
             continue;
         }
 
-        al_draw_filled_circle(px, py, (float)ENEMY_SHOT_RADIUS + 1.0f, UI_INK);
-        al_draw_filled_circle(px, py, (float)ENEMY_SHOT_RADIUS, al_map_rgb(170, 230, 90));
-        al_draw_filled_circle(px - 1.0f, py - 1.0f, 1.0f, al_map_rgb(235, 255, 200));
+        // toxina: a gota de 8x8 centrada no projetil (#241)
+        al_draw_bitmap(toxin_sprite, px - 4.0f, py - 4.0f, 0);
     }
 
     draw_feel_world();
