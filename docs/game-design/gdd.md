@@ -31,6 +31,7 @@ Premissa curta, contada em cards de até 3 linhas.
   3. Ele ajuda o corpo sem ferir as células do paciente, e vai atrás só dos invasores (a maioria das bactérias do corpo é inofensiva).
   4. A missão é manter os sinais vitais estáveis.
 - **Interlúdios** entre as fases mostram os sinais vitais ("estável" ≥ 70, "em observação" 40–69, "grave" < 40) e anunciam o próximo invasor.
+- **No jogo desde 15/11 (#244):** a abertura substitui o briefing (4 cards); o interlúdio é o subtítulo da tela de Resultados entre as fases; a Vitória diz que o paciente recebeu alta, e o Game Over, que a equipe retirou o Nanobô e por quê.
 - **Final:** o paciente recebe alta, com o relatório do que o Nanobô viu.
 - **Game over:** os sinais vitais caem demais e a equipe retira o Nanobô.
 - O paciente não tem nome nem gênero no texto.

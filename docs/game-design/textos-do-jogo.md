@@ -44,30 +44,34 @@
 
 **Hífen, não menos tipográfico.** "Gram-" usa hífen ASCII (U+002D). O "−" (U+2212) que a spec traz não existe na fonte embutida (Latin-1): na tela ele saía como `^`, visto no QA de 03/11 e corrigido no commit `5e7cc75`. Ao editar estes textos, não reintroduza U+2212.
 
-## 1.1 Briefing (cena `BRIEFING`, #103, #106)
+## 1.1 Abertura da narrativa (cena `BRIEFING`, #244)
 
-Desenhado **em toda partida** — `MENU → BRIEFING → GAME`, e também depois de `VITÓRIA` e de `GAME OVER`. São três cartões; `ENTER`, `→` ou clique avançam, e `ESC` pula direto para a fase. O cartão 3 tem **quatro linhas** desde 04/11: a frase aprovada em 03/11 foi quebrada em duas (BR-18 e BR-19) para caber em 640×360. A BR-01 antiga (`nem toda bactéria causa doença: aqui são ameaças do cenário`) não é mais desenhada.
+Desenhada **em toda partida**: `MENU → BRIEFING → GAME`, e também depois de `VITÓRIA` e de `GAME OVER`. Desde 15/11 (#244), a cena conta a premissa em **quatro cards**, no lugar do briefing de 04/11 sobre o Gram, que passou para os cards de conceito dentro da fase (#222). `ENTER`, `→` ou clique avançam; `ESC` pula direto para a fase. As linhas vão de x = 52 num painel de 560 px, até 68 caracteres; a maior tem 55. O paciente não tem nome nem gênero no texto.
 
 | ID | Local | Texto | Caracteres | Origem |
 |---|---|---|---|---|
-| BR-02 | briefing, cabeçalho | `Antes de entrar na fase` | 23 | #103, texto aprovado em 04/11 |
-| BR-03 | briefing, passo | `cartão %d de %d` (`cartão 1 de 3`) | 13 | #103 |
-| BR-04 | briefing, rodapé | `enter ou clique avança · esc pula` | 33 | #103 |
-| BR-05 | briefing, botão | `SEGUIR` | 6 | #103 |
-| BR-06 | briefing, botão | `PULAR` | 5 | #103 |
-| BR-07 | briefing, cartão 1, título | `A coloração de Gram` | 19 | #103 |
-| BR-08 | briefing, cartão 1, linha 1 | `A coloração separa as bactérias em dois grupos.` | 47 | #103 |
-| BR-09 | briefing, cartão 1, linha 2 | `O resultado é roxo (Gram+) ou vermelho (Gram-).` | 47 | #103 |
-| BR-10 | briefing, cartão 1, linha 3 | `A cor indica o grupo, não se a bactéria causa doença.` | 53 | #103 |
-| BR-11 | briefing, cartão 2, título | `Duas camadas externas` | 21 | #103 |
-| BR-12 | briefing, cartão 2, linha 1 | `Gram+: parede espessa, rica em peptidoglicano.` | 46 | #103 |
-| BR-13 | briefing, cartão 2, linha 2 | `Gram-: parede fina e uma membrana externa.` | 42 | #103 |
-| BR-14 | briefing, cartão 2, linha 3 | `O peptidoglicano faz parte da parede da bactéria.` | 49 | #103 |
-| BR-15 | briefing, cartão 3, título | `As armas e a célula própria` | 27 | #103 |
-| BR-16 | briefing, cartão 3, linha 1 | `Ruptura age na parede; Dissolução, na camada extra.` | 51 | #103; decisão 03/11 |
-| BR-17 | briefing, cartão 3, linha 2 | `As duas armas ferem a célula própria: mire longe dela.` | 54 | #103; D1 |
-| BR-18 | briefing, cartão 3, linha 3 | `Nem toda bactéria causa doença; neste cenário,` | 46 | decisão 03/11, quebrada em 04/11 |
-| BR-19 | briefing, cartão 3, linha 4 | `os agentes são tratados como ameaças do jogo.` | 45 | decisão 03/11, quebrada em 04/11 |
+| BR-02 | abertura, cabeçalho | `A missão do Nanobô` | 18 | #244 |
+| BR-03 | abertura, passo | `cartão %d de %d` (`cartão 1 de 4`) | 13 | #103 |
+| BR-04 | abertura, rodapé | `enter ou clique avança · esc pula` | 33 | #103 |
+| BR-05 | abertura, botão | `SEGUIR` | 6 | #103 |
+| BR-06 | abertura, botão | `PULAR` | 5 | #103 |
+| NR-01 | card 1, título | `O paciente` | 10 | #244, gdd.md §"Narrativa" |
+| NR-02 | card 1, linha 1 | `Um paciente de 16 anos chega ao hospital com febre alta` | 55 | #244 |
+| NR-03 | card 1, linha 2 | `e uma infecção que se espalha pelo sangue.` | 42 | #244 |
+| NR-04 | card 2, título | `O Nanobô` | 8 | #244 |
+| NR-05 | card 2, linha 1 | `A equipe médica testa o Nanobô, um nanorrobô médico` | 51 | #244 |
+| NR-06 | card 2, linha 2 | `menor que uma célula, dentro do corpo do paciente.` | 50 | #244 |
+| NR-07 | card 3, título | `Ajudar sem ferir` | 16 | #244 |
+| NR-08 | card 3, linha 1 | `Ele ajuda o corpo sem ferir as células do paciente` | 50 | #244 |
+| NR-09 | card 3, linha 2 | `e vai atrás só dos invasores: a maioria das bactérias` | 53 | #244 |
+| NR-10 | card 3, linha 3 | `do corpo é inofensiva.` | 22 | #244 |
+| NR-11 | card 4, título | `A missão` | 8 | #244 |
+| NR-12 | card 4, linha 1 | `Manter os sinais vitais do paciente estáveis` | 44 | #244 |
+| NR-13 | card 4, linha 2 | `e o Nanobô inteiro: são as duas barras do painel.` | 49 | #244, #234 (duas barras) |
+| NR-14 | card 4, linha 3 | `Leia cada agente com o scanner antes de agir.` | 45 | #244 |
+| NR-15 | interlúdio: Resultados entre as fases, subtítulo | `sinais vitais: %s (%d) · a seguir: vírus nas vias aéreas` (`estável` ≥ 70, `em observação` 40–69, `grave` < 40, já com o piso de 60) | até 67 | #244 |
+
+Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as armas) saíram do jogo em 15/11 e ficam no histórico do git.
 
 ## 2. Controles, HUD e dicas (`src/main.c`)
 
@@ -136,11 +140,11 @@ Desenhado **em toda partida** — `MENU → BRIEFING → GAME`, e também depois
 | CT-55 | menu, botão | `INICIAR` | 7 | varredura de 05/11 |
 | CT-56 | pausa/resultados, botão | `CONTINUAR` | 9 | varredura de 05/11 |
 | CT-57 | vitória/game over, botão | `NOVA PARTIDA` | 12 | varredura de 05/11 |
-| CT-58 | vitória, subtítulo | `você defendeu o organismo` | 25 | varredura de 05/11 |
+| CT-58 | vitória, subtítulo | `o paciente recebeu alta: missão cumprida` | 40 | #244 (final da narrativa) |
 | CT-59 | vitória, linha de estatística | `pontuação final` | 15 | varredura de 05/11 |
 | CT-60 | vitória, rodapé | `enter também começa de novo` | 27 | varredura de 05/11 |
 | CT-61 | game over, título | `GAME OVER` | 9 | varredura de 05/11 |
-| CT-62 | game over, subtítulo | `os sinais vitais do paciente zeraram` (vitais em 0) / `o Nanobô foi danificado e saiu do corpo` (integridade em 0) | 36 / 39 | #218; #234 |
+| CT-62 | game over, subtítulo | `os sinais vitais caíram demais: a equipe retirou o Nanobô` (vitais em 0) / `o Nanobô foi danificado: a equipe o retirou do corpo` (integridade em 0) | 57 / 52 | #218; #234; #244 |
 | CT-63 | game over, rodapé | `enter também reinicia` | 21 | varredura de 05/11 |
 | CT-64 | menu, botão | `RECORDES` | 8 | #197 |
 | CT-65 | painel do Top 10, título | `Top 10` | 6 | #197 |

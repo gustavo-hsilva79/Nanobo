@@ -45,7 +45,7 @@ _Static_assert(HUD_LINES * HUD_LINE_H + 2 * HUD_MARGIN <= PANEL_H, "HUD nao cabe
 #define TITLE_SCALE 3
 
 // cartoes do briefing de entrada (#103)
-#define BRIEFING_CARDS 3
+#define BRIEFING_CARDS 4
 
 // linhas por cartao: o terceiro cartao usa quatro
 #define BRIEFING_LINES 4
@@ -1138,26 +1138,33 @@ void draw_scan_panel()
 // ---------------------------------------------------------------
 
 
-// textos do briefing aprovados pela dupla em 04/11; nada alem da spec (#103)
+// abertura da narrativa (#244): a premissa em 4 cards, no lugar do briefing
+// de 04/11; o Gram passou para os cards de conceito dentro da fase (#222).
+// O paciente nao tem nome nem genero no texto (gdd.md, "Narrativa")
 static const char* briefing_titles[BRIEFING_CARDS] = {
-    "A coloração de Gram",
-    "Duas camadas externas",
-    "As armas e a célula própria"
+    "O paciente",
+    "O Nanobô",
+    "Ajudar sem ferir",
+    "A missão"
 };
 
 static const char* briefing_lines[BRIEFING_CARDS][4] = {
-    { "A coloração separa as bactérias em dois grupos.",
-      "O resultado é roxo (Gram+) ou vermelho (Gram-).",
-      "A cor indica o grupo, não se a bactéria causa doença.",
+    { "Um paciente de 16 anos chega ao hospital com febre alta",
+      "e uma infecção que se espalha pelo sangue.",
+      NULL,
       NULL },
-    { "Gram+: parede espessa, rica em peptidoglicano.",
-      "Gram-: parede fina e uma membrana externa.",
-      "O peptidoglicano faz parte da parede da bactéria.",
+    { "A equipe médica testa o Nanobô, um nanorrobô médico",
+      "menor que uma célula, dentro do corpo do paciente.",
+      NULL,
       NULL },
-    { "Ruptura age na parede; Dissolução, na camada extra.",
-      "As duas armas ferem a célula própria: mire longe dela.",
-      "Nem toda bactéria causa doença; neste cenário,",
-      "os agentes são tratados como ameaças do jogo." }
+    { "Ele ajuda o corpo sem ferir as células do paciente",
+      "e vai atrás só dos invasores: a maioria das bactérias",
+      "do corpo é inofensiva.",
+      NULL },
+    { "Manter os sinais vitais do paciente estáveis",
+      "e o Nanobô inteiro: são as duas barras do painel.",
+      "Leia cada agente com o scanner antes de agir.",
+      NULL }
 };
 
 // briefing: tres cartoes pulaveis antes da fase (#103, #106)
@@ -1169,7 +1176,7 @@ void draw_briefing()
     const UiButton* buttons = screen_buttons(&count);
 
     al_draw_text(font, UI_TEXT, SCREEN_W / 2, 26, ALLEGRO_ALIGN_CENTRE,
-        "Antes de entrar na fase");
+        "A missão do Nanobô");
     draw_rule((float)SCREEN_W / 2, 40.0f, 200.0f, UI_FRAME);
 
     snprintf(step, sizeof(step), "cartão %d de %d", briefing_card + 1, BRIEFING_CARDS);
@@ -2615,7 +2622,22 @@ void draw_results()
     snprintf(line, sizeof(line), "Fase %d concluída", current_phase());
     al_draw_text(font, UI_TEXT, SCREEN_W / 2, 24, ALLEGRO_ALIGN_CENTRE, line);
     draw_rule((float)SCREEN_W / 2, 38.0f, 200.0f, UI_FRAME);
-    al_draw_text(font, UI_DIM, SCREEN_W / 2, 46, ALLEGRO_ALIGN_CENTRE, "resumo da fase");
+
+    // interludio (#244): entre as fases, o estado do paciente e o proximo
+    // invasor; os vitais ja com o piso de 60 que a passagem aplica (#218)
+    if (has_next_phase())
+    {
+        int vitals = (int)fmaxf(patient_vitals, VITALS_MIN_BETWEEN);
+        const char* state = vitals >= 70 ? "estável" : (vitals >= 40 ? "em observação" : "grave");
+
+        snprintf(line, sizeof(line), "sinais vitais: %s (%d) · a seguir: vírus nas vias aéreas",
+            state, vitals);
+        al_draw_text(font, UI_DIM, SCREEN_W / 2, 46, ALLEGRO_ALIGN_CENTRE, line);
+    }
+    else
+    {
+        al_draw_text(font, UI_DIM, SCREEN_W / 2, 46, ALLEGRO_ALIGN_CENTRE, "resumo da fase");
+    }
 
     // resultado principal: pontos e ameacas, o que fecha a fase
     draw_panel(140.0f, 58.0f, 360.0f, 44.0f, UI_INK, UI_FRAME);
@@ -2806,8 +2828,9 @@ void draw_victory()
 
     al_draw_text(font, UI_TEXT, SCREEN_W / 2, 18, ALLEGRO_ALIGN_CENTRE, "Vitória");
     draw_rule((float)SCREEN_W / 2, 32.0f, 200.0f, UI_FRAME);
+    // final da narrativa (#244): a alta do paciente, com o relatório ao lado
     al_draw_text(font, UI_DIM, SCREEN_W / 2, 38, ALLEGRO_ALIGN_CENTRE,
-        "você defendeu o organismo");
+        "o paciente recebeu alta: missão cumprida");
 
     // o resultado da run, a esquerda
     draw_panel(24.0f, 58.0f, 290.0f, 92.0f, UI_INK, UI_FRAME);
@@ -2885,9 +2908,10 @@ void draw_game_over()
 
     al_draw_text(font, UI_RED, SCREEN_W / 2, 30, ALLEGRO_ALIGN_CENTRE, "GAME OVER");
     draw_rule((float)SCREEN_W / 2, 44.0f, 200.0f, al_map_rgb(150, 60, 60));
+    // game over da narrativa (#244): a equipe retira o Nanobô e diz por que
     al_draw_text(font, UI_DIM, SCREEN_W / 2, 52, ALLEGRO_ALIGN_CENTRE,
-        game_over_patient ? "os sinais vitais do paciente zeraram"
-                          : "o Nanobô foi danificado e saiu do corpo");
+        game_over_patient ? "os sinais vitais caíram demais: a equipe retirou o Nanobô"
+                          : "o Nanobô foi danificado: a equipe o retirou do corpo");
 
     draw_panel(140.0f, 72.0f, 360.0f, 96.0f, UI_INK, UI_FRAME);
 
