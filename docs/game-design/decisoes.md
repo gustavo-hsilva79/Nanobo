@@ -337,11 +337,17 @@ O jogo terá pontuação, bônus por identificação e progressão. O hi-score d
 
 - A tela lógica é **640×360** (16:9), desenhada num bitmap e ampliada na janela por **escala inteira**, com barras pretas quando a janela não for múltipla. 640×360 é a maior resolução 16:9 que cai exata em 720p (2×), 1080p (3×), 1440p (4×) e 4K (6×).
 - A janela é **redimensionável** e abre **maximizada** (`ALLEGRO_MAXIMIZED`); o canvas continua centralizado em escala inteira, então sobra barra preta nos lados quando a janela não for múltipla de 640×360. **F11** alterna fullscreen — em 1440p isso dá 4× exato, sem barras — e, ao sair, a janela volta **maximizada** (não para o tamanho pedido na criação). Escala inteira quando o encaixe der 1× ou mais; janela menor que 640×360 encolhe proporcionalmente.
-- A **faixa visível do mundo** é 640×256 (múltipla de 32, o lado do tile do mapa futuro) e o **painel do scanner** ocupa os 104 px do rodapé; o painel é HUD, não faz parte do mundo.
+- A **faixa visível do mundo** é 640×320 desde 15/11 (era 640×256) e o **HUD** ocupa os 40 px do rodapé, em duas linhas (#243). A **ficha do scanner** só aparece com alvo e flutua dentro da faixa do mundo:
+  - fica embaixo, ou em cima quando o alvo está na metade de baixo, para nunca cobrir o agente lido;
+  - o aviso de feedback e a marca do destino desviam dela;
+  - "há alvo" quer dizer agente sob o cursor dentro do alcance, ou a última leitura ainda ativa e ao alcance.
 - O **mundo** nasce com **1920×512** (3 telas por 2 faixas) e uma **câmera** presa nas bordas acompanha o Nanobô. O tamanho do mapa passou a ser constante (`WORLD_W`/`WORLD_H`), não o tamanho da tela: é o que permite crescer para paredes e caminhos sem reescrever as regras.
 - A Fase 1 passa a ter **9 agentes** (3 Gram+, 3 Gram−, 3 células) para não esvaziar o mapa maior; o **alcance do scanner continua 130 px**.
 - O scanner mostra **só a leitura do alvo atual**; `space` de novo relê o alvo. A lista de todos os agentes saiu: ela estourava o painel (12 linhas de 14 px = 168 px num espaço de 110 px).
-- O HUD não usa coordenada fixa: cada linha sai de `hud_y()`, que soma `SCAN_PANEL_Y`, `HUD_MARGIN` e `line * HUD_LINE_H` — 5 linhas de 16 px dentro dos 104 px do painel — e os corações começam depois da largura medida do texto de status.
+- O HUD não usa coordenada fixa: cada linha sai de `hud_y()`, que soma `SCAN_PANEL_Y`, `HUD_MARGIN` e `line * HUD_LINE_H`. São 2 linhas a 16 px uma da outra, com 8 px de margem, nos 40 px do painel (#243).
+  - **Linha 0:** as duas barras, pontos e tempo à esquerda; a ferramenta com o alvo, o ícone, a recarga e o estado à direita, medidos da borda.
+  - **Linha 1:** o objetivo à esquerda; as ameaças e os identificados à direita.
+  - A regra "o mundo tem um número inteiro de faixas" (`WORLD_H % PLAY_H`) virou "a faixa cabe no mundo", porque a câmera já para em `[0, WORLD_H - PLAY_H]`.
 - Princípio de escala inteira para pixel art conforme a documentação do Godot sobre múltiplas resoluções; 1920×1080 como resolução de exibição mais comum.
 
 ### Fecho da fase e telas do MVP (26/10/2026)

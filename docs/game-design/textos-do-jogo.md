@@ -96,14 +96,11 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 | CT-11f | card de conceito, títulos da Fase 1 | `Coloração de Gram` (CC-01) / `Resistência e Reserva` (CC-02) | 17 / 21 | #222; linhas em §3.1 |
 | CT-12 | menu, rodapé | `enter ou clique para começar` | 28 | #201 |
 | CT-13 | menu, rodapé | `F11 tela cheia` | 14 | #201 |
-| CT-14 | HUD, linha 0 | `ameaças %d/%d` | 11 | #199 |
-| CT-15 | HUD, linha 1 | `identificados %d/%d` | 17 | #199 |
-| CT-16 | HUD, linha 0 | `pontos %d` | 9 | #199 |
+| CT-14 | HUD, linha 1, à direita | `ameaças %d/%d · identificados %d/%d` (`ameaças 0/6 · identificados 0/9`) | 31 (até 35) | #199; juntas na mesma linha em 15/11 (#243) |
+| CT-15 | — | `identificados %d/%d` | — | entrou na CT-14 em 15/11 (#243) |
+| CT-16 | HUD, linha 0, depois das barras | `pontos %d` | 9 | #199; #243 |
 | CT-17 | HUD, linha 0 | `pronto` / `recarga` / `travado` / `defesa` / `esgotada` | 6 / 7 / 7 / 6 / 8 | #199; #215 (trava); #216 (Reserva sem carga) |
-| CT-18 | scanner, sem alvo | `Nenhum alvo` | 11 | #199 |
-| CT-19 | scanner, sem alvo | `Aproxime-se de um agente para escanear.` | 39 | #199 |
-| CT-20 | scanner, qualquer estado | `botão direito sobre o agente` | 28 | #199 |
-| CT-21 | scanner, alvo neutralizado | `Alvo neutralizado` / `Chegue perto de outro agente.` | 17 / 28 | #199 |
+| CT-18 a CT-21 | — | `Nenhum alvo`, `Aproxime-se de um agente para escanear.`, `botão direito sobre o agente`, `Alvo neutralizado`, `Chegue perto de outro agente.` | — | saíram em 15/11 (#243): sem alvo, a ficha do scanner some; a dica do tutorial no mundo ensina o botão direito |
 | CT-22 | scanner, alvo no alcance | `Alvo detectado` | 14 | #199 |
 | CT-23 | scanner, alvo no alcance | `Clique com o botão direito para escanear.` | 41 | #199 |
 | CT-24 | scanner, alvo no alcance | `o scan revela os dados do agente` | 32 | #199, texto de 04/11 |
@@ -117,14 +114,14 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 | CT-33 | resultados | `não obtido` | 10 | #202 |
 | CT-34 | resultados | `enter também continua` | 21 | #202 |
 | CT-35 | vitória | `Vitória` | 7 | #202 |
-| CT-36 | HUD, linha 0 | `Ruptura` / `Dissolução` / `Reserva %d/%d` (`Reserva 2/2`) | 7 / 10 / 11 | decisão 03/11 (noite); #216 |
-| CT-36b | HUD, linha 0, Fase 2 | `Neutralização` / `Lise` | 13 / 4 | #88 |
+| CT-36 | HUD, linha 0, à direita | `Ruptura · parede` / `Dissolução · membrana` / `Reserva %d/%d · resistente` (`Reserva 2/2 · resistente`) | 16 / 21 / 24 | decisão 03/11 (noite); #216; a ferramenta com o alvo dela em 15/11 (#243) |
+| CT-36b | HUD, linha 0, Fase 2 | `Neutralização · vírus livre` / `Lise · célula infectada` | 27 / 23 | #88; #243 |
 | CT-37 | resultados, painel novo | `o que a partida mostrou` | 23 | #202, build de 04/11 |
 | CT-38 | resultados, painel novo | `bactérias identificadas: %d Gram+ · %d Gram-` (`bactérias identificadas: 1 Gram+ · 1 Gram-`) | 42 | #174/#202, build de 04/11 |
 | CT-39 | resultados, painel novo | `acertos de arma: %d · erros: %d` (`acertos de arma: 1 · erros: 0`) | 29 | #174/#202, build de 04/11 |
 | CT-40 | resultados, painel novo | `ataques à célula: %d` (`ataques à célula: 0`) | 19 | #174/#202, build de 04/11 |
 | CT-41 | resultados, frase de revisão | `reveja a estrutura lida no scan` / `reveja: as duas armas ferem a célula` / `sem erro de arma nesta partida` | 31 / 36 / 30 | #174/#202, build de 04/11 |
-| CT-42 | HUD, linha 1, Fase 2 | `objetivo: neutralizar os vírus e chegar ao destino` | 50 | Fase 2 mínima (04/11) |
+| CT-42 | HUD, linha 1, Fase 2 | `neutralize os vírus e vá ao destino` | 35 | Fase 2 mínima (04/11); encurtada em 15/11 (#243) |
 | CT-43 | scanner, camada 1, vírus | `clique de novo para concluir a leitura` | 38 | Fase 2 mínima (04/11) |
 | CT-44 | scanner, categoria | `vírus` / `célula infectada` (depois da leitura) | 5 / 16 | Fase 2 mínima (04/11); #87 |
 | CT-45 | resultados, título | `Fase %d concluída` | 17 | Fase 2 mínima (04/11) |
@@ -132,8 +129,8 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 | CT-47 | menu, rodapé | `recorde %d · %s` (`recorde 1234 · Jogador`) / `nenhum recorde ainda` | até 29 / 20 | Top 10 (#34), 15/11 |
 | CT-48 | menu, subtítulo | `DEFENDA O ORGANISMO` | 19 | varredura de 05/11 |
 | CT-49 | menu, rodapé do painel de controles | `interprete as informações do scanner antes de atacar` | 52 | varredura de 05/11 |
-| CT-50 | HUD, linha 1, Fase 1 | `objetivo: neutralizar as bactérias e chegar ao destino` | 54 | varredura de 05/11 |
-| CT-51 | HUD, linha 1, sem ameaças | `objetivo: vá ao destino` | 23 | varredura de 05/11 |
+| CT-50 | HUD, linha 1, Fase 1 | `neutralize as bactérias e vá ao destino` | 39 | varredura de 05/11; encurtada em 15/11 (#243) |
+| CT-51 | HUD, linha 1, sem ameaças | `vá ao destino` | 13 | varredura de 05/11; #243 |
 | CT-52 | mundo / marca de destino | `destino` | 7 | varredura de 05/11 |
 | CT-53 | pausa, título | `PAUSE` | 5 | varredura de 05/11 |
 | CT-54 | pausa, rodapé | `esc para voltar` | 15 | varredura de 05/11 |
@@ -179,7 +176,10 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 | RT-13 | scanner, camada 2, célula infectada | `lisogênico · %d s · o vírus espera dentro da célula` / `eclipse · o vírus fez cópias dentro da célula` | 51 / 45 | #87 (OA7) |
 | RT-14 | scanner, camada 2, revisão, célula infectada | `no lítico a célula se rompe e solta novos vírus` | 47 | #87 |
 
-**Limite:** a fonte embutida é de **8 px por caractere** (medido com `al_get_text_width`, não estimado) e a área útil do painel do scanner é de 588 px, a partir de `text_x = 36`. A linha mais longa desenhada na fase é a RT-04 com *Streptococcus pyogenes*: **68 caracteres** (544 px) mais a amostra de 12 px, 556 px no total (medido em 13/11, #214). A mais longa do briefing tem 54 (432 px, dentro dos 548 px do painel) e a dos resultados, 36 (288 px). Nenhuma passa da área do painel em 640×360. A RT-08 (revisão Gram- separada) saiu em 13/11: Gram+ e Gram- compartilham a RT-07, porque a revisão agora fala do procarionte, não do grupo.
+**Limite:** a fonte embutida é de **8 px por caractere** (medido com `al_get_text_width`, não estimado) e a área útil da ficha do scanner é de 588 px, a partir de `text_x = 36`. Desde 15/11 (#243), o HUD tem duas linhas, com estas folgas no pior caso:
+- **linha 0:** sobram 20 px entre o tempo e a ferramenta (`Neutralização · vírus livre`, `recarga`, pontos de 3 dígitos);
+- **linha 1:** sobram 32 px entre o objetivo da Fase 1 e os contadores com 2 dígitos.
+ A linha mais longa desenhada na fase é a RT-04 com *Streptococcus pyogenes*: **68 caracteres** (544 px) mais a amostra de 12 px, 556 px no total (medido em 13/11, #214). A mais longa do briefing tem 54 (432 px, dentro dos 548 px do painel) e a dos resultados, 36 (288 px). Nenhuma passa da área do painel em 640×360. A RT-08 (revisão Gram- separada) saiu em 13/11: Gram+ e Gram- compartilham a RT-07, porque a revisão agora fala do procarionte, não do grupo.
 
 ## 2.1 Regra de tipografia (medida em 03/11/2026)
 

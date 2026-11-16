@@ -21,14 +21,22 @@
 #define BUTTON_W 160
 #define BUTTON_H 28
 
-// medidas do HUD: tudo derivado do painel, nunca coordenada magica
-#define HUD_MARGIN 10
-#define HUD_LINES 5
-#define HUD_LINE_H ((PANEL_H - 2 * HUD_MARGIN) / HUD_LINES)
+// medidas do HUD: tudo derivado do painel, nunca coordenada magica.
+// Duas linhas de 8 px separadas por 8 px, com 8 px em cima e embaixo (#243)
+#define HUD_MARGIN 8
+#define HUD_LINES 2
+#define HUD_LINE_H 16
+#define HUD_FONT_H 8
 
 // a fonte embutida tem 8 px: menos de 12 por linha encosta uma na outra
 _Static_assert(HUD_LINE_H >= 12, "linha do HUD apertada demais para a fonte");
-_Static_assert(HUD_LINES * HUD_LINE_H + 2 * HUD_MARGIN <= PANEL_H, "HUD nao cabe no painel");
+_Static_assert((HUD_LINES - 1) * HUD_LINE_H + HUD_FONT_H + 2 * HUD_MARGIN <= PANEL_H,
+    "HUD nao cabe no painel");
+
+// ficha do scanner: tres linhas flutuando na faixa do mundo, so com alvo (#243)
+#define CARD_ROW_H 14
+#define CARD_H (3 * CARD_ROW_H + 8)
+#define CARD_MARGIN 8
 
 // medidas do kit de interface, todas derivadas do painel e da fonte
 #define UI_PAD 8
@@ -997,56 +1005,79 @@ void draw_scan_swatch(Species species, float x, float y)
         species == SPECIES_GRAM_POSITIVE ? UI_PURPLE : UI_PINK);
 }
 
-void draw_scan_panel()
+// a ficha precisa do y do agente na tela, definido mais abaixo com a camera
+float view_y(float y);
+
+// alvo da ficha do scanner: o agente sob o cursor ou a ultima leitura, enquanto
+// ela segue ativa e ao alcance do scanner; sem alvo, a ficha some (#243)
+int scan_card_target(bool* from_cursor)
 {
+    float lx = to_logical_x(mouse_x);
+    float ly = to_logical_y(mouse_y);
+    float dx;
+    float dy;
     int target;
-    int hover;
-    int panel_y = hud_y(2) - 6;
-    int text_x = 36;
-    int row_state = hud_y(2);
-    int row_info = hud_y(3);
-    int row_action = hud_y(4);
-    const char* state;
-    const char* category;
-    const char* source;
-    ALLEGRO_COLOR source_color;
-    float lx;
-    float ly;
-    float world_x;
-    float world_y;
 
-    draw_panel(8.0f, (float)panel_y, (float)SCREEN_W - 16.0f,
-        (float)(3 * HUD_LINE_H + 12), UI_PANEL, UI_FRAME);
-
-    al_draw_bitmap(scanner_icon, 14.0f, (float)(row_state - 4), 0);
-
-    // o painel segue o agente sob o cursor; sem alvo no cursor, fica a ultima leitura
-    lx = to_logical_x(mouse_x);
-    ly = to_logical_y(mouse_y);
-    hover = -1;
+    *from_cursor = false;
 
     // cursor sobre o painel do HUD nao tem alvo: o clique ali nao escaneia
     if (lx >= 0.0f && lx < (float)SCREEN_W && ly >= 0.0f && ly < (float)PLAY_H)
     {
-        world_x = lx + camera.x;
-        world_y = ly + camera.y;
-        hover = pick_target_at(world_x, world_y);
+        target = pick_target_at(lx + camera.x, ly + camera.y);
+
+        if (target != -1)
+        {
+            *from_cursor = true;
+            return target;
+        }
     }
 
-    target = hover != -1 ? hover : last_scan_target();
+    target = last_scan_target();
 
-    if (target == -1)
+    if (target == -1 || !agents[target].active)
     {
-        al_draw_text(font, UI_AMBER, (float)text_x, (float)row_state, 0, "Nenhum alvo");
-        al_draw_text(font, UI_TEXT, (float)text_x, (float)row_info, 0,
-            "Aproxime-se de um agente para escanear.");
-        al_draw_text(font, UI_DIM, (float)text_x, (float)row_action, 0,
-            "botão direito sobre o agente");
-        return;
+        return -1;
     }
+
+    dx = agents[target].x - player.x;
+    dy = agents[target].y - player.y;
+
+    if (dx * dx + dy * dy > (float)(SCAN_RANGE * SCAN_RANGE))
+    {
+        return -1;
+    }
+
+    return target;
+}
+
+// a ficha fica embaixo da faixa do mundo e sobe quando o alvo esta na metade
+// de baixo, para nunca cobrir o agente que ela descreve (#243)
+float scan_card_y(int target)
+{
+    if (view_y(agents[target].y) > (float)PLAY_H / 2.0f)
+    {
+        return (float)CARD_MARGIN;
+    }
+
+    return (float)(PLAY_H - CARD_MARGIN - CARD_H);
+}
+
+void draw_scan_card(int target, bool from_cursor, float card_y)
+{
+    int text_x = 36;
+    int row_state = (int)card_y + 6;
+    int row_info = row_state + CARD_ROW_H;
+    int row_action = row_info + CARD_ROW_H;
+    const char* state;
+    const char* category;
+    const char* source;
+    ALLEGRO_COLOR source_color;
+
+    draw_panel(8.0f, card_y, (float)SCREEN_W - 16.0f, (float)CARD_H, UI_PANEL, UI_FRAME);
+    al_draw_bitmap(scanner_icon, 14.0f, (float)(row_state - 4), 0);
 
     // de onde vem a leitura: o cursor manda, a ultima leitura e o retorno (#199)
-    if (hover != -1)
+    if (from_cursor)
     {
         source = " · alvo sob o cursor";
         source_color = UI_CYAN;
@@ -1055,19 +1086,6 @@ void draw_scan_panel()
     {
         source = " · última leitura";
         source_color = UI_DIM;
-    }
-
-    if (!agents[target].active)
-    {
-        al_draw_text(font, UI_DIM, (float)text_x, (float)row_state, 0, "Alvo neutralizado");
-        al_draw_text(font, source_color,
-            (float)(text_x + al_get_text_width(font, "Alvo neutralizado")),
-            (float)row_state, 0, source);
-        al_draw_text(font, UI_TEXT, (float)text_x, (float)row_info, 0,
-            "Chegue perto de outro agente.");
-        al_draw_text(font, UI_DIM, (float)text_x, (float)row_action, 0,
-            "botão direito sobre o agente");
-        return;
     }
 
     if (agents[target].layers == 0)
@@ -1515,8 +1533,9 @@ float view_y(float y)
     return floorf(y - camera.y);
 }
 
-// quando o destino esta fora da faixa visivel, uma marca na borda mostra o caminho (#19)
-void draw_destination_hint()
+// quando o destino esta fora da faixa visivel, uma marca na borda mostra o caminho (#19);
+// top e bottom limitam a marca a parte livre da faixa, fora da ficha do scanner (#243)
+void draw_destination_hint(float top, float bottom)
 {
     float sx = view_x(DESTINATION_X);
     float sy = view_y(DESTINATION_Y);
@@ -1545,20 +1564,20 @@ void draw_destination_hint()
         cx = (float)SCREEN_W - margin_x;
     }
 
-    if (cy < margin_y)
+    if (cy < top + margin_y)
     {
-        cy = margin_y;
+        cy = top + margin_y;
     }
 
-    if (cy > (float)PLAY_H - margin_y)
+    if (cy > bottom - margin_y)
     {
-        cy = (float)PLAY_H - margin_y;
+        cy = bottom - margin_y;
     }
 
     al_draw_filled_circle(cx, cy, 6.0f, UI_AMBER);
 
     // na metade de baixo o rotulo sobe, para nao encostar na linha do painel
-    if (cy > (float)PLAY_H / 2.0f)
+    if (cy > (top + bottom) / 2.0f)
     {
         al_draw_text(font, UI_AMBER, cx, cy - 10.0f - (float)label_h,
             ALLEGRO_ALIGN_CENTRE, "destino");
@@ -1907,8 +1926,6 @@ void draw_hud()
     ALLEGRO_COLOR vitals_color;
     int heart_y;
     int total_seconds;
-    int x_score;
-    int x_time;
     int x_weapon;
     int x_icon;
     int x_bar;
@@ -1918,7 +1935,7 @@ void draw_hud()
     char timer_text[16];
     const char* state_text;
     const char* module_name;
-    char reserve_text[24];
+    char reserve_text[40];
     ALLEGRO_BITMAP* laser_icon;
 
     al_draw_filled_rectangle(0.0f, (float)SCAN_PANEL_Y, (float)SCREEN_W, (float)SCREEN_H, UI_INK);
@@ -1965,11 +1982,16 @@ void draw_hud()
 
     x = (int)bar_x + VITALS_BAR_W + UI_GAP;
 
-    // ameacas com contador: seis blocos de 6 px nao dizem quantas restam
-    snprintf(line, sizeof(line), "ameaças %d/%d", threats_total() - threats_left(), threats_total());
-    al_draw_text(font, UI_DIM, (float)x, (float)hud_y(0), 0, line);
+    // linha 0, a esquerda: pontos e tempo logo depois das barras (#243)
+    total_seconds = (int)match_time;
+    snprintf(timer_text, sizeof(timer_text), "%02d:%02d", total_seconds / 60, total_seconds % 60);
+    snprintf(score_text, sizeof(score_text), "pontos %d", score);
+    al_draw_text(font, UI_TEXT, (float)x, (float)hud_y(0), 0, score_text);
+    x += al_get_text_width(font, score_text) + UI_GAP;
+    al_draw_text(font, UI_DIM, (float)x, (float)hud_y(0), 0, timer_text);
 
-    // lado direito: pontos, tempo e o raio com a recarga, tudo medido da borda
+    // linha 0, a direita: a ferramenta com o alvo dela, o icone e a recarga,
+    // tudo medido da borda
     if (defense_state() == 1)
     {
         state_text = "defesa";
@@ -1989,23 +2011,23 @@ void draw_hud()
 
     laser_icon = player.laser == LASER_GRAM_POSITIVE ? ruptura_icon : dissolucao_icon;
 
-    // o HUD diz qual arma esta ativa pelo nome, nao so a cor (#199)
-    module_name = player.laser == LASER_GRAM_POSITIVE ? "Ruptura" : "Dissolução";
+    // o HUD diz a ferramenta pelo nome e o que ela atinge (#199, #243)
+    module_name = player.laser == LASER_GRAM_POSITIVE ? "Ruptura · parede" : "Dissolução · membrana";
 
     // Fase 2: anticorpos e Lise (#88)
     if (player.laser == LASER_NEUTRALIZE)
     {
-        module_name = "Neutralização";
+        module_name = "Neutralização · vírus livre";
     }
     else if (player.laser == LASER_LYSE)
     {
-        module_name = "Lise";
+        module_name = "Lise · célula infectada";
     }
 
     // Reserva: nome com as cargas e a palavra de estado quando acabam (#216)
     if (player.laser == LASER_RESERVE)
     {
-        snprintf(reserve_text, sizeof(reserve_text), "Reserva %d/%d",
+        snprintf(reserve_text, sizeof(reserve_text), "Reserva %d/%d · resistente",
             reserve_charges_left(), RESERVE_CHARGES);
         module_name = reserve_text;
 
@@ -2015,19 +2037,11 @@ void draw_hud()
         }
     }
 
-    total_seconds = (int)match_time;
-    snprintf(timer_text, sizeof(timer_text), "%02d:%02d", total_seconds / 60, total_seconds % 60);
-    snprintf(score_text, sizeof(score_text), "pontos %d", score);
-
     x_word = SCREEN_W - HUD_MARGIN - al_get_text_width(font, state_text);
     x_bar = x_word - 6 - UI_BAR_W;
     x_icon = x_bar - 4 - al_get_bitmap_width(laser_icon);
     x_weapon = x_icon - 4 - al_get_text_width(font, module_name);
-    x_time = x_weapon - UI_GAP - al_get_text_width(font, timer_text);
-    x_score = x_time - UI_GAP - al_get_text_width(font, score_text);
 
-    al_draw_text(font, UI_TEXT, (float)x_score, (float)hud_y(0), 0, score_text);
-    al_draw_text(font, UI_DIM, (float)x_time, (float)hud_y(0), 0, timer_text);
     al_draw_text(font, UI_TEXT, (float)x_weapon, (float)hud_y(0), 0, module_name);
 
     // a Reserva ainda nao tem icone proprio (Etapa 3): uma capsula provisoria
@@ -2051,31 +2065,32 @@ void draw_hud()
         fire_locked() ? fire_lock_left() : attack_cooldown_left());
     al_draw_text(font, UI_DIM, (float)x_word, (float)hud_y(0), 0, state_text);
 
+    // linha 1: o objetivo em ambar; a frase curta deixa espaco para os contadores (#243)
     if (threats_left() > 0)
     {
         // a Fase 2 tem vírus, não bactéria: a frase acompanha a fase (#M4)
         if (current_phase() == 1)
         {
             al_draw_text(font, UI_AMBER, HUD_MARGIN, hud_y(1), 0,
-                "objetivo: neutralizar as bactérias e chegar ao destino");
+                "neutralize as bactérias e vá ao destino");
         }
         else
         {
             al_draw_text(font, UI_AMBER, HUD_MARGIN, hud_y(1), 0,
-                "objetivo: neutralizar os vírus e chegar ao destino");
+                "neutralize os vírus e vá ao destino");
         }
     }
     else
     {
-        al_draw_text(font, UI_AMBER, HUD_MARGIN, hud_y(1), 0, "objetivo: vá ao destino");
+        al_draw_text(font, UI_AMBER, HUD_MARGIN, hud_y(1), 0, "vá ao destino");
     }
 
-    // identificados fica na linha do objetivo: e progresso do bonus, nao do combate
-    snprintf(line, sizeof(line), "identificados %d/%d", identified_count, identification_goal());
+    // ameacas com contador e identificados, que e o progresso do bonus
+    snprintf(line, sizeof(line), "ameaças %d/%d · identificados %d/%d",
+        threats_total() - threats_left(), threats_total(),
+        identified_count, identification_goal());
     al_draw_text(font, UI_DIM, (float)(SCREEN_W - HUD_MARGIN), (float)hud_y(1),
         ALLEGRO_ALIGN_RIGHT, line);
-
-    draw_scan_panel();
 
     // o quadro seguinte desenha o mundo no mesmo canvas: sem isso ele sai cortado
     al_reset_clipping_rectangle();
@@ -2142,6 +2157,9 @@ void draw_game()
     float aim_y;
     float px;
     float py;
+    int card_target;
+    bool card_from_cursor;
+    float card_y;
 
     // o mundo para na faixa jogavel: sprite nenhum entra no painel
     al_set_clipping_rectangle(0, 0, SCREEN_W, PLAY_H);
@@ -2447,6 +2465,10 @@ void draw_game()
             al_map_rgba_f(0.9f * a, 0.1f * a, 0.1f * a, a));
     }
 
+    // ficha do scanner so com alvo (#243): calculada aqui para o aviso desviar dela
+    card_target = scan_card_target(&card_from_cursor);
+    card_y = card_target != -1 ? scan_card_y(card_target) : -1.0f;
+
     // feedback educacional curto da ultima decisao (#178), com placa de fundo
     message = feedback_text();
 
@@ -2456,6 +2478,12 @@ void draw_game()
         float box_x = floorf(((float)SCREEN_W - (float)text_w) / 2.0f);
         float box_y = (float)(PLAY_H - 30);
 
+        // com a ficha embaixo, o aviso sobe para cima dela
+        if (card_target != -1 && card_y > (float)PLAY_H / 2.0f)
+        {
+            box_y = card_y - 22.0f;
+        }
+
         al_draw_filled_rectangle(box_x - UI_PAD, box_y - 4.0f, box_x + (float)text_w + UI_PAD,
             box_y + 12.0f, UI_INK);
         al_draw_rectangle(box_x - UI_PAD + 0.5f, box_y - 4.0f + 0.5f,
@@ -2464,8 +2492,26 @@ void draw_game()
         al_draw_text(font, UI_WARM, box_x, box_y, 0, message);
     }
 
-    // marca o destino quando ele esta fora da faixa visivel (#19)
-    draw_destination_hint();
+    // marca o destino quando ele esta fora da faixa visivel (#19), sem passar
+    // por baixo da ficha do scanner
+    if (card_target == -1)
+    {
+        draw_destination_hint(0.0f, (float)PLAY_H);
+    }
+    else if (card_y > (float)PLAY_H / 2.0f)
+    {
+        draw_destination_hint(0.0f, card_y);
+    }
+    else
+    {
+        draw_destination_hint(card_y + (float)CARD_H, (float)PLAY_H);
+    }
+
+    // a ficha fica dentro do recorte do mundo: nada dela vaza para o HUD
+    if (card_target != -1)
+    {
+        draw_scan_card(card_target, card_from_cursor, card_y);
+    }
 
     // mira livre: o cursor do sistema some na fase e vira esta marca (#198)
     aim_x = to_logical_x(mouse_x);

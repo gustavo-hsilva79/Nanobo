@@ -127,8 +127,8 @@ O agente volta a vagar se o Nanobô ficar a mais de 320 px por 3 s. Todo ataque 
 - Agentes com contorno escuro e cores fora do vermelho.
 - Um sprite de tiro por arma (a forma mostra o mecanismo: Ruptura é uma cunha, Dissolução uma gota, Neutralização um anticorpo em Y, Perfuração um anel) e 3 animações de impacto por resultado (dose certa, sem efeito, eliminado).
 - **Fonte:** a embutida do Allegro (8 px por caractere), mantida em 15/11. A TTF pixel foi testada e descartada (`decisoes.md`).
-- **HUD:**
-  - mais baixo que os 104 px atuais;
+- **HUD (no build desde 15/11, #243):**
+  - 40 px em duas linhas, no lugar dos 104; o mundo passou de 256 para 320 px de altura;
   - barra de vitais;
   - ferramenta ativa com o alvo ("Ruptura · parede");
   - ficha do scanner só quando há alvo.
@@ -206,8 +206,8 @@ O jogador deve usar as informações do scanner para interpretar o agente encont
 
 Os agentes nascem em pontos fixos do mundo, sorteados a cada partida sem repetir ponto (implementados em `src/gameplay/gameplay.c`, na tabela `valid_points`, com **12** coordenadas conferidas por `_Static_assert`). Um ponto válido respeita três regras:
 
-1. fica dentro do mundo de **1920×512** (3 telas de 640 px por 2 faixas de 256 px), com margem das bordas;
-2. fica dentro da altura do mundo e não mais da faixa do painel: a câmera mostra 256 px por vez, então o painel do scanner deixou de limitar o nascimento — a tabela usa `y = 96`/`140` na metade de cima e `y = 380`/`420` na de baixo;
+1. fica dentro do mundo de **1920×512** (3 telas de 640 px de largura), com margem das bordas;
+2. fica dentro da altura do mundo e não mais da faixa do painel: a câmera mostra 320 px por vez (256 até 15/11), então o painel do scanner deixou de limitar o nascimento — a tabela usa `y = 96`/`140` na metade de cima e `y = 380`/`420` na de baixo;
 3. fica a pelo menos **100 px** do ponto de nascimento do Nanobô `(960, 256)` — em 12/10/2026 um ponto a 22 px fazia um agente nascer já encostado (e, com a vida da #11, isso seria dano de graça no primeiro frame).
 
 ### Fase 2 — vírus
@@ -268,7 +268,11 @@ O ataque e o scanner **não têm tecla** no M4 (#198).
 >
 > **Ainda ausentes do build, no M5:** o pulso de 0,75 s com imobilização (#209) e a identificação como condição de conclusão (D2.1/D2.2, #206/#207). A trava de 2 s com perseguição (RF-06) entrou no build de 04/11. Ver `decisoes.md` e a Spec.
 
-O HUD ocupa o rodapé de 104 px: identificados x/total de agentes da fase, ameaças restantes x/total de ameaças da fase (9 e 6 na Fase 1; 6 e 3 na Fase 2), pontos, tempo, três corações, arma selecionada com estado (`[pronto]`/`[recarga]`/`[travado]`) e a leitura do alvo atual. O objetivo da fase aparece na segunda linha do painel; os controles ficam no menu e na pausa, para não competir com a leitura do jogo. A marca do destino aparece na borda da faixa visível quando ele está fora da câmera (#19).
+O HUD ocupa o rodapé de 40 px em duas linhas (#243, 15/11):
+- **Linha 0:** a integridade do Nanobô e os vitais do paciente, pontos, tempo e a ferramenta ativa com o alvo (`Ruptura · parede`), o ícone, a recarga e o estado (`pronto`/`recarga`/`travado`/`defesa`/`esgotada`).
+- **Linha 1:** o objetivo da fase, as ameaças x/total e os identificados x/total.
+
+A ficha do scanner só aparece quando há alvo e flutua na faixa do mundo, longe do agente lido. Os controles ficam no menu e na pausa, para não competir com a leitura do jogo. A marca do destino aparece na borda da faixa visível quando ele está fora da câmera (#19).
 
 ## Estados e fluxo
 

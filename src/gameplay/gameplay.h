@@ -22,11 +22,12 @@ _Static_assert(__STDC_VERSION__ >= 201112L, "compilar com /std:c11 (ver Nanobo.v
 #define SCREEN_W 640
 #define SCREEN_H 360
 
-// faixa visivel do mundo; multipla de 32, o lado de um tile do mapa futuro
-#define PLAY_H 256
+// faixa visivel do mundo; multipla de 32, o lado de um tile do mapa futuro.
+// Cresceu de 256 para 320 com o HUD de duas linhas (#243)
+#define PLAY_H 320
 
-// painel do scanner no rodape da tela logica
-#define PANEL_H 104
+// HUD no rodape da tela logica: duas linhas; a ficha do scanner flutua no mundo
+#define PANEL_H 40
 
 // o painel comeca onde a faixa visivel do mundo acaba
 #define SCAN_PANEL_Y PLAY_H
@@ -36,7 +37,8 @@ _Static_assert(PANEL_H + PLAY_H == SCREEN_H, "tela = faixa do mundo + painel");
 _Static_assert(SCREEN_W % 32 == 0, "largura da tela precisa ser multipla de 32");
 _Static_assert(PLAY_H % 32 == 0, "faixa do mundo precisa ser multipla de 32");
 _Static_assert(WORLD_W % SCREEN_W == 0, "mundo precisa ter um numero inteiro de telas");
-_Static_assert(WORLD_H % PLAY_H == 0, "mundo precisa ter um numero inteiro de faixas");
+// a camera para em [0, WORLD_H - PLAY_H]: basta a faixa caber no mundo (#243)
+_Static_assert(WORLD_H >= PLAY_H, "a faixa visivel precisa caber no mundo");
 _Static_assert(WORLD_W % 32 == 0 && WORLD_H % 32 == 0, "mundo precisa fechar no tile de 32");
 
 // camadas que o scanner revela antes de identificar o agente
