@@ -156,7 +156,7 @@ O que está decidido e o código ainda não faz — ou já faz desde o build de 
 | Resumo por objetivo na tela de Resultados | RF-07 (#174) | **parcial** — contadores no painel; o texto por OA fica no M5 (#210) | M5 |
 | Fase 2 mínima (3 vírus + 3 células, 1 resistência, qualquer arma) | `decisoes.md` (04/11) | **feito** | M4 (#76) |
 | Ciclo lisogênico/lítico e multiplicação limitada | #83; `fase2-virus.md` | inexistente — regras fechadas em 11/11/2026 (#83), implementação em #84–#88 | M5 |
-| Recorde persistente mínimo (melhor pontuação) | `decisoes.md` (04/11) | **feito** — menu e Vitória; decisão de 05/11: só Vitória grava, o build de 04/11 ainda grava no Game Over (#34/#82) | M4 (Top 10 e nome no M5) |
+| Recorde persistente mínimo (melhor pontuação) | `decisoes.md` (04/11) | **substituído pelo Top 10 em 15/11** — só a Vitória grava, com nome; validado ponta a ponta (#34/#82) | M5 |
 | Bônus +15 por run perfeito (0 erro de arma + 0 tiro na célula) | `decisoes.md` (03/11, noite) | paga 9/9 — #208 troca para run perfeito | M5 |
 | SFX e animação | requisito final | inexistentes | M5 |
 
@@ -425,7 +425,7 @@ O M4 continua centrado na Fase 1; a **Fase 2 mínima** existe para fechar o flux
 - **Recorde só na Vitória.** A melhor pontuação é a de uma execução vencida. Game Over não grava recorde; abandonar pelo menu também não. `finish_run()` deixa de ser chamado no Game Over (`src/main.c:2108`) — pendente no build de 04/11, que ainda grava. Vale para o recorde mínimo e para o Top 10 (#34, #82).
 - **Sem corte de escopo em 05/11.** A Fase 2 completa (#55/#83–#88/#91) e o Top 10 (#34/#77–#82/#197) continuam no M5. O marco fica com 85 issues e 228 SP brutos; 195 SP sem as oito agrupadoras.
 
-### Top 10 (15/11/2026, #77–#81 e #197)
+### Top 10 (15/11/2026, #77–#82 e #197)
 
 Substitui o recorde mínimo de 04/11. As regras de #34 continuam: 10 posições, nome de até 10 caracteres, empate com o registro mais antigo em cima e gravação só na Vitória.
 - **Local do arquivo (#77):** `ranking.txt` na pasta de dados do usuário (`%APPDATA%\Nanobo\`, pela `al_get_standard_path`), para gravar mesmo com o jogo instalado em Arquivos de Programas. Se a pasta não abrir, o arquivo fica ao lado do jogo (`nanobo_ranking.txt`).
@@ -443,6 +443,14 @@ Substitui o recorde mínimo de 04/11. As regras de #34 continuam: 10 posições,
   - aceita só os caracteres que a fonte desenha (Latin-1), e a maiúscula acentuada vira minúscula, porque a fonte erra o glifo dela (§2.1 de `textos-do-jogo.md`).
 - **Exibição (#197):** um painel, sem cena nova. Na Vitória, o registro novo fica em destaque; no menu, o painel abre pelo botão RECORDES e fecha com ENTER, ESC ou clique.
 - **Limitação conhecida:** o gameplay abre o arquivo com `fopen`, que não aceita caminho fora do ASCII. Com um nome de usuário acentuado, a gravação falha e a Vitória avisa.
+- **Validação ponta a ponta (#82, 15/11):** feita em duas frentes.
+  - **Harness** (`../Nanobo-testes/`, 17 casos do Top 10, 328/328): ranking vazio, parcial e cheio; corte com o ranking cheio, inclusive o empate com o último; empate com o mais antigo em cima; nome com corte em 10 caracteres, vazio e com acento; gravar e reler; arquivo sem cabeçalho, vazio ou com linhas inválidas; importação do recorde antigo.
+  - **Jogo** (Debug, `qa_jogo.ps1`, teclas F e G):
+    - Vitória com o nome "pedra" e 210 pontos: posição 2, em destaque. Depois de fechar e reabrir, o painel RECORDES do menu mostra o mesmo ranking.
+    - Vitória com o nome vazio: entra "Jogador" na posição 3.
+    - NOVA PARTIDA depois da Vitória e depois do Game Over: a fase começa com 0 pontos e 00:00, e o Top 10 continua no arquivo.
+    - Game Over com 0 pontos: o arquivo não ganha linha nova.
+  - **Defeito achado e corrigido:** o rodapé do painel RECORDES no menu ficava em cima dos botões.
 
 ### Refatoração pós-entrega (06/11/2026)
 
