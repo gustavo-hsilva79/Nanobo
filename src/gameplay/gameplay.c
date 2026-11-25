@@ -2344,6 +2344,71 @@ static void conclude_phase_if_ready()
     }
 }
 
+// vitais do paciente ao fim da Fase 2, lidos antes do piso do interludio (#231)
+static float vitals_end_phase2 = 0.0f;
+
+// esporos no chao com que a Fase 3 comecou (#231)
+static int spore_load_applied = 0;
+
+// esporos extras da Fase 3 (D4): 1 se os vitais fecharam a Fase 2 abaixo de 80,
+// +1 se abaixo de 60, +1 por carga da Reserva gasta na run; teto 4
+int spore_load(float vitals, int reserve_spent)
+{
+    int extras = (vitals < 80.0f ? 1 : 0) + (vitals < 60.0f ? 1 : 0) + reserve_spent;
+
+    if (extras < 0)
+    {
+        extras = 0;
+    }
+
+    return extras > SPORE_LOAD_MAX ? SPORE_LOAD_MAX : extras;
+}
+
+int spore_load_current(void)
+{
+    return spore_load_applied;
+}
+
+// poe n esporos no chao, cada um num ponto valido livre da tabela (#231)
+static void spore_seed_ground(int n)
+{
+    int placed = 0;
+    int start = rand() % NUM_VALID_POINTS;
+    int k;
+
+    for (k = 0; k < NUM_VALID_POINTS && placed < n; k++)
+    {
+        int p = (start + k) % NUM_VALID_POINTS;
+        float px = valid_points[p][0];
+        float py = valid_points[p][1];
+        bool free_point = true;
+        int i;
+
+        // livre: longe de todo agente vivo e do nanobo
+        for (i = 0; i < agents_count; i++)
+        {
+            if (agents[i].active
+                && fabsf(agents[i].x - px) < SPORE_CLEARANCE
+                && fabsf(agents[i].y - py) < SPORE_CLEARANCE)
+            {
+                free_point = false;
+            }
+        }
+
+        if (fabsf(player.x - px) < SPORE_CLEARANCE && fabsf(player.y - py) < SPORE_CLEARANCE)
+        {
+            free_point = false;
+        }
+
+        if (free_point && spawn_ground_spore(px, py) != -1)
+        {
+            placed = placed + 1;
+        }
+    }
+
+    spore_load_applied = placed;
+}
+
 // comeca partida nova: o encontro e o nanobo voltam ao estado inicial
 // zera o estado transitorio de uma fase e coloca os agentes dela no mundo (#M4)
 static void start_phase(int index)
@@ -2486,6 +2551,14 @@ static void start_phase(int index)
         }
     }
 
+    // a Fase 3 abre com esporos no chao conforme o estado do paciente (#231, D4)
+    spore_load_applied = 0;
+
+    if (phase_has_fungi())
+    {
+        spore_seed_ground(spore_load(vitals_end_phase2, run_progress.reserve_spent));
+    }
+
     key_up = false;
     key_down = false;
     key_left = false;
@@ -2573,6 +2646,8 @@ void reset_match()
     run_progress.agents = 0;
     run_progress.identified = 0;
     run_progress.reserve_spent = 0;
+    vitals_end_phase2 = 0.0f;
+    spore_load_applied = 0;
 
     // os vitais do paciente so enchem numa run nova; entre as fases continuam (#218, #234)
     patient_vitals = PATIENT_VITALS_MAX;
@@ -2649,6 +2724,12 @@ void start_next_phase()
 {
     if (has_next_phase())
     {
+        // guarda os vitais antes do piso: e deles que a Fase 3 tira a carga (#231)
+        if (phase_index == 1)
+        {
+            vitals_end_phase2 = patient_vitals;
+        }
+
         // o interludio recupera o paciente ate no minimo 60 (#218)
         if (patient_vitals < VITALS_MIN_BETWEEN)
         {

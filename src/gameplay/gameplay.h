@@ -425,6 +425,15 @@ int spawn_agent_slot(void);
 // soma 1 ameaca na fase e na run; devolve a vaga, ou -1 sem vaga (#229)
 int spawn_ground_spore(float x, float y);
 
+// esporos extras da Fase 3 pelo estado do paciente (#231, D4): 1 se vitais < 80,
+// +1 se < 60, +1 por carga da Reserva gasta; teto SPORE_LOAD_MAX
+#define SPORE_LOAD_MAX 4
+#define SPORE_CLEARANCE 48.0f
+int spore_load(float vitals, int reserve_spent);
+
+// quantos esporos no chao a Fase 3 atual abriu (0 fora dela)
+int spore_load_current(void);
+
 // centro do segmento k (1 a hypha_len) da hifa do bolor (#229)
 void hypha_segment(int index, int k, float* x, float* y);
 bool phase_has_bacteria();
