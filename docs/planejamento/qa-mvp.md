@@ -78,6 +78,8 @@ Legenda: **[OK]** executado e observado · **[PEND]** depende de teclado físico
 
 ## 6. Protocolo de playtest (3–5 pessoas, ~15 min)
 
+> **Histórico (M4).** Substituído em 25/11/2026 por [`qa-teste-externo.md`](qa-teste-externo.md) (#134), que segue os objetivos do Nanobô 2.0.
+
 **Preparação:** build Release, `assets/` ao lado, sem explicação prévia além de “é um jogo educativo; jogue como quiser”.
 
 **Tarefas observadas, sem ajudar:**

@@ -566,6 +566,8 @@ O M4 se prova com build Debug e Release x64 e QA manual; o playtest com pré e p
 
 ### 2. Playtest com pré e pós-teste (M5)
 
+> **Histórico.** As perguntas abaixo seguem os objetivos do M4. O protocolo vigente, com pré e pós-teste por OA1–OA7, está em [`qa-teste-externo.md`](../planejamento/qa-teste-externo.md) (25/11/2026, #134).
+
 3 a 5 pessoas, de preferência em duplas conversando. O resultado é formativo, não estatístico. Aplicar as mesmas quatro perguntas antes e depois da partida, em ordem diferente, com jogo sem ajuda entre elas. Quem puder, repete o pós-teste no dia seguinte; esse resultado é registrado separadamente.
 
 | ID | Pergunta | Resposta esperada | OA |
