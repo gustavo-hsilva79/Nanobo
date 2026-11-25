@@ -48,6 +48,7 @@
 | FB-36 | Perfuração na hifa, não na base: corta o segmento da ponta, sem pontos | `corte a base da colônia` | 23 | #229 (FB2-12) |
 | FB-37 | esporo do bolor acerta o Nanobô (some sem pousar) | `esporo do bolor: -8 de integridade` | 34 | #229 |
 | FB-38 | a defesa destrói um esporo em voo | `a defesa destruiu o esporo` | 26 | #229 |
+| FB-39 | Perfuração elimina um esporo pousado: ameaça a menos, sem pontos (decisão do dono, 25/11) | `esporo destruído` | 16 | #229 |
 
 **Hífen, não menos tipográfico.** "Gram-" usa hífen ASCII (U+002D). O "−" (U+2212) que a spec traz não existe na fonte embutida (Latin-1): na tela ele saía como `^`, visto no QA de 03/11 e corrigido no commit `5e7cc75`. Ao editar estes textos, não reintroduza U+2212.
 

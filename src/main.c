@@ -3375,6 +3375,12 @@ void handle_key_down(int key)
             }
         }
 
+        // virus da rajada ou esporo no ar seguraria a conclusao, como no F (#229)
+        for (i = 0; i < MAX_ENEMY_SHOTS; i++)
+        {
+            enemy_shots[i].active = false;
+        }
+
         player.x = DESTINATION_X;
         player.y = DESTINATION_Y;
     }

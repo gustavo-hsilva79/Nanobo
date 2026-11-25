@@ -523,7 +523,9 @@ int touching_agent()
         // agente neutralizado nao encosta mais no nanobo; a celula do paciente
         // nao fere o nanobo, entao nao conta como contato (#235); o virus de
         // dentro da celula tambem nao (#85)
-        if (!agents[i].active || agents[i].species == SPECIES_CELL || virus_inside(i))
+        // o esporo pousado tambem nao fere ao toque (decisao do dono, 25/11)
+        if (!agents[i].active || agents[i].species == SPECIES_CELL || virus_inside(i)
+            || agents[i].species == SPECIES_SPORE)
         {
             continue;
         }
@@ -620,8 +622,13 @@ bool hit_agent(int index)
                 ENDOTOXIN_RADIUS, ENDOTOXIN_TIME, -1);
         }
 
-        // o acerto que neutralizou e o unico evento que pontua (#66)
-        score = score + SCORE_PER_THREAT;
+        // o acerto que neutralizou e o unico evento que pontua (#66); o esporo
+        // conta como ameaca eliminada, mas nao da pontos (decisao do dono, 25/11)
+        if (agents[index].species != SPECIES_SPORE)
+        {
+            score = score + SCORE_PER_THREAT;
+        }
+
         run_progress.neutralized = run_progress.neutralized + 1;
 
         return true;
@@ -951,8 +958,13 @@ static void hit_projectiles()
                         progress.treatments_completed = progress.treatments_completed + 1;
                     }
 
+                    // o esporo nao da pontos: o feedback nao promete nada (25/11)
+                    if (agents[j].species == SPECIES_SPORE)
+                    {
+                        set_feedback("esporo destruído");
+                    }
                     // sem identificacao a ameaca sai da cena e o bonus de 9/9 fica impossivel
-                    if (agents[j].identified)
+                    else if (agents[j].identified)
                     {
                         set_feedback("ameaça neutralizada: +10 pontos");
                     }
@@ -3019,6 +3031,10 @@ static void push_player_off_hypha(void)
             player.y = sy + dy / dist * reach;
         }
     }
+
+    // o empurrao nao tira o nanobo do mundo
+    player.x = clamp_to_world(player.x, (float)WORLD_W);
+    player.y = clamp_to_world(player.y, (float)WORLD_H);
 }
 
 // separa agentes sobrepostos entre si e do nanobo
