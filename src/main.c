@@ -1929,106 +1929,381 @@ void draw_feel_world()
     }
 }
 
-// cards de conceito (#222): titulo e tres linhas, registrados em textos-do-jogo.md §3.1
-static const char* card_titles[CARD_COUNT] =
-{
-    "Enquanto isso, no hospital",
-    "Enquanto isso, no hospital",
-    "Coloração de Gram",
-    "Resistência e Reserva",
-    "Flagelo",
-    "Biofilme",
-    "Endotoxina",
-    "Vírus não é célula",
-    "Lisogênico e lítico",
-    "Organismo enfraquecido",
-    "Fungo"
-};
+// caixa de dialogo do diario: faixa de baixo, retrato a esquerda e ate 3 linhas
+#define DIALOG_X 16
+#define DIALOG_W 608
+#define DIALOG_H 88
+#define DIALOG_Y (SCREEN_H - 8 - DIALOG_H)
+#define DIALOG_PAD 8
+#define DIALOG_LINE_H 16
 
-static const char* card_lines[CARD_COUNT][3] =
+// a area de texto comeca depois da coluna do retrato mesmo sem retrato
+#define DIALOG_TEXT_X (DIALOG_X + DIALOG_PAD + PLAYER_FRAME + DIALOG_PAD)
+#define DIALOG_TEXT_COLS ((DIALOG_X + DIALOG_W - DIALOG_PAD - DIALOG_TEXT_X) / 8)
+
+_Static_assert(DIALOG_TEXT_COLS >= 66, "linha da caixa de dialogo estreita demais");
+_Static_assert(DIALOG_PAD + DIALOG_LINE_H * 3 + 8 + DIALOG_PAD + 8 + DIALOG_PAD <= DIALOG_H,
+    "cabecalho, 3 linhas e rodape nao cabem na caixa");
+
+// uma entrada: cabecalho, paginas de ate 3 linhas e o termo entre chaves
+typedef struct
 {
+    const char* header;
+    int pages;
+    const char* lines[DIALOG_MAX_PAGES][3];
+    bool portrait;
+} DialogEntry;
+
+// anotacoes do diario e interludios (#222), registrados em textos-do-jogo.md §3.1
+static const DialogEntry diary_entries[CARD_COUNT] =
+{
+    [CARD_INTERLUDE_2] =
     {
-        "A infecção no sangue de Léo deu trégua, mas na enfermaria",
-        "ele pegou um vírus respiratório.",
-        "O Nanobô segue para as vias aéreas."
+        "Enquanto isso, no hospital", 2,
+        {
+            {
+                "A infecção no sangue de Léo deu trégua, mas na enfermaria",
+                "ele pegou um {vírus respiratório}.",
+                NULL
+            },
+            { "O Nanobô segue para as {vias aéreas}.", NULL, NULL }
+        },
+        false
     },
+    [CARD_INTERLUDE_3] =
     {
-        "Com as defesas fracas, esporos de bolor que estão no ar",
-        "chegam ao pulmão de Léo.",
-        "O Nanobô precisa agir antes que o fungo se instale."
+        "Enquanto isso, no hospital", 2,
+        {
+            {
+                "Com as defesas fracas, {esporos de bolor} que estão no ar",
+                "chegam ao pulmão de Léo.",
+                NULL
+            },
+            { "O Nanobô precisa agir antes que o {fungo} se instale.", NULL, NULL }
+        },
+        false
     },
+    [CARD_GRAM] =
     {
-        "No laboratório, um corante roxo tinge a parede das bactérias.",
-        "Gram+: parede grossa de peptidoglicano, que segura o roxo.",
-        "Gram-: parede fina e membrana externa; perde o roxo e fica rosa."
+        "Nanobô · Anotação 1 · Coloração de Gram", 1,
+        {
+            {
+                "No laboratório, um corante roxo tinge a parede das bactérias.",
+                "Gram+: parede grossa de {peptidoglicano}, que segura o roxo.",
+                "Gram-: parede fina e membrana externa; perde o roxo e fica rosa."
+            }
+        },
+        true
     },
+    [CARD_RESISTANCE] =
     {
-        "Uma dose só não basta: as bactérias que sobrevivem se multiplicam.",
-        "Esta ficou resistente: o mesmo antibiótico não age mais nela.",
-        "A Reserva age nela, mas tem poucas cargas: use só se precisar."
+        "Nanobô · Anotação 2 · Resistência e Reserva", 1,
+        {
+            {
+                "Uma dose só não basta: as bactérias que sobrevivem se multiplicam.",
+                "Esta ficou {resistente}: o mesmo antibiótico não age mais nela.",
+                "A Reserva age nela, mas tem poucas cargas: use só se precisar."
+            }
+        },
+        true
     },
+    [CARD_FLAGELLUM] =
     {
-        "O bacilo tem flagelo, um chicote que gira e o faz nadar.",
-        "Por isso ele vem atrás de você e dá investidas.",
-        "O coco não tem flagelo: é levado pelo sangue e gruda no tecido."
+        "Nanobô · Anotação 3 · Flagelo", 1,
+        {
+            {
+                "O bacilo tem {flagelo}, um chicote que gira e o faz nadar.",
+                "Por isso ele vem atrás de você e dá investidas.",
+                "O coco não tem flagelo: é levado pelo sangue e gruda no tecido."
+            }
+        },
+        true
     },
+    [CARD_BIOFILM] =
     {
-        "Bactérias grudadas fazem uma camada pegajosa: o biofilme.",
-        "Ele protege as bactérias: dentro dele, o antibiótico age menos.",
-        "No biofilme a bactéria pede mais uma dose, e você anda devagar."
+        "Nanobô · Anotação 4 · Biofilme", 1,
+        {
+            {
+                "Bactérias grudadas fazem uma camada pegajosa: o {biofilme}.",
+                "Ele protege as bactérias: dentro dele, o antibiótico age menos.",
+                "No biofilme a bactéria pede mais uma dose, e você anda devagar."
+            }
+        },
+        true
     },
+    [CARD_ENDOTOXIN] =
     {
-        "A membrana externa da Gram- tem uma toxina, o LPS.",
-        "Quando a Gram- se rompe, até pelo antibiótico, o LPS se espalha.",
-        "Saia da nuvem: ela fere o Nanobô enquanto dura."
+        "Nanobô · Anotação 5 · Endotoxina", 1,
+        {
+            {
+                "A membrana externa da Gram- tem uma toxina, o {LPS}.",
+                "Quando a Gram- se rompe, até pelo antibiótico, o LPS se espalha.",
+                "Saia da nuvem: ela fere o Nanobô enquanto dura."
+            }
+        },
+        true
     },
+    [CARD_VIRUS] =
     {
-        "O vírus não tem parede, ribossomos nem metabolismo próprio.",
-        "Ele só se multiplica dentro de uma célula. Antibiótico não o atinge.",
-        "A Neutralização leva anticorpos, que se prendem ao vírus livre."
+        "Nanobô · Anotação 6 · Vírus não é célula", 2,
+        {
+            {
+                "O vírus não tem parede, ribossomos nem metabolismo próprio.",
+                "Ele só se multiplica {dentro de uma célula}.",
+                "Antibiótico não o atinge."
+            },
+            { "A Neutralização leva {anticorpos}, que se prendem ao vírus livre.", NULL, NULL }
+        },
+        true
     },
+    [CARD_CYCLE] =
     {
-        "Lisogênico: o vírus fica dentro da célula, sem destruí-la ainda.",
-        "Lítico: ele faz cópias, a célula se rompe e libera novos vírus.",
-        "A Lise destrói a célula infectada, como faz o linfócito T."
+        "Nanobô · Anotação 7 · Lisogênico e lítico", 2,
+        {
+            { "{Lisogênico}: o vírus fica dentro da célula, sem destruí-la ainda.", NULL, NULL },
+            {
+                "{Lítico}: ele faz cópias, a célula se rompe e libera novos vírus.",
+                "A Lise destrói a célula infectada, como faz o linfócito T.",
+                NULL
+            }
+        },
+        true
     },
+    [CARD_WEAKENED] =
     {
-        "Fungos oportunistas aproveitam um organismo enfraquecido.",
-        "Os esporos de Aspergillus estão no ar; o corpo saudável os elimina.",
-        "Quanto pior o paciente chega, mais esporos se instalam no pulmão."
+        "Nanobô · Anotação 8 · Organismo enfraquecido", 1,
+        {
+            {
+                "Fungos {oportunistas} aproveitam um organismo enfraquecido.",
+                "Os esporos de Aspergillus estão no ar; o corpo saudável os elimina.",
+                "Quanto pior o paciente chega, mais esporos se instalam no pulmão."
+            }
+        },
+        true
     },
+    [CARD_FUNGUS] =
     {
-        "O fungo tem núcleo, como as nossas células: é um eucarionte.",
-        "Sua parede é de quitina, não de peptidoglicano: antibiótico não age.",
-        "A Perfuração abre poros na membrana dele, que tem ergosterol."
+        "Nanobô · Anotação 9 · Fungo", 2,
+        {
+            {
+                "O fungo tem núcleo, como as nossas células: é um {eucarionte}.",
+                "Sua parede é de quitina, não de peptidoglicano:",
+                "antibiótico não age."
+            },
+            { "A Perfuração abre poros na membrana dele, que tem {ergosterol}.", NULL, NULL }
+        },
+        true
     }
 };
 
-// card sobre a fase parada: tela escurecida, painel, titulo, tres linhas e o aviso
-void draw_concept_card()
+// estado da caixa da fila de cards e a entrada que ela mostra
+DialogState card_dialog;
+ConceptCard card_dialog_entry = CARD_NONE;
+
+// caracteres que aparecem na tela: conta por letra utf-8 e pula as chaves
+int dialog_visible_chars(const char* line)
 {
-    ConceptCard card = pending_card();
+    int count = 0;
+    const unsigned char* c = (const unsigned char*)line;
+
+    if (line == NULL)
+    {
+        return 0;
+    }
+
+    for (; *c != '\0'; c++)
+    {
+        if (*c != '{' && *c != '}' && (*c & 0xC0) != 0x80)
+        {
+            count = count + 1;
+        }
+    }
+
+    return count;
+}
+
+// abre a caixa na pagina 1 com a contagem de letras de cada pagina
+void dialog_open_entry(DialogState* d, const DialogEntry* e)
+{
+    int chars[DIALOG_MAX_PAGES] = { 0, 0, 0, 0 };
+    int page;
     int line;
 
-    if (card == CARD_NONE)
+    for (page = 0; page < e->pages && page < DIALOG_MAX_PAGES; page++)
+    {
+        for (line = 0; line < 3; line++)
+        {
+            chars[page] = chars[page] + dialog_visible_chars(e->lines[page][line]);
+        }
+    }
+
+    dialog_open(d, e->pages, chars);
+}
+
+// a entrada pendente mudou (nova, a seguinte da fila ou nenhuma): a caixa recomeca
+void sync_card_dialog()
+{
+    ConceptCard card = pending_card();
+
+    if (card == card_dialog_entry)
     {
         return;
     }
 
-    al_draw_filled_rectangle(0.0f, 0.0f, (float)SCREEN_W, (float)SCREEN_H,
-        al_map_rgba_f(0.0f, 0.0f, 0.0f, 0.6f));
-    draw_panel(32.0f, 72.0f, 576.0f, 120.0f, UI_INK, UI_AMBER);
-    al_draw_text(font, UI_DIM, (float)SCREEN_W / 2.0f, 82.0f, ALLEGRO_ALIGN_CENTRE, "conceito");
-    al_draw_text(font, UI_AMBER, (float)SCREEN_W / 2.0f, 96.0f, ALLEGRO_ALIGN_CENTRE,
-        card_titles[card]);
+    card_dialog_entry = card;
 
-    for (line = 0; line < 3; line++)
+    if (card != CARD_NONE)
     {
-        al_draw_text(font, UI_TEXT, 56.0f, 120.0f + (float)line * 16.0f, 0, card_lines[card][line]);
+        dialog_open_entry(&card_dialog, &diary_entries[card]);
+    }
+}
+
+// enter, espaco ou clique: completa, vira a pagina ou fecha a entrada
+void press_card_dialog()
+{
+    sync_card_dialog();
+
+    if (card_dialog_entry == CARD_NONE)
+    {
+        return;
     }
 
-    al_draw_text(font, UI_DIM, (float)SCREEN_W / 2.0f, 174.0f, ALLEGRO_ALIGN_CENTRE,
-        "enter ou clique para continuar");
+    dialog_press(&card_dialog);
+
+    if (!card_dialog.open)
+    {
+        dismiss_card();
+        sync_card_dialog();
+    }
+}
+
+// esc fecha a entrada inteira; a seguinte da fila abre do inicio
+void skip_card_dialog()
+{
+    dismiss_card();
+    sync_card_dialog();
+}
+
+// uma linha com no maximo budget letras; o termo entre chaves sai em ambar
+int draw_dialog_line(const char* line, float x, float y, int budget)
+{
+    char segment[192];
+    int length = 0;
+    bool term = false;
+    const char* c;
+
+    for (c = line; *c != '\0'; c++)
+    {
+        bool lead = (*c & 0xC0) != 0x80;
+
+        if (*c == '{' || *c == '}' || (lead && budget == 0))
+        {
+            segment[length] = '\0';
+            al_draw_text(font, term ? UI_AMBER : UI_TEXT, x, y, 0, segment);
+            x = x + (float)al_get_text_width(font, segment);
+            length = 0;
+
+            if (*c != '{' && *c != '}')
+            {
+                return 0;
+            }
+
+            term = *c == '{';
+            continue;
+        }
+
+        if (lead)
+        {
+            budget = budget - 1;
+        }
+
+        if (length < (int)sizeof(segment) - 1)
+        {
+            segment[length] = *c;
+            length = length + 1;
+        }
+    }
+
+    segment[length] = '\0';
+    al_draw_text(font, term ? UI_AMBER : UI_TEXT, x, y, 0, segment);
+
+    return budget;
+}
+
+// caixa sobre a fase parada: veu, retrato, cabecalho, linhas que aparecem
+// letra a letra e o rodape com n/N, o triangulo ou o fechar
+void draw_dialog(const DialogEntry* e, const DialogState* d)
+{
+    int budget = (int)d->shown;
+    int line;
+    char counter[16];
+    float right = (float)(DIALOG_X + DIALOG_W - DIALOG_PAD);
+    float footer_y = (float)(DIALOG_Y + DIALOG_H - DIALOG_PAD - 8);
+
+    al_draw_filled_rectangle(0.0f, 0.0f, (float)SCREEN_W, (float)SCREEN_H,
+        al_map_rgba_f(0.0f, 0.0f, 0.0f, 0.6f));
+    draw_panel((float)DIALOG_X, (float)DIALOG_Y, (float)DIALOG_W, (float)DIALOG_H, UI_INK, UI_AMBER);
+
+    // retrato: linha de frente do spritesheet, quadro ocioso 0
+    if (e->portrait && nanobo)
+    {
+        float px = (float)(DIALOG_X + DIALOG_PAD);
+        float py = (float)(DIALOG_Y + DIALOG_PAD);
+
+        draw_panel(px - 1.0f, py - 1.0f, (float)PLAYER_FRAME + 2.0f, (float)PLAYER_FRAME + 2.0f,
+            UI_PANEL, UI_FRAME);
+        al_draw_bitmap_region(nanobo, 0.0f, (float)(PLAYER_FACING_DOWN * PLAYER_FRAME),
+            (float)PLAYER_FRAME, (float)PLAYER_FRAME, px, py, 0);
+    }
+
+    al_draw_text(font, UI_DIM, (float)DIALOG_TEXT_X, (float)(DIALOG_Y + DIALOG_PAD), 0, e->header);
+
+    for (line = 0; line < 3 && budget > 0; line++)
+    {
+        const char* text = e->lines[d->page][line];
+
+        if (text == NULL)
+        {
+            break;
+        }
+
+        budget = draw_dialog_line(text, (float)DIALOG_TEXT_X,
+            (float)(DIALOG_Y + DIALOG_PAD + DIALOG_LINE_H * (line + 1)), budget);
+    }
+
+    snprintf(counter, sizeof(counter), "%d/%d", d->page + 1, d->pages);
+    al_draw_text(font, UI_DIM, right, footer_y, ALLEGRO_ALIGN_RIGHT, counter);
+
+    if (!dialog_page_complete(d))
+    {
+        return;
+    }
+
+    // a ultima pagina fecha; as outras piscam o triangulo a cada 0,5 s
+    if (dialog_last_page(d))
+    {
+        al_draw_text(font, UI_AMBER, right - 32.0f, footer_y, ALLEGRO_ALIGN_RIGHT, "fechar");
+    }
+    else if (fmodf(d->page_age, 1.0f) < 0.5f)
+    {
+        float tx = right - 40.0f;
+
+        al_draw_filled_triangle(tx, footer_y + 1.0f, tx + 8.0f, footer_y + 1.0f,
+            tx + 4.0f, footer_y + 7.0f, UI_AMBER);
+    }
+}
+
+// card pendente da fila na caixa de dialogo
+void draw_concept_card()
+{
+    sync_card_dialog();
+
+    if (card_dialog_entry == CARD_NONE)
+    {
+        return;
+    }
+
+    draw_dialog(&diary_entries[card_dialog_entry], &card_dialog);
 }
 
 void draw_hud()
@@ -3370,8 +3645,8 @@ void handle_key_down(int key)
         return;
     }
 
-    // card de conceito na tela: enter, espaco ou esc fecham; as setas e o WASD
-    // continuam registrados, para o movimento nao se perder (#222)
+    // caixa do diario na tela: enter ou espaco avancam, esc fecha a entrada;
+    // as setas e o WASD continuam registrados, para o movimento nao se perder (#222)
     if (pending_card() != CARD_NONE)
     {
         bool movement = key == ALLEGRO_KEY_UP || key == ALLEGRO_KEY_W
@@ -3379,9 +3654,15 @@ void handle_key_down(int key)
             || key == ALLEGRO_KEY_LEFT || key == ALLEGRO_KEY_A
             || key == ALLEGRO_KEY_RIGHT || key == ALLEGRO_KEY_D;
 
-        if (key == ALLEGRO_KEY_ENTER || key == ALLEGRO_KEY_SPACE || key == ALLEGRO_KEY_ESCAPE)
+        if (key == ALLEGRO_KEY_ENTER || key == ALLEGRO_KEY_SPACE)
         {
-            dismiss_card();
+            press_card_dialog();
+            return;
+        }
+
+        if (key == ALLEGRO_KEY_ESCAPE)
+        {
+            skip_card_dialog();
             return;
         }
 
@@ -3575,12 +3856,13 @@ void handle_game_click(int button, float lx, float ly)
     float wx;
     float wy;
 
-    // card de conceito na tela: o clique esquerdo fecha o card e nao atira (#222)
+    // caixa do diario na tela: o clique esquerdo avanca a caixa e nao atira
+    // nem escaneia; volta antes do codigo de tiro e de scan (#222)
     if (pending_card() != CARD_NONE)
     {
         if (button == 1)
         {
-            dismiss_card();
+            press_card_dialog();
         }
 
         return;
@@ -3848,6 +4130,15 @@ int main()
                         game_set_scene(GAME_SCENE_RESULTS);
                     }
                 }
+                // a caixa do diario revela as letras mesmo com update_match parado;
+                // na pausa por perda de foco ela fica na mesma pagina e letra
+                sync_card_dialog();
+
+                if (game_get_scene() == GAME_SCENE_GAME && card_dialog_entry != CARD_NONE)
+                {
+                    dialog_tick(&card_dialog, (float)deltaTime);
+                }
+
                 feel_trigger();
 
                 // na pausa os efeitos ficam parados junto com o jogo

@@ -731,6 +731,16 @@ void dialog_open(DialogState* d, int pages, const int page_chars[4])
 {
     int i;
 
+    // de 1 a DIALOG_MAX_PAGES paginas: fora disso o indice sairia do vetor
+    if (pages < 1)
+    {
+        pages = 1;
+    }
+    else if (pages > DIALOG_MAX_PAGES)
+    {
+        pages = DIALOG_MAX_PAGES;
+    }
+
     d->pages = pages;
     d->page = 0;
     d->shown = 0.0f;

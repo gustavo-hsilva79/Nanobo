@@ -103,8 +103,8 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 | CT-11b | resultados, painel dos objetivos secundários | `bônus de vitais` · `+%d` | 15 | #218; ocupa a linha da CT-11 nos resultados |
 | CT-11c | HUD, linha 0 | duas barras de 36 px sem número: escudo + integridade do Nanobô (ciano) e coração + vitais do paciente (verde ≥ 60, âmbar ≥ 30, vermelho abaixo) | — | #218; #234 |
 | CT-11d | mundo, acima do agente da dica | `botão direito: escanear` (some no primeiro scan; volta no tiro num invasor sem leitura) | 23 | #219 |
-| CT-11e | card de conceito, rótulo e aviso | `conceito` / `enter ou clique para continuar` | 8 / 30 | #222 |
-| CT-11f | card de conceito, títulos da Fase 1 | `Coloração de Gram` (CC-01) / `Resistência e Reserva` (CC-02) | 17 / 21 | #222; linhas em §3.1 |
+| CT-11e | — | `conceito` / `enter ou clique para continuar` | — | #222; saíram em 25/11: a caixa do diário (§3.1) tem cabeçalho, contador `n/N` e triângulo |
+| CT-11f | caixa do diário, título no cabeçalho (DG-01, DG-02) | `Coloração de Gram` (CC-01) / `Resistência e Reserva` (CC-02) | 17 / 21 | #222; linhas em §3.1 |
 | CT-12 | menu, rodapé | `enter ou clique para começar` | 28 | #201 |
 | CT-13 | menu, rodapé | `F11 tela cheia` | 14 | #201 |
 | CT-14 | HUD, linha 1, à direita | `ameaças %d/%d · identificados %d/%d` (`ameaças 0/6 · identificados 0/9`) | 31 (até 35) | #199; juntas na mesma linha em 15/11 (#243) |
@@ -248,45 +248,66 @@ Desde 14/11 (#223), o painel "o que a partida mostrou" fala em linguagem de joga
 
 ### 3.1 Cards de conceito
 
+> **Caixa de diálogo desde 25/11 (diário):** cada card é uma entrada do Diário do Nanobô (ou um interlúdio), desenhada na caixa da faixa de baixo (x = 16 a 624, y = 264 a 352) com retrato 48×48, cabeçalho e até 3 linhas por página, de 1 a 4 páginas. As linhas começam em x = 80 e vão até x = 616: **67 caracteres** (536 px), com a mesma largura nas entradas sem retrato. O termo-chave de cada página vem entre chaves (`{termo}`), sai em âmbar e **não conta** nos caracteres; o `conferir_textos.py` tira as chaves antes de comparar. O texto aparece a 40 caracteres/s; o rodapé mostra `n/N`, um triângulo piscando com a página completa e `fechar` na última. Os títulos de antes viraram parte do cabeçalho (DG-01 a DG-09); textos provisórios até a aprovação do dono.
+>
 > **No código desde 14/11 (#222):** CC-01 abre na primeira leitura completa de bactéria e CC-02 na primeira bactéria resistente. Cada card aparece uma vez por partida, sobre a fase parada, com as linhas desenhadas a partir de x = 56 num painel de 576 px; a maior (CC-02a, 66 caracteres) ocupa 528 px. CC-05 e CC-06 estão no código desde 25/11 (#232): CC-05 abre ao entrar na Fase 3 e CC-06 na 1ª leitura completa de fungo ou no 1º antibiótico num fungo, o que vier primeiro.
 >
 > **Fase 2 no código desde 14/11 (#87, #88):** CC-03 abre na primeira leitura de um vírus livre, no primeiro vírus preso pelos anticorpos ou no primeiro antibiótico num vírus. CC-04 abre na primeira leitura de uma célula infectada ou na primeira célula que rompe, para quem não leu. Títulos: `Vírus não é célula` (18) e `Lisogênico e lítico` (19).
 
 | ID | Card / quando aparece | Linha | Car. |
 |---|---|---|---:|
-| CC-01a | Coloração de Gram · 1ª leitura completa de bactéria | No laboratório, um corante roxo tinge a parede das bactérias. | 61 |
-| CC-01b | | Gram+: parede grossa de peptidoglicano, que segura o roxo. | 58 |
-| CC-01c | | Gram-: parede fina e membrana externa; perde o roxo e fica rosa. | 64 |
-| CC-02a | Resistência e Reserva · 1ª bactéria resistente | Uma dose só não basta: as bactérias que sobrevivem se multiplicam. | 66 |
-| CC-02b | | Esta ficou resistente: o mesmo antibiótico não age mais nela. | 61 |
-| CC-02c | | A Reserva age nela, mas tem poucas cargas: use só se precisar. | 62 |
-| CC-03a | Vírus não é célula · 1ª leitura de vírus ou 1º antibiótico em vírus | O vírus não tem parede, ribossomos nem metabolismo próprio. | 59 |
-| CC-03b | | Ele só se multiplica dentro de uma célula. Antibiótico não o atinge. | 68 |
-| CC-03c | | A Neutralização leva anticorpos, que se prendem ao vírus livre. | 63 |
-| CC-04a | Lisogênico e lítico · 1ª leitura de célula infectada | Lisogênico: o vírus fica dentro da célula, sem destruí-la ainda. | 64 |
-| CC-04b | | Lítico: ele faz cópias, a célula se rompe e libera novos vírus. | 63 |
-| CC-04c | | A Lise destrói a célula infectada, como faz o linfócito T. | 58 |
-| CC-05a | Organismo enfraquecido · início da Fase 3 | Fungos oportunistas aproveitam um organismo enfraquecido. | 57 |
-| CC-05b | | Os esporos de Aspergillus estão no ar; o corpo saudável os elimina. | 67 |
-| CC-05c | | Quanto pior o paciente chega, mais esporos se instalam no pulmão. | 65 |
-| CC-06a | Fungo · 1ª leitura de fungo | O fungo tem núcleo, como as nossas células: é um eucarionte. | 60 |
-| CC-06b | | Sua parede é de quitina, não de peptidoglicano: antibiótico não age. | 68 |
-| CC-06c | | A Perfuração abre poros na membrana dele, que tem ergosterol. | 61 |
-| CC-07a | Flagelo · 1ª investida de um bacilo (14/11; no código desde a #235) | O bacilo tem flagelo, um chicote que gira e o faz nadar. | 56 |
-| CC-07b | | Por isso ele vem atrás de você e dá investidas. | 47 |
-| CC-07c | | O coco não tem flagelo: é levado pelo sangue e gruda no tecido. | 63 |
-| CC-08a | Biofilme · 1º contato do Nanobô com um biofilme (14/11; no código desde a #237) | Bactérias grudadas fazem uma camada pegajosa: o biofilme. | 57 |
-| CC-08b | | Ele protege as bactérias: dentro dele, o antibiótico age menos. | 63 |
-| CC-08c | | No biofilme a bactéria pede mais uma dose, e você anda devagar. | 63 |
-| CC-09a | Endotoxina · 1º contato do Nanobô com uma nuvem (14/11; no código desde a #237) | A membrana externa da Gram- tem uma toxina, o LPS. | 50 |
-| CC-09b | | Quando a Gram- se rompe, até pelo antibiótico, o LPS se espalha. | 64 |
-| CC-09c | | Saia da nuvem: ela fere o Nanobô enquanto dura. | 47 |
-| IL-02a | Enquanto isso, no hospital (26) · início da Fase 2 (25/11, provisório até a caixa de diálogo) | A infecção no sangue de Léo deu trégua, mas na enfermaria | 57 |
-| IL-02b | | ele pegou um vírus respiratório. | 32 |
-| IL-02c | | O Nanobô segue para as vias aéreas. | 35 |
-| IL-03a | Enquanto isso, no hospital (26) · início da Fase 3 (25/11, provisório até a caixa de diálogo) | Com as defesas fracas, esporos de bolor que estão no ar | 55 |
-| IL-03b | | chegam ao pulmão de Léo. | 24 |
-| IL-03c | | O Nanobô precisa agir antes que o fungo se instale. | 51 |
+| CC-01a | Nanobô · Anotação 1 · Coloração de Gram · 1ª leitura completa de bactéria · página 1 de 1 | No laboratório, um corante roxo tinge a parede das bactérias. | 61 |
+| CC-01b |  | Gram+: parede grossa de {peptidoglicano}, que segura o roxo. | 58 |
+| CC-01c |  | Gram-: parede fina e membrana externa; perde o roxo e fica rosa. | 64 |
+| CC-02a | Nanobô · Anotação 2 · Resistência e Reserva · 1ª bactéria resistente · página 1 de 1 | Uma dose só não basta: as bactérias que sobrevivem se multiplicam. | 66 |
+| CC-02b |  | Esta ficou {resistente}: o mesmo antibiótico não age mais nela. | 61 |
+| CC-02c |  | A Reserva age nela, mas tem poucas cargas: use só se precisar. | 62 |
+| CC-03a | Nanobô · Anotação 6 · Vírus não é célula · 1ª leitura de vírus ou 1º antibiótico em vírus · página 1 de 2 | O vírus não tem parede, ribossomos nem metabolismo próprio. | 59 |
+| CC-03b |  | Ele só se multiplica {dentro de uma célula}. | 42 |
+| CC-03c |  | Antibiótico não o atinge. | 25 |
+| CC-03d | página 2 de 2 | A Neutralização leva {anticorpos}, que se prendem ao vírus livre. | 63 |
+| CC-04a | Nanobô · Anotação 7 · Lisogênico e lítico · 1ª leitura de célula infectada · página 1 de 2 | {Lisogênico}: o vírus fica dentro da célula, sem destruí-la ainda. | 64 |
+| CC-04b | página 2 de 2 | {Lítico}: ele faz cópias, a célula se rompe e libera novos vírus. | 63 |
+| CC-04c |  | A Lise destrói a célula infectada, como faz o linfócito T. | 58 |
+| CC-05a | Nanobô · Anotação 8 · Organismo enfraquecido · início da Fase 3, depois do IL-03 · página 1 de 1 | Fungos {oportunistas} aproveitam um organismo enfraquecido. | 57 |
+| CC-05b |  | Os esporos de Aspergillus estão no ar; o corpo saudável os elimina. | 67 |
+| CC-05c |  | Quanto pior o paciente chega, mais esporos se instalam no pulmão. | 65 |
+| CC-06a | Nanobô · Anotação 9 · Fungo · 1ª leitura de fungo · página 1 de 2 | O fungo tem núcleo, como as nossas células: é um {eucarionte}. | 60 |
+| CC-06b |  | Sua parede é de quitina, não de peptidoglicano: | 47 |
+| CC-06c |  | antibiótico não age. | 20 |
+| CC-06d | página 2 de 2 | A Perfuração abre poros na membrana dele, que tem {ergosterol}. | 61 |
+| CC-07a | Nanobô · Anotação 3 · Flagelo · 1ª investida de um bacilo (14/11; no código desde a #235) · página 1 de 1 | O bacilo tem {flagelo}, um chicote que gira e o faz nadar. | 56 |
+| CC-07b |  | Por isso ele vem atrás de você e dá investidas. | 47 |
+| CC-07c |  | O coco não tem flagelo: é levado pelo sangue e gruda no tecido. | 63 |
+| CC-08a | Nanobô · Anotação 4 · Biofilme · 1º contato do Nanobô com um biofilme (14/11; no código desde a #237) · página 1 de 1 | Bactérias grudadas fazem uma camada pegajosa: o {biofilme}. | 57 |
+| CC-08b |  | Ele protege as bactérias: dentro dele, o antibiótico age menos. | 63 |
+| CC-08c |  | No biofilme a bactéria pede mais uma dose, e você anda devagar. | 63 |
+| CC-09a | Nanobô · Anotação 5 · Endotoxina · 1º contato do Nanobô com uma nuvem (14/11; no código desde a #237) · página 1 de 1 | A membrana externa da Gram- tem uma toxina, o {LPS}. | 50 |
+| CC-09b |  | Quando a Gram- se rompe, até pelo antibiótico, o LPS se espalha. | 64 |
+| CC-09c |  | Saia da nuvem: ela fere o Nanobô enquanto dura. | 47 |
+| IL-02a | Enquanto isso, no hospital · início da Fase 2, antes de qualquer anotação · sem retrato · página 1 de 2 | A infecção no sangue de Léo deu trégua, mas na enfermaria | 57 |
+| IL-02b |  | ele pegou um {vírus respiratório}. | 32 |
+| IL-02c | página 2 de 2 | O Nanobô segue para as {vias aéreas}. | 35 |
+| IL-03a | Enquanto isso, no hospital · início da Fase 3, antes do CC-05 · sem retrato · página 1 de 2 | Com as defesas fracas, {esporos de bolor} que estão no ar | 55 |
+| IL-03b |  | chegam ao pulmão de Léo. | 24 |
+| IL-03c | página 2 de 2 | O Nanobô precisa agir antes que o {fungo} se instale. | 51 |
+
+#### Caixa de diálogo: cabeçalho e rodapé (25/11)
+
+| ID | Onde | Texto | Car. | Nota |
+|---|---|---|---:|---|
+| DG-01 | cabeçalho da anotação, x = 80, em `UI_DIM` | `Nanobô · Anotação 1 · Coloração de Gram` | 39 | |
+| DG-02 | cabeçalho da anotação, x = 80, em `UI_DIM` | `Nanobô · Anotação 2 · Resistência e Reserva` | 43 | |
+| DG-03 | cabeçalho da anotação, x = 80, em `UI_DIM` | `Nanobô · Anotação 3 · Flagelo` | 29 | |
+| DG-04 | cabeçalho da anotação, x = 80, em `UI_DIM` | `Nanobô · Anotação 4 · Biofilme` | 30 | |
+| DG-05 | cabeçalho da anotação, x = 80, em `UI_DIM` | `Nanobô · Anotação 5 · Endotoxina` | 32 | |
+| DG-06 | cabeçalho da anotação, x = 80, em `UI_DIM` | `Nanobô · Anotação 6 · Vírus não é célula` | 40 | |
+| DG-07 | cabeçalho da anotação, x = 80, em `UI_DIM` | `Nanobô · Anotação 7 · Lisogênico e lítico` | 41 | |
+| DG-08 | cabeçalho da anotação, x = 80, em `UI_DIM` | `Nanobô · Anotação 8 · Organismo enfraquecido` | 44 | |
+| DG-09 | cabeçalho da anotação, x = 80, em `UI_DIM` | `Nanobô · Anotação 9 · Fungo` | 27 | |
+| DG-10 | cabeçalho dos interlúdios IL-02 e IL-03 | `Enquanto isso, no hospital` | 26 | sem retrato |
+| DG-11 | rodapé, à direita (x = 616) | `%d/%d` (`1/2`) | 3 | página atual e total |
+| DG-12 | rodapé, última página completa, à esquerda do contador | `fechar` | 6 | em `UI_AMBER`, no lugar do triângulo |
 
 ### 3.2 Ferramentas (menu "como jogar" e HUD)
 
