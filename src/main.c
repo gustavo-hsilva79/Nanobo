@@ -1932,6 +1932,8 @@ void draw_feel_world()
 // cards de conceito (#222): titulo e tres linhas, registrados em textos-do-jogo.md §3.1
 static const char* card_titles[CARD_COUNT] =
 {
+    "Enquanto isso, no hospital",
+    "Enquanto isso, no hospital",
     "Coloração de Gram",
     "Resistência e Reserva",
     "Flagelo",
@@ -1945,6 +1947,16 @@ static const char* card_titles[CARD_COUNT] =
 
 static const char* card_lines[CARD_COUNT][3] =
 {
+    {
+        "A infecção no sangue de Léo deu trégua, mas na enfermaria",
+        "ele pegou um vírus respiratório.",
+        "O Nanobô segue para as vias aéreas."
+    },
+    {
+        "Com as defesas fracas, esporos de bolor que estão no ar",
+        "chegam ao pulmão de Léo.",
+        "O Nanobô precisa agir antes que o fungo se instale."
+    },
     {
         "No laboratório, um corante roxo tinge a parede das bactérias.",
         "Gram+: parede grossa de peptidoglicano, que segura o roxo.",

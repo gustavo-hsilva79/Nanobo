@@ -726,6 +726,70 @@ void dismiss_card(void)
     }
 }
 
+// caixa de dialogo: so logica, o main desenha e le o toque
+void dialog_open(DialogState* d, int pages, const int page_chars[4])
+{
+    int i;
+
+    d->pages = pages;
+    d->page = 0;
+    d->shown = 0.0f;
+    d->page_age = 0.0f;
+    d->open = true;
+
+    for (i = 0; i < DIALOG_MAX_PAGES; i++)
+    {
+        d->page_chars[i] = page_chars[i];
+    }
+}
+
+void dialog_tick(DialogState* d, float dt)
+{
+    float total = (float)d->page_chars[d->page];
+
+    d->shown = d->shown + DIALOG_CHARS_PER_SECOND * dt;
+
+    if (d->shown > total)
+    {
+        d->shown = total;
+    }
+
+    d->page_age = d->page_age + dt;
+}
+
+bool dialog_page_complete(const DialogState* d)
+{
+    return d->shown >= (float)d->page_chars[d->page];
+}
+
+bool dialog_last_page(const DialogState* d)
+{
+    return d->page >= d->pages - 1;
+}
+
+void dialog_press(DialogState* d)
+{
+    if (d->page_age < DIALOG_DEBOUNCE)
+    {
+        return;
+    }
+
+    if (!dialog_page_complete(d))
+    {
+        d->shown = (float)d->page_chars[d->page];
+    }
+    else if (!dialog_last_page(d))
+    {
+        d->page = d->page + 1;
+        d->shown = 0.0f;
+        d->page_age = 0.0f;
+    }
+    else
+    {
+        d->open = false;
+    }
+}
+
 // agente inicial que sai de cena sem identificacao sai da meta do bonus (#86, #88)
 static void exclude_from_goal(int index)
 {
@@ -2594,8 +2658,15 @@ static void start_phase(int index)
     // a Fase 3 abre com esporos no chao conforme o estado do paciente (#231, D4)
     spore_load_applied = 0;
 
+    // interludio no hospital: entra na fila antes dos cards da fase (diario)
+    if (index == 1)
+    {
+        queue_card(CARD_INTERLUDE_2);
+    }
+
     if (phase_has_fungi())
     {
+        queue_card(CARD_INTERLUDE_3);
         spore_seed_ground(spore_load(vitals_end_phase2, run_progress.reserve_spent));
 
         // a Fase 3 abre explicando por que o fungo aproveita o paciente fraco (#232)

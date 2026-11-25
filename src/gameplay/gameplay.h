@@ -387,17 +387,40 @@ SfxEvent sfx_event_kind(void);
 typedef enum
 {
     CARD_NONE = -1,
-    CARD_GRAM = 0,
-    CARD_RESISTANCE = 1,
-    CARD_FLAGELLUM = 2,
-    CARD_BIOFILM = 3,
-    CARD_ENDOTOXIN = 4,
-    CARD_VIRUS = 5,
-    CARD_CYCLE = 6,
-    CARD_WEAKENED = 7,
-    CARD_FUNGUS = 8,
+    CARD_INTERLUDE_2 = 0,
+    CARD_INTERLUDE_3 = 1,
+    CARD_GRAM = 2,
+    CARD_RESISTANCE = 3,
+    CARD_FLAGELLUM = 4,
+    CARD_BIOFILM = 5,
+    CARD_ENDOTOXIN = 6,
+    CARD_VIRUS = 7,
+    CARD_CYCLE = 8,
+    CARD_WEAKENED = 9,
+    CARD_FUNGUS = 10,
     CARD_COUNT
 } ConceptCard;
+
+// caixa de dialogo do diario: paginas, texto que aparece aos poucos e trava do toque
+#define DIALOG_CHARS_PER_SECOND 40.0f
+#define DIALOG_DEBOUNCE 0.2f
+#define DIALOG_MAX_PAGES 4
+
+typedef struct
+{
+    int pages;
+    int page;
+    float shown;
+    float page_age;
+    int page_chars[4];
+    bool open;
+} DialogState;
+
+void dialog_open(DialogState* d, int pages, const int page_chars[4]);
+void dialog_tick(DialogState* d, float dt);
+bool dialog_page_complete(const DialogState* d);
+bool dialog_last_page(const DialogState* d);
+void dialog_press(DialogState* d);
 
 // card esperando a vez; com card na tela a partida fica parada (#222)
 ConceptCard pending_card(void);

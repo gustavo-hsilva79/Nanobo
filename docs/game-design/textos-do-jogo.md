@@ -281,6 +281,12 @@ Desde 14/11 (#223), o painel "o que a partida mostrou" fala em linguagem de joga
 | CC-09a | Endotoxina · 1º contato do Nanobô com uma nuvem (14/11; no código desde a #237) | A membrana externa da Gram- tem uma toxina, o LPS. | 50 |
 | CC-09b | | Quando a Gram- se rompe, até pelo antibiótico, o LPS se espalha. | 64 |
 | CC-09c | | Saia da nuvem: ela fere o Nanobô enquanto dura. | 47 |
+| IL-02a | Enquanto isso, no hospital (26) · início da Fase 2 (25/11, provisório até a caixa de diálogo) | A infecção no sangue de Léo deu trégua, mas na enfermaria | 57 |
+| IL-02b | | ele pegou um vírus respiratório. | 32 |
+| IL-02c | | O Nanobô segue para as vias aéreas. | 35 |
+| IL-03a | Enquanto isso, no hospital (26) · início da Fase 3 (25/11, provisório até a caixa de diálogo) | Com as defesas fracas, esporos de bolor que estão no ar | 55 |
+| IL-03b | | chegam ao pulmão de Léo. | 24 |
+| IL-03c | | O Nanobô precisa agir antes que o fungo se instale. | 51 |
 
 ### 3.2 Ferramentas (menu "como jogar" e HUD)
 
