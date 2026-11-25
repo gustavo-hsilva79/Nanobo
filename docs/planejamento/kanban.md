@@ -16,7 +16,7 @@
 
 ## Nanobô 2.0 — cronograma, corte e equipe (13/11/2026)
 
-> **Vigente.** Decisões do dono em 13/11, depois da auditoria (`docs/auditoria/auditoria-2026-11-13.md`). A visão do jogo está no [`gdd.md`](../game-design/gdd.md) (§"Nanobô 2.0"). As issues do trabalho novo são criadas no M5 quando cada etapa começa; ao terminar, fecham no GitHub e no Todoist, sem comentário.
+> **Vigente, com as datas de 20/11 em diante substituídas pelo replanejamento de 25/11** (logo abaixo do cronograma). Decisões do dono em 13/11, depois da auditoria (`docs/auditoria/auditoria-2026-11-13.md`). A visão do jogo está no [`gdd.md`](../game-design/gdd.md) (§"Nanobô 2.0"). As issues do trabalho novo são criadas no M5 quando cada etapa começa; ao terminar, fecham no GitHub e no Todoist, sem comentário.
 
 **Equipe**
 - **Gustavo:** todo o design 2.0, mais hi-score Top 10 (#77–#82, #197), build Release (#42, #154–#158) e instalador (#43, #159–#164), que eram do Eric.
@@ -36,6 +36,32 @@
 | 23–25/11 | **Fase 3** no pulmão (levedura, bolor, Perfuração, carga de esporos pelo estado do paciente) |
 | 24–28/11 | **Etapa 3** (#239): arte (personagens, tiros, impactos e mapa 3; o mapa 2 entrou em 14/11), interface nova no `main.c`, narrativa, textos e Top 10 com entrada de nome. **Adiantada em 15/11:** Nanobô de 48 px (#240), agentes finais (#241), tiros, impactos e ícones (#242) e Top 10 com nome (#77–#81, #197), narrativa (#244) e QA no jogo, com a validação do Top 10 (#82, #34). A interface nova (#243) entrou com a fonte embutida mantida: HUD de 40 px e ficha do scanner só com alvo. O registro de textos foi conferido por script (#212). **Etapa 3 concluída em 15/11:** capturas aprovadas pelo dono e pico de memória do Release em 78,49 MB |
 | 29/11–01/12 | **Etapa 4:** calibração com bots, QA automatizado, memória (#117/#118) e instalador final em máquina limpa |
+
+### Replanejamento de 25/11/2026
+
+> **Vigente.** Substitui as linhas de 20/11 em diante da tabela acima. O Todoist foi remarcado com estas datas em 24–25/11.
+
+**Situação em 24/11:** o último commit é de 16/11. Estavam atrasados o build Release e o instalador (#42, #154–#164, previstos para 20–21/11), o teste externo (#38, #134–#138, previsto para 17–23/11), a Fase 3 (#226–#233, prevista para 23–25/11 e ainda sem código) e a validação da Fase 2 (#91). Fecharam em 24/11 a #213 (todas as filhas já estavam fechadas) e a #211 (as variantes de sprite já estão no build desde a #241, conferido no código).
+
+**Decisões do dono (24–25/11)**
+- A Fase 3 entra completa e antes do instalador. A noite de 27/11 é ponto de checagem, não corte: se a fase não fechar, ela continua em 28/11 e o instalador inteiro passa para 29/11.
+- O teste externo é em 25/11, com um colega da turma e o build atual (Fases 1 e 2).
+- O instalador é um `.msi` com assistente, gerado pela extensão **Visual Studio Installer Projects** (`.vdproj` na solução, compilado com `devenv.exe /build`, não pelo MSBuild). Ele instala por usuário em `%LOCALAPPDATA%\Programs\Nanobo`, para o `nanobo_ranking.txt` continuar gravável na pasta do jogo.
+- A memória (#117–#119) e a regressão (#128, #130–#132) rodam em 30/11, sobre o build instalado.
+- O Gustavo assume #195, #91 e a regressão (#128, #130–#133). O Eric fica com a correção de bugs (#139–#143) e a documentação (#147–#153).
+
+| Datas | Entrega |
+|---|---|
+| 25/11 | protocolo e build do teste (#134, #135); teste com um colega da turma (#38, #136, #137); configuração da Fase 3 e fluxo Fase 2 → Fase 3 (#227) |
+| 26/11 | feedback do teste (#138); validação da Fase 2 (#91); Perfuração (#230); levedura (#228); instalar a extensão Installer Projects e confirmar que ela existe para o Visual Studio da máquina (senão, WiX) |
+| 27/11 | bolor (#229), carga de esporos (#231), cards de fungo (#232) e mapa do pulmão (#233); à noite, checagem da Fase 3 (#226) |
+| 28/11 | build Release e instalador (#154–#161) |
+| 29/11 | **M5:** teste em ambiente limpo (#162–#164), #42, menu e reinício (#127) |
+| 30/11 | memória (#36, #117–#119), regressão (#128, #130–#133), docs técnicas (#144–#146), #185, #195 e preparação da apresentação (#165, #166, #169) |
+| 01/12 | ensaios (#167, #168, #170) |
+| 02/12 | **M6:** entrega e apresentação |
+
+**Riscos aceitos:** o instalador fica com um dia e meio e cai no dia do M5 se a Fase 3 atrasar; o 30/11 concentra 17 tarefas e é o único dia para corrigir o que a regressão e a memória encontrarem; o teste externo não cobre a Fase 3 e, feito com um colega da turma, vale menos como "sem explicação prévia" (#136).
 
 **Ordem de corte**, do que nunca sai para o que sai primeiro (decisão do dono: nada cede; isto é só a rede de segurança):
 
