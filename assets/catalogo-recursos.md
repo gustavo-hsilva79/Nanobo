@@ -147,8 +147,8 @@ O fundo é escuro e de baixo contraste de propósito: os sprites precisam contin
 | Célula do paciente (núcleo visível) | 32×32 | 2 | substitui `celula_propria*` |
 | Vírus | 32×32 | 2 | substitui `virus_fase2*` |
 | Célula infectada | 32×32 | 2 | Fase 2 |
-| Levedura (*Cryptococcus*) | 40×40 | 3 (brotamento) | Fase 3 |
-| Bolor (*Aspergillus*): base e segmento de hifa | 48×48 + 16×16 | 2 + 1 | Fase 3; hifa de até 5 segmentos |
+| Levedura (*Cryptococcus*) | 40×40 | 2 arquivos (a; b com broto) | **feito em 25/11** (Fase 3) |
+| Bolor (*Aspergillus*): base e segmento de hifa | 48×48 + 16×16 | 1 + 1 | **feito em 25/11** (Fase 3); hifa de até 5 segmentos |
 | Tiros (Ruptura, Dissolução, Reserva, Neutralização, Lise, Perfuração) | 12×12 | 2 | cor neutra; a forma mostra o mecanismo |
 | Impacto por resultado (dose certa, sem efeito, eliminado) | 24×24 | 4 | compartilhados e tingidos por código |
 | Ícones de ferramenta (Reserva, Neutralização, Lise, Perfuração) + vitais | 16×16 | 1 | se juntam a `icone_ruptura` e `icone_dissolucao` |

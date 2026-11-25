@@ -27,10 +27,10 @@ Roteiro único, do MENU até a nova partida, executado com o script amostrando e
 5. Na Fase 1: andar com as setas; **botão direito** sobre cada um dos 9 agentes (3 Gram+, 3 Gram− e 3 células) até identificá-los; trocar de arma com `1`/`2` (ou a roda do mouse) e **clique esquerdo** para neutralizar as 6 bactérias — `Ruptura` nas Gram+ e `Dissolução` nas Gram−; não atirar nas células; ir até o destino para concluir a fase. Não usar `ESC` aqui (pausa).
 6. RESULTS: `ENTER` (ou `CONTINUAR`) → Fase 2.
 7. Fase 2: neutralizar os 3 vírus com a arma certa e ir até o destino; as 3 células não são alvo.
-8. RESULTS: `ENTER` (ou `CONTINUAR`) → VICTORY.
+8. RESULTS: `ENTER` (ou `CONTINUAR`) → VICTORY. *(Desde 25/11 há a Fase 3 entre os passos 8 e 9: RESULTS → Fase 3 → RESULTS → VICTORY; o roteiro de 25/11, mais abaixo, a percorre.)*
 9. VICTORY: `ENTER` (ou `NOVA PARTIDA`) → briefing de uma nova partida. O ciclo termina aqui.
 
-A sequência existe para passar por todos os recursos em uso: menu, briefing, as duas fases, os dois RESULTS e a VICTORY. Qualquer desvio (pausa, GAME_OVER, alt-tab) invalida a execução e ela é refeita.
+A sequência existe para passar por todos os recursos em uso: menu, briefing, as fases, os RESULTS e a VICTORY (duas fases nas medições até 24/11; três desde 25/11). Qualquer desvio (pausa, GAME_OVER, alt-tab) invalida a execução e ela é refeita.
 
 ## Recursos carregados
 

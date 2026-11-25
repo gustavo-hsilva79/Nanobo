@@ -420,7 +420,7 @@ O M4 continua centrado na Fase 1; a **Fase 2 mínima** existe para fechar o flux
 - **Vida entre fases:** cada fase começa com 3 vidas.
 - **Bônus por fase:** +15 quando todos os agentes **daquela fase** foram identificados (9/9 na Fase 1, 6/6 na Fase 2); a pontuação da run atravessa as fases.
 - **Resumo por fase:** os contadores zeram a cada fase; a linha de Gram só aparece na Fase 1.
-- **Resultados → próxima fase:** `CONTINUAR` carrega a Fase 2 e preserva a pontuação; na última fase leva a `VICTORY`.
+- **Resultados → próxima fase:** `CONTINUAR` carrega a Fase 2 e preserva a pontuação; na última fase leva a `VICTORY`. *(25/11: com a Fase 3, a última fase passou a ser a 3; a regra é a mesma, `has_next_phase()`.)*
 - **Recorde mínimo:** a melhor pontuação da run fica em `nanobo_hiscore.txt`, ao lado do executável, e aparece no menu e na Vitória. Sem nome (#81) e sem Top 10 (#77–#82), que ficam no M5; arquivo ausente ou inválido vale zero.
 - **RF-07 completo (texto por objetivo) fica no M5:** o M4 entrega o resumo por contadores (#174, #202); a tela de 640×360 não comporta quatro blocos por OA sem refazer o layout.
 - **Ícones das armas:** `icone_ruptura.png` (parede de tijolos) e `icone_dissolucao.png` (anéis concêntricos), 16×16, cor neutra, forma própria; o projétil continua quadrado/círculo. Os ícones roxo/vermelho saem do `load_resources()` e ficam no disco como histórico.
@@ -461,6 +461,30 @@ Substitui o recorde mínimo de 04/11. As regras de #34 continuam: 10 posições,
     - NOVA PARTIDA depois da Vitória e depois do Game Over: a fase começa com 0 pontos e 00:00, e o Top 10 continua no arquivo.
     - Game Over com 0 pontos: o arquivo não ganha linha nova.
   - **Defeito achado e corrigido:** o rodapé do painel RECORDES no menu ficava em cima dos botões.
+
+### Fase 3 de fungos (25/11/2026)
+
+Decisões do dono em 24–25/11/2026 para a #226 (#227–#233). As regras implementadas estão em [`fase3-fungos.md`](fase3-fungos.md).
+
+- **D1 — onde trabalhar:** branch `feat/fase3`; o merge na `master` só acontece com o sim do dono.
+- **D2 — ferramentas (#227 × #230):** **Perfuração** na tecla 1 e **Ruptura** na tecla 2; a tecla 3 fica sem ferramenta e a roda alterna as duas.
+- **D3 — arte:** sprites e mapa gerados por script Lua no Aseprite, no estilo aprovado em 14/11. O dono aprovou os sprites e o mapa em 25/11.
+- **D4 — carga de esporos (#231):** extras = (1 se os vitais ao fim da Fase 2 < 80) + (1 se < 60) + cargas de Reserva gastas na partida, no máximo 4.
+- **D5 — esporo:** voa 1,5 s, pousa e vira ameaça no chão (1 tiro de Perfuração mata), germina em colônia em 6 s; com 4 colônias vivas, espera a vaga. Os esporos da carga inicial seguem a mesma regra.
+- **D6 — hifa:** cresce rumo à célula do paciente mais próxima, fixada quando a colônia nasce; machuca o Nanobô (−10) e não fere a célula.
+- **D7 — silhueta:** fungos aparecem como silhueta até a 1ª camada; a hifa é desenhada desde o início, porque é parede que machuca.
+- **D8 — ferramenta inicial:** a Fase 3 começa com a Ruptura na mão.
+- **Esporo sem pontos e sem dano de contato (25/11, depois da revisão da Task 4):** o esporo, em voo ou pousado, não dá pontos; o pousado não causa dano de contato. O que fere é o esporo em voo que acerta o Nanobô (−8).
+- **Decisões técnicas (aceitas na revisão):**
+  - **R1:** partida e destino continuam os globais; a "partida e destino próprios" da #227 fica como dívida.
+  - **R2:** sem correnteza.
+  - **R3:** fungos não atacam células; elas só perdem vitais por tiro do Nanobô (−15).
+  - **R4:** a dose de Perfuração na levedura não expira e não cria resistência.
+  - **R5:** antibiótico em fungo é arma errada (sem efeito, trava de 2 s, FB2-11).
+  - **R6:** sem bots de calibração para a Fase 3.
+- **Perfuração e vitais:** "não custa vitais" vale para o efeito colateral da arma, que o dono não escolheu; Perfuração em célula do paciente continua custando 15 pelo fogo amigo.
+- **Hifa:** age como parede (empurra o Nanobô e tira 10 no máximo uma vez por segundo) e a defesa não protege dela.
+- **Estado:** harness de regras 470/0, Debug e Release com 0 avisos, pico de memória de ~78,25 MB nas três fases.
 
 ### Refatoração pós-entrega (06/11/2026)
 

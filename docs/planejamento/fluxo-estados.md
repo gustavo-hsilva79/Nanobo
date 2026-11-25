@@ -10,7 +10,7 @@ Este documento define o fluxo geral da máquina de estados previsto em #7/#98. A
 | `BRIEFING` | Início de partida vindo de `MENU`, `VICTORY` ou `GAME OVER` (**M4, #103/#106**) | Pular ou terminar os 3 cartões → `GAME` |
 | `GAME` | Fim do briefing, retomada de `PAUSE` ou avanço vindo de `RESULTS` | Solicitar pausa → `PAUSE`; concluir fase → `RESULTS`; perder toda a vida → `GAME OVER` |
 | `PAUSE` | Solicitação de pausa durante `GAME` | Retomar → `GAME` |
-| `RESULTS` | Conclusão de uma fase em `GAME` | Há próxima fase → `GAME`; última fase concluída → `VICTORY` |
+| `RESULTS` | Conclusão de uma fase em `GAME` | Há próxima fase (Fases 1 e 2) → `GAME`; última fase (a 3) concluída → `VICTORY` |
 | `VICTORY` | Conclusão da última fase em `RESULTS` | Iniciar nova partida → `BRIEFING` |
 | `GAME OVER` | Condição de derrota durante `GAME` | Iniciar nova partida → `BRIEFING` |
 
@@ -31,8 +31,8 @@ Este documento define o fluxo geral da máquina de estados previsto em #7/#98. A
 - `MENU → BRIEFING → GAME` é o caminho de toda partida; `VICTORY → BRIEFING` e `GAME OVER → BRIEFING` fazem a partida nova passar pelo briefing outra vez.
 - No briefing, `ENTER`, `→` ou clique avançam o cartão; no terceiro, `SEGUIR` entra na fase. `ESC` e `PULAR` vão direto para `GAME`. O cartão corrente volta a zero a cada entrada na cena.
 - `GAME OVER` é alcançado de verdade quando `player.health == 0`.
-- `RESULTS` é alcançado automaticamente quando a fase conclui (6 ameaças neutralizadas + Nanobô no destino na Fase 1; 3 vírus na Fase 2, #26/#70); `CONTINUAR` carrega a Fase 2 quando `has_next_phase()` e, na última fase, leva a `VICTORY`.
-- A Fase 2 do build é a mínima (vírus + células); a Fase 2 completa é M5.
+- `RESULTS` é alcançado automaticamente quando a fase conclui (6 ameaças neutralizadas + Nanobô no destino na Fase 1; os vírus na Fase 2, #26/#70; os fungos na Fase 3, esporos inclusive); `CONTINUAR` carrega a fase seguinte quando `has_next_phase()` (Fase 2 depois da 1, Fase 3 depois da 2) e, na última fase, a 3, leva a `VICTORY`.
+- O build tem três fases (`PHASE_COUNT` 3): bactérias, vírus e fungos (Fase 3 desde 25/11, `fase3-fungos.md`). Não existe mais a Fase 2 "mínima": a completa entrou em 14/11.
 - **Decisão de 03/11/2026 (D2.1, `decisoes.md`):** a conclusão passa a exigir também a identificação dos agentes. Até a mudança ser implementada, a regra em vigor é a de #26/#70 acima; D2.1 e D2.2 ficam para o M5.
 - `VICTORY` e `GAME OVER` iniciam nova partida com reset completo (#74/#75) e briefing.
 - `F`, `G` e `H` são teclas de QA e existem somente no build Debug; o Release não tem atalho de estado (#76).

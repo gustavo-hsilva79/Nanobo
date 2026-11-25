@@ -10,7 +10,7 @@ Este documento basta para conduzir o teste sem perguntar nada aos desenvolvedore
 2. As informações do jogo (scanner, cards, feedback, relatório) bastam para ela **tomar as decisões** de cada objetivo de ensino?
 3. Ela **sai sabendo mais** do que entrou, objetivo por objetivo (pré e pós-teste da §6)?
 
-**Cobertura:** Fases 1 e 2, objetivos **OA1 a OA7** (`ensino-e-aprendizagem.md` §"Nanobô 2.0"). A Fase 3 e o **OA8** (fungos) ficam fora: não existem no build de 25/11. Se o build testado tiver a Fase 3, acrescente a pergunta Q8 da §6 e as linhas de OA8 da §7.
+**Cobertura:** Fases 1 e 2, objetivos **OA1 a OA7** (`ensino-e-aprendizagem.md` §"Nanobô 2.0"). A Fase 3 e o **OA8** (fungos) ficam fora: não existiam no build testado em 25/11. *(Nota de 25/11: o build da branch `feat/fase3` já tem a Fase 3, e a Q8 vale para as próximas sessões; a sessão 1 abaixo continua registrada com o build antigo.)* Se o build testado tiver a Fase 3, acrescente a pergunta Q8 da §6 e as linhas de OA8 da §7.
 
 O resultado é **formativo**: com 1 a 5 pessoas, ele aponta problemas, não mede eficácia.
 
@@ -161,7 +161,7 @@ Copie esta ficha para a §9, uma por participante. **Só fatos:** o que a pessoa
 ### Sessão 1 — preparação (#135, 25/11/2026)
 
 - **Versão:** `x64/Release/Nanobo.exe` recompilado do zero (`-t:Rebuild`) em 25/11 a partir do commit `d1b0be5`. O código do jogo é o de `d822eab` (16/11), porque os commits seguintes só mexem em docs. Build com **0 avisos e 0 erros**; harness de regras com **334 passaram, 0 falharam**.
-- **Conteúdo:** Fases 1 e 2 (OA1–OA7). Sem Fase 3.
+- **Conteúdo:** Fases 1 e 2 (OA1–OA7). Sem Fase 3 neste build (ela entrou depois, em 25/11, na branch `feat/fase3`).
 - **Como rodar:** de dentro da pasta do repositório (os recursos carregam por caminho relativo), com duplo clique em `x64\Release\Nanobo.exe` ou pelo Explorer com a pasta do repositório como pasta de trabalho.
 - **Cenário inicial:** jogo recém-aberto no menu, sem partida anterior, com o ranking fora da pasta (§4, passo 3). Hoje o menu mostra `recorde 220 · Recorde`; com o ranking fora, esse rodapé muda.
 - **Conferido em 25/11:** o menu abre, `ENTER` leva ao briefing, `ESC` pula para a Fase 1, a dica `botão direito: escanear` aparece sobre o primeiro agente e o Nanobô anda com as setas.

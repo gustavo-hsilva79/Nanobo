@@ -244,7 +244,7 @@ Desde 14/11 (#223), o painel "o que a partida mostrou" fala em linguagem de joga
 
 ### 3.1 Cards de conceito
 
-> **No código desde 14/11 (#222):** CC-01 abre na primeira leitura completa de bactéria e CC-02 na primeira bactéria resistente. Cada card aparece uma vez por partida, sobre a fase parada, com as linhas desenhadas a partir de x = 56 num painel de 576 px; a maior (CC-02a, 66 caracteres) ocupa 528 px. CC-05 e CC-06 entram com a Fase 3 (#232): CC-05 abre ao entrar na Fase 3 e CC-06 na 1ª leitura completa de fungo ou no 1º antibiótico num fungo, o que vier primeiro.
+> **No código desde 14/11 (#222):** CC-01 abre na primeira leitura completa de bactéria e CC-02 na primeira bactéria resistente. Cada card aparece uma vez por partida, sobre a fase parada, com as linhas desenhadas a partir de x = 56 num painel de 576 px; a maior (CC-02a, 66 caracteres) ocupa 528 px. CC-05 e CC-06 estão no código desde 25/11 (#232): CC-05 abre ao entrar na Fase 3 e CC-06 na 1ª leitura completa de fungo ou no 1º antibiótico num fungo, o que vier primeiro.
 >
 > **Fase 2 no código desde 14/11 (#87, #88):** CC-03 abre na primeira leitura de um vírus livre, no primeiro vírus preso pelos anticorpos ou no primeiro antibiótico num vírus. CC-04 abre na primeira leitura de uma célula infectada ou na primeira célula que rompe, para quem não leu. Títulos: `Vírus não é célula` (18) e `Lisogênico e lítico` (19).
 

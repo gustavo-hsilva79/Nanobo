@@ -48,7 +48,7 @@ Não há aliados: o macrófago e o linfócito T planejados foram retirados em 13
 | 2 | vias aéreas (brônquio, mapa novo) | vírus respiratório: 3 vírus lisogênicos dentro de células + 2 células livres | **Neutralização** (anticorpos, vírus livre), **Lise** (destrói célula infectada já lida, papel do linfócito T) | zero vírus e Nanobô no destino |
 | 3 | pulmão (alvéolos, mapa novo) | fungos: 4 leveduras (*Cryptococcus*) + 2 colônias de bolor (*Aspergillus*) + 3 células, mais esporos conforme o estado do paciente | **Perfuração** (antifúngico, abre poros na membrana com ergosterol) | zero fungos e Nanobô no destino |
 
-Cada fase tem mapa, ponto de partida e destino próprios. O mapa da Fase 1 continua o atual, mas é desenhado escurecido e dessaturado com `al_draw_tinted_bitmap` para os agentes se destacarem; o PNG não muda. Os mapas das Fases 2 e 3 (1920×512) são desenhados por Claude e podem ser melhorados pelo dono com IA de geração de imagem.
+Cada fase tem mapa próprio; no build, as Fases 2 e 3 usam a partida e o destino globais (`DESTINATION_X/Y`), e a Fase 3 não tem pontos próprios (dívida em `fase3-fungos.md`). O mapa da Fase 1 continua o atual, mas é desenhado escurecido e dessaturado com `al_draw_tinted_bitmap` para os agentes se destacarem; o PNG não muda. Os mapas das Fases 2 e 3 (1920×512) são desenhados por Claude e podem ser melhorados pelo dono com IA de geração de imagem.
 
 ### Regras centrais
 
@@ -219,6 +219,16 @@ A Fase 2 do 2.0 entrou no build em 14/11 (#85–#89).
 - **Mapa:** o interior de um brônquio (`mapa_fase2.png`), com paredes de epitélio ciliado, as duas correntes de muco e a saída no destino.
 - **Regras completas:** `fase2-virus.md` (§"Implementação de 14/11").
 
+### Fase 3 — fungos
+
+A Fase 3 do 2.0 entrou no build em 25/11 (#226, #227–#233), na branch `feat/fase3`.
+- **Composição:** 4 leveduras, 2 colônias de bolor e 3 células alveolares, mais esporos no chão conforme o estado do paciente ao fim da Fase 2 (de 0 a 4).
+- **Levedura:** cápsula de 3 doses, avança a 35 px/s em alerta e brota a cada 20 ± 3 s, até 12 vivas.
+- **Bolor:** colônia fixa; a hifa cresce 1 segmento a cada 5 ± 1 s, até 5, rumo à célula mais próxima, e é parede que tira 10 de integridade; com a hifa cheia e a colônia em alerta saem 3 esporos em leque a cada 5 s. O esporo pousa, vira ameaça e germina em colônia em 6 s (teto de 4 colônias).
+- **Ferramentas:** Perfuração (tecla 1) e Ruptura (tecla 2, a ferramenta inicial); o antibiótico não age em fungo e trava o disparo por 2 s. O esporo não dá pontos.
+- **Mapa:** o pulmão (`mapa_fase3.png`), com alvéolos e capilares.
+- **Regras completas:** `fase3-fungos.md`.
+
 ## Combate e consequências
 
 O combate está implementado no M3.5; as armas **Ruptura** e **Dissolução** entraram no M4 e são o que o build de 04/11 usa, com projétil neutro distinguido pela forma. Os números atuais são ponto de partida, não balanceamento final:
@@ -278,11 +288,11 @@ A ficha do scanner só aparece quando há alvo e flutua na faixa do mundo, longe
 
 O fluxo está implementado em `src/core/game.c` com sete estados — `MENU`, `BRIEFING`, `GAME`, `PAUSE`, `RESULTS`, `VICTORY` e `GAME OVER` — e `BRIEFING` fica entre o menu e a fase, em toda partida (#106). As transições permitidas e a regra de que só `GAME` atualiza a lógica estão em [Fluxo de estados](../planejamento/fluxo-estados.md).
 
-`GAME OVER` é alcançado por vida zerada; `RESULTS` é alcançado automaticamente quando a fase conclui (6 ameaças neutralizadas + Nanobô no destino); `VICTORY` vem de `RESULTS`; `VICTORY` e `GAME OVER` iniciam nova partida com reset completo. `F`, `G` e `H` são teclas de QA e existem somente no build Debug (#70, #76).
+`GAME OVER` é alcançado por vida zerada; `RESULTS` é alcançado automaticamente quando a fase conclui (Fase 1: 6 bactérias neutralizadas; Fase 2: os vírus; Fase 3: os fungos, esporos inclusive; sempre com o Nanobô no destino); `VICTORY` vem de `RESULTS`; `VICTORY` e `GAME OVER` iniciam nova partida com reset completo. `F`, `G` e `H` são teclas de QA e existem somente no build Debug (#70, #76).
 
 ### Resultados e vitória
 
-A tela de Resultados apresenta os números reais da partida: pontos, ameaças neutralizadas/total, agentes identificados/total e se o bônus de +15 foi pago. O terceiro painel, `o que a partida mostrou`, traz `bactérias identificadas: %d Gram+ · %d Gram-`, `acertos de arma: %d · erros: %d`, `ataques à célula: %d` e uma frase de revisão — tudo a partir de contadores em memória, sem CSV nem telemetria. É leitura por contador, não o resumo por objetivo (#174/RF-07): o texto por OA continua pendente. A tela de Vitória mostra a pontuação final e inicia nova partida. Com duas fases, CONTINUAR nos Resultados carrega a Fase 2 e preserva a pontuação; na última fase leva a VICTORY, que mostra o total da run, o tempo total e o recorde. O recorde é a melhor pontuação da run, gravada em nanobo_hiscore.txt; a decisão de 05/11 é que só a Vitória grave, e o build de 04/11 ainda grava no Game Over (#34/#82).
+A tela de Resultados apresenta os números reais da partida: pontos, ameaças neutralizadas/total, agentes identificados/total e se o bônus de +15 foi pago. O terceiro painel, `o que a partida mostrou`, traz `bactérias identificadas: %d Gram+ · %d Gram-`, `acertos de arma: %d · erros: %d`, `ataques à célula: %d` e uma frase de revisão — tudo a partir de contadores em memória, sem CSV nem telemetria. É leitura por contador, não o resumo por objetivo (#174/RF-07): o texto por OA continua pendente. A tela de Vitória mostra a pontuação final e inicia nova partida. Com três fases, CONTINUAR nos Resultados carrega a fase seguinte (a Fase 2 depois da 1, a Fase 3 depois da 2) e preserva a pontuação; na última fase leva a VICTORY, que mostra o total da run, o tempo total e o recorde. O recorde é a melhor pontuação da run, gravada em nanobo_hiscore.txt; a decisão de 05/11 é que só a Vitória grave, e o build de 04/11 ainda grava no Game Over (#34/#82).
 
 ## Áudio e arte
 
@@ -297,9 +307,7 @@ Os assets são organizados em `assets/`, separados por tipo.
 
 ## Escopo de desenvolvimento
 
-O MVP foi centrado na Fase 1 para garantir uma partida completa e jogável antes da expansão do conteúdo. A Fase 2 mínima entrou em 04/11 para fechar o fluxo entre fases; a completa é M5.
-
-Uma terceira fase somente deve ser considerada se houver tempo e estabilidade suficientes.
+O MVP foi centrado na Fase 1 para garantir uma partida completa e jogável antes da expansão do conteúdo. A Fase 2 mínima entrou em 04/11 para fechar o fluxo entre fases; a completa entrou em 14/11. A Fase 3 de fungos entrou em 25/11 e fecha a partida em três fases.
 
 ## Pendências de design
 
