@@ -836,6 +836,8 @@ static void hit_hypha(int p)
     }
 
     progress.wrong_decisions = progress.wrong_decisions + 1;
+    progress.antibiotic_on_fungus = progress.antibiotic_on_fungus + 1;
+    queue_card(CARD_FUNGUS);
     fire_lock_timer = FIRE_LOCK_TIME;
     emit_sfx_at(SFX_EVENT_WRONG, sx, sy);
     set_feedback("a parede do fungo é de quitina: antibiótico não age");
@@ -958,6 +960,16 @@ static void hit_projectiles()
                         progress.treatments_completed = progress.treatments_completed + 1;
                     }
 
+                    // o relatorio da Fase 3 conta levedura e colonia eliminadas (#232)
+                    if (agents[j].species == SPECIES_YEAST)
+                    {
+                        progress.yeasts_eliminated = progress.yeasts_eliminated + 1;
+                    }
+                    else if (agents[j].species == SPECIES_MOLD)
+                    {
+                        progress.molds_eliminated = progress.molds_eliminated + 1;
+                    }
+
                     // o esporo nao da pontos: o feedback nao promete nada (25/11)
                     if (agents[j].species == SPECIES_SPORE)
                     {
@@ -1007,6 +1019,8 @@ static void hit_projectiles()
                 else if (agents[j].species == SPECIES_YEAST || agents[j].species == SPECIES_MOLD
                     || agents[j].species == SPECIES_SPORE)
                 {
+                    progress.antibiotic_on_fungus = progress.antibiotic_on_fungus + 1;
+                    queue_card(CARD_FUNGUS);
                     set_feedback("a parede do fungo é de quitina: antibiótico não age");
                 }
                 // quem leu so a forma chutou o grupo: o feedback aponta a coloracao (#215)
@@ -1102,6 +1116,13 @@ static void reveal_layer(int index)
             || agents[index].species == SPECIES_GRAM_NEGATIVE)
         {
             queue_card(CARD_GRAM);
+        }
+
+        // a primeira leitura completa de fungo abre o card do fungo (#232)
+        if (agents[index].species == SPECIES_YEAST || agents[index].species == SPECIES_MOLD
+            || agents[index].species == SPECIES_SPORE)
+        {
+            queue_card(CARD_FUNGUS);
         }
 
         // a filha da divisao fica identificada, mas so os agentes iniciais
@@ -2557,6 +2578,9 @@ static void start_phase(int index)
     if (phase_has_fungi())
     {
         spore_seed_ground(spore_load(vitals_end_phase2, run_progress.reserve_spent));
+
+        // a Fase 3 abre explicando por que o fungo aproveita o paciente fraco (#232)
+        queue_card(CARD_WEAKENED);
     }
 
     key_up = false;
@@ -2580,6 +2604,9 @@ static void start_phase(int index)
     progress.viruses_neutralized = 0;
     progress.cells_lysed = 0;
     progress.cells_burst = 0;
+    progress.yeasts_eliminated = 0;
+    progress.molds_eliminated = 0;
+    progress.antibiotic_on_fungus = 0;
 
     phase_finished = false;
     bonus_awarded = false;

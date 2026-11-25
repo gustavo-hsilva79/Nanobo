@@ -229,6 +229,9 @@ typedef struct
     int viruses_neutralized;  // virus livres presos pelos anticorpos (#88)
     int cells_lysed;          // celulas infectadas tiradas pela Lise antes de romper (#88)
     int cells_burst;          // celulas que romperam no ciclo litico (#86)
+    int yeasts_eliminated;    // leveduras eliminadas na Fase 3 (#232)
+    int molds_eliminated;     // colonias eliminadas, germinadas incluidas (#232)
+    int antibiotic_on_fungus; // tiros de antibiotico que acertaram fungo (#232)
 } MatchProgress;
 
 extern MatchProgress progress;
@@ -391,6 +394,8 @@ typedef enum
     CARD_ENDOTOXIN = 4,
     CARD_VIRUS = 5,
     CARD_CYCLE = 6,
+    CARD_WEAKENED = 7,
+    CARD_FUNGUS = 8,
     CARD_COUNT
 } ConceptCard;
 

@@ -77,8 +77,8 @@ Desenhada **em toda partida**: `MENU → BRIEFING → GAME`, e também depois de
 | NR-12 | card 4, linha 1 | `Manter os sinais vitais do paciente estáveis` | 44 | #244 |
 | NR-13 | card 4, linha 2 | `e o Nanobô inteiro: são as duas barras do painel.` | 49 | #244, #234 (duas barras) |
 | NR-14 | card 4, linha 3 | `Leia cada agente com o scanner antes de agir.` | 45 | #244 |
-| NR-15 | interlúdio: Resultados entre as fases, subtítulo | `sinais vitais: %s (%d) · a seguir: vírus nas vias aéreas` (`estável` ≥ 70, `em observação` 40–69, `grave` < 40, já com o piso de 60) | até 67 | #244 |
-| NR-16 | interlúdio: Resultados depois da Fase 2, subtítulo | `sinais vitais: %s (%d) · a seguir: fungos no pulmão` (mesmos estados do NR-15) | até 63 | #227 |
+| NR-15 | interlúdio: Resultados entre as fases, subtítulo | `sinais vitais: %s (%d) · a seguir: %s`, com `vírus nas vias aéreas` depois da Fase 1 (`estável` ≥ 70, `em observação` 40–69, `grave` < 40, já com o piso de 60) | até 67 | #244 |
+| NR-16 | interlúdio: Resultados depois da Fase 2, subtítulo | o `%s` do NR-15 depois da Fase 2 é `fungos no pulmão` (mesmos estados do NR-15) | até 63 | #227 |
 
 Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as armas) saíram do jogo em 15/11 e ficam no histórico do git.
 
@@ -226,6 +226,11 @@ Desde 14/11 (#223), o painel "o que a partida mostrou" fala em linguagem de joga
 | RR-08 | 3, fase de vírus | `ciclo lítico: %d células romperam` | 32 | `cells_burst` (#86) |
 | RR-09 | 4, fase de vírus | `ameaças eliminadas: %d de %d` | 28 | ameaças da fase, com os vírus da rajada |
 | RR-10 | 5, fase de vírus | `vírus não têm parede nem ribossomos` | 35 | — (OA6) |
+| RR-11 | 1, fase de fungos | `leveduras eliminadas: %d` | 24 | `yeasts_eliminated` (#232) |
+| RR-12 | 2, fase de fungos | `colônias eliminadas: %d (com germinadas)` | 40 | `molds_eliminated`; a colônia que germinou de esporo conta (#232) |
+| RR-13 | 3, fase de fungos | `antibiótico em fungo: %d tiros` | 30 | `antibiotic_on_fungus`: tiro em levedura, colônia, hifa ou esporo (#232) |
+| RR-14 | 4, fase de fungos | `esporos pelo estado do paciente: %d` | 35 | `spore_load_current()`, a carga da abertura (#231, #232) |
+| RR-15 | 5, fase de fungos | `fungo: parede de quitina, alvo: ergosterol` | 42 | — (frase fixa; 42 caracteres = 336 px, a largura útil do painel; a versão com "alvo é o ergosterol" tinha 45 e passava de 360 px) |
 
 **Leitura dos contadores:** um tratamento completo é uma bactéria eliminada com as duas doses do antibiótico certo. A Reserva não conta como tratamento, e o relatório a separa entre a gasta numa resistente e a gasta numa bactéria comum. `shape_guesses` conta o antibiótico errado dado depois de ler só a forma (FB-05).
 
@@ -239,7 +244,7 @@ Desde 14/11 (#223), o painel "o que a partida mostrou" fala em linguagem de joga
 
 ### 3.1 Cards de conceito
 
-> **No código desde 14/11 (#222):** CC-01 abre na primeira leitura completa de bactéria e CC-02 na primeira bactéria resistente. Cada card aparece uma vez por partida, sobre a fase parada, com as linhas desenhadas a partir de x = 56 num painel de 576 px; a maior (CC-02a, 66 caracteres) ocupa 528 px. CC-05 e CC-06 entram com a Fase 3.
+> **No código desde 14/11 (#222):** CC-01 abre na primeira leitura completa de bactéria e CC-02 na primeira bactéria resistente. Cada card aparece uma vez por partida, sobre a fase parada, com as linhas desenhadas a partir de x = 56 num painel de 576 px; a maior (CC-02a, 66 caracteres) ocupa 528 px. CC-05 e CC-06 entram com a Fase 3 (#232): CC-05 abre ao entrar na Fase 3 e CC-06 na 1ª leitura completa de fungo ou no 1º antibiótico num fungo, o que vier primeiro.
 >
 > **Fase 2 no código desde 14/11 (#87, #88):** CC-03 abre na primeira leitura de um vírus livre, no primeiro vírus preso pelos anticorpos ou no primeiro antibiótico num vírus. CC-04 abre na primeira leitura de uma célula infectada ou na primeira célula que rompe, para quem não leu. Títulos: `Vírus não é célula` (18) e `Lisogênico e lítico` (19).
 

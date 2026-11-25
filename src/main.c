@@ -1856,7 +1856,9 @@ static const char* card_titles[CARD_COUNT] =
     "Biofilme",
     "Endotoxina",
     "Vírus não é célula",
-    "Lisogênico e lítico"
+    "Lisogênico e lítico",
+    "Organismo enfraquecido",
+    "Fungo"
 };
 
 static const char* card_lines[CARD_COUNT][3] =
@@ -1895,6 +1897,16 @@ static const char* card_lines[CARD_COUNT][3] =
         "Lisogênico: o vírus fica dentro da célula, sem destruí-la ainda.",
         "Lítico: ele faz cópias, a célula se rompe e libera novos vírus.",
         "A Lise destrói a célula infectada, como faz o linfócito T."
+    },
+    {
+        "Fungos oportunistas aproveitam um organismo enfraquecido.",
+        "Os esporos de Aspergillus estão no ar; o corpo saudável os elimina.",
+        "Quanto pior o paciente chega, mais esporos se instalam no pulmão."
+    },
+    {
+        "O fungo tem núcleo, como as nossas células: é um eucarionte.",
+        "Sua parede é de quitina, não de peptidoglicano: antibiótico não age.",
+        "A Perfuração abre poros na membrana dele, que tem ergosterol."
     }
 };
 
@@ -2163,6 +2175,29 @@ void draw_treatment_marks(int index)
     }
 }
 
+// fungo sem leitura: a mesma silhueta da bacteria, na escala do raio dele (#232, D7)
+void draw_fungus_silhouette(int index)
+{
+    float size = 2.0f * agent_radius(index) + 2.0f;
+
+    al_draw_scaled_bitmap(silhouette_sprite, 0.0f, 0.0f,
+        (float)al_get_bitmap_width(silhouette_sprite), (float)al_get_bitmap_height(silhouette_sprite),
+        view_x(agents[index].x) - size / 2.0f, view_y(agents[index].y) - size / 2.0f,
+        size, size, 0);
+}
+
+// marcas do fungo: as do tratamento e o anel de identificado na 2a camada (#232)
+void draw_fungus_marks(int index)
+{
+    if (agents[index].layers >= MAX_LAYERS)
+    {
+        al_draw_circle(view_x(agents[index].x), view_y(agents[index].y),
+            agent_radius(index) + 2.0f, UI_GREEN, 1.0f);
+    }
+
+    draw_treatment_marks(index);
+}
+
 void draw_game()
 {
     int i;
@@ -2310,11 +2345,20 @@ void draw_game()
             continue;
         }
 
-        // esporo pousado provisorio: circulo de raio 3 verde-acinzentado (#229)
+        // esporo pousado: silhueta ate a 1a leitura, depois o circulo provisorio (#229, #232)
         if (agents[i].species == SPECIES_SPORE)
         {
-            al_draw_filled_circle(view_x(agents[i].x), view_y(agents[i].y), 3.0f,
-                al_map_rgb(150, 168, 140));
+            if (agents[i].layers == 0)
+            {
+                draw_fungus_silhouette(i);
+            }
+            else
+            {
+                al_draw_filled_circle(view_x(agents[i].x), view_y(agents[i].y), 3.0f,
+                    al_map_rgb(150, 168, 140));
+            }
+
+            draw_fungus_marks(i);
             continue;
         }
 
@@ -2337,15 +2381,25 @@ void draw_game()
             }
         }
 
-        // fungo provisorio ate a Task 7: levedura bege e colonia verde-acinzentada
+        // fungo provisorio ate a Task 7: levedura bege e colonia verde-acinzentada;
+        // sem leitura, so a silhueta (a hifa acima aparece desde o inicio) (#232)
         if (agents[i].species == SPECIES_YEAST || agents[i].species == SPECIES_MOLD)
         {
             bool yeast = agents[i].species == SPECIES_YEAST;
 
-            al_draw_filled_circle(view_x(agents[i].x), view_y(agents[i].y), agent_radius(i),
-                yeast ? al_map_rgb(226, 214, 176) : al_map_rgb(112, 130, 108));
-            al_draw_circle(view_x(agents[i].x), view_y(agents[i].y), agent_radius(i),
-                al_map_rgb(54, 44, 36), 2.0f);
+            if (agents[i].layers == 0)
+            {
+                draw_fungus_silhouette(i);
+            }
+            else
+            {
+                al_draw_filled_circle(view_x(agents[i].x), view_y(agents[i].y), agent_radius(i),
+                    yeast ? al_map_rgb(226, 214, 176) : al_map_rgb(112, 130, 108));
+                al_draw_circle(view_x(agents[i].x), view_y(agents[i].y), agent_radius(i),
+                    al_map_rgb(54, 44, 36), 2.0f);
+            }
+
+            draw_fungus_marks(i);
             continue;
         }
 
@@ -2654,6 +2708,33 @@ void results_report_line(int row, char* line, size_t size)
     int reserve_spent = progress.reserve_on_resistant + progress.reserve_on_common;
 
     line[0] = '\0';
+
+    // fase de fungos: o que foi eliminado, o antibiotico que nao age e a carga de esporos (#232)
+    if (phase_has_fungi())
+    {
+        if (row == 0)
+        {
+            snprintf(line, size, "leveduras eliminadas: %d", progress.yeasts_eliminated);
+        }
+        else if (row == 1)
+        {
+            snprintf(line, size, "colônias eliminadas: %d (com germinadas)", progress.molds_eliminated);
+        }
+        else if (row == 2)
+        {
+            snprintf(line, size, "antibiótico em fungo: %d tiros", progress.antibiotic_on_fungus);
+        }
+        else if (row == 3)
+        {
+            snprintf(line, size, "esporos pelo estado do paciente: %d", spore_load_current());
+        }
+        else
+        {
+            snprintf(line, size, "fungo: parede de quitina, alvo: ergosterol");
+        }
+
+        return;
+    }
 
     // fase de virus: anticorpos, Lise e ciclo litico (#88)
     if (phase_has_viruses())
