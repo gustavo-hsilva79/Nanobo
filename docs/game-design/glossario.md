@@ -101,3 +101,21 @@ _Evitar_: frame
 **Pose**:
 A orientação desenhada do Nanobô — frente, costas ou perfil.
 _Evitar_: direção (essa palavra é do movimento)
+
+## Narrativa e ensino
+
+**Diário do Nanobô**:
+O conjunto de anotações que o próprio Nanobô escreve, em primeira pessoa, sobre o que descobre ao escanear e agir. É a forma que o card de conceito assume no jogo.
+_Evitar_: card de conceito (para o que o jogador vê), tutorial, aula
+
+**Anotação**:
+Uma entrada do Diário do Nanobô, aberta por um evento do jogo e lida em páginas que avançam pela mesma tecla.
+_Evitar_: card, popup, mensagem
+
+**Paciente**:
+A pessoa de 16 anos dentro de quem o Nanobô trabalha; a história dela liga as três fases.
+_Evitar_: hospedeiro, alvo
+
+**Interlúdio**:
+O trecho entre duas fases que mostra o estado do Paciente e o que acontece com ele no hospital.
+_Evitar_: transição, loading

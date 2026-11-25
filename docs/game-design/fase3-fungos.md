@@ -9,7 +9,7 @@
 - **Local:** o pulmão, num mapa de alvéolos e capilares (`mapa_fase3.png`, 1920×512).
 - **Composição (`phases[]`, `PHASE_COUNT` 3):** 4 leveduras (*Cryptococcus*), 2 colônias de bolor (*Aspergillus*) e 3 células alveolares do paciente, nove agentes em ids de 1 a 9. Mais os esporos de carga (§"Carga de esporos") e o que a fase gerar sozinha.
 - **Ferramentas:** só a **Perfuração** (antifúngico, tecla 1) e a **Ruptura** (tecla 2). A tecla 3 não tem ferramenta na fase. A roda do mouse alterna as duas. A fase **começa na Ruptura** (D8).
-- **Lição da fase:** a parede do fungo é de quitina, não de peptidoglicano, então o antibiótico não age; o alvo do antifúngico é o ergosterol da membrana. O jogador erra a arma de propósito, ou não, e o jogo cobra com a trava de 2 s.
+- **Lição da fase (verificada em 25/11, [`conteudo-biologico.md`](conteudo-biologico.md)):** a parede do fungo é de quitina, não de peptidoglicano, então o antibiótico não age (a causa é o alvo ausente; o texto seguro é "antibiótico de bactéria não tem alvo no fungo"); a **Perfuração é inspirada na anfotericina B**, que se liga ao ergosterol e forma poros e é tóxica para o paciente, e o alvo do antifúngico é o ergosterol da membrana. O jogador erra a arma de propósito, ou não, e o jogo cobra com a trava de 2 s.
 - **Conclusão:** zero fungos vivos e o Nanobô no destino. Vale como ameaça tudo o que é fungo: levedura, colônia, esporo no chão e esporo em voo.
 - **Fim de jogo:** a Fase 3 é a última. `CONTINUAR` nos Resultados leva a `VICTORY` (`has_next_phase()` é falso nela).
 
@@ -65,6 +65,7 @@
 - **Perfuração na célula do paciente:** ramo da célula existente, −15 dos vitais (fogo amigo). O "não custa vitais" de `decisoes.md` fala do efeito colateral da arma, que o dono não escolheu; não tira o custo de acertar a célula.
 - **Pontuação:** +10 por levedura eliminada e por colônia **inicial** eliminada (índice < `agents_initial()`). O **esporo não dá pontos**, nem em voo nem no chão, e a **colônia que germinou de esporo também não** (decisão do dono de 25/11): ela segue ameaça (conta para a conclusão, para `neutralized` e para `molds_eliminated`), e a eliminação dá o feedback FB-40 `colônia germinada destruída: sem pontos`. O broto de levedura continua valendo +10, como a filha da divisão na Fase 1.
 - **O que a fase não afirma:** que o antibiótico cause aspergilose. A carga de esporos pelo estado do paciente é regra de jogo, sem texto que diga isso.
+- **Enquadramento do organismo enfraquecido (CC-05c, 25/11):** o risco vem da **defesa fraca**, não de mais esporos inalados; a redação "quanto pior o paciente chega, mais esporos se instalam" inverte a causa e será trocada por "quanto mais fraco o paciente, mais fácil para os esporos se instalarem" (**pendente de redação**; `textos-do-jogo.md` não mudou). Nos textos de fungos oportunistas, evitar "só": *C. gattii* também afeta pessoas saudáveis ([MSD Manual](https://www.msdmanuals.com/pt/casa/infec%C3%A7%C3%B5es/infec%C3%A7%C3%B5es-f%C3%BAngicas/criptococose)); aspergilose atinge sobretudo quem tem a defesa fraca ([CDC](https://www.cdc.gov/aspergillosis/about/)). No arco do jogo, a defesa enfraquecida do Paciente vem do vírus respiratório da Fase 2 ([`decisoes.md`](decisoes.md) §"Narrativa e conteúdo (25/11/2026)").
 
 ## Carga de esporos pelo estado do paciente (#231, D4)
 

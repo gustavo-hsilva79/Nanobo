@@ -46,7 +46,7 @@ Este arquivo registra decisões já tomadas pela dupla. Quando uma decisão impo
   - **célula do paciente 64×64:** membrana dupla, citoplasma em cúpula com grânulos, núcleo com cromatina e nucléolo, três mitocôndrias com cristas e o retículo em volta do núcleo;
   - **estilo:** contorno escuro de 1 px, luz no alto à esquerda e paleta fora do vermelho do mapa;
   - os arquivos ficam em `../Nanobo-testes/arte-amostra/` (`amostra2_*`), gerados pelo `amostra2.lua`. As outras três direções e os 8 quadros do Nanobô entram na Etapa 3.
-- **Escala biológica dos sprites:** vírus 16, bactéria 32, levedura 40, Nanobô 48 e célula do paciente 64, com colisão por espécie.
+- **Escala dos sprites:** vírus 16, bactéria 32, levedura 40, Nanobô 48 e célula do paciente 64, com colisão por espécie. *(Em 25/11 o nome "escala biológica" foi trocado por "fora de escala"; ver §"Narrativa e conteúdo (25/11/2026)", decisão 8.)*
 - **Ordem:** a Fase 1 primeiro (15–18/11), a nova amostra em 17–19/11, e as Fases 2 e 3 já nascem com a IA delas.
 - **Calls de implementação (#235):**
   - **5 s de calma** no começo de cada fase (`AI_GRACE_TIME`): ninguém entra em alerta antes disso. Sem isso, um bacilo nascido a 198 px do início investia aos 2 s, antes do tutorial;
@@ -485,6 +485,41 @@ Decisões do dono em 24–25/11/2026 para a #226 (#227–#233). As regras implem
 - **Perfuração e vitais:** "não custa vitais" vale para o efeito colateral da arma, que o dono não escolheu; Perfuração em célula do paciente continua custando 15 pelo fogo amigo.
 - **Hifa:** age como parede (empurra o Nanobô e tira 10 no máximo uma vez por segundo) e a defesa não protege dela.
 - **Estado:** harness de regras 470/0, Debug e Release com 0 avisos, pico de memória de ~78,25 MB nas três fases.
+
+### Narrativa e conteúdo (25/11/2026)
+
+Decisões do dono em 25/11/2026, depois da verificação do conteúdo de biologia com fontes (relatório de pesquisa e notas em `.hermes/`; o resultado está em [`conteudo-biologico.md`](conteudo-biologico.md) §"Verificação com fontes" e em [`ensino-e-aprendizagem.md`](ensino-e-aprendizagem.md)). O veredito da pesquisa foi que nenhuma afirmação estava errada e que os problemas eram de enquadramento. **Só documentação**: nenhum código nem texto do jogo (`textos-do-jogo.md`) mudou nesta rodada; os textos novos serão redigidos depois, para aprovação.
+
+1. **Narrativa: Diário do Nanobô e o Paciente Léo.**
+   - Os cards de conceito viram o **Diário do Nanobô**: **Anotações** em primeira pessoa, escritas pelo Nanobô (um protótipo recém-ligado, de memória vazia) sobre o que descobre. A caixa de diálogo é paginada: máquina de escrever de cerca de 40 caracteres por segundo; a mesma tecla completa a página e depois avança; ▼ piscando; "fechar" na última página; contador "2/4"; 0,2 s de debounce; jogo pausado.
+   - Os **Interlúdios** contam a história do **Paciente, Léo Martins Ferreira, 16 anos**: na Fase 1 a infecção no sangue melhora; na enfermaria ele pega um vírus respiratório (Fase 2); com a defesa enfraquecida, esporos de mofo chegam ao pulmão (Fase 3). **Vitória = alta. Game Over = a equipe retira o Nanobô e Léo segue o tratamento convencional; não há morte.**
+   - Abertura = ficha do hospital + "Anotação 0". O relatório de fim de fase vira uma página do diário, **"O que anotei nesta fase"**. Um **menu para reler o diário fica fora do escopo de 02/12**.
+   - Tom: frases curtas, um termo-chave colorido por página, nada que os documentos não sustentem.
+   - *Por quê:* o 2.0 saiu da auditoria como "raso no ensino" e "sem narrativa"; o diário em primeira pessoa dá voz ao ensino sem aula expositiva, e um paciente com nome e idade dá ligação emocional às três fases e à perda. O Game Over sem morte mantém o tom de jogo educativo para o ensino médio. O nome completo substitui a regra anterior de "o paciente não tem nome nem gênero no texto" ([`gdd.md`](gdd.md) §"Narrativa").
+2. **Espécies: trocar as que contrariam a regra das armas.**
+   - ***Neisseria meningitidis* sai, *Moraxella catarrhalis* entra** (coco Gram−, diplococo); ***Bacillus cereus* sai, *Clostridium tetani* entra** (bacilo Gram+). *S. aureus* fica, com a nota de que muitas cepas resistem à penicilina.
+   - Uma linha do diário diz que as armas são **regra do jogo, inspirada em antibióticos reais**, e que **no jogo todas as espécies aparecem juntas no sangue, por simplicidade**.
+   - *Por quê:* o meningococo é Gram− mas é tratado com penicilina e não responde à polimixina (inverte os dois lados); *B. cereus* é Gram+ com β-lactamase potente e resiste à "arma de Gram+". *M. catarrhalis* resiste à penicilina e, em geral, é sensível à colistina; *C. tetani* é sensível à penicilina G (Guia de Vigilância do Ministério da Saúde) e não responde à polimixina por ser Gram+. Ressalva: nenhuma das duas é típica de corrente sanguínea, e a fonte da polimixina para *Moraxella* é fraca. Detalhe e fontes em `conteudo-biologico.md`.
+3. **A ferramenta "Lise" será renomeada** (proposta: **"Ataque T"**, que evoca o linfócito T).
+   - *Por quê:* "lise" é, no ensino médio, o rompimento da célula pelo vírus no ciclo lítico, e a ferramenta que "destrói a célula infectada" com esse nome confunde as duas coisas. A renomeação **no código e nos textos acontece depois**; até lá, os documentos (inclusive `fase2-virus.md` e `gdd.md`) ainda dizem "Lise".
+4. **A analogia dos ciclos lisogênico e lítico entra no jogo.** No primeiro encontro com uma célula infectada, o diário diz que esses ciclos foram descritos em vírus de bactérias (bacteriófagos) e que aqui são uma analogia.
+   - *Por quê:* a nota só existia nos documentos internos, e sem ela a descrição é enganosa para vírus humanos (em que o análogo real é a latência, como no herpes; não há fonte que atribua isso ao vírus da gripe).
+5. **Texto da resistência.** "Siga a prescrição até o fim"; a resistência é explicada por **seleção** (as sobreviventes passam a resistência às filhas); a mecânica de 2 doses e 6 s é apresentada **como regra do jogo**.
+   - *Por quê:* "uma dose e mais de 6 s sem a segunda tornam a bactéria resistente" soa lamarckista; a posição brasileira (Agência Brasil, Anvisa, Fiocruz) é "siga a prescrição", e o jogo evita a controvérsia de que parar cedo cause resistência (BMJ 2017).
+6. **Correções de ponto aplicadas nos documentos.**
+   - **CC-05c:** o risco vem da defesa fraca, não da quantidade de esporos;
+   - **RT-10:** "sem metabolismo nem ribossomos próprios";
+   - **CC-01a** (o corante roxo fica preso ou sai conforme a parede) e **CC-02b** ("esta resistiu... nem nas filhas");
+   - a **Perfuração** cita a anfotericina B como inspiração;
+   - evitar "só" nos textos de fungos oportunistas (*C. gattii* também afeta pessoas saudáveis).
+   - Nos documentos já estão as descrições e regras; as redações finais dos textos ficam **pendentes de redação**.
+   - *Por quê:* a verificação com fontes mostrou que são enquadramentos inexatos, e não erros de fato.
+7. **Termos acima do ensino médio ficam fora do texto do jogador** (LPS, β-lactamase, transpeptidase); **"LPS" vira "toxina da membrana externa"** no jogo. Os documentos mantêm o termo técnico, com fonte.
+   - *Por quê:* BNCC organiza competências amplas e não pede esses termos; o público é o ensino médio.
+8. **Sprites "fora de escala".** Só a ordem **vírus < bactéria < célula** é mantida; deixa de existir o rótulo "escala biológica".
+   - *Por quê:* a razão real de tamanhos é muito maior que 16:64 px, e os tempos do jogo (12 s, 6 s, 10 s) também não são reais; "escala biológica" prometia o que o jogo não entrega.
+
+**Pendente no código** (fora desta rodada): a troca de espécies nos dados e textos, a renomeação da Lise, a caixa de diálogo paginada, as telas do diário e dos interlúdios e a revisão de `textos-do-jogo.md`.
 
 ### Refatoração pós-entrega (06/11/2026)
 

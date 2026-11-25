@@ -23,18 +23,22 @@ O 2.0 responde aos critérios da disciplina (Plano de Ensino e Aulas 1 e 2):
 
 ### Narrativa
 
-Premissa curta, contada em cards de até 3 linhas.
+> **Reescrita em 25/11/2026** (decisão do dono, [`decisoes.md`](decisoes.md) §"Narrativa e conteúdo (25/11/2026)"). O que está no build desde 15/11 (#244: abertura em 4 cards, interlúdio como subtítulo dos Resultados, Vitória e Game Over) continua até a implementação do diário, que fica para depois; esta seção é o alvo.
 
-- **Abertura (4 cards):**
-  1. Um paciente de 16 anos chega ao hospital com febre alta e uma infecção que se espalha pelo sangue.
-  2. A equipe testa o **Nanobô**, um nanorrobô médico menor que uma célula.
-  3. Ele ajuda o corpo sem ferir as células do paciente, e vai atrás só dos invasores (a maioria das bactérias do corpo é inofensiva).
-  4. A missão é manter os sinais vitais estáveis.
-- **Interlúdios** entre as fases mostram os sinais vitais ("estável" ≥ 70, "em observação" 40–69, "grave" < 40) e anunciam o próximo invasor.
-- **No jogo desde 15/11 (#244):** a abertura substitui o briefing (4 cards); o interlúdio é o subtítulo da tela de Resultados entre as fases; a Vitória diz que o paciente recebeu alta, e o Game Over, que a equipe retirou o Nanobô e por quê.
-- **Final:** o paciente recebe alta, com o relatório do que o Nanobô viu.
-- **Game over:** os sinais vitais caem demais e a equipe retira o Nanobô.
-- O paciente não tem nome nem gênero no texto.
+A história é contada pelo **Diário do Nanobô**: o Nanobô é um protótipo **recém-ligado, de memória vazia**, e escreve em **primeira pessoa** as **Anotações** sobre o que descobre. Os termos estão no [`glossario.md`](glossario.md) (Diário do Nanobô, Anotação, Paciente, Interlúdio).
+
+- **Abertura:** a **ficha do hospital** do Paciente e a **"Anotação 0"** do Nanobô, no lugar dos 4 cards de hoje.
+- **O Paciente:** **Léo Martins Ferreira, 16 anos**, internado com febre alta e uma infecção que se espalha pelo sangue. A equipe testa o Nanobô, um nanorrobô médico menor que uma célula, que ajuda o corpo sem ferir as células do paciente e vai atrás só dos invasores (a maioria das bactérias do corpo é inofensiva).
+- **O arco, em três Interlúdios:**
+  1. **Fase 1:** a infecção no sangue melhora;
+  2. **Fase 2:** na enfermaria, Léo pega um **vírus respiratório**;
+  3. **Fase 3:** com a defesa enfraquecida, **esporos de mofo** chegam ao pulmão. O risco vem da defesa fraca, não de mais esporos.
+  Os Interlúdios seguem mostrando os sinais vitais ("estável" ≥ 70, "em observação" 40–69, "grave" < 40) e anunciam o próximo invasor.
+- **Final:** **Vitória = alta** de Léo, com a página do diário **"O que anotei nesta fase"** no lugar do relatório de fim de fase.
+- **Game Over:** a equipe **retira o Nanobô** e Léo **segue o tratamento convencional**. **Ninguém morre.**
+- **As Anotações** são as antigas "cards de conceito" (IDs CC-01 a CC-09 mantidos): caixa de diálogo **paginada** (máquina de escrever de cerca de 40 caracteres por segundo; a mesma tecla completa e depois avança; ▼ piscando; "fechar" na última página; contador "2/4"; 0,2 s de debounce), **jogo pausado**, frases curtas e um termo-chave colorido por página. O conteúdo vem só do que os documentos sustentam ([`conteudo-biologico.md`](conteudo-biologico.md)). Entre elas, uma diz que as armas são regra do jogo, inspirada em antibióticos reais, e que no jogo todas as espécies aparecem juntas no sangue, por simplicidade.
+- **Fora do escopo de 02/12:** o menu para reler o diário.
+- **Pendente:** os textos novos ainda serão redigidos para aprovação do dono; `textos-do-jogo.md` não mudou.
 
 ### O Nanobô é o único defensor
 
@@ -45,8 +49,8 @@ Não há aliados: o macrófago e o linfócito T planejados foram retirados em 13
 | Fase | Local | Invasor | Ferramentas | Vitória |
 |---|---|---|---|---|
 | 1 | corrente sanguínea (mapa atual) | 6 bactérias (cocos e bacilos, Gram+ e Gram−) + 3 células do paciente | **Ruptura** (antibiótico de parede), **Dissolução** (antibiótico de membrana), **Reserva** (antibiótico de reserva, 2 cargas) | zero bactérias e Nanobô no destino |
-| 2 | vias aéreas (brônquio, mapa novo) | vírus respiratório: 3 vírus lisogênicos dentro de células + 2 células livres | **Neutralização** (anticorpos, vírus livre), **Lise** (destrói célula infectada já lida, papel do linfócito T) | zero vírus e Nanobô no destino |
-| 3 | pulmão (alvéolos, mapa novo) | fungos: 4 leveduras (*Cryptococcus*) + 2 colônias de bolor (*Aspergillus*) + 3 células, mais esporos conforme o estado do paciente | **Perfuração** (antifúngico, abre poros na membrana com ergosterol) | zero fungos e Nanobô no destino |
+| 2 | vias aéreas (brônquio, mapa novo) | vírus respiratório: 3 vírus lisogênicos dentro de células + 2 células livres | **Neutralização** (anticorpos, vírus livre), **Lise** (destrói célula infectada já lida, papel do linfócito T; **nome a trocar por "Ataque T", renomeação pendente no código**) | zero vírus e Nanobô no destino |
+| 3 | pulmão (alvéolos, mapa novo) | fungos: 4 leveduras (*Cryptococcus*) + 2 colônias de bolor (*Aspergillus*) + 3 células, mais esporos conforme o estado do paciente | **Perfuração** (antifúngico inspirado na anfotericina B, abre poros na membrana com ergosterol) | zero fungos e Nanobô no destino |
 
 Cada fase tem mapa próprio; no build, as Fases 2 e 3 usam a partida e o destino globais (`DESTINATION_X/Y`), e a Fase 3 não tem pontos próprios (dívida em `fase3-fungos.md`). O mapa da Fase 1 continua o atual, mas é desenhado escurecido e dessaturado com `al_draw_tinted_bitmap` para os agentes se destacarem; o PNG não muda. Os mapas das Fases 2 e 3 (1920×512) são desenhados por Claude e podem ser melhorados pelo dono com IA de geração de imagem.
 
@@ -70,7 +74,7 @@ Cada fase tem mapa próprio; no build, as Fases 2 e 3 usam a partida e o destino
   - a **Lise** elimina a célula infectada já lida: custa poucos vitais, mas impede a eclosão;
   - o antibiótico não age em vírus;
   - teto de 12 vírus.
-- **Ligação com a Fase 3:** a carga inicial de esporos sobe quanto menores forem os vitais ao fim da Fase 2 e quanto mais cargas de Reserva tiverem sido gastas. Fungos oportunistas aproveitam um organismo enfraquecido.
+- **Ligação com a Fase 3:** a carga inicial de esporos sobe quanto menores forem os vitais ao fim da Fase 2 e quanto mais cargas de Reserva tiverem sido gastas. Fungos oportunistas se instalam com mais facilidade quando a defesa está fraca (o risco vem da defesa fraca, não da quantidade de esporos).
 - **Duas barras (14/11):**
   - **Integridade do Nanobô:** de 0 a 100, cheia no início de cada fase. Cai com contato (10), toxina (8), esporo (8), vírus da rajada (6), hifa (10) e nuvem de endotoxina (10/s).
   - **Vitais do paciente:** de 0 a 100. Caem com célula do paciente destruída (−20), tiro do Nanobô numa célula (−15) e Lise (−5). Passam de uma fase para a outra, e o interlúdio recupera até no mínimo 60.
@@ -94,8 +98,8 @@ O agente volta a vagar se o Nanobô ficar a mais de 320 px por 3 s. Todo ataque 
 
 | Invasor | Biologia que o comportamento mostra | Comportamento |
 |---|---|---|
-| Bacilo (*E. coli*, *P. aeruginosa*, *B. cereus*) | tem flagelo e nada | persegue a 70 px/s; investida de 0,4 s a 150 px/s a cada 2,5 s |
-| Coco (*S. aureus*, *S. pyogenes*, *N. meningitidis*) | sem flagelo; coloniza tecido e produz toxina | deriva a 20 px/s até a célula do paciente mais próxima e coloniza (5/s numa célula de 100); a menos de 180 px do Nanobô, solta toxina a cada 3 s (90 px/s) |
+| Bacilo (*E. coli*, *P. aeruginosa*, *C. tetani*) | tem flagelo e nada | persegue a 70 px/s; investida de 0,4 s a 150 px/s a cada 2,5 s |
+| Coco (*S. aureus*, *S. pyogenes*, *M. catarrhalis*) | sem flagelo; coloniza tecido e produz toxina | deriva a 20 px/s até a célula do paciente mais próxima e coloniza (5/s numa célula de 100); a menos de 180 px do Nanobô, solta toxina a cada 3 s (90 px/s) |
 | Biofilme | matriz que protege as bactérias | coco colonizando por mais de 6 s cria uma mancha de raio 40: o Nanobô anda a 50% e a bactéria dentro pede 3 doses |
 | Endotoxina | LPS da membrana externa da Gram-, liberado quando ela se rompe | a Gram- eliminada deixa uma nuvem de raio 36 por 2,5 s (10/s) |
 | Correnteza | fluxo do sangue; muco empurrado pelos cílios | faixas que empurram o Nanobô, os cocos e as toxinas (40 px/s) |
@@ -105,7 +109,7 @@ O agente volta a vagar se o Nanobô ficar a mais de 320 px por 3 s. Todo ataque 
 
 - **Defesa (X):** além de empurrar, destrói os projéteis inimigos que tocam o escudo (toxina, esporo, vírus da rajada). Não protege da nuvem, do biofilme nem da hifa.
 - **Calibração:** pelos bots do harness (leitor 55–75%, chute até 10%), ajustando a perseguição, a toxina e a colonização, não o tempo.
-- **Escala dos sprites:** segue a biologia (vírus < bactéria < levedura < célula do paciente), como na tabela de §"Arte e interface".
+- **Escala dos sprites:** **ilustrativos, fora de escala** (decisão de 25/11); só a ordem vírus < bactéria < levedura < célula do paciente é mantida, como na tabela de §"Arte e interface".
 
 ### Arte e interface
 
@@ -198,7 +202,7 @@ O scanner é uma mecânica central de investigação.
 
 A primeira fase é o núcleo do MVP. Ela trabalha a diferenciação entre bactérias e células saudáveis, incluindo a distinção entre bactérias Gram-positivas e Gram-negativas.
 
-Os seis binômios do cenário são **identificação do agente**, não alegação de patogenicidade: *Staphylococcus aureus*, *Streptococcus pneumoniae*, *Streptococcus pyogenes* (Gram+), *Escherichia coli*, *Salmonella enterica* e *Pseudomonas aeruginosa* (Gram−). Cada espécie poderá ter mais de um sprite no M5 (#211), sorteado por agente; a variante só aparece depois da camada 1 (ver `decisoes.md`).
+Os seis binômios do cenário são **identificação do agente**, não alegação de patogenicidade: *Staphylococcus aureus*, *Streptococcus pyogenes*, *Clostridium tetani* (Gram+), *Moraxella catarrhalis*, *Escherichia coli* e *Pseudomonas aeruginosa* (Gram−). (Lista atualizada em 25/11/2026; a de M4 trazia S. pneumoniae e Salmonella, e o 2.0 de 13/11 trazia N. meningitidis e B. cereus; ver `conteudo-biologico.md`.) Cada espécie poderá ter mais de um sprite no M5 (#211), sorteado por agente; a variante só aparece depois da camada 1 (ver `decisoes.md`).
 
 O jogador deve usar as informações do scanner para interpretar o agente encontrado e escolher a ação correspondente.
 

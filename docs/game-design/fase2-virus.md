@@ -14,11 +14,13 @@ Decisões do dono em 13/11, que valem acima do texto de 11/11 abaixo:
   - os até 3 vírus novos nascem **líticos e livres**, andando, e não lisogênicos como dizia a §"Multiplicação";
   - se um vírus livre tocar uma **célula livre** do paciente, ele a infecta e vira lisogênico dentro dela, com o tempo cheio;
   - sem célula livre, ele continua livre.
+- **Nota de analogia (25/11/2026):** lisogênico e lítico são ciclos descritos em **bacteriófagos** ([OpenStax 6.2](https://openstax.org/books/microbiology/pages/6-2-the-viral-life-cycle)); no jogo são uma **analogia**, dita na Anotação da 1ª célula infectada do Diário (pendente de redação). Em vírus humanos o análogo real é a latência (herpes, varicela-zóster); não há fonte que a atribua ao vírus da gripe, e o jogo não afirma isso. Fatos corrigidos em [`conteudo-biologico.md`](conteudo-biologico.md) §"Verificação com fontes".
 - **Ferramentas:**
   - **Neutralização** (anticorpos) só atinge o vírus **livre**, e não alcança o lisogênico dentro da célula;
   - **Lise** destrói a **célula infectada já lida** pelo scan, custando poucos vitais (`VITALS_LYSE`, ponto de partida −5) e impedindo a eclosão; numa célula saudável ela não dispara;
   - o antibiótico (Ruptura, Dissolução, Reserva) não age em vírus.
-- **Sem aliados:** o linfócito T não é um personagem; a Lise faz o papel dele, e o card cita isso.
+- **Sem aliados:** o linfócito T não é um personagem; a Lise faz o papel dele, e o card (hoje Anotação do Diário) cita isso.
+- **Nome da Lise (decisão de 25/11/2026):** a ferramenta será renomeada (proposta: **"Ataque T"**, que evoca o linfócito T), porque "lise" é também o rompimento da célula no ciclo lítico e o nome confundia as duas coisas. **A renomeação no código é posterior**; este documento ainda diz "Lise".
 - **Teto de 12 vírus vivos.** Resolve a [PENDÊNCIA] de "Capacidade do mundo": `MAX_AGENTS` sobe para 24.
 - **Conflito com D2.1:** deixou de existir, porque a identificação não é mais condição de vitória. A célula hospedeira rompida só sai da conta do bônus de identificação.
 - **Custo da ruptura:** a célula hospedeira rompida continua custando vitais (`VITALS_HOST_RUPTURE`, ponto de partida −10), agora na barra de vitais de 0 a 100, e não em corações.
@@ -33,7 +35,7 @@ Decisões do dono em 13/11, que valem acima do texto de 11/11 abaixo:
 - **Custos, nas duas barras:**
   - a célula hospedeira rompida é uma célula do paciente destruída e tira 20 dos vitais (substitui `VITALS_HOST_RUPTURE` −10);
   - a Lise continua custando 5 dos vitais.
-- **Tamanho:** o vírus tem 16×16 (raio 7) e a célula 64×64 (raio 28), em escala biológica.
+- **Tamanho:** o vírus tem 16×16 (raio 7) e a célula 64×64 (raio 28), (ilustrativos, **fora de escala**, decisão de 25/11: só a ordem vírus < bactéria < célula é mantida; antes dizia "em escala biológica").
 
 **Implementação de 14/11 (#85–#89), vigente.** O que está no build, acima do texto mais antigo deste arquivo:
 

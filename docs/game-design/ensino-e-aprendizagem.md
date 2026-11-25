@@ -10,18 +10,20 @@ Sincronização com a auditoria e com o escopo real do M4: 3 nov 2026
 
 > **Vigente.** Esta seção substitui os objetivos OA1–OA4 e o fluxo de ensino do M4 descritos mais abaixo, que ficam como histórico. A visão do jogo está no [`gdd.md`](gdd.md) (§"Nanobô 2.0"). O público continua sendo o ensino médio (Plano de Ensino, Aula 1: "tema de aprendizado do ensino médio"; mecânicas, não quiz).
 
+> **Revisão de 25/11/2026 (conteúdo verificado e decisões do dono).** Os OA abaixo foram conferidos com fontes (lista e lacunas em [`conteudo-biologico.md`](conteudo-biologico.md) §"Verificação com fontes"); o veredito geral foi: nenhuma afirmação errada, mas vários **enquadramentos** a corrigir. As células marcadas aqui já trazem o enquadramento novo. Os cards de conceito passam a ser as **Anotações do Diário do Nanobô** (§"Anotações do Diário"). As redações novas do jogo ficam **pendentes de redação** e não foram aplicadas a `textos-do-jogo.md`. Decisões e motivos em [`decisoes.md`](decisoes.md) §"Narrativa e conteúdo (25/11/2026)".
+
 ### Objetivos (OA) como mecânicas
 
 | OA | Conteúdo | Regra no jogo | Quando o jogador aprende |
 |---|---|---|---|
 | **OA1** | Procarionte × eucarionte | O scan da célula do paciente mostra núcleo e mitocôndrias. O da bactéria mostra o DNA solto no nucleoide, sem núcleo. O fungo também tem núcleo (Fase 3). Atirar na célula do paciente custa vitais. | Na 1ª leitura de cada tipo e no erro de tiro. |
 | **OA2** | Morfologia e coloração de Gram | A 1ª camada dá só a forma (coco ou bacilo). A 2ª dá a coloração (roxo ou rosa) e a estrutura. A fase mistura formas e grupos, então a forma sozinha não decide a arma. | Quando um coco Gram− ou um bacilo Gram+ contraria o palpite pela forma. |
-| **OA3** | O antibiótico age numa estrutura | **Ruptura** (antibiótico de parede, inspirado na penicilina) impede a montagem da parede de peptidoglicano e age na Gram+; na Gram−, a membrana externa barra a entrada. **Dissolução** (antibiótico de membrana, inspirado na polimixina) desfaz a membrana externa, que só a Gram− tem. | Ao escolher a arma pela 2ª camada; o erro explica por quê. |
-| **OA4** | Resistência por tratamento incompleto e uso racional | São 2 doses do antibiótico certo. Uma dose e mais de 6 s sem a segunda tornam a bactéria resistente àquele antibiótico. A **Reserva** (2 cargas por fase) elimina a resistente com 1 dose. A filha da divisão herda a resistência. | Quando deixa uma bactéria meio tratada escapar; quando a Reserva acaba. |
+| **OA3** | O antibiótico age numa estrutura | **Regra do jogo, inspirada em antibióticos reais** (ver "O que o jogo não afirma"). **Ruptura** (inspirada na penicilina) impede a montagem da parede de peptidoglicano e age na Gram+; a membrana externa da Gram− costuma dificultar a entrada de várias drogas. **Dissolução** (inspirada na polimixina) **desorganiza** a membrana externa, que só a Gram− tem. Fontes: [OpenStax 14.3](https://openstax.org/books/microbiology/pages/14-3-mechanisms-of-antibacterial-drugs), [CDC](https://www.cdc.gov/antimicrobial-resistance/about/index.html). | Ao escolher a arma pela 2ª camada; o erro explica por quê. |
+| **OA4** | Resistência por seleção e uso racional | **Regra do jogo:** 2 doses do antibiótico certo; uma dose e mais de 6 s sem a segunda deixam a bactéria resistente àquele antibiótico. **Biologia por trás:** tratamento mal feito deixa sobreviventes, que se multiplicam e passam a resistência às filhas (seleção; [Agência Brasil](https://agenciabrasil.ebc.com.br/saude/noticia/2026-11/uso-racional-de-antibioticos-pode-diminuir-bacterias-resistentes), [Fiocruz](https://www.ioc.fiocruz.br/noticias/cartilha-alerta-para-os-riscos-da-resistencia-aos-antibioticos)). A **Reserva** (2 cargas por fase) elimina a resistente com 1 dose, e até ela pode deixar de funcionar se for usada à toa. A mensagem de saúde é **"siga a prescrição até o fim"**. | Quando deixa uma bactéria meio tratada escapar; quando a Reserva acaba. |
 | **OA5** | Imunidade adaptativa: anticorpos | A **Neutralização** dispara anticorpos que se prendem ao vírus livre e o impedem de entrar em outra célula. | No 1º vírus livre neutralizado. |
-| **OA6** | Vírus é acelular | O antibiótico atravessa o vírus sem efeito: o vírus não tem parede, ribossomos nem metabolismo próprio. | No 1º antibiótico num vírus ou na 1ª leitura de um vírus. |
-| **OA7** | Ciclos lisogênico e lítico | O lisogênico fica na célula. No lítico, a célula se rompe e libera vírus livres, que infectam outras. A **Lise** destrói a célula infectada já lida, como faz o linfócito T. | Ao decidir entre aplicar a Lise agora (custo em vitais) e neutralizar 3 vírus depois. |
-| **OA8** | Fungos | Eucarionte com parede de **quitina** (o antibiótico não age); membrana com **ergosterol**, alvo da **Perfuração**. **Levedura** (*Cryptococcus*) brota; **bolor** (*Aspergillus*) cresce em hifas e solta esporos. Fungos **oportunistas** aproveitam o organismo enfraquecido. | Na 1ª leitura de um fungo, no 1º brotamento e na carga de esporos ligada aos vitais. |
+| **OA6** | Vírus é acelular | O antibiótico atravessa o vírus sem efeito: o vírus é acelular, sem metabolismo nem ribossomos **próprios** ([Fiocruz/EPSJV](https://www.epsjv.fiocruz.br/sites/default/files/cap2.pdf)). | No 1º antibiótico num vírus ou na 1ª leitura de um vírus. |
+| **OA7** | Ciclos lisogênico e lítico | **Analogia:** esses ciclos são descritos em bacteriófagos ([OpenStax 6.2](https://openstax.org/books/microbiology/pages/6-2-the-viral-life-cycle)); a nota entra no jogo na Anotação da 1ª célula infectada. O lisogênico fica na célula. No lítico, a célula se rompe e libera vírus livres, que infectam outras. A ferramenta que destrói a célula infectada já lida faz o papel do linfócito T; hoje se chama **Lise**, e o nome será trocado (proposta: **Ataque T**) por colidir com a "lise" do ciclo lítico (renomeação de código pendente). | Ao decidir entre aplicar a Lise agora (custo em vitais) e neutralizar 3 vírus depois. |
+| **OA8** | Fungos | Eucarionte com parede de **quitina** (o antibiótico não age); membrana com **ergosterol**, alvo da **Perfuração**. **Levedura** (*Cryptococcus*) brota; **bolor** (*Aspergillus*) cresce em hifas e solta esporos. Fungos **oportunistas** se instalam com mais facilidade em quem está com a defesa enfraquecida (o risco vem da defesa fraca, não de mais esporos; [CDC](https://www.cdc.gov/aspergillosis/about/)). A **Perfuração** é inspirada na anfotericina B (poliênico que forma poros no ergosterol). | Na 1ª leitura de um fungo, no 1º brotamento e na carga de esporos ligada aos vitais. |
 
 ### Critério de clareza
 
@@ -33,21 +35,32 @@ Cada OA precisa ter:
 
 O scanner continua **sem recomendar a arma**: ele mostra a estrutura, e o aluno liga a estrutura à arma.
 
-### Cards de conceito
+### Anotações do Diário (antes: cards de conceito)
 
-São 6 cards. Cada um aparece uma única vez, pausa o jogo, tem 3 linhas de até 70 caracteres e é ilustrado com o sprite ampliado. Os textos estão em [`textos-do-jogo.md`](textos-do-jogo.md) §3.
+**Decisão de 25/11/2026:** os cards de conceito passam a ser as **Anotações do Diário do Nanobô**, escritas **em primeira pessoa pelo Nanobô**, um protótipo recém-ligado e de memória vazia, sobre o que ele descobre. Cada Anotação aparece uma única vez, abre por um evento do jogo e **pausa o jogo**. A caixa de diálogo é paginada: máquina de escrever de cerca de 40 caracteres por segundo; a mesma tecla completa a página e, depois, avança; ▼ piscando; "fechar" na última página; contador "2/4"; 0,2 s de debounce. Tom: frases curtas, **um termo-chave colorido por página**, nada que os documentos não sustentem. Os **IDs (CC-01 a CC-09) ficam**; o limite antigo de "3 linhas de até 70 caracteres" é substituído pelas páginas, e o novo texto de cada uma será redigido depois, para aprovação do dono. O menu para reler o diário está **fora do escopo de 02/12**. A história que acompanha as Anotações (o Paciente Léo) está em [`gdd.md`](gdd.md) §"Narrativa" e em `decisoes.md`.
 
-| Card | Quando aparece |
-|---|---|
-| Coloração de Gram | 1ª leitura completa de bactéria |
-| Resistência e Reserva | 1ª bactéria resistente |
-| Vírus não é célula | 1ª leitura de vírus ou 1º antibiótico em vírus |
-| Lisogênico e lítico | 1ª leitura de célula infectada |
-| Organismo enfraquecido | início da Fase 3 (junto do interlúdio) |
-| Fungo | 1ª leitura de fungo |
-| Flagelo (14/11) | 1ª investida de um bacilo |
-| Biofilme (14/11) | 1º biofilme formado |
-| Endotoxina (14/11) | 1ª nuvem de endotoxina |
+Os textos vigentes continuam em [`textos-do-jogo.md`](textos-do-jogo.md) §3 até a nova redação ser aprovada.
+
+| Anotação (ID) | Quando aparece | Fontes principais |
+|---|---|---|
+| Coloração de Gram (CC-01) | 1ª leitura completa de bactéria | [OpenStax 2.4](https://openstax.org/books/microbiology/pages/2-4-staining-microscopic-specimens), [14.3](https://openstax.org/books/microbiology/pages/14-3-mechanisms-of-antibacterial-drugs) |
+| Resistência e Reserva (CC-02) | 1ª bactéria resistente | [Agência Brasil](https://agenciabrasil.ebc.com.br/saude/noticia/2026-11/uso-racional-de-antibioticos-pode-diminuir-bacterias-resistentes), [Anvisa](https://www.gov.br/anvisa/pt-br/assuntos/noticias-anvisa/2020/resistencia-microbiana-saiba-o-que-e-e-como-evitar), [Bull. WHO 2025](https://pmc.ncbi.nlm.nih.gov/articles/PMC12706710/) |
+| Vírus não é célula (CC-03) | 1ª leitura de vírus ou 1º antibiótico em vírus | [Fiocruz/EPSJV](https://www.epsjv.fiocruz.br/sites/default/files/cap2.pdf), [SBI](https://infectologia.org.br/noticias/antibiotico-nao-trata-gripe-riscos-da-automedicacao-e-resistencia-bacteriana/), [SBI/Fiocruz imunidade](https://exposicaocovid19.sbi.org.br/imunidade/) |
+| Lisogênico e lítico (CC-04) | 1ª leitura de célula infectada; **leva a nota de analogia com bacteriófagos** | [OpenStax 6.2](https://openstax.org/books/microbiology/pages/6-2-the-viral-life-cycle) |
+| Organismo enfraquecido (CC-05) | início da Fase 3 (junto do interlúdio) | [CDC, aspergilose](https://www.cdc.gov/aspergillosis/about/), [CDC, prevenção](https://www.cdc.gov/aspergillosis/prevention) |
+| Fungo (CC-06) | 1ª leitura de fungo | [OpenStax, Fungi](https://openstax.org/books/microbiology/pages/5-3-fungi), [Pharmacology 2e](https://pressbooks.pub/uwecpharmacology2e/chapter/3-15-antifungals/) |
+| Flagelo (CC-07, 14/11) | 1ª investida de um bacilo | [OpenStax 15.3](https://openstax.org/books/microbiology/pages/15-3-virulence-factors-of-bacterial-and-viral-pathogens) |
+| Biofilme (CC-08, 14/11) | 1º biofilme formado | [OpenStax 9.1](https://openstax.org/books/microbiology/pages/9-1-how-microbes-grow) |
+| Endotoxina (CC-09, 14/11) | 1ª nuvem de endotoxina | OpenStax 15.3 |
+
+**Anotações novas a redigir** (conteúdo decidido em 25/11; **pendente de redação**):
+
+- as armas são **regra do jogo, inspirada em antibióticos reais**, e **no jogo todas as espécies aparecem juntas no sangue, por simplicidade** (decisão 2);
+- na 1ª célula infectada: lisogênico e lítico foram descritos em vírus de bactérias (os **bacteriófagos**), e aqui são uma analogia (decisão 4);
+- resistência: "siga a prescrição até o fim", explicada por seleção (decisão 5);
+- *S. aureus*: muitas cepas resistem à penicilina.
+
+**Ajustes de redação nas Anotações e textos existentes** (da verificação; lista com fontes em `conteudo-biologico.md`): CC-01a ("o corante roxo fica preso ou sai conforme a parede"); CC-02b ("Esta resistiu: ... nem nas filhas") e CC-02c ("até a Reserva pode deixar de funcionar"); RT-10 ("sem metabolismo nem ribossomos próprios"); CC-04a (analogia, com a imagem da catapora); CC-05c (risco pela defesa fraca, não pela quantidade de esporos); CC-06c (Perfuração inspirada na anfotericina B); CC-09 e FB-19 ("LPS" vira "toxina da membrana externa" no texto do jogador); evitar "só" nos textos de fungos oportunistas.
 
 Os três cards de 14/11 vêm da IA nova (`gdd.md` §"Dificuldade"). Os textos estão em `textos-do-jogo.md` §3.1 (CC-07 a CC-09).
 
@@ -66,11 +79,18 @@ Os três cards de 14/11 vêm da IA nova (`gdd.md` §"Dificuldade"). Os textos es
 
 ### O que o jogo não afirma
 
-- Não há antibiótico real "de parede" ou "de membrana" puro, nem posologia; as armas são regras do jogo.
-- Na realidade, a resistência surge por mutação e é **selecionada** pelo uso inadequado.
-- Os ciclos lisogênico e lítico são descritos em bacteriófagos; aqui servem de analogia.
-- O antibiótico não causa a aspergilose: o fator de risco é o **organismo enfraquecido**.
-- Nem toda bactéria é ruim: a maioria das que vivem no corpo é inofensiva ou útil (microbiota).
+Atualizado em 25/11/2026 (decisões 2, 4, 5, 6 e 8; fontes em `conteudo-biologico.md`).
+
+- Não há antibiótico real "de parede" ou "de membrana" com a divisão de eficácia por Gram que o jogo usa, nem posologia; **as armas são regra do jogo, inspirada em antibióticos reais** (em geral, a membrana externa dificulta a entrada de várias drogas; a vida real tem exceções e resistência). Por isso a *S. aureus* do jogo carrega a nota de que muitas cepas resistem à penicilina, e as espécies que quebravam a regra (meningococo e *B. cereus*) foram trocadas por *Moraxella catarrhalis* e *Clostridium tetani*.
+- **No jogo todas as espécies aparecem juntas no sangue, por simplicidade**; *M. catarrhalis* vive nas vias respiratórias e *C. tetani* entra por ferimentos.
+- A resistência surge por mutação ou troca de genes e é **selecionada**: sobrevivem as que já eram resistentes e passam o traço às filhas, e isso acontece com uso desnecessário ou mal feito. **As 2 doses e os 6 s são regra do jogo**, não biologia. O jogo diz "siga a prescrição até o fim" e **não afirma** que parar cedo cause resistência (ponto contestado na literatura).
+- Os ciclos lisogênico e lítico são descritos em **bacteriófagos**; aqui são **analogia**, dita dentro do jogo na Anotação da 1ª célula infectada. O jogo não afirma que o vírus da gripe tenha fase lisogênica; em vírus humanos o análogo real é a latência (herpes, varicela-zóster).
+- A resposta imune real leva dias, não segundos; o vírus neutralizado não "some", fica inativo e é eliminado por fagócitos; o 6 da ruptura, os 10 s do lisogênico e os 12 s da divisão são de gameplay.
+- Os sprites são **ilustrativos, fora de escala**; só a ordem vírus < bactéria < célula é mantida.
+- O antibiótico não causa a aspergilose: o fator de risco é a **defesa enfraquecida**, e não a quantidade de esporos inalados. A carga de esporos pelos vitais é regra de jogo. Texto de fungos oportunistas evita "só": o *C. gattii* também afeta pessoas saudáveis.
+- A **Perfuração** é inspirada na anfotericina B, que forma poros no ergosterol e é tóxica para o paciente; os azóis e as equinocandinas agem de outro modo.
+- Nem toda bactéria é ruim: a maioria das que vivem no corpo é inofensiva ou útil (microbiota); a maioria dos fungos também é inofensiva ou útil, e a penicilina vem de um fungo (gancho opcional).
+- Termos acima do ensino médio (LPS, β-lactamase, transpeptidase) **não entram no texto do jogador**; "LPS" vira "toxina da membrana externa".
 
 ### Calibração
 
@@ -640,6 +660,10 @@ A média ponderada é 0,73, abaixo de 0,8 (estimativa de 02/11, não recalculada
 - [PrePara ENEM — Bactérias Gram-positivas e negativas](https://www.preparaenem.com/biologia/bacterias-gram-positivas-e-negativas.htm): referência de preparação para o ENEM sobre cores e diferenças gerais entre os grupos.
 - [Manual do Enem — Bactérias](https://querobolsa.com.br/enem/biologia/bacteria): material de preparação que aborda parede celular, peptidoglicano e classificação de Gram.
 - [Ministério da Saúde — Técnica de coloração de Gram](https://bvsms.saude.gov.br/bvs/publicacoes/0107tecnica_gram.pdf): referência factual para o procedimento; não é usada para atribuir nível escolar.
+
+### Verificação de 25/11/2026
+
+A lista completa de fontes (brasileiras primeiro), com o que cada uma sustenta, está em [`conteudo-biologico.md`](conteudo-biologico.md) §"Fontes da revisão de 25/11/2026"; as lacunas, em §"Não verificado". Principais: [Agência Brasil, 23/11/2026](https://agenciabrasil.ebc.com.br/saude/noticia/2026-11/uso-racional-de-antibioticos-pode-diminuir-bacterias-resistentes), [Anvisa](https://www.gov.br/anvisa/pt-br/assuntos/noticias-anvisa/2020/resistencia-microbiana-saiba-o-que-e-e-como-evitar), [Fiocruz/IOC](https://www.ioc.fiocruz.br/noticias/cartilha-alerta-para-os-riscos-da-resistencia-aos-antibioticos), [Ministério da Saúde, tétano](https://www.sjp.pr.gov.br/wp-content/uploads/2024/07/TETANO-ACIDENTAL-GUIA-DE-VIGILANCIA-EM-SAUDE.pdf), [SBI](https://exposicaocovid19.sbi.org.br/imunidade/), [Fiocruz/EPSJV](https://www.epsjv.fiocruz.br/sites/default/files/cap2.pdf), [OpenStax Microbiology](https://openstax.org/books/microbiology/pages/6-2-the-viral-life-cycle), [CDC](https://www.cdc.gov/antimicrobial-resistance/about/index.html) e [Bull. WHO 2025](https://pmc.ncbi.nlm.nih.gov/articles/PMC12706710/).
 
 ### Aprofundamento técnico, fora do núcleo
 
