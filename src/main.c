@@ -155,7 +155,8 @@ int world_map_phase = 0;
 // arquivo do mapa de cada fase: a Fase 1 no vaso, a Fase 2 no bronquio (#89)
 const char* phase_map_path(int phase)
 {
-    if (phase == 2)
+    // o mapa da Fase 3 e da Task 8; ate la ela usa o da Fase 2
+    if (phase == 2 || phase == 3)
     {
         return "assets/backgrounds/mapa_fase2.png";
     }
@@ -2074,10 +2075,15 @@ void draw_hud()
             al_draw_text(font, UI_AMBER, HUD_MARGIN, hud_y(1), 0,
                 "neutralize as bactérias e vá ao destino");
         }
-        else
+        else if (current_phase() == 2)
         {
             al_draw_text(font, UI_AMBER, HUD_MARGIN, hud_y(1), 0,
                 "neutralize os vírus e vá ao destino");
+        }
+        else
+        {
+            al_draw_text(font, UI_AMBER, HUD_MARGIN, hud_y(1), 0,
+                "elimine os fungos e vá ao destino");
         }
     }
     else
@@ -2290,6 +2296,18 @@ void draw_game()
             }
 
             draw_treatment_marks(i);
+            continue;
+        }
+
+        // fungo provisorio ate a Task 7: levedura bege e colonia verde-acinzentada
+        if (agents[i].species == SPECIES_YEAST || agents[i].species == SPECIES_MOLD)
+        {
+            bool yeast = agents[i].species == SPECIES_YEAST;
+
+            al_draw_filled_circle(view_x(agents[i].x), view_y(agents[i].y), agent_radius(i),
+                yeast ? al_map_rgb(226, 214, 176) : al_map_rgb(112, 130, 108));
+            al_draw_circle(view_x(agents[i].x), view_y(agents[i].y), agent_radius(i),
+                al_map_rgb(54, 44, 36), 2.0f);
             continue;
         }
 
@@ -2677,8 +2695,8 @@ void draw_results()
         int vitals = (int)fmaxf(patient_vitals, VITALS_MIN_BETWEEN);
         const char* state = vitals >= 70 ? "estável" : (vitals >= 40 ? "em observação" : "grave");
 
-        snprintf(line, sizeof(line), "sinais vitais: %s (%d) · a seguir: vírus nas vias aéreas",
-            state, vitals);
+        snprintf(line, sizeof(line), "sinais vitais: %s (%d) · a seguir: %s",
+            state, vitals, current_phase() == 1 ? "vírus nas vias aéreas" : "fungos no pulmão");
         al_draw_text(font, UI_DIM, SCREEN_W / 2, 46, ALLEGRO_ALIGN_CENTRE, line);
     }
     else
@@ -3213,9 +3231,13 @@ void handle_key_down(int key)
         {
             if (agents[i].species != SPECIES_CELL)
             {
-                // dois acertos validos, o mesmo caminho da regra de combate (#49)
-                hit_agent(i);
-                hit_agent(i);
+                // acertos validos ate o agente ficar inativo: a levedura tem 3 doses (#49)
+                int n;
+
+                for (n = 0; n < 8 && agents[i].active; n++)
+                {
+                    hit_agent(i);
+                }
             }
         }
 
@@ -3292,8 +3314,12 @@ void handle_key_down(int key)
         {
             if (agents[i].species != SPECIES_CELL)
             {
-                hit_agent(i);
-                hit_agent(i);
+                int n;
+
+                for (n = 0; n < 8 && agents[i].active; n++)
+                {
+                    hit_agent(i);
+                }
             }
         }
 

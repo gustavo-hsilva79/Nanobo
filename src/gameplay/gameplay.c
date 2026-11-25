@@ -156,6 +156,16 @@ float agent_radius(int index)
         return (float)CELL_RADIUS;
     }
 
+    if (agents[index].species == SPECIES_YEAST)
+    {
+        return (float)YEAST_RADIUS;
+    }
+
+    if (agents[index].species == SPECIES_MOLD)
+    {
+        return (float)MOLD_RADIUS;
+    }
+
     return (float)BACTERIA_RADIUS;
 }
 
@@ -1286,6 +1296,24 @@ bool phase_has_viruses(void)
     return false;
 }
 
+// fase com fungos: levedura e bolor (Fase 3)
+bool phase_has_fungi(void)
+{
+    int i;
+
+    for (i = 0; i < phases[phase_index].count; i++)
+    {
+        Species s = phases[phase_index].members[i].species;
+
+        if (s == SPECIES_YEAST || s == SPECIES_MOLD)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 // teclas 1, 2 e 3: a ferramenta daquela posicao na fase atual (#216, #88)
 void select_tool(int slot)
 {
@@ -1524,6 +1552,16 @@ static int species_resistance(Species species)
         return VIRUS_RESISTANCE;
     }
 
+    if (species == SPECIES_YEAST)
+    {
+        return YEAST_RESISTANCE;
+    }
+
+    if (species == SPECIES_MOLD)
+    {
+        return MOLD_RESISTANCE;
+    }
+
     return BACTERIA_RESISTANCE;
 }
 
@@ -1539,6 +1577,17 @@ static int species_speed(Species species)
     if (species == SPECIES_VIRUS)
     {
         return VIRUS_DRIFT_SPEED;
+    }
+
+    if (species == SPECIES_YEAST)
+    {
+        return YEAST_SPEED;
+    }
+
+    // a colonia de bolor e fixa
+    if (species == SPECIES_MOLD)
+    {
+        return MOLD_SPEED;
     }
 
     return AGENT_SPEED;
@@ -2678,7 +2727,7 @@ static void collide_agents()
                 ny = dy / dist;
             }
 
-            if (agents[i].species == SPECIES_CELL)
+            if (agents[i].species == SPECIES_CELL || agents[i].species == SPECIES_MOLD)
             {
                 player.x -= nx * (player_reach - dist);
                 player.y -= ny * (player_reach - dist);
@@ -2733,8 +2782,24 @@ static void collide_agents()
 
             push = min_dist - dist;
 
+            // a colonia de bolor nao se move: so o outro recua
+            if (agents[i].species == SPECIES_MOLD && agents[j].species == SPECIES_MOLD)
+            {
+                continue;
+            }
+
+            if (agents[i].species == SPECIES_MOLD)
+            {
+                agents[j].x += nx * push;
+                agents[j].y += ny * push;
+            }
+            else if (agents[j].species == SPECIES_MOLD)
+            {
+                agents[i].x -= nx * push;
+                agents[i].y -= ny * push;
+            }
             // a celula do paciente e fixa: o outro recua a sobreposicao inteira (#235)
-            if (agents[i].species == SPECIES_CELL && agents[j].species != SPECIES_CELL)
+            else if (agents[i].species == SPECIES_CELL && agents[j].species != SPECIES_CELL)
             {
                 agents[j].x += nx * push;
                 agents[j].y += ny * push;

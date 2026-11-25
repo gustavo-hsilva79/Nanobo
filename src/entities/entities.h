@@ -11,7 +11,7 @@
 #define MAX_AGENTS 24
 
 // quantas fases a partida tem hoje (#M4: Fase 1 e a Fase 2 minima de virus)
-#define PHASE_COUNT 2
+#define PHASE_COUNT 3
 
 // tamanho total do mundo em pixels: 3 telas de 640 por 2 faixas de 256
 #define WORLD_W 1920
@@ -32,7 +32,9 @@ typedef enum
     SPECIES_GRAM_POSITIVE = 0,
     SPECIES_GRAM_NEGATIVE = 1,
     SPECIES_CELL = 2,
-    SPECIES_VIRUS = 3
+    SPECIES_VIRUS = 3,
+    SPECIES_YEAST = 4,
+    SPECIES_MOLD = 5
 } Species;
 
 // forma da bacteria: a camada 1 do scanner revela so isto (#214)

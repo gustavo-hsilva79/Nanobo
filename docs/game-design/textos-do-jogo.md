@@ -70,6 +70,7 @@ Desenhada **em toda partida**: `MENU → BRIEFING → GAME`, e também depois de
 | NR-13 | card 4, linha 2 | `e o Nanobô inteiro: são as duas barras do painel.` | 49 | #244, #234 (duas barras) |
 | NR-14 | card 4, linha 3 | `Leia cada agente com o scanner antes de agir.` | 45 | #244 |
 | NR-15 | interlúdio: Resultados entre as fases, subtítulo | `sinais vitais: %s (%d) · a seguir: vírus nas vias aéreas` (`estável` ≥ 70, `em observação` 40–69, `grave` < 40, já com o piso de 60) | até 67 | #244 |
+| NR-16 | interlúdio: Resultados depois da Fase 2, subtítulo | `sinais vitais: %s (%d) · a seguir: fungos no pulmão` (mesmos estados do NR-15) | até 63 | #227 |
 
 Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as armas) saíram do jogo em 15/11 e ficam no histórico do git.
 
@@ -119,6 +120,7 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 | CT-37 | resultados, painel novo | `o que a partida mostrou` | 23 | #202, build de 04/11 |
 | CT-38 a CT-41 | — | contadores e frase de revisão do painel de 04/11 | — | saíram com o relatório por objetivo (#210, #223); os textos atuais são as RR-01 a RR-10 da §2.2 |
 | CT-42 | HUD, linha 1, Fase 2 | `neutralize os vírus e vá ao destino` | 35 | Fase 2 mínima (04/11); encurtada em 15/11 (#243) |
+| CT-42b | HUD, linha 1, Fase 3 | `elimine os fungos e vá ao destino` | 33 | #227 |
 | CT-43 | scanner, camada 1, vírus | `clique de novo para concluir a leitura` | 38 | Fase 2 mínima (04/11) |
 | CT-44 | scanner, categoria | `vírus` / `célula infectada` (depois da leitura) | 5 / 16 | Fase 2 mínima (04/11); #87 |
 | CT-45 | resultados, título | `Fase %d concluída` | 17 | Fase 2 mínima (04/11) |

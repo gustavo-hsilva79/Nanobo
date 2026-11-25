@@ -34,6 +34,21 @@ static const PhaseAgent phase_two_agents[] =
     { SPECIES_CELL, "Célula epitelial", 8, 0 }
 };
 
+// Fase 3, pulmao: quatro leveduras, duas colonias de bolor e tres celulas
+// alveolares; fungo nao tem host nem forma de bacteria
+static const PhaseAgent phase_three_agents[] =
+{
+    { SPECIES_YEAST, "Levedura (Cryptococcus)", 1, 0, SHAPE_NONE },
+    { SPECIES_YEAST, "Levedura (Cryptococcus)", 2, 0, SHAPE_NONE },
+    { SPECIES_YEAST, "Levedura (Cryptococcus)", 3, 0, SHAPE_NONE },
+    { SPECIES_YEAST, "Levedura (Cryptococcus)", 4, 0, SHAPE_NONE },
+    { SPECIES_MOLD, "Bolor (Aspergillus)", 5, 0, SHAPE_NONE },
+    { SPECIES_MOLD, "Bolor (Aspergillus)", 6, 0, SHAPE_NONE },
+    { SPECIES_CELL, "Célula alveolar", 7, 0, SHAPE_NONE },
+    { SPECIES_CELL, "Célula alveolar", 8, 0, SHAPE_NONE },
+    { SPECIES_CELL, "Célula alveolar", 9, 0, SHAPE_NONE }
+};
+
 // correnteza do sangue na Fase 1: duas faixas do vaso empurram para a direita;
 // as faixas evitam o meio, onde o nanobo nasce (#237)
 static const Current phase_one_currents[] =
@@ -55,7 +70,8 @@ static const Current phase_two_currents[] =
 const Phase phases[PHASE_COUNT] =
 {
     { "Fase 1", phase_one_agents, NUM_AGENTES, phase_one_currents, 2 },
-    { "Fase 2", phase_two_agents, 8, phase_two_currents, 2 }
+    { "Fase 2", phase_two_agents, 8, phase_two_currents, 2 },
+    { "Fase 3", phase_three_agents, 9, NULL, 0 }
 };
 
 // o array nasce vazio: start_phase() preenche os slots da fase em cada run

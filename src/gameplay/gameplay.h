@@ -158,6 +158,15 @@ _Static_assert(WORLD_W % 32 == 0 && WORLD_H % 32 == 0, "mundo precisa fechar no 
 #define BACTERIA_RADIUS 14
 #define CELL_RADIUS 28
 
+// fungos da Fase 3: a levedura tem capsula de 3 doses e vaga devagar; a colonia
+// de bolor e fixa, nao anda e ninguem a empurra
+#define YEAST_RADIUS 18
+#define MOLD_RADIUS 20
+#define YEAST_RESISTANCE 3
+#define MOLD_RESISTANCE 1
+#define YEAST_SPEED 15
+#define MOLD_SPEED 0
+
 // duas barras (#234): a integridade do nanobo (player.health) cai com o que
 // o fere; os vitais do paciente caem quando uma celula dele e perdida ou ferida.
 // nao ha drenagem por tempo: a pressao vem dos invasores (revisao de 14/11)
@@ -268,6 +277,9 @@ void select_tool(int slot);
 
 // fase com virus: as ferramentas sao os anticorpos e a Lise (#88)
 bool phase_has_viruses(void);
+
+// fase com fungos: levedura e bolor (Fase 3)
+bool phase_has_fungi(void);
 
 // Reserva: so existe em fase com bacteria; cargas que restam nesta fase (#216)
 bool reserve_available(void);
