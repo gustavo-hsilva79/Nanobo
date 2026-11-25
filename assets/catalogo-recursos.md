@@ -30,8 +30,9 @@ Inventário dos recursos necessários à execução atual, para orientar o carre
 | Fonte embutida do Allegro | Todo o texto da interface: HUD, painel do scanner, menu, pausa e telas de fim | `al_create_builtin_font()` em `src/main.c`; não há arquivo de fonte |
 | Mapa do mundo da Fase 1 (1920×512) | Fundo do mundo, desenhado atrás de destino, agentes e Nanobô | `assets/backgrounds/mapa_fase1.png`; idem |
 | Mapa do mundo da Fase 2 (1920×512) | Fundo da Fase 2: interior do brônquio | `assets/backgrounds/mapa_fase2.png`; idem (14/11, #89) |
+| Mapa do mundo da Fase 3 (1920×512) | Fundo da Fase 3: alvéolos do pulmão (sacos em concha separados por septos rosa-claros, cada um com um capilar vermelho-escuro) e o bronquíolo terminal aberto no destino, com a arteríola ao lado; cada ponto de nascimento cai no meio de um alvéolo. Desenhado com `MAP_TINT`, como a Fase 1 | `assets/backgrounds/mapa_fase3.png` e `mapa_fase3.aseprite` (camadas `fundo`, `septos`, `capilares`, `pneumocitos`, `vasos`, `particulas`, `marcos`), gerados por `../Nanobo-testes/gerar_mapa_fase3.lua` (25/11, #233) |
 
-`load_resources()` abre os vinte e sete bitmaps (os seis dos fungos e da Perfuração entraram em 25/11), mais o mapa da fase atual por `load_phase_map()`, a fonte e, quando o áudio está instalado, os seis efeitos de `assets/audio/sfx/*.wav` e a música `assets/audio/music/fundo.wav`. `free_resources()` libera os bitmaps na ordem inversa, depois os seis efeitos e a música — os samples saem antes de `al_uninstall_audio()` — e por fim a fonte. O título do menu (`NANOBÔ`) é um bitmap montado em tempo de carregamento a partir da fonte (`make_text_bitmap`), também liberado ali. Desde 15/11 (#242), o projétil vem da folha `tiros.png`: cor neutra, e cada ferramenta se distingue pela **forma**, que mostra o mecanismo. Os tiros e os ícones são gerados por `../Nanobo-testes/gerar_tiros_icones.lua` (Aseprite), e os fungos da Fase 3 por `../Nanobo-testes/gerar_fungos.lua` (Aseprite, no padrão do `gerar_agentes.lua`). Os ícones `icone_laser_roxo.png` e `icone_laser_vermelho.png` saíram do `load_resources()` e continuam no disco como histórico.
+`load_resources()` abre os vinte e sete bitmaps (os seis dos fungos e da Perfuração entraram em 25/11), mais o mapa da fase atual por `load_phase_map()`, a fonte e, quando o áudio está instalado, os seis efeitos de `assets/audio/sfx/*.wav` e a música `assets/audio/music/fundo.wav`. `free_resources()` libera os bitmaps na ordem inversa, depois os seis efeitos e a música — os samples saem antes de `al_uninstall_audio()` — e por fim a fonte. O título do menu (`NANOBÔ`) é um bitmap montado em tempo de carregamento a partir da fonte (`make_text_bitmap`), também liberado ali. Desde 15/11 (#242), o projétil vem da folha `tiros.png`: cor neutra, e cada ferramenta se distingue pela **forma**, que mostra o mecanismo. Os tiros e os ícones são gerados por `../Nanobo-testes/gerar_tiros_icones.lua` (Aseprite), e os fungos da Fase 3 por `../Nanobo-testes/gerar_fungos.lua` (Aseprite, no padrão do `gerar_agentes.lua`). O mapa da Fase 3 vem de `../Nanobo-testes/gerar_mapa_fase3.lua` (Aseprite, no padrão do `gerar_mapa_fase2.lua`); como os outros mapas, só fica carregado na fase dele, e a carga só confere que o arquivo existe. Os ícones `icone_laser_roxo.png` e `icone_laser_vermelho.png` saíram do `load_resources()` e continuam no disco como histórico.
 
 **Agentes finais (15/11, #241):**
 - os sprites da tabela acima são gerados por `../Nanobo-testes/gerar_agentes.lua` (Aseprite), no estilo da amostra aprovada (#225): contorno escuro de 1 px, luz no alto à esquerda, especular e luz de retorno;
@@ -146,8 +147,8 @@ O fundo é escuro e de baixo contraste de propósito: os sprites precisam contin
 | Célula do paciente (núcleo visível) | 32×32 | 2 | substitui `celula_propria*` |
 | Vírus | 32×32 | 2 | substitui `virus_fase2*` |
 | Célula infectada | 32×32 | 2 | Fase 2 |
-| Levedura (*Cryptococcus*) | 32×32 | 3 (brotamento) | Fase 3 |
-| Bolor (*Aspergillus*): base e segmento de hifa | 32×32 + 16×16 | 2 + 1 | Fase 3; hifa de até 5 segmentos |
+| Levedura (*Cryptococcus*) | 40×40 | 3 (brotamento) | Fase 3 |
+| Bolor (*Aspergillus*): base e segmento de hifa | 48×48 + 16×16 | 2 + 1 | Fase 3; hifa de até 5 segmentos |
 | Tiros (Ruptura, Dissolução, Reserva, Neutralização, Lise, Perfuração) | 12×12 | 2 | cor neutra; a forma mostra o mecanismo |
 | Impacto por resultado (dose certa, sem efeito, eliminado) | 24×24 | 4 | compartilhados e tingidos por código |
 | Ícones de ferramenta (Reserva, Neutralização, Lise, Perfuração) + vitais | 16×16 | 1 | se juntam a `icone_ruptura` e `icone_dissolucao` |
@@ -159,7 +160,7 @@ O fundo é escuro e de baixo contraste de propósito: os sprites precisam contin
 > - a célula infectada é o sprite da célula com o vírus de 14 px piscando dentro, sobre um disco escuro. No eclipse, a célula pulsa vermelha com três cópias;
 > - o vírus da rajada é o sprite do vírus reduzido a 12 px;
 > - os ícones da Neutralização (o Y do anticorpo) e da Lise (a célula com o poro) são desenhados por código, como a cápsula da Reserva.
-| Mapa da Fase 3 — pulmão (alvéolos e capilares) | 1920×512 | — | `assets/backgrounds/` |
+| Mapa da Fase 3 — pulmão (alvéolos e capilares) | 1920×512 | — | **feito em 25/11 (#233)**: `assets/backgrounds/mapa_fase3.png` |
 
 ## Recursos previstos
 

@@ -196,3 +196,19 @@ A #118 continua **aberta** até esses dois cenários serem medidos. Se ficarem p
 
 - **Leitura:** a arte nova e a faixa maior não aumentaram o pico. A troca para a Fase 2 já foi medida em 14/11 (um mapa por vez) e não mudou desde então.
 - **CSV:** `mem_rel_15-11.csv`, no scratchpad da sessão de 15/11/2026 (fora do repositório).
+
+## 25/11/2026 — mapa da Fase 3 (#233): as três fases
+
+- **Build:** branch `feat/fase3`, com os fungos da Fase 3 e o mapa novo `mapa_fase3.png` (1920×512). `Release|x64` e `Debug|x64` com 0 avisos.
+- **Método:** `medir_memoria.ps1 -EveryMs 250`, iniciado **antes** do jogo, com o jogo dirigido por `../Nanobo-testes/qa_jogo.ps1` (o Nanobô anda nas quatro direções em cada fase).
+- **Como chegar à Fase 3 no Release:** o Release não tem a tecla `F`. Para atravessar as três fases, compilei uma cópia do Release com `_DEBUG` definido só pela variável `CL` (`CL=/D_DEBUG`, saída em `x64/ReleaseQA/`, fora do git). É o mesmo código otimizado, mais as teclas de QA. O `Nanobo.exe` do Release normal foi medido à parte, na carga, no menu e na Fase 1.
+- **Roteiro das três fases:** menu (5 s) → briefing pulado → Fase 1 andando, `F` → resultado → Fase 2 andando, `F` → resultado → Fase 3 (card CC-05, `J`, ~12 s andando), `F` → resultado → Vitória. O nome não foi digitado, então o ranking não mudou.
+
+| Build e situação | Pico (MB) | Privada no pico (MB) | Observação |
+|---|---:|---:|---|
+| Release com teclas de QA, carga → Fase 1 → Fase 2 → Fase 3 → Vitória | **78,25** | 102,13 | pico na carga (`t=7,3 s`). Fase 2 em 78,00 MB, Fase 3 em 77,63–77,71 MB e Vitória em 74,71 MB |
+| Release normal, carga, menu e Fase 1 | **78,39** | 101,85 | pico na carga (`t=6,5 s`) |
+| Release com teclas de QA, primeira execução | 79,18 | 100,89 | os cards de conceito seguraram o `F` e a corrida parou na Fase 2. Fica só como mais uma medida da carga |
+
+- **Leitura:** o mapa do pulmão não sobe o pico. Na troca, o mapa da Fase 2 sai antes de o da Fase 3 entrar (`load_phase_map()`), e a Fase 3 roda ~0,4 MB abaixo da Fase 2. O pior instante continua sendo a carga: 78,25–79,18 MB, **20,8 MB abaixo** do limite de 100 MB. A memória privada chega a 106,39 MB na Fase 2 e a 106,02 MB na Fase 3. É o mesmo platô de ~100 MB das medições anteriores, e o critério adotado continua sendo o working set.
+- **CSVs:** `mem_releaseqa_3fases.csv`, `mem_releaseqa_3fases_b.csv` e `mem_release_f1.csv`, no scratchpad da sessão de 25/11/2026 (fora do repositório).

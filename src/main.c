@@ -163,10 +163,15 @@ ALLEGRO_BITMAP* world_map = NULL;
 int world_map_phase = 0;
 
 // arquivo do mapa de cada fase: a Fase 1 no vaso, a Fase 2 no bronquio (#89)
+// e a Fase 3 nos alveolos do pulmao (#233)
 const char* phase_map_path(int phase)
 {
-    // o mapa da Fase 3 e da Task 8; ate la ela usa o da Fase 2
-    if (phase == 2 || phase == 3)
+    if (phase == 3)
+    {
+        return "assets/backgrounds/mapa_fase3.png";
+    }
+
+    if (phase == 2)
     {
         return "assets/backgrounds/mapa_fase2.png";
     }
@@ -531,6 +536,12 @@ bool load_resources()
     if (!al_filename_exists(phase_map_path(2)))
     {
         printf("couldn't find airway map\n");
+        return false;
+    }
+
+    if (!al_filename_exists(phase_map_path(3)))
+    {
+        printf("couldn't find lung map\n");
         return false;
     }
 
