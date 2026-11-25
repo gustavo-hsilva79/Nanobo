@@ -119,6 +119,9 @@ ALLEGRO_BITMAP* reserve_icon = NULL;
 ALLEGRO_BITMAP* antibody_icon = NULL;
 ALLEGRO_BITMAP* lyse_icon = NULL;
 
+// icone da Perfuracao: o anel do antifungico na membrana (Fase 3)
+ALLEGRO_BITMAP* perforate_icon = NULL;
+
 // tiros: uma linha por ferramenta, na ordem do Laser, x 2 quadros de 12x12;
 // impactos: 3 linhas (dose certa, sem efeito, eliminado) x 4 quadros de 24x24 (#242)
 ALLEGRO_BITMAP* shots_sheet = NULL;
@@ -145,6 +148,13 @@ ALLEGRO_BITMAP* bacillus_grey[SPRITE_VARIANTS] = { NULL };
 // silhueta do agente sem leitura e toxina do coco (#241)
 ALLEGRO_BITMAP* silhouette_sprite = NULL;
 ALLEGRO_BITMAP* toxin_sprite = NULL;
+
+// fungos da Fase 3: levedura em 2 variantes (40x40, a b com broto), base do
+// bolor (48x48), segmento da hifa (16x16, aponta para a direita) e esporo (8x8)
+ALLEGRO_BITMAP* yeast_sprite[SPRITE_VARIANTS] = { NULL };
+ALLEGRO_BITMAP* mold_sprite = NULL;
+ALLEGRO_BITMAP* hypha_sprite = NULL;
+ALLEGRO_BITMAP* spore_sprite = NULL;
 
 // mapa do mundo da fase atual (1920x512), sempre atras do resto. So um fica na
 // memoria por vez: cada mapa custa cerca de 15 MB carregado, e os dois juntos
@@ -445,6 +455,17 @@ bool load_resources()
         return false;
     }
 
+    yeast_sprite[0] = al_load_bitmap("assets/sprites/levedura_a.png");
+    yeast_sprite[1] = al_load_bitmap("assets/sprites/levedura_b.png");
+    mold_sprite = al_load_bitmap("assets/sprites/bolor.png");
+    hypha_sprite = al_load_bitmap("assets/sprites/hifa.png");
+    spore_sprite = al_load_bitmap("assets/sprites/esporo.png");
+    if (!yeast_sprite[0] || !yeast_sprite[1] || !mold_sprite || !hypha_sprite || !spore_sprite)
+    {
+        printf("couldn't load fungi\n");
+        return false;
+    }
+
     heart_icon = al_load_bitmap("assets/sprites/icone_coracao.png");
     if (!heart_icon)
     {
@@ -483,7 +504,8 @@ bool load_resources()
     reserve_icon = al_load_bitmap("assets/sprites/icone_reserva.png");
     antibody_icon = al_load_bitmap("assets/sprites/icone_neutralizacao.png");
     lyse_icon = al_load_bitmap("assets/sprites/icone_lise.png");
-    if (!reserve_icon || !antibody_icon || !lyse_icon)
+    perforate_icon = al_load_bitmap("assets/sprites/icone_perfuracao.png");
+    if (!reserve_icon || !antibody_icon || !lyse_icon || !perforate_icon)
     {
         printf("couldn't load tool icons\n");
         return false;
@@ -561,6 +583,33 @@ void free_resources()
         toxin_sprite = NULL;
     }
 
+    for (int v = 0; v < SPRITE_VARIANTS; v++)
+    {
+        if (yeast_sprite[v])
+        {
+            al_destroy_bitmap(yeast_sprite[v]);
+            yeast_sprite[v] = NULL;
+        }
+    }
+
+    if (mold_sprite)
+    {
+        al_destroy_bitmap(mold_sprite);
+        mold_sprite = NULL;
+    }
+
+    if (hypha_sprite)
+    {
+        al_destroy_bitmap(hypha_sprite);
+        hypha_sprite = NULL;
+    }
+
+    if (spore_sprite)
+    {
+        al_destroy_bitmap(spore_sprite);
+        spore_sprite = NULL;
+    }
+
     if (cell_sprite)
     {
         al_destroy_bitmap(cell_sprite);
@@ -628,6 +677,12 @@ void free_resources()
     {
         al_destroy_bitmap(lyse_icon);
         lyse_icon = NULL;
+    }
+
+    if (perforate_icon)
+    {
+        al_destroy_bitmap(perforate_icon);
+        perforate_icon = NULL;
     }
 
     if (shots_sheet)
@@ -1513,6 +1568,22 @@ ALLEGRO_BITMAP* species_sprite(Species species, int variant)
         return variant == 1 ? virus_sprite_b : virus_sprite;
     }
 
+    // fungos da Fase 3: a levedura tem as duas variantes; colonia e esporo, uma
+    if (species == SPECIES_YEAST)
+    {
+        return yeast_sprite[variant == 1 ? 1 : 0];
+    }
+
+    if (species == SPECIES_MOLD)
+    {
+        return mold_sprite;
+    }
+
+    if (species == SPECIES_SPORE)
+    {
+        return spore_sprite;
+    }
+
     return variant == 1 ? cell_sprite_b : cell_sprite;
 }
 
@@ -2076,10 +2147,13 @@ void draw_hud()
     {
         al_draw_bitmap(antibody_icon, (float)x_icon, (float)(hud_y(0) - 4), 0);
     }
-    else if (player.laser == LASER_LYSE || player.laser == LASER_PERFORATE)
+    else if (player.laser == LASER_LYSE)
     {
-        // a Perfuracao usa o icone da Lise ate ter o proprio
         al_draw_bitmap(lyse_icon, (float)x_icon, (float)(hud_y(0) - 4), 0);
+    }
+    else if (player.laser == LASER_PERFORATE)
+    {
+        al_draw_bitmap(perforate_icon, (float)x_icon, (float)(hud_y(0) - 4), 0);
     }
     else
     {
@@ -2345,58 +2419,42 @@ void draw_game()
             continue;
         }
 
-        // esporo pousado: silhueta ate a 1a leitura, depois o circulo provisorio (#229, #232)
-        if (agents[i].species == SPECIES_SPORE)
-        {
-            if (agents[i].layers == 0)
-            {
-                draw_fungus_silhouette(i);
-            }
-            else
-            {
-                al_draw_filled_circle(view_x(agents[i].x), view_y(agents[i].y), 3.0f,
-                    al_map_rgb(150, 168, 140));
-            }
-
-            draw_fungus_marks(i);
-            continue;
-        }
-
-        // hifa provisoria: linha da base ate a ponta e um circulo por segmento (#229)
+        // hifa: um segmento septado de 16 px por vez, girado na direcao dela;
+        // desenhada antes da colonia, que cobre a base (#229)
         if (agents[i].species == SPECIES_MOLD && agents[i].hypha_len > 0)
         {
             float tx;
             float ty;
+            float angle = atan2f(agents[i].hypha_dy, agents[i].hypha_dx);
+            // hifa para a esquerda: espelha na vertical para o brilho ficar em cima
+            int flip = agents[i].hypha_dx < 0.0f ? ALLEGRO_FLIP_VERTICAL : 0;
             int k;
-
-            hypha_segment(i, agents[i].hypha_len, &tx, &ty);
-            al_draw_line(view_x(agents[i].x), view_y(agents[i].y), view_x(tx), view_y(ty),
-                al_map_rgb(96, 112, 92), 3.0f);
 
             for (k = 1; k <= agents[i].hypha_len; k++)
             {
                 hypha_segment(i, k, &tx, &ty);
-                al_draw_filled_circle(view_x(tx), view_y(ty), (float)HYPHA_RADIUS,
-                    al_map_rgb(128, 146, 120));
+                al_draw_rotated_bitmap(hypha_sprite,
+                    (float)al_get_bitmap_width(hypha_sprite) / 2.0f,
+                    (float)al_get_bitmap_height(hypha_sprite) / 2.0f,
+                    view_x(tx), view_y(ty), angle, flip);
             }
         }
 
-        // fungo provisorio ate a Task 7: levedura bege e colonia verde-acinzentada;
-        // sem leitura, so a silhueta (a hifa acima aparece desde o inicio) (#232)
-        if (agents[i].species == SPECIES_YEAST || agents[i].species == SPECIES_MOLD)
+        // fungos: silhueta ate a 1a leitura, depois o sprite no tamanho dele
+        // (levedura 40, colonia 48, esporo 8); a hifa acima aparece desde o inicio (#232)
+        if (agents[i].species == SPECIES_YEAST || agents[i].species == SPECIES_MOLD
+            || agents[i].species == SPECIES_SPORE)
         {
-            bool yeast = agents[i].species == SPECIES_YEAST;
-
             if (agents[i].layers == 0)
             {
                 draw_fungus_silhouette(i);
             }
             else
             {
-                al_draw_filled_circle(view_x(agents[i].x), view_y(agents[i].y), agent_radius(i),
-                    yeast ? al_map_rgb(226, 214, 176) : al_map_rgb(112, 130, 108));
-                al_draw_circle(view_x(agents[i].x), view_y(agents[i].y), agent_radius(i),
-                    al_map_rgb(54, 44, 36), 2.0f);
+                ALLEGRO_BITMAP* bmp = species_sprite(agents[i].species, agents[i].variant);
+
+                al_draw_bitmap(bmp, view_x(agents[i].x) - (float)(al_get_bitmap_width(bmp) / 2),
+                    view_y(agents[i].y) - (float)(al_get_bitmap_height(bmp) / 2), 0);
             }
 
             draw_fungus_marks(i);
@@ -2516,7 +2574,8 @@ void draw_game()
 
     // projetil de cor neutra, a forma mostra o mecanismo (RF-04, #242): cunha
     // da Ruptura, gota da Dissolucao, losango da Reserva, Y da Neutralizacao e
-    // anel da Lise; o desenho aponta para a direita e gira na direcao do voo
+    // anel da Lise; o anel liso da Perfuracao e a 6a linha da folha; o desenho
+    // aponta para a direita e gira na direcao do voo
     for (i = 0; i < MAX_PROJECTILES; i++)
     {
         int frame = (int)(match_time / 0.08) % 2;
@@ -2528,13 +2587,6 @@ void draw_game()
 
         px = view_x(projectiles[i].x);
         py = view_y(projectiles[i].y);
-
-        // a folha so tem 5 linhas: a Perfuracao e um anel provisorio
-        if (projectiles[i].laser == LASER_PERFORATE)
-        {
-            al_draw_circle(px, py, 5.0f, UI_TEXT, 1.5f);
-            continue;
-        }
 
         al_draw_tinted_scaled_rotated_bitmap_region(shots_sheet,
             (float)(frame * SHOT_FRAME), (float)((int)projectiles[i].laser * SHOT_FRAME),
@@ -2563,10 +2615,10 @@ void draw_game()
             continue;
         }
 
-        // esporo do bolor em voo: circulo provisorio de raio 3 (#229)
+        // esporo do bolor em voo: o conidio de 8x8, o mesmo do pousado (#229)
         if (enemy_shots[i].kind == SHOT_SPORE)
         {
-            al_draw_filled_circle(px, py, 3.0f, al_map_rgb(150, 168, 140));
+            al_draw_bitmap(spore_sprite, px - 4.0f, py - 4.0f, 0);
             continue;
         }
 
