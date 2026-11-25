@@ -34,7 +34,8 @@ typedef enum
     SPECIES_CELL = 2,
     SPECIES_VIRUS = 3,
     SPECIES_YEAST = 4,
-    SPECIES_MOLD = 5
+    SPECIES_MOLD = 5,
+    SPECIES_SPORE = 6 // esporo de bolor pousado: germina numa colonia nova (#229)
 } Species;
 
 // forma da bacteria: a camada 1 do scanner revela so isto (#214)
@@ -143,6 +144,12 @@ typedef struct
     float colonize_time; // tempo colonizando, para o biofilme (#237)
     float cell_health; // vida da celula do paciente (#235)
     bool biofilm_extra; // ja ganhou a dose a mais por estar no biofilme (#237)
+    int hypha_len; // segmentos da hifa do bolor, de 0 a HYPHA_MAX (#229)
+    float hypha_dx; // direcao unitaria da hifa, fixada quando a colonia nasce (#229)
+    float hypha_dy;
+    float hypha_timer; // tempo ate o proximo segmento da hifa (#229)
+    float spore_timer; // tempo ate a proxima rajada de esporos (#229)
+    float germinate_timer; // esporo pousado: tempo ate germinar em colonia (#229)
 } Agent;
 
 // composicao de uma fase: uma linha por agente que ela coloca no mundo (#M4)

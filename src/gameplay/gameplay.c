@@ -166,6 +166,11 @@ float agent_radius(int index)
         return (float)MOLD_RADIUS;
     }
 
+    if (agents[index].species == SPECIES_SPORE)
+    {
+        return (float)SPORE_RADIUS;
+    }
+
     return (float)BACTERIA_RADIUS;
 }
 
@@ -198,6 +203,51 @@ static void queue_card(ConceptCard card);
 // a rajada do virus usa o mesmo array dos projeteis inimigos (#86)
 static int fire_enemy_shot(EnemyShotKind kind, float x, float y, float dx, float dy,
     float speed, float damage);
+
+// a hifa aponta para a celula mais perto; o start_phase ja a usa (#229)
+static void aim_hypha(int index);
+
+// centro do segmento k da hifa: a base mais a direcao vezes a distancia dele (#229)
+void hypha_segment(int index, int k, float* x, float* y)
+{
+    float d = (float)MOLD_RADIUS + HYPHA_GAP + HYPHA_STEP * (float)(k - 1);
+
+    *x = agents[index].x + agents[index].hypha_dx * d;
+    *y = agents[index].y + agents[index].hypha_dy * d;
+}
+
+// bolor vivo com um segmento de hifa tocando o circulo; devolve o bolor e o
+// segmento em seg, ou -1 sem nenhum (#229)
+static int hypha_touching(float x, float y, float radius, int* seg)
+{
+    int i;
+    int k;
+    float reach = radius + (float)HYPHA_RADIUS;
+
+    for (i = 0; i < agents_count; i++)
+    {
+        if (!agents[i].active || agents[i].species != SPECIES_MOLD)
+        {
+            continue;
+        }
+
+        for (k = 1; k <= agents[i].hypha_len; k++)
+        {
+            float sx;
+            float sy;
+
+            hypha_segment(i, k, &sx, &sy);
+
+            if (squared_distance(x, y, sx, sy) <= reach * reach)
+            {
+                *seg = k;
+                return i;
+            }
+        }
+    }
+
+    return -1;
+}
 
 // perigo novo numa vaga livre; devolve a vaga ou -1 (#237)
 static int spawn_hazard(HazardKind kind, float x, float y, float radius, float life, int owner)
@@ -328,6 +378,17 @@ const char* layer_one_text(int index)
         return "forma: levedura (arredondada, brota)";
     }
 
+    // bolor e esporo pousado (#229)
+    if (species == SPECIES_MOLD)
+    {
+        return "forma: bolor (filamentos)";
+    }
+
+    if (species == SPECIES_SPORE)
+    {
+        return "esporo de bolor · vai germinar";
+    }
+
     if (agents[index].shape == SHAPE_BACILLUS)
     {
         return "forma: bacilo (bastão)";
@@ -362,9 +423,15 @@ const char* layer_two_text(int index)
         return "acelular: sem parede, ribossomos nem metabolismo";
     }
 
-    if (species == SPECIES_YEAST)
+    // o esporo pousado le como a levedura; a colonia lembra onde mirar (#229)
+    if (species == SPECIES_YEAST || species == SPECIES_SPORE)
     {
         return "eucarionte · parede de quitina · membrana com ergosterol";
+    }
+
+    if (species == SPECIES_MOLD)
+    {
+        return "eucarionte · parede de quitina · corte a base da colônia";
     }
 
     // celula infectada: o ciclo do virus, sem recomendar a ferramenta (#87)
@@ -493,7 +560,7 @@ static bool weapon_affects(Laser laser, Species species)
     }
 
     // fungo: so a perfuracao age; a parede de quitina barra o antibiotico
-    if (species == SPECIES_YEAST || species == SPECIES_MOLD)
+    if (species == SPECIES_YEAST || species == SPECIES_MOLD || species == SPECIES_SPORE)
     {
         return laser == LASER_PERFORATE;
     }
@@ -729,6 +796,44 @@ static void virus_tool_hit(Laser laser, int j)
     }
 }
 
+// tiro que toca a hifa e nao a base: a Perfuracao corta o segmento da ponta,
+// sem pontos; antibiotico na hifa e a quitina de novo, como no corpo (#229)
+static void hit_hypha(int p)
+{
+    int k = 0;
+    int m = hypha_touching(projectiles[p].x, projectiles[p].y, (float)PROJECTILE_RADIUS, &k);
+    float sx;
+    float sy;
+
+    if (m == -1)
+    {
+        return;
+    }
+
+    hypha_segment(m, k, &sx, &sy);
+    projectiles[p].active = false;
+
+    // levar tiro na hifa tambem acorda a colonia
+    if (agents[m].ai_state == AI_WANDER)
+    {
+        agents[m].ai_state = AI_ALERT;
+        agents[m].lost_timer = 0.0f;
+    }
+
+    if (projectiles[p].laser == LASER_PERFORATE)
+    {
+        agents[m].hypha_len = agents[m].hypha_len - 1;
+        emit_sfx_at(SFX_EVENT_HIT, sx, sy);
+        set_feedback("corte a base da colônia");
+        return;
+    }
+
+    progress.wrong_decisions = progress.wrong_decisions + 1;
+    fire_lock_timer = FIRE_LOCK_TIME;
+    emit_sfx_at(SFX_EVENT_WRONG, sx, sy);
+    set_feedback("a parede do fungo é de quitina: antibiótico não age");
+}
+
 // um projetil contra os agentes: o primeiro que cruzar leva o acerto e o projetil some (#49)
 static void hit_projectiles()
 {
@@ -887,7 +992,8 @@ static void hit_projectiles()
                     set_feedback("antibiótico não age em vírus");
                 }
                 // antibiotico em fungo: a parede e de quitina, nao de peptideoglicano
-                else if (agents[j].species == SPECIES_YEAST || agents[j].species == SPECIES_MOLD)
+                else if (agents[j].species == SPECIES_YEAST || agents[j].species == SPECIES_MOLD
+                    || agents[j].species == SPECIES_SPORE)
                 {
                     set_feedback("a parede do fungo é de quitina: antibiótico não age");
                 }
@@ -909,6 +1015,12 @@ static void hit_projectiles()
 
             projectiles[i].active = false;
             break;
+        }
+
+        // sem agente no caminho, o tiro ainda pode tocar a hifa de um bolor (#229)
+        if (projectiles[i].active)
+        {
+            hit_hypha(i);
         }
     }
 }
@@ -1614,7 +1726,8 @@ static int species_resistance(Species species)
         return YEAST_RESISTANCE;
     }
 
-    if (species == SPECIES_MOLD)
+    // o esporo pousado cai com 1 dose, como a colonia (#229)
+    if (species == SPECIES_MOLD || species == SPECIES_SPORE)
     {
         return MOLD_RESISTANCE;
     }
@@ -1641,8 +1754,8 @@ static int species_speed(Species species)
         return YEAST_SPEED;
     }
 
-    // a colonia de bolor e fixa
-    if (species == SPECIES_MOLD)
+    // a colonia de bolor e o esporo pousado nao andam (#229)
+    if (species == SPECIES_MOLD || species == SPECIES_SPORE)
     {
         return MOLD_SPEED;
     }
@@ -1664,6 +1777,14 @@ static float random_bud_time(void)
     float unit = (float)rand() / ((float)RAND_MAX + 1.0f);
 
     return YEAST_BUD_TIME - YEAST_BUD_JITTER + 2.0f * YEAST_BUD_JITTER * unit;
+}
+
+// tempo ate o proximo segmento da hifa: HYPHA_TIME com o sorteio de HYPHA_JITTER (#229)
+static float random_hypha_time(void)
+{
+    float unit = (float)rand() / ((float)RAND_MAX + 1.0f);
+
+    return HYPHA_TIME - HYPHA_JITTER + 2.0f * HYPHA_JITTER * unit;
 }
 
 // devolve o agente ao estado de partida nova: resistencia da especie, ativo de
@@ -1697,6 +1818,21 @@ static void reset_agent(int index)
     agents[index].colonize_time = 0.0f;
     agents[index].cell_health = CELL_HEALTH;
     agents[index].biofilm_extra = false;
+
+    // bolor nasce sem hifa, apontando para a direita ate o aim_hypha; o esporo
+    // pousado nasce com a germinacao cheia; so o bolor sorteia, para nao mudar
+    // o sorteio das outras fases (#229)
+    agents[index].hypha_len = 0;
+    agents[index].hypha_dx = 1.0f;
+    agents[index].hypha_dy = 0.0f;
+    agents[index].hypha_timer = HYPHA_TIME;
+    agents[index].spore_timer = SPORE_INTERVAL;
+    agents[index].germinate_timer = GERMINATE_TIME;
+
+    if (agents[index].species == SPECIES_MOLD)
+    {
+        agents[index].hypha_timer = random_hypha_time();
+    }
 
     // virus nasce lisogenico com o tempo cheio; quem nao e virus ignora (#84)
     agents[index].virus_state = VIRUS_LYSOGENIC;
@@ -1823,6 +1959,55 @@ static void spawn_free_virus(float x, float y)
     // cada virus que cai e uma ameaca a mais na fase e na run
     phase_threats = phase_threats + 1;
     run_progress.threats = run_progress.threats + 1;
+}
+
+// nome do bolor da fase, para o esporo e a colonia que nasce dele (#229)
+static const char* phase_mold_name(void)
+{
+    int i;
+
+    for (i = 0; i < phases[phase_index].count; i++)
+    {
+        if (phases[phase_index].members[i].species == SPECIES_MOLD)
+        {
+            return phases[phase_index].members[i].name;
+        }
+    }
+
+    return phases[phase_index].members[0].name;
+}
+
+// esporo que pousou (D5): ameaca no chao numa vaga de fora da composicao, que
+// germina em colonia depois de GERMINATE_TIME (#229)
+int spawn_ground_spore(float x, float y)
+{
+    int slot = spawn_agent_slot();
+
+    if (slot == -1)
+    {
+        return -1;
+    }
+
+    agents[slot].name = phase_mold_name();
+    agents[slot].id = 100 + slot;
+    agents[slot].species = SPECIES_SPORE;
+    agents[slot].shape = SHAPE_NONE;
+    reset_agent(slot);
+    agents[slot].host_cell = -1;
+    agents[slot].x = fminf(fmaxf(x, (float)SPORE_RADIUS), (float)WORLD_W - (float)SPORE_RADIUS);
+    agents[slot].y = fminf(fmaxf(y, (float)SPORE_RADIUS), (float)WORLD_H - (float)SPORE_RADIUS);
+
+    // a vaga reaproveitada nao pode herdar a ultima leitura do painel
+    if (scan_target == slot)
+    {
+        scan_target = -1;
+    }
+
+    // cada esporo que pousa e uma ameaca a mais na fase e na run
+    phase_threats = phase_threats + 1;
+    run_progress.threats = run_progress.threats + 1;
+
+    return slot;
 }
 
 // virus livre que toca uma celula saudavel entra nela e fica lisogenico, com o
@@ -1994,15 +2179,17 @@ static void update_dose(int index, double dt)
     }
 }
 
-// virus da rajada ainda no ar: ja sao ameacas, e caem livres no fim do voo (#86)
-static int virions_in_flight(void)
+// virus da rajada e esporos do bolor ainda no ar: ja sao ameacas, e caem no
+// chao no fim do voo (#86, #229)
+static int threats_in_flight(void)
 {
     int s;
     int n = 0;
 
     for (s = 0; s < MAX_ENEMY_SHOTS; s++)
     {
-        if (enemy_shots[s].active && enemy_shots[s].kind == SHOT_VIRION)
+        if (enemy_shots[s].active
+            && (enemy_shots[s].kind == SHOT_VIRION || enemy_shots[s].kind == SHOT_SPORE))
         {
             n = n + 1;
         }
@@ -2012,11 +2199,11 @@ static int virions_in_flight(void)
 }
 
 // quantas ameacas ainda estao ativas: celula saudavel nao conta (#26); o virus
-// da rajada no ar conta (#86)
+// da rajada e o esporo no ar contam (#86, #229)
 int threats_left()
 {
     int i;
-    int total = virions_in_flight();
+    int total = threats_in_flight();
 
     for (i = 0; i < agents_count; i++)
     {
@@ -2030,10 +2217,10 @@ int threats_left()
 }
 
 // total de ameacas da fase: celula saudavel nao conta (#19); filhas e virus da
-// rajada somam quando aparecem (#217, #86)
+// rajada e esporos somam quando aparecem (#217, #86, #229)
 int threats_total()
 {
-    return phase_threats + virions_in_flight();
+    return phase_threats + threats_in_flight();
 }
 
 // meta do bonus: os iniciais menos quem saiu de cena sem leitura (#86, #88)
@@ -2275,6 +2462,15 @@ static void start_phase(int index)
             agents[i].x = agents[cell].x + (agents[cell].x < (float)WORLD_W / 2.0f ? NEIGHBOR_GAP : -NEIGHBOR_GAP);
             agents[i].y = agents[cell].y;
             host = host + 1;
+        }
+    }
+
+    // com todos no lugar, a hifa de cada colonia mira a celula mais perto (D6)
+    for (i = 0; i < agents_count; i++)
+    {
+        if (agents[i].species == SPECIES_MOLD)
+        {
+            aim_hypha(i);
         }
     }
 
@@ -2777,6 +2973,54 @@ static void bounce_agent_off_bounds(int index)
     }
 }
 
+// a hifa e parede: o nanobo recua do segmento que toca; os agentes passam
+// por ela e a celula nunca e movida (#229)
+static void push_player_off_hypha(void)
+{
+    int i;
+    int k;
+    float reach = (float)(PLAYER_RADIUS + HYPHA_RADIUS);
+
+    for (i = 0; i < agents_count; i++)
+    {
+        if (!agents[i].active || agents[i].species != SPECIES_MOLD)
+        {
+            continue;
+        }
+
+        for (k = 1; k <= agents[i].hypha_len; k++)
+        {
+            float sx;
+            float sy;
+            float dx;
+            float dy;
+            float dist;
+
+            hypha_segment(i, k, &sx, &sy);
+            dx = player.x - sx;
+            dy = player.y - sy;
+
+            if (dx * dx + dy * dy >= reach * reach)
+            {
+                continue;
+            }
+
+            dist = sqrtf(dx * dx + dy * dy);
+
+            // centro exato do segmento: recua para o lado da hifa
+            if (dist < 0.001f)
+            {
+                dx = -agents[i].hypha_dy;
+                dy = agents[i].hypha_dx;
+                dist = 1.0f;
+            }
+
+            player.x = sx + dx / dist * reach;
+            player.y = sy + dy / dist * reach;
+        }
+    }
+}
+
 // separa agentes sobrepostos entre si e do nanobo
 static void collide_agents()
 {
@@ -2784,6 +3028,8 @@ static void collide_agents()
     int j;
     float min_dist;
     float player_reach;
+
+    push_player_off_hypha();
 
     for (i = 0; i < agents_count; i++)
     {
@@ -3538,6 +3784,11 @@ static void update_enemy_shots(double dt)
             {
                 spawn_free_virus(enemy_shots[i].x, enemy_shots[i].y);
             }
+            // o esporo termina o voo e pousa, preso dentro do mundo (D5)
+            else if (enemy_shots[i].kind == SHOT_SPORE)
+            {
+                spawn_ground_spore(enemy_shots[i].x, enemy_shots[i].y);
+            }
 
             enemy_shots[i].active = false;
             continue;
@@ -3551,8 +3802,20 @@ static void update_enemy_shots(double dt)
         {
             enemy_shots[i].active = false;
             emit_sfx_at(SFX_EVENT_HIT, enemy_shots[i].x, enemy_shots[i].y);
-            set_feedback(enemy_shots[i].kind == SHOT_VIRION
-                ? "a defesa destruiu o vírus da rajada" : "a defesa destruiu a toxina");
+
+            if (enemy_shots[i].kind == SHOT_VIRION)
+            {
+                set_feedback("a defesa destruiu o vírus da rajada");
+            }
+            else if (enemy_shots[i].kind == SHOT_SPORE)
+            {
+                set_feedback("a defesa destruiu o esporo");
+            }
+            else
+            {
+                set_feedback("a defesa destruiu a toxina");
+            }
+
             continue;
         }
 
@@ -3560,10 +3823,21 @@ static void update_enemy_shots(double dt)
         {
             enemy_shots[i].active = false;
 
+            // o esporo que bate no nanobo some sem pousar (D5)
             if (damage_player(enemy_shots[i].damage))
             {
-                set_feedback(enemy_shots[i].kind == SHOT_VIRION
-                    ? "vírus da rajada: -6 de integridade" : "toxina do coco: -8 de integridade");
+                if (enemy_shots[i].kind == SHOT_VIRION)
+                {
+                    set_feedback("vírus da rajada: -6 de integridade");
+                }
+                else if (enemy_shots[i].kind == SHOT_SPORE)
+                {
+                    set_feedback("esporo do bolor: -8 de integridade");
+                }
+                else
+                {
+                    set_feedback("toxina do coco: -8 de integridade");
+                }
             }
 
             // o virus que bate no nanobo continua sendo virus: cai livre ali (#86)
@@ -3619,6 +3893,155 @@ static float yeast_ai(int index, float dt)
     return YEAST_ALERT_SPEED;
 }
 
+// direcao da hifa (D6): para a celula do paciente viva mais perto, fixada
+// quando a colonia nasce; sem celula, para a direita (#229)
+static void aim_hypha(int index)
+{
+    int cell = nearest_cell(index);
+    float dx;
+    float dy;
+    float d;
+
+    agents[index].hypha_dx = 1.0f;
+    agents[index].hypha_dy = 0.0f;
+
+    if (cell == -1)
+    {
+        return;
+    }
+
+    dx = agents[cell].x - agents[index].x;
+    dy = agents[cell].y - agents[index].y;
+    d = sqrtf(dx * dx + dy * dy);
+
+    if (d > 0.001f)
+    {
+        agents[index].hypha_dx = dx / d;
+        agents[index].hypha_dy = dy / d;
+    }
+}
+
+// colonias de bolor vivas: o teto de MOLD_CAP nao conta os esporos (#229)
+static int molds_alive(void)
+{
+    int i;
+    int n = 0;
+
+    for (i = 0; i < agents_count; i++)
+    {
+        if (agents[i].active && agents[i].species == SPECIES_MOLD)
+        {
+            n = n + 1;
+        }
+    }
+
+    return n;
+}
+
+// a hifa cresce um segmento por vez ate HYPHA_MAX; cheia, o tempo para (#229)
+static void update_hypha(int index, double dt)
+{
+    if (agents[index].species != SPECIES_MOLD || agents[index].hypha_len >= HYPHA_MAX)
+    {
+        return;
+    }
+
+    agents[index].hypha_timer -= (float)dt;
+
+    if (agents[index].hypha_timer <= 0.0f)
+    {
+        agents[index].hypha_len = agents[index].hypha_len + 1;
+        agents[index].hypha_timer = random_hypha_time();
+    }
+}
+
+// esporo pousado (D5): em GERMINATE_TIME vira colonia nova na mesma vaga, sem
+// hifa e mirando pela D6; com MOLD_CAP colonias vivas ele espera a vaga (#229)
+static void update_spore(int index, double dt)
+{
+    if (agents[index].species != SPECIES_SPORE)
+    {
+        return;
+    }
+
+    if (agents[index].germinate_timer > 0.0f)
+    {
+        agents[index].germinate_timer -= (float)dt;
+
+        if (agents[index].germinate_timer > 0.0f)
+        {
+            return;
+        }
+
+        agents[index].germinate_timer = 0.0f;
+    }
+
+    if (molds_alive() >= MOLD_CAP)
+    {
+        return;
+    }
+
+    // a mesma ameaca muda de forma: o esporo vira a colonia, sem somar outra
+    agents[index].species = SPECIES_MOLD;
+    reset_agent(index);
+    agents[index].host_cell = -1;
+    aim_hypha(index);
+}
+
+// colonia de bolor: nao anda; com a hifa cheia e em alerta solta SPORE_COUNT
+// esporos em leque a cada SPORE_INTERVAL, da ponta da hifa para o nanobo (#229)
+static float mold_ai(int index, float dt)
+{
+    float dx = player.x - agents[index].x;
+    float dy = player.y - agents[index].y;
+    float tx;
+    float ty;
+    float aim;
+    int k;
+
+    update_alert(index, sqrtf(dx * dx + dy * dy), dt);
+
+    if (agents[index].ai_state != AI_ALERT || agents[index].hypha_len < HYPHA_MAX)
+    {
+        return 0.0f;
+    }
+
+    agents[index].spore_timer -= dt;
+
+    if (agents[index].spore_timer > 0.0f)
+    {
+        return 0.0f;
+    }
+
+    agents[index].spore_timer = SPORE_INTERVAL;
+    hypha_segment(index, HYPHA_MAX, &tx, &ty);
+    dx = player.x - tx;
+    dy = player.y - ty;
+
+    // nanobo em cima da ponta: o leque segue a hifa
+    if (dx * dx + dy * dy > 0.000001f)
+    {
+        aim = atan2f(dy, dx);
+    }
+    else
+    {
+        aim = atan2f(agents[index].hypha_dy, agents[index].hypha_dx);
+    }
+
+    for (k = 0; k < SPORE_COUNT; k++)
+    {
+        float a = aim + (float)(k - SPORE_COUNT / 2) * SPORE_SPREAD * (float)M_PI / 180.0f;
+        int s = fire_enemy_shot(SHOT_SPORE, tx, ty, cosf(a), sinf(a), SPORE_SPEED, SPORE_DAMAGE);
+
+        if (s != -1)
+        {
+            enemy_shots[s].life = SPORE_FLIGHT;
+        }
+    }
+
+    return 0.0f;
+}
+
 void update_match(double dt)
 {
     float dir_x = 0.0f;
@@ -3641,6 +4064,8 @@ void update_match(double dt)
         update_virus(i, dt);
         update_dose(i, dt);
         update_division(i, dt);
+        update_hypha(i, dt);
+        update_spore(i, dt);
 
         // o virus de dentro da celula nao anda: acompanha a hospedeira; a celula
         // pode ter rompido neste quadro (#85, #86)
@@ -3690,6 +4115,10 @@ void update_match(double dt)
         else if (agents[i].species == SPECIES_YEAST)
         {
             move_speed = yeast_ai(i, (float)dt);
+        }
+        else if (agents[i].species == SPECIES_MOLD)
+        {
+            move_speed = mold_ai(i, (float)dt);
         }
         else
         {
@@ -3829,6 +4258,17 @@ void update_match(double dt)
         if (damage_player(CONTACT_DAMAGE))
         {
             set_feedback("contato com invasor: -10 de integridade");
+        }
+    }
+
+    // a hifa fere ao toque, com a invulnerabilidade, mesmo com a defesa ativa (#229)
+    {
+        int seg = 0;
+
+        if (hypha_touching(player.x, player.y, (float)PLAYER_RADIUS, &seg) != -1
+            && damage_player(HYPHA_DAMAGE))
+        {
+            set_feedback("hifa: -10 de integridade");
         }
     }
 

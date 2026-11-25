@@ -41,9 +41,13 @@
 | FB-29 | a célula infectada rompe no fim do eclipse | `a célula se rompeu: 6 vírus livres (ciclo lítico)` | 49 | #86 (FB2-10, com os 6 de 14/11) |
 | FB-30 | a defesa destrói um vírus da rajada | `a defesa destruiu o vírus da rajada` | 35 | #86 |
 | FB-31 | vírus da rajada acerta o Nanobô | `vírus da rajada: -6 de integridade` | 34 | #86 |
-| FB-32 | antibiótico (Ruptura ou Dissolução) num fungo; trava o disparo | `a parede do fungo é de quitina: antibiótico não age` | 51 | #230 (FB2-11) |
+| FB-32 | antibiótico (Ruptura ou Dissolução) num fungo, na hifa ou no esporo pousado; trava o disparo | `a parede do fungo é de quitina: antibiótico não age` | 51 | #230 (FB2-11) |
 | FB-33 | dose de Perfuração que não elimina a levedura | `cápsula enfraquecida: mais uma dose` | 35 | #230 |
 | FB-34 | a levedura brota e nasce outra (só se não houver feedback no quadro) | `a levedura brotou: nasceu outra` | 31 | #228 (FB2-14) |
+| FB-35 | o Nanobô toca um segmento da hifa (a defesa não protege) | `hifa: -10 de integridade` | 24 | #229 |
+| FB-36 | Perfuração na hifa, não na base: corta o segmento da ponta, sem pontos | `corte a base da colônia` | 23 | #229 (FB2-12) |
+| FB-37 | esporo do bolor acerta o Nanobô (some sem pousar) | `esporo do bolor: -8 de integridade` | 34 | #229 |
+| FB-38 | a defesa destrói um esporo em voo | `a defesa destruiu o esporo` | 26 | #229 |
 
 **Hífen, não menos tipográfico.** "Gram-" usa hífen ASCII (U+002D). O "−" (U+2212) que a spec traz não existe na fonte embutida (Latin-1): na tela ele saía como `^`, visto no QA de 03/11 e corrigido no commit `5e7cc75`. Ao editar estes textos, não reintroduza U+2212.
 
@@ -127,7 +131,7 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 | CT-42b | HUD, linha 1, Fase 3 | `elimine os fungos e vá ao destino` | 33 | #227 |
 | CT-43 | scanner, camada 1, vírus | `clique de novo para concluir a leitura` | 38 | Fase 2 mínima (04/11) |
 | CT-44 | scanner, categoria | `vírus` / `célula infectada` (depois da leitura) | 5 / 16 | Fase 2 mínima (04/11); #87 |
-| CT-44b | scanner, categoria, fungo (levedura e bolor) | `fungo` | 5 | #228 |
+| CT-44b | scanner, categoria, fungo (levedura, bolor e esporo pousado) | `fungo` | 5 | #228 |
 | CT-45 | resultados, título | `Fase %d concluída` | 17 | Fase 2 mínima (04/11) |
 | CT-46 | vitória / game over | `tempo total` / `recorde` | 11 / 7 | Recorde mínimo (04/11) |
 | CT-47 | menu, rodapé | `recorde %d · %s` (`recorde 1234 · Jogador`) / `nenhum recorde ainda` | até 29 / 20 | Top 10 (#34), 15/11 |
@@ -184,7 +188,10 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 | RT-13 | scanner, camada 2, célula infectada | `lisogênico · %d s · o vírus espera dentro da célula` / `eclipse · o vírus fez cópias dentro da célula` | 51 / 45 | #87 (OA7) |
 | RT-14 | scanner, camada 2, revisão, célula infectada | `no lítico a célula se rompe e solta novos vírus` | 47 | #87 |
 | RT-15 | scanner, camada 1, levedura (sem amostra de cor) | `forma: levedura (arredondada, brota)` | 36 | #228 |
-| RT-16 | scanner, camada 2, levedura (sem amostra de cor) | `eucarionte · parede de quitina · membrana com ergosterol` | 56 | #228 |
+| RT-16 | scanner, camada 2, levedura e esporo pousado (sem amostra de cor) | `eucarionte · parede de quitina · membrana com ergosterol` | 56 | #228; esporo na #229 |
+| RT-17 | scanner, camada 1, colônia de bolor (sem amostra de cor) | `forma: bolor (filamentos)` | 25 | #229 |
+| RT-18 | scanner, camada 2, colônia de bolor (sem amostra de cor) | `eucarionte · parede de quitina · corte a base da colônia` | 56 | #229 |
+| RT-19 | scanner, camada 1, esporo pousado (sem amostra de cor) | `esporo de bolor · vai germinar` | 30 | #229 |
 
 **Limite:** a fonte embutida é de **8 px por caractere** (medido com `al_get_text_width`, não estimado) e a área útil da ficha do scanner é de 588 px, a partir de `text_x = 36`. Desde 15/11 (#243), o HUD tem duas linhas, com estas folgas no pior caso:
 - **linha 0:** sobram 20 px entre o tempo e a ferramenta (`Neutralização · vírus livre`, `recarga`, pontos de 3 dígitos);

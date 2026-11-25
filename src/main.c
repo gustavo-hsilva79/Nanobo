@@ -998,7 +998,7 @@ void draw_scan_swatch(Species species, float x, float y)
 {
     // célula e vírus não têm coloração de Gram: sem amostra (#M4)
     if (species == SPECIES_CELL || species == SPECIES_VIRUS
-        || species == SPECIES_YEAST || species == SPECIES_MOLD)
+        || species == SPECIES_YEAST || species == SPECIES_MOLD || species == SPECIES_SPORE)
     {
         return;
     }
@@ -1112,7 +1112,8 @@ void draw_scan_card(int target, bool from_cursor, float card_y)
     {
         category = "vírus";
     }
-    else if (agents[target].species == SPECIES_YEAST || agents[target].species == SPECIES_MOLD)
+    else if (agents[target].species == SPECIES_YEAST || agents[target].species == SPECIES_MOLD
+        || agents[target].species == SPECIES_SPORE)
     {
         category = "fungo";
     }
@@ -2309,6 +2310,33 @@ void draw_game()
             continue;
         }
 
+        // esporo pousado provisorio: circulo de raio 3 verde-acinzentado (#229)
+        if (agents[i].species == SPECIES_SPORE)
+        {
+            al_draw_filled_circle(view_x(agents[i].x), view_y(agents[i].y), 3.0f,
+                al_map_rgb(150, 168, 140));
+            continue;
+        }
+
+        // hifa provisoria: linha da base ate a ponta e um circulo por segmento (#229)
+        if (agents[i].species == SPECIES_MOLD && agents[i].hypha_len > 0)
+        {
+            float tx;
+            float ty;
+            int k;
+
+            hypha_segment(i, agents[i].hypha_len, &tx, &ty);
+            al_draw_line(view_x(agents[i].x), view_y(agents[i].y), view_x(tx), view_y(ty),
+                al_map_rgb(96, 112, 92), 3.0f);
+
+            for (k = 1; k <= agents[i].hypha_len; k++)
+            {
+                hypha_segment(i, k, &tx, &ty);
+                al_draw_filled_circle(view_x(tx), view_y(ty), (float)HYPHA_RADIUS,
+                    al_map_rgb(128, 146, 120));
+            }
+        }
+
         // fungo provisorio ate a Task 7: levedura bege e colonia verde-acinzentada
         if (agents[i].species == SPECIES_YEAST || agents[i].species == SPECIES_MOLD)
         {
@@ -2478,6 +2506,13 @@ void draw_game()
             al_draw_scaled_bitmap(virus_sprite, 0.0f, 0.0f,
                 (float)al_get_bitmap_width(virus_sprite), (float)al_get_bitmap_height(virus_sprite),
                 px - 6.0f, py - 6.0f, 12.0f, 12.0f, 0);
+            continue;
+        }
+
+        // esporo do bolor em voo: circulo provisorio de raio 3 (#229)
+        if (enemy_shots[i].kind == SHOT_SPORE)
+        {
+            al_draw_filled_circle(px, py, 3.0f, al_map_rgb(150, 168, 140));
             continue;
         }
 

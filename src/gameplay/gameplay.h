@@ -173,6 +173,29 @@ _Static_assert(WORLD_W % 32 == 0 && WORLD_H % 32 == 0, "mundo precisa fechar no 
 #define YEAST_CAP 12
 #define MOLD_SPEED 0
 
+// bolor (#229, D5, D6): a hifa cresce 1 segmento a cada 5 +- 1 s ate 5, rumo a
+// celula do paciente mais perto; o segmento k fica a MOLD_RADIUS + HYPHA_GAP +
+// HYPHA_STEP * (k - 1) da base, machuca o nanobo e a defesa nao protege dela
+#define HYPHA_MAX 5
+#define HYPHA_TIME 5.0f
+#define HYPHA_JITTER 1.0f
+#define HYPHA_RADIUS 7
+#define HYPHA_GAP 8.0f
+#define HYPHA_STEP 16.0f
+#define HYPHA_DAMAGE 10.0f
+
+// esporos: com a hifa cheia e em alerta, 3 em leque a cada 5 s, saindo da ponta;
+// voam 1,5 s, pousam e germinam em colonia em 6 s, ate 4 colonias vivas
+#define SPORE_INTERVAL 5.0f
+#define SPORE_COUNT 3
+#define SPORE_SPREAD 20.0f
+#define SPORE_SPEED 80.0f
+#define SPORE_DAMAGE 8.0f
+#define SPORE_FLIGHT 1.5f
+#define SPORE_RADIUS 4
+#define GERMINATE_TIME 6.0f
+#define MOLD_CAP 4
+
 // duas barras (#234): a integridade do nanobo (player.health) cai com o que
 // o fere; os vitais do paciente caem quando uma celula dele e perdida ou ferida.
 // nao ha drenagem por tempo: a pressao vem dos invasores (revisao de 14/11)
@@ -397,6 +420,13 @@ int agents_initial(void);
 // indice >= agents_initial() ou o fim do array; -1 se MAX_AGENTS esta cheio.
 // quando estende o array, agents_count ja sobe; quem chama preenche a vaga
 int spawn_agent_slot(void);
+
+// esporo pousado no ponto (preso dentro do mundo), com GERMINATE_TIME cheio:
+// soma 1 ameaca na fase e na run; devolve a vaga, ou -1 sem vaga (#229)
+int spawn_ground_spore(float x, float y);
+
+// centro do segmento k (1 a hypha_len) da hifa do bolor (#229)
+void hypha_segment(int index, int k, float* x, float* y);
 bool phase_has_bacteria();
 bool has_next_phase(void);
 void start_next_phase(void);
