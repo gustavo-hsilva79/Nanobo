@@ -132,7 +132,7 @@ typedef struct
     int host_cell; // indice da celula hospedeira, -1 sem celula (#89)
     int variant; // sprite sorteado no nascimento, de 0 a SPRITE_VARIANTS - 1 (#211)
     Shape shape; // coco ou bacilo; SHAPE_NONE fora das bacterias (#214)
-    float division_timer; // tempo ate a proxima divisao binaria, so bacteria (#217)
+    float division_timer; // tempo ate a proxima divisao (bacteria, #217) ou brotamento (levedura, #228)
     AiState ai_state; // vagar, alerta ou segurado (#235)
     float lost_timer; // tempo com o nanobo longe, ate perder o alerta (#235)
     float attack_timer; // tempo ate o proximo ataque (#235)

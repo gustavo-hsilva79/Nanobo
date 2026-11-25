@@ -997,7 +997,8 @@ void draw_stat(float x, float y, float right, const char* label, const char* val
 void draw_scan_swatch(Species species, float x, float y)
 {
     // célula e vírus não têm coloração de Gram: sem amostra (#M4)
-    if (species == SPECIES_CELL || species == SPECIES_VIRUS)
+    if (species == SPECIES_CELL || species == SPECIES_VIRUS
+        || species == SPECIES_YEAST || species == SPECIES_MOLD)
     {
         return;
     }
@@ -1110,6 +1111,10 @@ void draw_scan_card(int target, bool from_cursor, float card_y)
     else if (agents[target].species == SPECIES_VIRUS)
     {
         category = "vírus";
+    }
+    else if (agents[target].species == SPECIES_YEAST || agents[target].species == SPECIES_MOLD)
+    {
+        category = "fungo";
     }
     else
     {

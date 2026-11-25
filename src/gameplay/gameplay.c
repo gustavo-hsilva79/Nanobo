@@ -323,6 +323,11 @@ const char* layer_one_text(int index)
         return "vírus livre · deriva no muco";
     }
 
+    if (species == SPECIES_YEAST)
+    {
+        return "forma: levedura (arredondada, brota)";
+    }
+
     if (agents[index].shape == SHAPE_BACILLUS)
     {
         return "forma: bacilo (bastão)";
@@ -355,6 +360,11 @@ const char* layer_two_text(int index)
     if (species == SPECIES_VIRUS)
     {
         return "acelular: sem parede, ribossomos nem metabolismo";
+    }
+
+    if (species == SPECIES_YEAST)
+    {
+        return "eucarionte · parede de quitina · membrana com ergosterol";
     }
 
     // celula infectada: o ciclo do virus, sem recomendar a ferramenta (#87)
@@ -1648,6 +1658,14 @@ static float random_division_time(void)
     return DIVISION_TIME - DIVISION_JITTER + 2.0f * DIVISION_JITTER * unit;
 }
 
+// tempo ate o proximo brotamento: YEAST_BUD_TIME com o sorteio de YEAST_BUD_JITTER (#228)
+static float random_bud_time(void)
+{
+    float unit = (float)rand() / ((float)RAND_MAX + 1.0f);
+
+    return YEAST_BUD_TIME - YEAST_BUD_JITTER + 2.0f * YEAST_BUD_JITTER * unit;
+}
+
 // devolve o agente ao estado de partida nova: resistencia da especie, ativo de
 // novo e direcao propria; a posicao de nascimento quem sorteia e o place_agents
 static void reset_agent(int index)
@@ -1661,6 +1679,12 @@ static void reset_agent(int index)
     agents[index].dose_timer = 0.0f;
     agents[index].resistant = false;
     agents[index].division_timer = random_division_time();
+
+    // a levedura brota em 20 +- 3 s, nao em 12 (#228)
+    if (agents[index].species == SPECIES_YEAST)
+    {
+        agents[index].division_timer = random_bud_time();
+    }
 
     // IA comeca vagando; a primeira investida ou toxina vem depois do intervalo (#235)
     agents[index].ai_state = AI_WANDER;
@@ -1725,23 +1749,44 @@ static const char* phase_virus_name(void)
     return "Vírus";
 }
 
+// vaga para um agente que nasce no meio da fase: reaproveita a primeira morta
+// fora da composicao ou estende o array; -1 se estiver cheio (#228)
+int spawn_agent_slot(void)
+{
+    int i;
+    int slot;
+
+    for (i = agents_initial(); i < agents_count; i++)
+    {
+        if (!agents[i].active)
+        {
+            return i;
+        }
+    }
+
+    if (agents_count >= MAX_AGENTS)
+    {
+        return -1;
+    }
+
+    slot = agents_count;
+    agents_count = agents_count + 1;
+    return slot;
+}
+
 // virus que caiu da rajada: entra livre no muco numa vaga de fora da composicao,
 // ate o teto de virus da fase; acima do teto ele se perde (#86)
 static void spawn_free_virus(float x, float y)
 {
     int i;
     int alive = 0;
-    int slot = -1;
+    int slot;
 
     for (i = 0; i < agents_count; i++)
     {
         if (agents[i].active && agents[i].species == SPECIES_VIRUS)
         {
             alive = alive + 1;
-        }
-        else if (!agents[i].active && i >= agents_initial() && slot == -1)
-        {
-            slot = i;
         }
     }
 
@@ -1750,15 +1795,11 @@ static void spawn_free_virus(float x, float y)
         return;
     }
 
+    slot = spawn_agent_slot();
+
     if (slot == -1)
     {
-        if (agents_count >= MAX_AGENTS)
-        {
-            return;
-        }
-
-        slot = agents_count;
-        agents_count = agents_count + 1;
+        return;
     }
 
     agents[slot].name = phase_virus_name();
@@ -2969,9 +3010,81 @@ static void divide_bacteria(int index)
     set_feedback("uma bactéria se dividiu em duas");
 }
 
-// conta o tempo de divisao de cada bacteria viva (#217)
+// brotamento: a levedura viva gera outra ao lado, na vaga livre da fase, com a
+// capsula cheia e sem leitura; ate YEAST_CAP vivas (#228)
+static void bud_yeast(int index)
+{
+    int i;
+    int alive = 0;
+    int slot;
+    float angle;
+    float offset = 2.0f * agent_radius(index);
+
+    agents[index].division_timer = random_bud_time();
+
+    for (i = 0; i < agents_count; i++)
+    {
+        if (agents[i].active && agents[i].species == SPECIES_YEAST)
+        {
+            alive = alive + 1;
+        }
+    }
+
+    if (alive >= YEAST_CAP)
+    {
+        return;
+    }
+
+    slot = spawn_agent_slot();
+
+    if (slot == -1)
+    {
+        return;
+    }
+
+    agents[slot].name = agents[index].name;
+    agents[slot].id = 100 + slot;
+    agents[slot].species = SPECIES_YEAST;
+    agents[slot].shape = SHAPE_NONE;
+    reset_agent(slot);
+    agents[slot].host_cell = -1;
+
+    angle = ((float)rand() / ((float)RAND_MAX + 1.0f)) * 2.0f * (float)M_PI;
+    agents[slot].x = clamp_to_world(agents[index].x + cosf(angle) * offset, (float)WORLD_W);
+    agents[slot].y = clamp_to_world(agents[index].y + sinf(angle) * offset, (float)WORLD_H);
+
+    // a vaga reaproveitada nao pode herdar a ultima leitura do painel
+    if (scan_target == slot)
+    {
+        scan_target = -1;
+    }
+
+    // o broto e uma ameaca a mais na fase e na run
+    phase_threats = phase_threats + 1;
+    run_progress.threats = run_progress.threats + 1;
+
+    // so avisa se nada mais importante estiver no quadro
+    if (feedback == NULL)
+    {
+        set_feedback("a levedura brotou: nasceu outra");
+    }
+}
+
+// conta o tempo de divisao de cada bacteria viva (#217) e o de brotamento da levedura
 static void update_division(int index, double dt)
 {
+    if (agents[index].species == SPECIES_YEAST)
+    {
+        agents[index].division_timer -= (float)dt;
+
+        if (agents[index].division_timer <= 0.0f)
+        {
+            bud_yeast(index);
+        }
+
+        return;
+    }
+
     if (agents[index].species != SPECIES_GRAM_POSITIVE
         && agents[index].species != SPECIES_GRAM_NEGATIVE)
     {
@@ -3481,6 +3594,31 @@ static float update_bacteria_ai(int index, float dt)
     return bacillus_ai(index, dx, dy, dist, dt);
 }
 
+// levedura: acorda a 200 px, avanca devagar no nanobo e volta a vagar ao perder
+// o alvo; o dano e o de contato (#228)
+static float yeast_ai(int index, float dt)
+{
+    float dx = player.x - agents[index].x;
+    float dy = player.y - agents[index].y;
+    float dist = sqrtf(dx * dx + dy * dy);
+
+    update_alert(index, dist, dt);
+
+    if (agents[index].ai_state != AI_ALERT)
+    {
+        wander(index, dt);
+        return (float)agents[index].speed;
+    }
+
+    if (dist > 0.001f)
+    {
+        agents[index].dx = dx / dist;
+        agents[index].dy = dy / dist;
+    }
+
+    return YEAST_ALERT_SPEED;
+}
+
 void update_match(double dt)
 {
     float dir_x = 0.0f;
@@ -3548,6 +3686,10 @@ void update_match(double dt)
             || agents[i].species == SPECIES_GRAM_NEGATIVE)
         {
             move_speed = update_bacteria_ai(i, (float)dt);
+        }
+        else if (agents[i].species == SPECIES_YEAST)
+        {
+            move_speed = yeast_ai(i, (float)dt);
         }
         else
         {

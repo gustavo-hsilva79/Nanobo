@@ -165,6 +165,12 @@ _Static_assert(WORLD_W % 32 == 0 && WORLD_H % 32 == 0, "mundo precisa fechar no 
 #define YEAST_RESISTANCE 3
 #define MOLD_RESISTANCE 1
 #define YEAST_SPEED 15
+
+// levedura: em alerta avanca no nanobo; brota a cada 20 +- 3 s ate 12 vivas
+#define YEAST_ALERT_SPEED 35.0f
+#define YEAST_BUD_TIME 20.0f
+#define YEAST_BUD_JITTER 3.0f
+#define YEAST_CAP 12
 #define MOLD_SPEED 0
 
 // duas barras (#234): a integridade do nanobo (player.health) cai com o que
@@ -386,6 +392,11 @@ int agents_total(void);
 
 // agentes com que a fase nasceu: as filhas da divisao ficam de fora (#217)
 int agents_initial(void);
+
+// reserva uma vaga de agente fora da composicao da fase: a primeira morta com
+// indice >= agents_initial() ou o fim do array; -1 se MAX_AGENTS esta cheio.
+// quando estende o array, agents_count ja sobe; quem chama preenche a vaga
+int spawn_agent_slot(void);
 bool phase_has_bacteria();
 bool has_next_phase(void);
 void start_next_phase(void);
