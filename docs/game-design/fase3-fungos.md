@@ -49,7 +49,7 @@
 - **Esporo no chão (D5, `SPECIES_SPORE`):** ao fim do voo (ou ao sair do mundo), o esporo vira um agente ameaça de raio 4.
   - **1 dose** de Perfuração o elimina. **Não dá pontos** e **não causa dano de contato** (decisões do dono de 25/11). Antibiótico nele dá FB2-11.
   - É um agente comum: pode ser empurrado e conta em `phase_threats` e `run_progress.threats`, mas não conta para a identificação.
-  - **Germina em `GERMINATE_TIME` (6 s)** numa colônia nova (hifa 0, direção pela D6), se houver menos de **`MOLD_CAP` (4)** colônias vivas. Com 4, **espera a vaga** e germina assim que alguma morrer.
+  - **Germina em `GERMINATE_TIME` (6 s)** numa colônia nova (hifa 0, direção pela D6), se houver menos de **`MOLD_CAP` (4)** colônias vivas. Com 4, **espera a vaga** e germina assim que alguma morrer. Também espera enquanto a colônia nova sobreporia uma célula do paciente (§"Correções da revisão final").
   - Não há mensagem na germinação.
 - **Scanner:** colônia, camada 1 `forma: bolor (filamentos)` e camada 2 `eucarionte · parede de quitina · corte a base da colônia`; esporo no chão, camada 1 `esporo de bolor · vai germinar` e camada 2 `eucarionte · parede de quitina · membrana com ergosterol`.
 
@@ -57,13 +57,13 @@
 
 | ferramenta | tecla | age em | efeito |
 |---|---|---|---|
-| **Perfuração** (`LASER_PERFORATE`) | 1 | levedura, colônia, esporo no chão; corta a hifa | 1 dose por tiro; elimina a colônia e o esporo com 1, a levedura com 3; +10 por eliminação de levedura ou colônia |
+| **Perfuração** (`LASER_PERFORATE`) | 1 | levedura, colônia, esporo no chão; corta a hifa | 1 dose por tiro; elimina a colônia e o esporo com 1, a levedura com 3; +10 por eliminação de levedura ou de colônia inicial (a germinada não pontua) |
 | **Ruptura** (`LASER_GRAM_POSITIVE`) | 2 | nada na fase | em fungo é "arma errada" |
 
 - **Antibiótico em fungo (R5):** não muda a resistência, arma a trava de 2 s (`FIRE_LOCK_TIME`), soma `wrong_decisions` e dá FB2-11 (`a parede do fungo é de quitina: antibiótico não age`). Dissolução e Reserva não existem na fase.
-- **Dose na levedura:** feedback `cápsula enfraquecida: mais uma dose` quando sobra resistência. A eliminação usa o feedback de eliminação existente.
+- **Dose na levedura:** o feedback diz quantas doses faltam: `cápsula enfraquecida: faltam 2 doses` depois da 1ª e `cápsula enfraquecida: falta 1 dose` depois da 2ª (FB-33 e FB-33b, revisão final de 25/11). A eliminação usa o feedback de eliminação existente.
 - **Perfuração na célula do paciente:** ramo da célula existente, −15 dos vitais (fogo amigo). O "não custa vitais" de `decisoes.md` fala do efeito colateral da arma, que o dono não escolheu; não tira o custo de acertar a célula.
-- **Pontuação:** +10 por levedura e por colônia eliminada. O **esporo não dá pontos**, nem em voo nem no chão.
+- **Pontuação:** +10 por levedura eliminada e por colônia **inicial** eliminada (índice < `agents_initial()`). O **esporo não dá pontos**, nem em voo nem no chão, e a **colônia que germinou de esporo também não** (decisão do dono de 25/11): ela segue ameaça (conta para a conclusão, para `neutralized` e para `molds_eliminated`), e a eliminação dá o feedback FB-40 `colônia germinada destruída: sem pontos`. O broto de levedura continua valendo +10, como a filha da divisão na Fase 1.
 - **O que a fase não afirma:** que o antibiótico cause aspergilose. A carga de esporos pelo estado do paciente é regra de jogo, sem texto que diga isso.
 
 ## Carga de esporos pelo estado do paciente (#231, D4)
@@ -112,6 +112,7 @@ Gerada por script Lua no Aseprite, no estilo aprovado em 14/11, com os scripts e
 | D7 | Fungos como silhueta até a 1ª camada; a hifa se desenha desde o início. |
 | D8 | A fase começa com a Ruptura na mão. |
 | 25/11 (após a revisão da Task 4) | O esporo, em voo ou pousado, **não dá pontos**; o esporo pousado **não causa dano de contato**. |
+| 25/11 (após a revisão final) | A colônia que **germinou de esporo não dá pontos**; só as 2 colônias e as 4 leveduras iniciais (índice < `agents_initial()`) dão +10. A germinada segue ameaça. |
 
 | # | Decisão técnica | Estado |
 |---|---|---|
@@ -130,9 +131,17 @@ Gerada por script Lua no Aseprite, no estilo aprovado em 14/11, com os scripts e
 - Não há mensagem na germinação; o feedback do brotamento só aparece quando nenhum outro está no quadro.
 - CC-05 abre na entrada da Fase 3; CC-06 na primeira leitura completa de fungo ou no primeiro antibiótico num fungo.
 
+## Correções da revisão final (25/11)
+
+- **Colônia germinada sem pontos:** ver a decisão do dono acima e §"Ferramentas e combate".
+- **Reinício com tiros no ar:** `start_phase` apaga os tiros inimigos (esporos e vírus da rajada) **antes** de contar as ameaças. Um Game Over com esporos no ar seguido de partida nova não infla mais `run_progress.threats`, e o `ameaças X/Y` da run nova chega a N/N.
+- **Dose da levedura:** o texto diz quantas doses faltam (FB-33 e FB-33b).
+- **Parede sem dano parado:** o empurrão da hifa e da base da colônia deixa o Nanobô **meio pixel além do alcance** (`reach + 0.5f`). O toque continua ferindo quem entra na parede (−10, no máximo uma vez por segundo), mas o Nanobô parado ao lado dela não perde mais integridade. O empurrão da célula do paciente (Fases 1 e 2) não mudou.
+- **Germinação longe da célula:** o esporo pousado só germina se a colônia que nasceria ali não sobrepuser uma célula do paciente viva (distância ≥ `MOLD_RADIUS` + raio da célula). Enquanto isso a germinação espera; o esporo segue ameaça e pode ser destruído, e germina assim que a célula sai de perto.
+
 ## Calibração e números de QA
 
-- **Harness de regras:** **470 passaram, 0 falharam** (eram 334 antes da Fase 3). `conferir_textos.py` fecha com 0 divergências.
+- **Harness de regras:** **482 passaram, 0 falharam** (eram 334 antes da Fase 3 e 470 antes das correções da revisão final). `conferir_textos.py` fecha com 0 divergências.
 - **Build:** Debug e Release x64 com 0 avisos.
 - **Memória:** pico de **~78,25 MB** de working set com as três fases (Release com as teclas de QA); a Fase 3 roda ~0,4 MB abaixo da Fase 2, porque só um mapa fica carregado por vez. Método e tabela na seção de 25/11 de `docs/planejamento/qa-memoria.md`.
 - **Bots:** não há bots da Fase 3 (R6). Os números de brotamento, hifa e esporo são os do `gdd.md`, sem medida de taxa de acerto de leitor e de chutador como nas Fases 1 e 2.
@@ -146,4 +155,4 @@ Gerada por script Lua no Aseprite, no estilo aprovado em 14/11, com os scripts e
 - **Broto na borda do mundo** pode nascer sobreposto ao pai; a colisão o separa no quadro seguinte.
 - **Tecla F (Debug)** não soma nos contadores do relatório da Fase 3.
 - **Mapa** procedural e uniforme, sem marco no meio; aprovado assim pelo dono.
-- **Fora do escopo desta fase, pré-existente:** o card da Fase 2 mostra "Lisog@nico" (o `ê` do título sai errado na tela); reportado ao dono.
+- **Legibilidade de `ê` e `ô`, pré-existente:** os textos com `ê` e `ô` (`Lisogênico` no card da Fase 2, `você`, `colônia`) estão **corretos**, decisão do dono de 25/11. O problema é o tamanho da fonte embutida: no glifo de 8 px o circunflexo encosta na letra, e numa captura reduzida o `ê` lembra `@` e o `ô` lembra `8`. Fica para o redesenho da interface que vem a seguir (`textos-do-jogo.md`, §2.1).
