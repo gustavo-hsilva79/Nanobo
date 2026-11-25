@@ -2024,6 +2024,10 @@ void draw_hud()
     {
         module_name = "Lise · célula infectada";
     }
+    else if (player.laser == LASER_PERFORATE)
+    {
+        module_name = "Perfuração · antifúngico";
+    }
 
     // Reserva: nome com as cargas e a palavra de estado quando acabam (#216)
     if (player.laser == LASER_RESERVE)
@@ -2054,8 +2058,9 @@ void draw_hud()
     {
         al_draw_bitmap(antibody_icon, (float)x_icon, (float)(hud_y(0) - 4), 0);
     }
-    else if (player.laser == LASER_LYSE)
+    else if (player.laser == LASER_LYSE || player.laser == LASER_PERFORATE)
     {
+        // a Perfuracao usa o icone da Lise ate ter o proprio
         al_draw_bitmap(lyse_icon, (float)x_icon, (float)(hud_y(0) - 4), 0);
     }
     else
@@ -2436,6 +2441,13 @@ void draw_game()
 
         px = view_x(projectiles[i].x);
         py = view_y(projectiles[i].y);
+
+        // a folha so tem 5 linhas: a Perfuracao e um anel provisorio
+        if (projectiles[i].laser == LASER_PERFORATE)
+        {
+            al_draw_circle(px, py, 5.0f, UI_TEXT, 1.5f);
+            continue;
+        }
 
         al_draw_tinted_scaled_rotated_bitmap_region(shots_sheet,
             (float)(frame * SHOT_FRAME), (float)((int)projectiles[i].laser * SHOT_FRAME),

@@ -482,6 +482,18 @@ static bool weapon_affects(Laser laser, Species species)
         return laser == LASER_NEUTRALIZE;
     }
 
+    // fungo: so a perfuracao age; a parede de quitina barra o antibiotico
+    if (species == SPECIES_YEAST || species == SPECIES_MOLD)
+    {
+        return laser == LASER_PERFORATE;
+    }
+
+    // a perfuracao nao age em bacteria
+    if (laser == LASER_PERFORATE)
+    {
+        return false;
+    }
+
     return (int)laser == laser_for_species(species);
 }
 
@@ -838,7 +850,15 @@ static void hit_projectiles()
                 {
                     // primeira dose: o anel do prazo comeca a esvaziar (#215)
                     emit_sfx_at(SFX_EVENT_HIT, agents[j].x, agents[j].y);
-                    set_feedback("primeira dose: complete o tratamento");
+
+                    if (agents[j].species == SPECIES_YEAST)
+                    {
+                        set_feedback("cápsula enfraquecida: mais uma dose");
+                    }
+                    else
+                    {
+                        set_feedback("primeira dose: complete o tratamento");
+                    }
                 }
             }
             else
@@ -855,6 +875,11 @@ static void hit_projectiles()
                 {
                     queue_card(CARD_VIRUS);
                     set_feedback("antibiótico não age em vírus");
+                }
+                // antibiotico em fungo: a parede e de quitina, nao de peptideoglicano
+                else if (agents[j].species == SPECIES_YEAST || agents[j].species == SPECIES_MOLD)
+                {
+                    set_feedback("a parede do fungo é de quitina: antibiótico não age");
                 }
                 // quem leu so a forma chutou o grupo: o feedback aponta a coloracao (#215)
                 else if (agents[j].layers == 1)
@@ -1317,6 +1342,21 @@ bool phase_has_fungi(void)
 // teclas 1, 2 e 3: a ferramenta daquela posicao na fase atual (#216, #88)
 void select_tool(int slot)
 {
+    // Fase 3: 1 Perfuracao, 2 Ruptura (que nao age em fungo, de proposito), 3 nada
+    if (phase_has_fungi())
+    {
+        if (slot == 0)
+        {
+            player.laser = LASER_PERFORATE;
+        }
+        else if (slot == 1)
+        {
+            player.laser = LASER_GRAM_POSITIVE;
+        }
+
+        return;
+    }
+
     if (phase_has_viruses())
     {
         if (slot == 0)
@@ -1348,6 +1388,13 @@ void select_tool(int slot)
 // roda do mouse passa para a proxima ferramenta da fase (#198, #216)
 void toggle_module()
 {
+    // Fase 3: alterna entre a Perfuracao e a Ruptura
+    if (phase_has_fungi())
+    {
+        player.laser = player.laser == LASER_PERFORATE ? LASER_GRAM_POSITIVE : LASER_PERFORATE;
+        return;
+    }
+
     // Fase 2: alterna entre os anticorpos e a Lise (#88)
     if (phase_has_viruses())
     {
@@ -2228,7 +2275,12 @@ static void start_phase(int index)
     reserve_left = RESERVE_CHARGES;
 
     // cada fase mostra so as suas ferramentas: a Fase 2 comeca nos anticorpos (#88)
-    if (phase_has_viruses())
+    if (phase_has_fungi())
+    {
+        // a Fase 3 comeca na Ruptura, que nao age em fungo
+        player.laser = LASER_GRAM_POSITIVE;
+    }
+    else if (phase_has_viruses())
     {
         player.laser = LASER_NEUTRALIZE;
     }
@@ -2784,6 +2836,13 @@ static void collide_agents()
 
             // a colonia de bolor nao se move: so o outro recua
             if (agents[i].species == SPECIES_MOLD && agents[j].species == SPECIES_MOLD)
+            {
+                continue;
+            }
+
+            // celula e colonia sao fixas: sobrepostas, nenhuma se move
+            if ((agents[i].species == SPECIES_MOLD && agents[j].species == SPECIES_CELL)
+                || (agents[i].species == SPECIES_CELL && agents[j].species == SPECIES_MOLD))
             {
                 continue;
             }

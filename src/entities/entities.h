@@ -85,7 +85,8 @@ typedef enum
     LASER_GRAM_NEGATIVE = 1,
     LASER_RESERVE = 2,
     LASER_NEUTRALIZE = 3,
-    LASER_LYSE = 4
+    LASER_LYSE = 4,
+    LASER_PERFORATE = 5 // Fase 3: antifungico que perfura a parede de quitina
 } Laser;
 
 // quantos projeteis podem existir ao mesmo tempo

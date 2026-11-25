@@ -41,6 +41,8 @@
 | FB-29 | a célula infectada rompe no fim do eclipse | `a célula se rompeu: 6 vírus livres (ciclo lítico)` | 49 | #86 (FB2-10, com os 6 de 14/11) |
 | FB-30 | a defesa destrói um vírus da rajada | `a defesa destruiu o vírus da rajada` | 35 | #86 |
 | FB-31 | vírus da rajada acerta o Nanobô | `vírus da rajada: -6 de integridade` | 34 | #86 |
+| FB-32 | antibiótico (Ruptura ou Dissolução) num fungo; trava o disparo | `a parede do fungo é de quitina: antibiótico não age` | 51 | #230 (FB2-11) |
+| FB-33 | dose de Perfuração que não elimina a levedura | `cápsula enfraquecida: mais uma dose` | 35 | #230 |
 
 **Hífen, não menos tipográfico.** "Gram-" usa hífen ASCII (U+002D). O "−" (U+2212) que a spec traz não existe na fonte embutida (Latin-1): na tela ele saía como `^`, visto no QA de 03/11 e corrigido no commit `5e7cc75`. Ao editar estes textos, não reintroduza U+2212.
 
@@ -117,6 +119,7 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 | CT-35 | vitória | `Vitória` | 7 | #202 |
 | CT-36 | HUD, linha 0, à direita | `Ruptura · parede` / `Dissolução · membrana` / `Reserva %d/%d · resistente` (`Reserva 2/2 · resistente`) | 16 / 21 / 24 | decisão 03/11 (noite); #216; a ferramenta com o alvo dela em 15/11 (#243) |
 | CT-36b | HUD, linha 0, Fase 2 | `Neutralização · vírus livre` / `Lise · célula infectada` | 27 / 23 | #88; #243 |
+| CT-36c | HUD, linha 0, Fase 3 | `Perfuração · antifúngico` | 24 | #230 |
 | CT-37 | resultados, painel novo | `o que a partida mostrou` | 23 | #202, build de 04/11 |
 | CT-38 a CT-41 | — | contadores e frase de revisão do painel de 04/11 | — | saíram com o relatório por objetivo (#210, #223); os textos atuais são as RR-01 a RR-10 da §2.2 |
 | CT-42 | HUD, linha 1, Fase 2 | `neutralize os vírus e vá ao destino` | 35 | Fase 2 mínima (04/11); encurtada em 15/11 (#243) |
