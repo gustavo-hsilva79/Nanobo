@@ -158,4 +158,12 @@ Copie esta ficha para a §9, uma por participante. **Só fatos:** o que a pessoa
 
 ## 9. Registro das sessões
 
-*(vazio até a primeira sessão)*
+### Sessão 1 — preparação (#135, 25/11/2026)
+
+- **Versão:** `x64/Release/Nanobo.exe` recompilado do zero (`-t:Rebuild`) em 25/11 a partir do commit `d1b0be5`. O código do jogo é o de `d822eab` (16/11), porque os commits seguintes só mexem em docs. Build com **0 avisos e 0 erros**; harness de regras com **334 passaram, 0 falharam**.
+- **Conteúdo:** Fases 1 e 2 (OA1–OA7). Sem Fase 3.
+- **Como rodar:** de dentro da pasta do repositório (os recursos carregam por caminho relativo), com duplo clique em `x64\Release\Nanobo.exe` ou pelo Explorer com a pasta do repositório como pasta de trabalho.
+- **Cenário inicial:** jogo recém-aberto no menu, sem partida anterior, com o ranking fora da pasta (§4, passo 3). Hoje o menu mostra `recorde 220 · Recorde`; com o ranking fora, esse rodapé muda.
+- **Conferido em 25/11:** o menu abre, `ENTER` leva ao briefing, `ESC` pula para a Fase 1, a dica `botão direito: escanear` aparece sobre o primeiro agente e o Nanobô anda com as setas.
+- **Recursos:** teclado, mouse com roda e botão direito, som ligado, este documento aberto para o condutor.
+- **Explicações planejadas durante o jogo:** nenhuma além da §5.1.
