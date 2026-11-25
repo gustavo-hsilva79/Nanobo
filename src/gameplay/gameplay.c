@@ -623,8 +623,10 @@ bool hit_agent(int index)
         }
 
         // o acerto que neutralizou e o unico evento que pontua (#66); o esporo
-        // conta como ameaca eliminada, mas nao da pontos (decisao do dono, 25/11)
-        if (agents[index].species != SPECIES_SPORE)
+        // conta como ameaca eliminada, mas nao da pontos (decisao do dono, 25/11);
+        // a colonia que germinou de esporo tambem nao (decisao do dono, 25/11)
+        if (agents[index].species != SPECIES_SPORE
+            && !(agents[index].species == SPECIES_MOLD && index >= agents_initial()))
         {
             score = score + SCORE_PER_THREAT;
         }
@@ -975,6 +977,11 @@ static void hit_projectiles()
                     {
                         set_feedback("esporo destruído");
                     }
+                    // a colonia germinada tambem nao da pontos (25/11)
+                    else if (agents[j].species == SPECIES_MOLD && j >= agents_initial())
+                    {
+                        set_feedback("colônia germinada destruída: sem pontos");
+                    }
                     // sem identificacao a ameaca sai da cena e o bonus de 9/9 fica impossivel
                     else if (agents[j].identified)
                     {
@@ -990,9 +997,14 @@ static void hit_projectiles()
                     // primeira dose: o anel do prazo comeca a esvaziar (#215)
                     emit_sfx_at(SFX_EVENT_HIT, agents[j].x, agents[j].y);
 
-                    if (agents[j].species == SPECIES_YEAST)
+                    // a levedura diz quantas doses faltam: 2 ou 1
+                    if (agents[j].species == SPECIES_YEAST && agents[j].resistance >= 2)
                     {
-                        set_feedback("cápsula enfraquecida: mais uma dose");
+                        set_feedback("cápsula enfraquecida: faltam 2 doses");
+                    }
+                    else if (agents[j].species == SPECIES_YEAST)
+                    {
+                        set_feedback("cápsula enfraquecida: falta 1 dose");
                     }
                     else
                     {
@@ -2473,6 +2485,13 @@ static void start_phase(int index)
         }
     }
 
+    // os tiros inimigos da run anterior saem antes da conta: esporo ou virus
+    // ainda no ar nao pode somar ameaca na fase nova (#236, #229)
+    for (i = 0; i < MAX_ENEMY_SHOTS; i++)
+    {
+        enemy_shots[i].active = false;
+    }
+
     // ameacas da fase: os invasores da composicao; filhas e virus da rajada
     // somam depois (#217, #86)
     phase_threats = 0;
@@ -2639,15 +2658,10 @@ static void start_phase(int index)
         player.laser = LASER_GRAM_POSITIVE;
     }
 
-    // fase nova comeca sem projetil na tela, nem do nanobo nem dos invasores (#236)
+    // fase nova comeca sem projetil na tela; os dos invasores ja sairam (#236)
     for (i = 0; i < MAX_PROJECTILES; i++)
     {
         projectiles[i].active = false;
-    }
-
-    for (i = 0; i < MAX_ENEMY_SHOTS; i++)
-    {
-        enemy_shots[i].active = false;
     }
 
     // nem perigos no mapa (#237)
@@ -3135,8 +3149,10 @@ static void push_player_off_hypha(void)
                 dist = 1.0f;
             }
 
-            player.x = sx + dx / dist * reach;
-            player.y = sy + dy / dist * reach;
+            // meio pixel alem do alcance: parado ao lado da parede, o toque
+            // (que usa <=) nao fere de novo a cada segundo
+            player.x = sx + dx / dist * (reach + 0.5f);
+            player.y = sy + dy / dist * (reach + 0.5f);
         }
     }
 
@@ -3190,10 +3206,17 @@ static void collide_agents()
                 ny = dy / dist;
             }
 
-            if (agents[i].species == SPECIES_CELL || agents[i].species == SPECIES_MOLD)
+            if (agents[i].species == SPECIES_CELL)
             {
                 player.x -= nx * (player_reach - dist);
                 player.y -= ny * (player_reach - dist);
+            }
+            // a colonia fere ao toque: o nanobo recua meio pixel alem do alcance,
+            // e parado ao lado dela nao leva -10 a cada segundo
+            else if (agents[i].species == SPECIES_MOLD)
+            {
+                player.x -= nx * (player_reach + 0.5f - dist);
+                player.y -= ny * (player_reach + 0.5f - dist);
             }
             else
             {
@@ -4103,6 +4126,30 @@ static void update_spore(int index, double dt)
     if (molds_alive() >= MOLD_CAP)
     {
         return;
+    }
+
+    // a colonia nao nasce em cima da celula do paciente: com o esporo perto
+    // dela, a germinacao espera; ele segue ameaca e pode ser destruido
+    {
+        int c;
+
+        for (c = 0; c < agents_count; c++)
+        {
+            float reach;
+
+            if (!agents[c].active || agents[c].species != SPECIES_CELL)
+            {
+                continue;
+            }
+
+            reach = (float)MOLD_RADIUS + agent_radius(c);
+
+            if (squared_distance(agents[index].x, agents[index].y, agents[c].x, agents[c].y)
+                < reach * reach)
+            {
+                return;
+            }
+        }
     }
 
     // a mesma ameaca muda de forma: o esporo vira a colonia, sem somar outra

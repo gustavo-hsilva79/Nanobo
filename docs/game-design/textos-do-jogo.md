@@ -42,13 +42,15 @@
 | FB-30 | a defesa destrói um vírus da rajada | `a defesa destruiu o vírus da rajada` | 35 | #86 |
 | FB-31 | vírus da rajada acerta o Nanobô | `vírus da rajada: -6 de integridade` | 34 | #86 |
 | FB-32 | antibiótico (Ruptura ou Dissolução) num fungo, na hifa ou no esporo pousado; trava o disparo | `a parede do fungo é de quitina: antibiótico não age` | 51 | #230 (FB2-11) |
-| FB-33 | dose de Perfuração que não elimina a levedura | `cápsula enfraquecida: mais uma dose` | 35 | #230 |
+| FB-33 | 1ª dose de Perfuração na levedura: sobram 2 de resistência | `cápsula enfraquecida: faltam 2 doses` | 36 | #230; contagem certa desde a revisão final de 25/11 (era `mais uma dose`) |
+| FB-33b | 2ª dose de Perfuração na levedura: sobra 1 de resistência | `cápsula enfraquecida: falta 1 dose` | 34 | revisão final de 25/11 |
 | FB-34 | a levedura brota e nasce outra (só se não houver feedback no quadro) | `a levedura brotou: nasceu outra` | 31 | #228 (FB2-14) |
 | FB-35 | o Nanobô toca um segmento da hifa (a defesa não protege) | `hifa: -10 de integridade` | 24 | #229 |
 | FB-36 | Perfuração na hifa, não na base: corta o segmento da ponta, sem pontos | `corte a base da colônia` | 23 | #229 (FB2-12) |
 | FB-37 | esporo do bolor acerta o Nanobô (some sem pousar) | `esporo do bolor: -8 de integridade` | 34 | #229 |
 | FB-38 | a defesa destrói um esporo em voo | `a defesa destruiu o esporo` | 26 | #229 |
 | FB-39 | Perfuração elimina um esporo pousado: ameaça a menos, sem pontos (decisão do dono, 25/11) | `esporo destruído` | 16 | #229 |
+| FB-40 | Perfuração elimina uma colônia que germinou de esporo: ameaça a menos, sem pontos (decisão do dono, 25/11) | `colônia germinada destruída: sem pontos` | 39 | revisão final de 25/11 |
 
 **Hífen, não menos tipográfico.** "Gram-" usa hífen ASCII (U+002D). O "−" (U+2212) que a spec traz não existe na fonte embutida (Latin-1): na tela ele saía como `^`, visto no QA de 03/11 e corrigido no commit `5e7cc75`. Ao editar estes textos, não reintroduza U+2212.
 
@@ -201,7 +203,9 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 
 ## 2.1 Regra de tipografia (medida em 03/11/2026)
 
-**Maiúscula acentuada não desenha.** A fonte embutida devolve glifo errado para `Í`, `Ç`, `Ã`, `Ó` maiúsculos — `FASE 1 CONCLUÍDA` saía `CONCLU f DA`, `MOVIMENTAÇÃO` saía `MOVIMENTAÇ%Ø` — enquanto as **minúsculas acentuadas saem corretas** (`ç`, `ã`, `ó`, `ê`, `í`).
+**Maiúscula acentuada não desenha.** A fonte embutida devolve glifo errado para `Í`, `Ç`, `Ã`, `Ó` maiúsculos — `FASE 1 CONCLUÍDA` saía `CONCLU f DA`, `MOVIMENTAÇÃO` saía `MOVIMENTAÇ%Ø` — enquanto as **minúsculas acentuadas saem com o glifo certo** (`ç`, `ã`, `ó`, `ê`, `ô`, `í`).
+
+**`ê` e `ô` ficam apertados na fonte pequena (25/11).** Os textos com `ê` e `ô` (`Lisogênico`, `você`, `colônia`, `Nanobô`, `bônus`) estão **corretos**, decisão do dono de 25/11. O problema é o tamanho da fonte embutida: no glifo de 8 px, o circunflexo encosta na letra, e numa captura reduzida o `ê` lembra `@` e o `ô` lembra `8`. É uma questão de legibilidade da fonte, não do texto nem do código, e fica para o redesenho da interface que vem a seguir.
 
 Regras que valem para todo texto novo:
 
