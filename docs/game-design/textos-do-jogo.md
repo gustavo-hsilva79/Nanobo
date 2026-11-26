@@ -123,7 +123,7 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 | CT-36 | HUD, linha 0, à direita | `Ruptura · parede` / `Dissolução · membrana` / `Reserva %d/%d · resistente` (`Reserva 2/2 · resistente`) | 16 / 21 / 24 | decisão 03/11 (noite); #216; a ferramenta com o alvo dela em 15/11 (#243) |
 | CT-36b | HUD, linha 0, Fase 2 | `Neutralização · vírus livre` / `Ataque T · célula infectada` | 27 / 27 | #88; #243 |
 | CT-36c | HUD, linha 0, Fase 3 | `Perfuração · antifúngico` | 24 | #230 |
-| CT-37 | resultados, painel novo | `o que a partida mostrou` | 23 | #202, build de 04/11 |
+| CT-37 | resultados, título do painel do relatório | `O que anotei nesta fase` | 23 | #202, build de 04/11; voz do Diário desde 26/11 |
 | CT-38 a CT-41 | — | contadores e frase de revisão do painel de 04/11 | — | saíram com o relatório por objetivo (#210, #223); os textos atuais são as RR-01 a RR-10 da §2.2 |
 | CT-42 | HUD, linha 1, Fase 2 | `neutralize os vírus e vá ao destino` | 35 | Fase 2 mínima (04/11); encurtada em 15/11 (#243) |
 | CT-42b | HUD, linha 1, Fase 3 | `elimine os fungos e vá ao destino` | 33 | #227 |
@@ -211,25 +211,25 @@ Regras que valem para todo texto novo:
 
 ## 2.2 Relatório da fase (resultados, #210 e #223)
 
-Desde 14/11 (#223), o painel "o que a partida mostrou" fala em linguagem de jogador, sem os códigos internos "OA1:" a "OA4:". São cinco linhas de 14 px, uma por conteúdo, com os números da partida (`MatchProgress`), geradas por `results_report_line` em `src/main.c`. A maior linha tem 42 caracteres (336 px, com contadores de dois dígitos) e cabe nos 344 px do painel (43 caracteres); a da Fase 2, `Ataque T: %d células contidas a tempo`, tem 38 com dois dígitos (304 px). As mensagens OA-01 a OA-04 da #210 saíram do código.
+Desde 26/11 o painel se chama `O que anotei nesta fase` (23 caracteres) e as linhas falam na voz do Nanobô, em primeira pessoa (aprovadas pelo dono em 26/11). Desde 14/11 (#223), o painel fala em linguagem de jogador, sem os códigos internos "OA1:" a "OA4:". São cinco linhas de 14 px, uma por conteúdo, com os números da partida (`MatchProgress`), geradas por `results_report_line` em `src/main.c`. A maior linha tem 42 caracteres (336 px, com contadores de dois dígitos) e cabe nos 344 px do painel (43 caracteres); a da Fase 2, `Ataque T: %d células contidas a tempo`, tem 38 com dois dígitos (304 px). As mensagens OA-01 a OA-04 da #210 saíram do código.
 
 | ID | Linha | Texto | Caracteres | Contador |
 |---|---|---|---:|---|
-| RR-01 | 1, fase com bactéria | `lidas até a coloração: %d Gram+ e %d Gram-` | 40 | `scans_gram_positive`, `scans_gram_negative` |
-| RR-02 | 2, fase com bactéria | `tratamentos completos: %d · resistentes: %d` | 41 | `treatments_completed`, `resistances` |
-| RR-03 | 3, fase com bactéria | `nenhum antibiótico errado` / `antibiótico errado: %d (%d pela forma)` | 25 / 38 | `wrong_decisions`, `shape_guesses` |
-| RR-04 | 4, fase com bactéria | `Reserva guardada: nenhuma carga gasta` / `Reserva: %d na resistente, %d na comum` | 37 / 36 | `reserve_on_resistant`, `reserve_on_common` |
-| RR-05 | 5, fase com bactéria | `células do paciente feridas: %d` | 30 | `cell_attacks` |
-| RR-06 | 1, fase de vírus | `anticorpos: %d vírus livres presos` | 34 | `viruses_neutralized` (#88) |
-| RR-07 | 2, fase de vírus | `Ataque T: %d células contidas a tempo` | 37 | `cells_lysed` (#88) |
-| RR-08 | 3, fase de vírus | `ciclo lítico: %d células romperam` | 32 | `cells_burst` (#86) |
-| RR-09 | 4, fase de vírus | `ameaças eliminadas: %d de %d` | 28 | ameaças da fase, com os vírus da rajada |
-| RR-10 | 5, fase de vírus | `vírus não têm parede nem ribossomos` | 35 | — (OA6) |
-| RR-11 | 1, fase de fungos | `leveduras eliminadas: %d` | 24 | `yeasts_eliminated` (#232) |
-| RR-12 | 2, fase de fungos | `colônias eliminadas: %d (com germinadas)` | 40 | `molds_eliminated`; a colônia que germinou de esporo conta (#232) |
-| RR-13 | 3, fase de fungos | `antibiótico em fungo: %d tiros` | 30 | `antibiotic_on_fungus`: tiro em levedura, colônia, hifa ou esporo (#232) |
-| RR-14 | 4, fase de fungos | `esporos pelo estado do paciente: %d` | 35 | `spore_load_current()`, a carga da abertura (#231, #232) |
-| RR-15 | 5, fase de fungos | `fungo: parede de quitina, alvo: ergosterol` | 42 | — (frase fixa; 42 caracteres = 336 px, a largura útil do painel; a versão com "alvo é o ergosterol" tinha 45 e passava de 360 px) |
+| RR-01 | 1, fase com bactéria | `li %d Gram+ e %d Gram- até a coloração` | 37 | `scans_gram_positive`, `scans_gram_negative` |
+| RR-02 | 2, fase com bactéria | `tratei %d até o fim; %d resistiram` | 33 | `treatments_completed`, `resistances` |
+| RR-03 | 3, fase com bactéria | `não errei nenhum antibiótico` / `errei %d antibióticos (%d pela forma)` | 28 / 37 | `wrong_decisions`, `shape_guesses` |
+| RR-04 | 4, fase com bactéria | `guardei a Reserva: nenhuma carga gasta` / `Reserva: %d na resistente, %d na comum` | 38 / 36 | `reserve_on_resistant`, `reserve_on_common` |
+| RR-05 | 5, fase com bactéria | `acertei %d células do Léo por engano` | 35 | `cell_attacks` |
+| RR-06 | 1, fase de vírus | `prendi %d vírus livres com anticorpos` | 36 | `viruses_neutralized` (#88) |
+| RR-07 | 2, fase de vírus | `Ataque T: contive %d células a tempo` | 35 | `cells_lysed` (#88) |
+| RR-08 | 3, fase de vírus | `%d células romperam no ciclo lítico` | 35 | `cells_burst` (#86) |
+| RR-09 | 4, fase de vírus | `eliminei %d de %d ameaças` | 24 | ameaças da fase, com os vírus da rajada |
+| RR-10 | 5, fase de vírus | `anotei: vírus sem parede nem ribossomos` | 39 | — (OA6) |
+| RR-11 | 1, fase de fungos | `eliminei %d leveduras` | 21 | `yeasts_eliminated` (#232) |
+| RR-12 | 2, fase de fungos | `eliminei %d colônias (com as germinadas)` | 40 | `molds_eliminated`; a colônia que germinou de esporo conta (#232) |
+| RR-13 | 3, fase de fungos | `gastei %d tiros de antibiótico em fungo` | 39 | `antibiotic_on_fungus`: tiro em levedura, colônia, hifa ou esporo (#232) |
+| RR-14 | 4, fase de fungos | `esporos pela defesa fraca do Léo: %d` | 36 | `spore_load_current()`, a carga da abertura (#231, #232) |
+| RR-15 | 5, fase de fungos | `anotei: fungo tem quitina e ergosterol` | 38 | — (frase fixa) |
 
 **Leitura dos contadores:** um tratamento completo é uma bactéria eliminada com as duas doses do antibiótico certo. A Reserva não conta como tratamento, e o relatório a separa entre a gasta numa resistente e a gasta numa bactéria comum. `shape_guesses` conta o antibiótico errado dado depois de ler só a forma (FB-05).
 

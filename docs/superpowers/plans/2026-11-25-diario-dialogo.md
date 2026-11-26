@@ -127,7 +127,7 @@
 **Interfaces:**
 - Consumes: o inventário "atual × proposto" aprovado pelo dono (artifact separado; a parte de cards, abertura e interlúdios).
 
-- [ ] **Step 1: Copiar os textos aprovados** para as tabelas, uma página por linha aprovada, respeitando 3 linhas × largura medida e um `{termo}` por página.
-- [ ] **Step 1b: Painel de fim de fase na voz do Diário** — em `draw_results`, o título do painel passa de `o que a partida mostrou` para `O que anotei nesta fase` e as linhas de `results_report_line` usam o texto aprovado (mesmos números, voz do Nanobô), medindo a largura do painel.
-- [ ] **Step 2: Verificar** — `conferir_textos.py` 0/0; build 0 avisos; harness verde; capturas de todas as entradas revisadas pelo dono.
-- [ ] **Step 3: Commit** — `feat(ui): aplica os textos do diário aprovados`
+- [x] **Step 1: Copiar os textos aprovados** para as tabelas, uma página por linha aprovada, respeitando 3 linhas × largura medida e um `{termo}` por página.
+- [x] **Step 1b: Painel de fim de fase na voz do Diário** — em `draw_results`, o título do painel passa de `o que a partida mostrou` para `O que anotei nesta fase` e as linhas de `results_report_line` usam o texto aprovado (mesmos números, voz do Nanobô), medindo a largura do painel.
+- [x] **Step 2: Verificar** — `conferir_textos.py` 0/0; build 0 avisos; harness verde; capturas de todas as entradas revisadas pelo dono.
+- [x] **Step 3: Commit** — `feat(ui): aplica os textos do diário aprovados`

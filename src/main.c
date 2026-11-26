@@ -3228,23 +3228,23 @@ void results_report_line(int row, char* line, size_t size)
     {
         if (row == 0)
         {
-            snprintf(line, size, "leveduras eliminadas: %d", progress.yeasts_eliminated);
+            snprintf(line, size, "eliminei %d leveduras", progress.yeasts_eliminated);
         }
         else if (row == 1)
         {
-            snprintf(line, size, "colônias eliminadas: %d (com germinadas)", progress.molds_eliminated);
+            snprintf(line, size, "eliminei %d colônias (com as germinadas)", progress.molds_eliminated);
         }
         else if (row == 2)
         {
-            snprintf(line, size, "antibiótico em fungo: %d tiros", progress.antibiotic_on_fungus);
+            snprintf(line, size, "gastei %d tiros de antibiótico em fungo", progress.antibiotic_on_fungus);
         }
         else if (row == 3)
         {
-            snprintf(line, size, "esporos pelo estado do paciente: %d", spore_load_current());
+            snprintf(line, size, "esporos pela defesa fraca do Léo: %d", spore_load_current());
         }
         else
         {
-            snprintf(line, size, "fungo: parede de quitina, alvo: ergosterol");
+            snprintf(line, size, "anotei: fungo tem quitina e ergosterol");
         }
 
         return;
@@ -3255,23 +3255,23 @@ void results_report_line(int row, char* line, size_t size)
     {
         if (row == 0)
         {
-            snprintf(line, size, "anticorpos: %d vírus livres presos", progress.viruses_neutralized);
+            snprintf(line, size, "prendi %d vírus livres com anticorpos", progress.viruses_neutralized);
         }
         else if (row == 1)
         {
-            snprintf(line, size, "Ataque T: %d células contidas a tempo", progress.cells_lysed);
+            snprintf(line, size, "Ataque T: contive %d células a tempo", progress.cells_lysed);
         }
         else if (row == 2)
         {
-            snprintf(line, size, "ciclo lítico: %d células romperam", progress.cells_burst);
+            snprintf(line, size, "%d células romperam no ciclo lítico", progress.cells_burst);
         }
         else if (row == 3)
         {
-            snprintf(line, size, "ameaças eliminadas: %d de %d", neutralized, threats_total());
+            snprintf(line, size, "eliminei %d de %d ameaças", neutralized, threats_total());
         }
         else
         {
-            snprintf(line, size, "vírus não têm parede nem ribossomos");
+            snprintf(line, size, "anotei: vírus sem parede nem ribossomos");
         }
 
         return;
@@ -3279,23 +3279,23 @@ void results_report_line(int row, char* line, size_t size)
 
     if (row == 0)
     {
-        snprintf(line, size, "lidas até a coloração: %d Gram+ e %d Gram-",
+        snprintf(line, size, "li %d Gram+ e %d Gram- até a coloração",
             progress.scans_gram_positive, progress.scans_gram_negative);
     }
     else if (row == 1)
     {
-        snprintf(line, size, "tratamentos completos: %d · resistentes: %d",
+        snprintf(line, size, "tratei %d até o fim; %d resistiram",
             progress.treatments_completed, progress.resistances);
     }
     else if (row == 2)
     {
         if (progress.wrong_decisions == 0)
         {
-            snprintf(line, size, "nenhum antibiótico errado");
+            snprintf(line, size, "não errei nenhum antibiótico");
         }
         else
         {
-            snprintf(line, size, "antibiótico errado: %d (%d pela forma)",
+            snprintf(line, size, "errei %d antibióticos (%d pela forma)",
                 progress.wrong_decisions, progress.shape_guesses);
         }
     }
@@ -3303,7 +3303,7 @@ void results_report_line(int row, char* line, size_t size)
     {
         if (reserve_spent == 0)
         {
-            snprintf(line, size, "Reserva guardada: nenhuma carga gasta");
+            snprintf(line, size, "guardei a Reserva: nenhuma carga gasta");
         }
         else
         {
@@ -3313,7 +3313,7 @@ void results_report_line(int row, char* line, size_t size)
     }
     else
     {
-        snprintf(line, size, "células do paciente feridas: %d", progress.cell_attacks);
+        snprintf(line, size, "acertei %d células do Léo por engano", progress.cell_attacks);
     }
 }
 
@@ -3387,7 +3387,7 @@ void draw_results()
     // resumo educativo: so contadores da partida atual (#174, #202)
     draw_panel(140.0f, 162.0f, 360.0f, 92.0f, UI_INK, UI_FRAME);
 
-    al_draw_text(font, UI_AMBER, left, 170.0f, 0, "o que a partida mostrou");
+    al_draw_text(font, UI_AMBER, left, 170.0f, 0, "O que anotei nesta fase");
 
 
     // relatorio da fase: cinco linhas com os numeros da partida (#223)
