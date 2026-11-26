@@ -1,6 +1,6 @@
 # Release e distribuição do Nanobô
 
-Procedimento e resultados do build Release reproduzível e da pasta de distribuição (issues #154 a #158). Data: 26/11/2026. O instalador `.msi` (Visual Studio Installer Projects, #159 a #161) ainda não existe e é o próximo passo.
+Procedimento e resultados do build Release reproduzível, da pasta de distribuição (issues #154 a #158) e do instalador `.msi` (#159 a #161, seção [Instalador](#instalador-msi-159-a-161)). Data: 26/11/2026.
 
 ## Como gerar
 
@@ -74,9 +74,63 @@ Resultado: o jogo abre o **menu** (título, "nenhum recorde ainda"), `ENTER` lev
 
 Observação sobre `d3dx9_43.dll`: o Allegro abriu o display por Direct3D 9 e carregou `d3d9.dll` e `d3dx9_43.dll` do `System32` desta máquina. A `d3dx9_43.dll` pertence ao DirectX End-User Runtime e pode **não** existir num Windows limpo. É o primeiro ponto a conferir no teste em máquina limpa.
 
+## Instalador `.msi` (#159 a #161)
+
+### Como gerar
+
+Da raiz do repositório, um comando monta a distribuição e gera o instalador:
+
+```
+powershell -NoProfile -ExecutionPolicy Bypass -File instalador\gerar_instalador.ps1
+```
+
+O script `instalador/gerar_instalador.ps1`:
+
+1. roda o `montar_distribuicao.ps1` (Rebuild Release x64 sem avisos e `dist\Nanobo` do zero); `-SemBuild` é repassado a ele;
+2. confere que os arquivos listados no `instalador/Nanobo.Instalador.vdproj` são exatamente os de `dist\Nanobo` e **falha** se faltar ou sobrar algum (o `.vdproj` lista arquivo por arquivo; se um asset novo entrar no jogo, o projeto de instalação tem de ganhar o arquivo no Visual Studio, na pasta certa do *File System*);
+3. compila o projeto de instalação com o `devenv.com` (o Installer Projects não roda no MSBuild):
+   `devenv.com Nanobo.sln /Build "Release|x64" /Project instalador\Nanobo.Instalador.vdproj`
+   e falha se o código de saída não for 0 ou se aparecer `ERROR:`/`WARNING:`;
+4. copia `instalador\Release\Nanobo-1.0.0.msi` para `dist\Nanobo-1.0.0.msi` e imprime tamanho e SHA-256.
+
+Requisito: a extensão **Microsoft Visual Studio Installer Projects 2022** (3.0.0) instalada no Visual Studio 18. Se o build pela linha de comando falhar com `ERROR: An error occurred while validating. HRESULT = '8000000A'`, a extensão traz o `DisableOutOfProcBuild.exe` (em `Common7\IDE\CommonExtensions\Microsoft\VSI\DisableOutOfProcBuild`), que muda uma chave de registro do Visual Studio do usuário. Nesta máquina o build funcionou **sem** essa mudança.
+
+O projeto de instalação entra no `Nanobo.sln` como `Nanobo.Instalador`, só com `ActiveCfg` (sem `Build.0`): o *Build Solution* do Visual Studio continua compilando só o jogo, e o mapeamento `Debug|x64` do `Nanobo` não mudou. `instalador\Release\` e `instalador\Debug\` (saída do `devenv`) são ignorados pelo `.gitignore`.
+
+### O que o instalador faz
+
+| Item | Valor |
+|---|---|
+| Formato | `.msi` (Windows Installer), sem `setup.exe` e sem pré-requisitos |
+| Assistente | clássico, em português do Brasil (1046): Bem-vindo → Pasta de instalação → Confirmar → Progresso → Concluído |
+| Produto / fabricante / versão | `Nanobô` / `Nanobô` / `1.0.0`, plataforma x64 |
+| Instalação | **por usuário** (`InstallAllUsers = False`, sem `ALLUSERS`), sem pedido de administrador; a opção "para todos" fica escondida no assistente |
+| Pasta padrão | `[LocalAppDataFolder]Programs\Nanobo` = `%LOCALAPPDATA%\Programs\Nanobo` (o jogo grava o `nanobo_ranking.txt` ali) |
+| Conteúdo | os 46 arquivos de `dist\Nanobo` (exe, 7 DLLs do Allegro, `VCRUNTIME140.dll` app-local, `assets\` com a mesma árvore); nada de `.pdb`, ranking, hiscore ou `Nanobo-DESKTOP-*` |
+| Atalhos | "Nanobô" no menu Iniciar (raiz de *Programas*) e na Área de Trabalho, ambos com pasta de trabalho = pasta de instalação (os assets abrem por caminho relativo) |
+| Ícone | o padrão de executável: o repositório não tem `.ico` nem recurso de ícone no `Nanobo.exe` |
+| Desinstalação | entrada "Nanobô 1.0.0" em *Aplicativos instalados*; `RemovePreviousVersions = True` e `DetectNewerInstalledVersion = True` (mesmo `UpgradeCode`) |
+| Tamanho | `dist\Nanobo-1.0.0.msi` com 8.886.272 bytes (8,47 MB; os 17,84 MB vão comprimidos num `.cab` embutido) |
+
+Os atalhos gerados pelo Installer Projects são *anunciados* (advertised): o alvo aparece como um ícone guardado em `%APPDATA%\Microsoft\Installer\{ProductCode}\`, e o Windows Installer confere a instalação antes de abrir o `Nanobo.exe`. É o comportamento padrão da extensão.
+
+### Verificação nesta máquina (26/11/2026)
+
+Sem administrador, num prompt comum:
+
+- `msiexec /i dist\Nanobo-1.0.0.msi /qn /l*v install.log` terminou com código **0** sem elevação (o log registra `no credential elevation is possible`, e a instalação conclui mesmo assim, porque nada nela exige administrador). `AssignmentType = 0` (por usuário), `TARGETDIR = C:\Users\<usuário>\AppData\Local\Programs\Nanobo\`.
+- Os 46 arquivos instalados têm SHA-256 **idêntico** aos de `dist\Nanobo` (18.702.459 bytes).
+- Atalhos `Nanobô.lnk` na Área de Trabalho e em `Start Menu\Programs`, ambos com `WorkingDirectory = ...\AppData\Local\Programs\Nanobo\`.
+- Entrada de desinstalação `{F91E5166-9927-5AEA-8D40-B63C2748DD3F}`: `DisplayName` Nanobô, `DisplayVersion` 1.0.0, `Publisher` Nanobô.
+- O jogo aberto **pelo atalho do menu Iniciar** mostrou o menu ("nenhum recorde ainda"), o briefing e a Fase 1 com mapa, sprites e HUD. Os módulos carregados da pasta de instalação foram o exe, as 7 DLLs do Allegro e o `VCRUNTIME140.dll`; a `d3dx9_43.dll` veio de novo do `System32`.
+- Gravar e apagar um arquivo de teste na pasta de instalação funcionou sem permissão extra (é onde o ranking vai).
+- `msiexec /x dist\Nanobo-1.0.0.msi /qn /l*v uninstall.log` terminou com código **0**: a pasta `%LOCALAPPDATA%\Programs\Nanobo`, os dois atalhos e a entrada de desinstalação sumiram. Nesse teste nenhuma partida foi jogada até a Vitória, então não havia `nanobo_ranking.txt`. Se houver, ele **fica** na pasta depois da desinstalação (o arquivo não é do instalador), e a pasta também fica por causa dele. É aceitável: preserva os recordes numa reinstalação.
+- O assistente abre em português ("O Installer vai guiá-lo...", "Avançar >", "Cancelar"). No tema escuro do Windows 11 desta máquina, o título branco do banner não aparece e o botão "Avançar >" quebra a linha; são as telas padrão da extensão, só cosméticas.
+
+Logs e capturas (menu, briefing, fase 1 e o assistente) ficam em `.hermes/instalador-evidencia/` (ignorada pelo git).
+
 ## Pendências
 
-- Instalador `.msi` com o Visual Studio Installer Projects (#159 a #161): instalar por usuário em `%LOCALAPPDATA%\Programs\Nanobo`, com atalho, usando o conteúdo de `dist\Nanobo`.
-- Teste em máquina limpa (#162 a #164), adiado pelo dono. Conferir nele: se o Allegro abre o display sem `d3dx9_43.dll` (se não abrir, avaliar forçar OpenGL com um `allegro5.cfg` ao lado do exe, `[graphics] driver=opengl`, ou distribuir a DLL); se o `VCRUNTIME140.dll` app-local basta; se o ranking é gravado na pasta de instalação.
+- Teste em máquina limpa (#162 a #164), adiado pelo dono. Instalar o `dist\Nanobo-1.0.0.msi` e conferir: se o Allegro abre o display sem `d3dx9_43.dll` (nesta máquina ela veio do `System32`, do DirectX End-User Runtime, que pode faltar num Windows limpo; se não abrir, avaliar forçar OpenGL com um `allegro5.cfg` ao lado do exe, `[graphics] driver=opengl`, ou distribuir a DLL); se o `VCRUNTIME140.dll` app-local basta; se o ranking é gravado na pasta de instalação; se o assistente abre sem pedir administrador.
 - O script usa o Visual Studio 18 Community no caminho padrão (como o `AGENTS.md`); em outra máquina o `vswhere` acha o MSBuild, mas o `dumpbin` e o redistribuível usam o mesmo caminho base.
 - O runtime copiado vem do redistribuível instalado com o Visual Studio (`14.52.37025`, `Microsoft.VC145.CRT`), mais novo que o toolset `v143` do projeto, o que é compatível.
