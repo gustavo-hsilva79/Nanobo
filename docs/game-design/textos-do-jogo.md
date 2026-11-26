@@ -30,12 +30,12 @@
 | FB-18 | primeira dose numa bactéria dentro do biofilme | `o biofilme protege a bactéria: ela pede mais uma dose` | 53 | #237 |
 | FB-19 | o Nanobô dentro da nuvem de endotoxina | `endotoxina da Gram-: saia da nuvem` | 34 | #237 |
 | FB-20 | Neutralização prende um vírus livre | `anticorpos prenderam o vírus: +10 pontos` | 40 | #88 |
-| FB-21 | Neutralização numa célula infectada | `o vírus está dentro da célula: use a Lise` | 41 | #88 (FB2-09) |
+| FB-21 | Neutralização numa célula infectada | `o vírus está dentro da célula: use o Ataque T` | 45 | #88 (FB2-09) |
 | FB-22 | Neutralização numa célula saudável (sem custo) | `anticorpos não se prendem à célula do paciente` | 46 | #88 |
-| FB-23 | Lise numa célula infectada ainda não lida (não dispara) | `leia a célula antes da Lise` | 27 | #88 |
-| FB-24 | Lise sem célula infectada no caminho (não dispara) | `a Lise só age em célula infectada` | 33 | #88 |
-| FB-25 | projétil da Lise acerta um vírus livre | `a Lise age na célula infectada, não no vírus livre` | 50 | #88 |
-| FB-26 | Lise tira a célula infectada | `Lise: a célula infectada saiu sem romper: -5 vitais` | 51 | #88 |
+| FB-23 | Ataque T numa célula infectada ainda não lida (não dispara) | `leia a célula antes do Ataque T` | 31 | #88 |
+| FB-24 | Ataque T sem célula infectada no caminho (não dispara) | `o Ataque T só age em célula infectada` | 37 | #88 |
+| FB-25 | projétil do Ataque T acerta um vírus livre | `o Ataque T age na célula infectada, não no vírus livre` | 54 | #88 |
+| FB-26 | Ataque T tira a célula infectada | `Ataque T: a célula infectada saiu sem romper: -5 vitais` | 55 | #88 |
 | FB-27 | antibiótico num vírus | `antibiótico não age em vírus` | 28 | #88 (FB2-08) |
 | FB-28 | vírus livre infecta uma célula | `um vírus entrou numa célula: ela está infectada` | 47 | #85 |
 | FB-29 | a célula infectada rompe no fim do eclipse | `a célula se rompeu: 6 vírus livres (ciclo lítico)` | 49 | #86 (FB2-10, com os 6 de 14/11) |
@@ -119,7 +119,7 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 | CT-34 | resultados | `enter também continua` | 21 | #202 |
 | CT-35 | vitória | `Vitória` | 7 | #202 |
 | CT-36 | HUD, linha 0, à direita | `Ruptura · parede` / `Dissolução · membrana` / `Reserva %d/%d · resistente` (`Reserva 2/2 · resistente`) | 16 / 21 / 24 | decisão 03/11 (noite); #216; a ferramenta com o alvo dela em 15/11 (#243) |
-| CT-36b | HUD, linha 0, Fase 2 | `Neutralização · vírus livre` / `Lise · célula infectada` | 27 / 23 | #88; #243 |
+| CT-36b | HUD, linha 0, Fase 2 | `Neutralização · vírus livre` / `Ataque T · célula infectada` | 27 / 27 | #88; #243 |
 | CT-36c | HUD, linha 0, Fase 3 | `Perfuração · antifúngico` | 24 | #230 |
 | CT-37 | resultados, painel novo | `o que a partida mostrou` | 23 | #202, build de 04/11 |
 | CT-38 a CT-41 | — | contadores e frase de revisão do painel de 04/11 | — | saíram com o relatório por objetivo (#210, #223); os textos atuais são as RR-01 a RR-10 da §2.2 |
@@ -172,7 +172,7 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 | RT-03 | scanner, camada 1, célula | `célula do paciente · eucarionte` (sem amostra de cor) | 31 | #214, design 2.0 |
 | RT-04 | scanner, camada 2, Gram+ (amostra roxa) | `Gram+ · parede grossa, sem membrana externa · %s` (`... · Streptococcus pyogenes`) | 46 + nome (até 68) | #214, design 2.0 |
 | RT-05 | scanner, camada 2, Gram- (amostra rosa) | `Gram- · parede fina sob membrana externa · %s` (`... · Pseudomonas aeruginosa`) | 43 + nome (até 65) | #214, design 2.0 |
-| RT-05c | scanner, camada 2, o `%s` da RT-04 e da RT-05 (`phases[]` em `src/entities/entities.c`) | Gram+: `Staphylococcus aureus` / `Streptococcus pyogenes` / `Bacillus cereus`; Gram-: `Neisseria meningitidis` / `Escherichia coli` / `Pseudomonas aeruginosa` | 21 / 22 / 15; 22 / 16 / 22 | #214; registrado na #212 |
+| RT-05c | scanner, camada 2, o `%s` da RT-04 e da RT-05 (`phases[]` em `src/entities/entities.c`) | Gram+: `Staphylococcus aureus` / `Streptococcus pyogenes` / `Clostridium tetani`; Gram-: `Moraxella catarrhalis` / `Escherichia coli` / `Pseudomonas aeruginosa` | 21 / 22 / 18; 21 / 16 / 22 | #214; registrado na #212 |
 | RT-05b | scanner, camada 2, célula | `núcleo guarda o DNA · mitocôndrias · não atacar` | 47 | #214, design 2.0 |
 | RT-06 | scanner, linha de estado | ` · alvo sob o cursor` (ciano) / ` · última leitura` (apagado) | 20 / 17 | #199, build de 04/11 |
 | RT-07 | scanner, camada 2, revisão bactéria (Gram+ e Gram-) | `procarionte · sem núcleo: DNA solto no nucleoide` | 48 | #214, OA1 |
@@ -219,7 +219,7 @@ Desde 14/11 (#223), o painel "o que a partida mostrou" fala em linguagem de joga
 | RR-04 | 4, fase com bactéria | `Reserva guardada: nenhuma carga gasta` / `Reserva: %d na resistente, %d na comum` | 37 / 36 | `reserve_on_resistant`, `reserve_on_common` |
 | RR-05 | 5, fase com bactéria | `células do paciente feridas: %d` | 30 | `cell_attacks` |
 | RR-06 | 1, fase de vírus | `anticorpos: %d vírus livres presos` | 34 | `viruses_neutralized` (#88) |
-| RR-07 | 2, fase de vírus | `Lise: %d células contidas antes de romper` | 40 | `cells_lysed` (#88) |
+| RR-07 | 2, fase de vírus | `Ataque T: %d células contidas antes de romper` | 45 | `cells_lysed` (#88) |
 | RR-08 | 3, fase de vírus | `ciclo lítico: %d células romperam` | 32 | `cells_burst` (#86) |
 | RR-09 | 4, fase de vírus | `ameaças eliminadas: %d de %d` | 28 | ameaças da fase, com os vírus da rajada |
 | RR-10 | 5, fase de vírus | `vírus não têm parede nem ribossomos` | 35 | — (OA6) |
@@ -246,12 +246,17 @@ Desde 14/11 (#223), o painel "o que a partida mostrou" fala em linguagem de joga
 > **No código desde 14/11 (#222):** CC-01 abre na primeira leitura completa de bactéria e CC-02 na primeira bactéria resistente. Cada card aparece uma vez por partida, sobre a fase parada, com as linhas desenhadas a partir de x = 56 num painel de 576 px; a maior (CC-02a, 66 caracteres) ocupa 528 px. CC-05 e CC-06 estão no código desde 25/11 (#232): CC-05 abre ao entrar na Fase 3 e CC-06 na 1ª leitura completa de fungo ou no 1º antibiótico num fungo, o que vier primeiro.
 >
 > **Fase 2 no código desde 14/11 (#87, #88):** CC-03 abre na primeira leitura de um vírus livre, no primeiro vírus preso pelos anticorpos ou no primeiro antibiótico num vírus. CC-04 abre na primeira leitura de uma célula infectada ou na primeira célula que rompe, para quem não leu. Títulos: `Vírus não é célula` (18) e `Lisogênico e lítico` (19).
+>
+> **Numeração (26/11):** o número da anotação segue a **ordem de descoberta na partida** (a 1ª que abre é a 1, a seguinte a 2, e assim por diante; recomeça em 1 a cada partida; o interlúdio não conta e a abertura é a Anotação 0). Os números nas linhas CC abaixo são só a ordem usual de uma partida; no jogo o número vem de `card_note_number()` e o cabeçalho é o DG-13. CC-01 ganhou a página 2 (jogo simplifica: todas as bactérias juntas no sangue; armas inspiradas em antibióticos reais) e CC-04 a página 3 (lisogênico e lítico foram descritos em bacteriófagos; aqui são comparação), em 26/11.
 
 | ID | Card / quando aparece | Linha | Car. |
 |---|---|---|---:|
 | CC-01a | Nanobô · Anotação 1 · Coloração de Gram · 1ª leitura completa de bactéria · página 1 de 1 | No laboratório, um corante roxo tinge a parede das bactérias. | 61 |
 | CC-01b |  | Gram+: parede grossa de {peptidoglicano}, que segura o roxo. | 58 |
 | CC-01c |  | Gram-: parede fina e membrana externa; perde o roxo e fica rosa. | 64 |
+| CC-01d | página 2 de 2 | No jogo, todas as bactérias aparecem juntas no sangue, | 54 |
+| CC-01e |  | só para simplificar. As armas são regra do jogo, inspirada | 58 |
+| CC-01f |  | em {antibióticos} reais. | 22 |
 | CC-02a | Nanobô · Anotação 2 · Resistência e Reserva · 1ª bactéria resistente · página 1 de 1 | Uma dose só não basta: as bactérias que sobrevivem se multiplicam. | 66 |
 | CC-02b |  | Esta ficou {resistente}: o mesmo antibiótico não age mais nela. | 61 |
 | CC-02c |  | A Reserva age nela, mas tem poucas cargas: use só se precisar. | 62 |
@@ -259,9 +264,11 @@ Desde 14/11 (#223), o painel "o que a partida mostrou" fala em linguagem de joga
 | CC-03b |  | Ele só se multiplica {dentro de uma célula}. | 42 |
 | CC-03c |  | Antibiótico não o atinge. | 25 |
 | CC-03d | página 2 de 2 | A Neutralização leva {anticorpos}, que se prendem ao vírus livre. | 63 |
-| CC-04a | Nanobô · Anotação 7 · Lisogênico e lítico · 1ª leitura de célula infectada · página 1 de 2 | {Lisogênico}: o vírus fica dentro da célula, sem destruí-la ainda. | 64 |
-| CC-04b | página 2 de 2 | {Lítico}: ele faz cópias, a célula se rompe e libera novos vírus. | 63 |
-| CC-04c |  | A Lise destrói a célula infectada, como faz o linfócito T. | 58 |
+| CC-04a | Nanobô · Anotação 7 · Lisogênico e lítico · 1ª leitura de célula infectada · página 1 de 3 | {Lisogênico}: o vírus fica dentro da célula, sem destruí-la ainda. | 64 |
+| CC-04b | página 2 de 3 | {Lítico}: ele faz cópias, a célula se rompe e libera novos vírus. | 63 |
+| CC-04c |  | O Ataque T destrói a célula infectada, como faz o linfócito T. | 62 |
+| CC-04d | página 3 de 3 | Lisogênico e lítico foram descritos em vírus de bactérias, | 58 |
+| CC-04e |  | os {bacteriófagos}. Aqui servem de comparação. | 44 |
 | CC-05a | Nanobô · Anotação 8 · Organismo enfraquecido · início da Fase 3, depois do IL-03 · página 1 de 1 | Fungos {oportunistas} aproveitam um organismo enfraquecido. | 57 |
 | CC-05b |  | Os esporos de Aspergillus estão no ar; o corpo saudável os elimina. | 67 |
 | CC-05c |  | Quanto pior o paciente chega, mais esporos se instalam no pulmão. | 65 |
@@ -289,18 +296,19 @@ Desde 14/11 (#223), o painel "o que a partida mostrou" fala em linguagem de joga
 
 | ID | Onde | Texto | Car. | Nota |
 |---|---|---|---:|---|
-| DG-01 | cabeçalho da anotação, x = 80, em `UI_DIM` | `Nanobô · Anotação 1 · Coloração de Gram` | 39 | |
-| DG-02 | cabeçalho da anotação, x = 80, em `UI_DIM` | `Nanobô · Anotação 2 · Resistência e Reserva` | 43 | |
-| DG-03 | cabeçalho da anotação, x = 80, em `UI_DIM` | `Nanobô · Anotação 3 · Flagelo` | 29 | |
-| DG-04 | cabeçalho da anotação, x = 80, em `UI_DIM` | `Nanobô · Anotação 4 · Biofilme` | 30 | |
-| DG-05 | cabeçalho da anotação, x = 80, em `UI_DIM` | `Nanobô · Anotação 5 · Endotoxina` | 32 | |
-| DG-06 | cabeçalho da anotação, x = 80, em `UI_DIM` | `Nanobô · Anotação 6 · Vírus não é célula` | 40 | |
-| DG-07 | cabeçalho da anotação, x = 80, em `UI_DIM` | `Nanobô · Anotação 7 · Lisogênico e lítico` | 41 | |
-| DG-08 | cabeçalho da anotação, x = 80, em `UI_DIM` | `Nanobô · Anotação 8 · Organismo enfraquecido` | 44 | |
-| DG-09 | cabeçalho da anotação, x = 80, em `UI_DIM` | `Nanobô · Anotação 9 · Fungo` | 27 | |
+| DG-01 | tema da anotação, depois de `Nanobô · Anotação N · ` (DG-13) | `Coloração de Gram` | 17 | |
+| DG-02 | tema da anotação, depois de `Nanobô · Anotação N · ` (DG-13) | `Resistência e Reserva` | 21 | |
+| DG-03 | tema da anotação, depois de `Nanobô · Anotação N · ` (DG-13) | `Flagelo` | 7 | |
+| DG-04 | tema da anotação, depois de `Nanobô · Anotação N · ` (DG-13) | `Biofilme` | 8 | |
+| DG-05 | tema da anotação, depois de `Nanobô · Anotação N · ` (DG-13) | `Endotoxina` | 10 | |
+| DG-06 | tema da anotação, depois de `Nanobô · Anotação N · ` (DG-13) | `Vírus não é célula` | 18 | |
+| DG-07 | tema da anotação, depois de `Nanobô · Anotação N · ` (DG-13) | `Lisogênico e lítico` | 19 | |
+| DG-08 | tema da anotação, depois de `Nanobô · Anotação N · ` (DG-13) | `Organismo enfraquecido` | 22 | |
+| DG-09 | tema da anotação, depois de `Nanobô · Anotação N · ` (DG-13) | `Fungo` | 5 | |
 | DG-10 | cabeçalho dos interlúdios IL-02 e IL-03 | `Enquanto isso, no hospital` | 26 | sem retrato |
 | DG-11 | rodapé, à direita (x = 616) | `%d/%d` (`1/2`) | 3 | página atual e total |
 | DG-12 | rodapé, última página completa, à esquerda do contador | `fechar` | 6 | em `UI_AMBER`, no lugar do triângulo |
+| DG-13 | cabeçalho da anotação, x = 80, em `UI_DIM`; `%d` é a ordem em que a anotação abre na partida (1, 2, ...) e `%s` o tema DG-01 a DG-09 | `Nanobô · Anotação %d · %s` | 25 | o interlúdio não leva número (DG-10); a abertura é a Anotação 0 |
 
 ### 3.2 Ferramentas (menu "como jogar" e HUD)
 
@@ -310,7 +318,7 @@ Desde 14/11 (#223), o painel "o que a partida mostrou" fala em linguagem de joga
 | FE-02 | Dissolução · antibiótico de membrana: desfaz a membrana externa das Gram- | 1 |
 | FE-03 | Reserva · antibiótico de reserva: age na resistente, poucas cargas | 1 |
 | FE-04 | Neutralização · anticorpos: prendem o vírus livre | 2 |
-| FE-05 | Lise · destrói a célula infectada já lida, como o linfócito T | 2 |
+| FE-05 | Ataque T · destrói a célula infectada já lida, como o linfócito T | 2 |
 | FE-06 | Perfuração · antifúngico: abre poros na membrana do fungo | 3 |
 
 ### 3.3 Feedback do 2.0
@@ -325,7 +333,7 @@ Desde 14/11 (#223), o painel "o que a partida mostrou" fala em linguagem de joga
 | FB2-06 | Resistência surgiu | tratamento incompleto: resistente à Ruptura (ou à Dissolução) |
 | FB2-07 | Reserva sem carga | Reserva esgotada |
 | FB2-08 | Antibiótico em vírus | antibiótico não age em vírus |
-| FB2-09 | Neutralização num lisogênico | o vírus está dentro da célula: use a Lise |
+| FB2-09 | Neutralização num lisogênico | o vírus está dentro da célula: use o Ataque T |
 | FB2-10 | Eclosão | a célula se rompeu: 3 vírus livres (ciclo lítico) |
 | FB2-11 | Antibiótico em fungo | a parede do fungo é de quitina: antibiótico não age |
 | FB2-12 | Tiro na ponta da hifa | corte a base da colônia |

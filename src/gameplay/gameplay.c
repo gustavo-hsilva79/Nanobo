@@ -690,6 +690,10 @@ const char* feedback_text()
 static bool card_shown[CARD_COUNT];
 static bool card_waiting[CARD_COUNT];
 
+// numero da anotacao na ordem em que abre na partida; interludio fica em 0
+static int card_note[CARD_COUNT];
+static int card_notes_given;
+
 static void queue_card(ConceptCard card)
 {
     if (card_shown[card])
@@ -709,11 +713,29 @@ ConceptCard pending_card(void)
     {
         if (card_waiting[i])
         {
+            // a anotacao ganha o numero ao virar a da vez, na ordem em que aparece
+            if (i >= CARD_GRAM && card_note[i] == 0)
+            {
+                card_notes_given = card_notes_given + 1;
+                card_note[i] = card_notes_given;
+            }
+
             return (ConceptCard)i;
         }
     }
 
     return CARD_NONE;
+}
+
+// numero da anotacao: 0 para interludio ou para a que ainda nao abriu
+int card_note_number(ConceptCard card)
+{
+    if (card < CARD_GRAM || card >= CARD_COUNT)
+    {
+        return 0;
+    }
+
+    return card_note[card];
 }
 
 void dismiss_card(void)
@@ -821,7 +843,7 @@ static void lyse_cell(int cell, int v)
     progress.correct_decisions = progress.correct_decisions + 1;
     progress.cells_lysed = progress.cells_lysed + 1;
     emit_sfx_at(SFX_EVENT_NEUTRALIZED, agents[cell].x, agents[cell].y);
-    set_feedback("Lise: a célula infectada saiu sem romper: -5 vitais");
+    set_feedback("Ataque T: a célula infectada saiu sem romper: -5 vitais");
 }
 
 // anticorpos e Lise (#88): a Neutralizacao prende o virus livre e nao fere a
@@ -845,7 +867,7 @@ static void virus_tool_hit(Laser laser, int j)
         {
             progress.wrong_decisions = progress.wrong_decisions + 1;
             emit_sfx_at(SFX_EVENT_WRONG, agents[j].x, agents[j].y);
-            set_feedback("o vírus está dentro da célula: use a Lise");
+            set_feedback("o vírus está dentro da célula: use o Ataque T");
         }
         else
         {
@@ -866,16 +888,16 @@ static void virus_tool_hit(Laser laser, int j)
 
     if (v != -1)
     {
-        set_feedback("leia a célula antes da Lise");
+        set_feedback("leia a célula antes do Ataque T");
     }
     else if (agents[j].species == SPECIES_VIRUS)
     {
         progress.wrong_decisions = progress.wrong_decisions + 1;
-        set_feedback("a Lise age na célula infectada, não no vírus livre");
+        set_feedback("o Ataque T age na célula infectada, não no vírus livre");
     }
     else
     {
-        set_feedback("a Lise só age em célula infectada");
+        set_feedback("o Ataque T só age em célula infectada");
     }
 }
 
@@ -1460,14 +1482,14 @@ static void fire(float dx, float dy)
 
         if (v == -1)
         {
-            set_feedback("a Lise só age em célula infectada");
+            set_feedback("o Ataque T só age em célula infectada");
             emit_sfx(SFX_EVENT_WRONG);
             return;
         }
 
         if (agents[first].layers == 0)
         {
-            set_feedback("leia a célula antes da Lise");
+            set_feedback("leia a célula antes do Ataque T");
             emit_sfx(SFX_EVENT_WRONG);
             return;
         }
@@ -2779,7 +2801,10 @@ void reset_match()
     {
         card_shown[c] = false;
         card_waiting[c] = false;
+        card_note[c] = 0;
     }
+
+    card_notes_given = 0;
 
     start_phase(0);
 }

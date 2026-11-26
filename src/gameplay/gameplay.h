@@ -426,6 +426,10 @@ void dialog_press(DialogState* d);
 ConceptCard pending_card(void);
 void dismiss_card(void);
 
+// numero da anotacao na ordem em que abriu nesta partida (1, 2, ...); 0 no interludio
+// e na anotacao que ainda nao abriu; so e dado quando o card vira o da vez (pending_card)
+int card_note_number(ConceptCard card);
+
 // onde o ultimo evento aconteceu no mundo: o main desenha a resposta ali (#221)
 void sfx_event_position(float* x, float* y);
 

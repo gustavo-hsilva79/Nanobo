@@ -1892,19 +1892,24 @@ static const DialogEntry diary_entries[CARD_COUNT] =
     },
     [CARD_GRAM] =
     {
-        "Nanobô · Anotação 1 · Coloração de Gram", 1,
+        "Coloração de Gram", 2,
         {
             {
                 "No laboratório, um corante roxo tinge a parede das bactérias.",
                 "Gram+: parede grossa de {peptidoglicano}, que segura o roxo.",
                 "Gram-: parede fina e membrana externa; perde o roxo e fica rosa."
+            },
+            {
+                "No jogo, todas as bactérias aparecem juntas no sangue,",
+                "só para simplificar. As armas são regra do jogo, inspirada",
+                "em {antibióticos} reais."
             }
         },
         true
     },
     [CARD_RESISTANCE] =
     {
-        "Nanobô · Anotação 2 · Resistência e Reserva", 1,
+        "Resistência e Reserva", 1,
         {
             {
                 "Uma dose só não basta: as bactérias que sobrevivem se multiplicam.",
@@ -1916,7 +1921,7 @@ static const DialogEntry diary_entries[CARD_COUNT] =
     },
     [CARD_FLAGELLUM] =
     {
-        "Nanobô · Anotação 3 · Flagelo", 1,
+        "Flagelo", 1,
         {
             {
                 "O bacilo tem {flagelo}, um chicote que gira e o faz nadar.",
@@ -1928,7 +1933,7 @@ static const DialogEntry diary_entries[CARD_COUNT] =
     },
     [CARD_BIOFILM] =
     {
-        "Nanobô · Anotação 4 · Biofilme", 1,
+        "Biofilme", 1,
         {
             {
                 "Bactérias grudadas fazem uma camada pegajosa: o {biofilme}.",
@@ -1940,7 +1945,7 @@ static const DialogEntry diary_entries[CARD_COUNT] =
     },
     [CARD_ENDOTOXIN] =
     {
-        "Nanobô · Anotação 5 · Endotoxina", 1,
+        "Endotoxina", 1,
         {
             {
                 "A membrana externa da Gram- tem uma toxina, o {LPS}.",
@@ -1952,7 +1957,7 @@ static const DialogEntry diary_entries[CARD_COUNT] =
     },
     [CARD_VIRUS] =
     {
-        "Nanobô · Anotação 6 · Vírus não é célula", 2,
+        "Vírus não é célula", 2,
         {
             {
                 "O vírus não tem parede, ribossomos nem metabolismo próprio.",
@@ -1965,12 +1970,17 @@ static const DialogEntry diary_entries[CARD_COUNT] =
     },
     [CARD_CYCLE] =
     {
-        "Nanobô · Anotação 7 · Lisogênico e lítico", 2,
+        "Lisogênico e lítico", 3,
         {
             { "{Lisogênico}: o vírus fica dentro da célula, sem destruí-la ainda.", NULL, NULL },
             {
                 "{Lítico}: ele faz cópias, a célula se rompe e libera novos vírus.",
-                "A Lise destrói a célula infectada, como faz o linfócito T.",
+                "O Ataque T destrói a célula infectada, como faz o linfócito T.",
+                NULL
+            },
+            {
+                "Lisogênico e lítico foram descritos em vírus de bactérias,",
+                "os {bacteriófagos}. Aqui servem de comparação.",
                 NULL
             }
         },
@@ -1978,7 +1988,7 @@ static const DialogEntry diary_entries[CARD_COUNT] =
     },
     [CARD_WEAKENED] =
     {
-        "Nanobô · Anotação 8 · Organismo enfraquecido", 1,
+        "Organismo enfraquecido", 1,
         {
             {
                 "Fungos {oportunistas} aproveitam um organismo enfraquecido.",
@@ -1990,7 +2000,7 @@ static const DialogEntry diary_entries[CARD_COUNT] =
     },
     [CARD_FUNGUS] =
     {
-        "Nanobô · Anotação 9 · Fungo", 2,
+        "Fungo", 2,
         {
             {
                 "O fungo tem núcleo, como as nossas células: é um {eucarionte}.",
@@ -2203,6 +2213,9 @@ void draw_dialog(const DialogEntry* e, const DialogState* d)
 // card pendente da fila na caixa de dialogo
 void draw_concept_card()
 {
+    DialogEntry shown;
+    char header[96];
+
     sync_card_dialog();
 
     if (card_dialog_entry == CARD_NONE)
@@ -2210,7 +2223,17 @@ void draw_concept_card()
         return;
     }
 
-    draw_dialog(&diary_entries[card_dialog_entry], &card_dialog);
+    shown = diary_entries[card_dialog_entry];
+
+    // a anotacao leva o numero da ordem em que abriu; o interludio fica sem numero
+    if (card_note_number(card_dialog_entry) > 0)
+    {
+        snprintf(header, sizeof(header), "Nanobô · Anotação %d · %s",
+            card_note_number(card_dialog_entry), diary_entries[card_dialog_entry].header);
+        shown.header = header;
+    }
+
+    draw_dialog(&shown, &card_dialog);
 }
 
 // abertura (#244): ficha do hospital e Anotacao 0, na caixa, com estado proprio
@@ -2398,7 +2421,7 @@ void draw_hud()
     }
     else if (player.laser == LASER_LYSE)
     {
-        module_name = "Lise · célula infectada";
+        module_name = "Ataque T · célula infectada";
     }
     else if (player.laser == LASER_PERFORATE)
     {
@@ -3084,7 +3107,7 @@ void results_report_line(int row, char* line, size_t size)
         }
         else if (row == 1)
         {
-            snprintf(line, size, "Lise: %d células contidas antes de romper", progress.cells_lysed);
+            snprintf(line, size, "Ataque T: %d células contidas antes de romper", progress.cells_lysed);
         }
         else if (row == 2)
         {
