@@ -1869,145 +1869,260 @@ static const DialogEntry diary_entries[CARD_COUNT] =
         "Enquanto isso, no hospital", 2,
         {
             {
-                "A infecção no sangue de Léo deu trégua, mas na enfermaria",
+                "A infecção no sangue de Léo cedeu. Mas, na enfermaria,",
                 "ele pegou um {vírus respiratório}.",
                 NULL
             },
-            { "O Nanobô segue para as {vias aéreas}.", NULL, NULL }
+            {
+                "O Nanobô segue para as {vias aéreas} dele, onde o vírus",
+                "infecta as células que forram os brônquios.",
+                NULL
+            }
         },
         false
     },
     [CARD_INTERLUDE_3] =
     {
-        "Enquanto isso, no hospital", 2,
+        "Enquanto isso, no hospital", 3,
         {
             {
-                "Com as defesas fracas, {esporos de bolor} que estão no ar",
-                "chegam ao pulmão de Léo.",
+                "O vírus foi contido, mas Léo segue com as {defesas} fracas.",
+                NULL,
                 NULL
             },
-            { "O Nanobô precisa agir antes que o {fungo} se instale.", NULL, NULL }
+            {
+                "{Esporos de bolor}, que estão no ar,",
+                "chegam ao pulmão dele.",
+                NULL
+            },
+            {
+                "O Nanobô desce até o {pulmão} para agir antes que",
+                "o fungo se instale.",
+                NULL
+            }
         },
         false
     },
     [CARD_GRAM] =
     {
-        "Coloração de Gram", 2,
+        "Coloração de Gram", 4,
         {
             {
-                "No laboratório, um corante roxo tinge a parede das bactérias.",
-                "Gram+: parede grossa de {peptidoglicano}, que segura o roxo.",
-                "Gram-: parede fina e membrana externa; perde o roxo e fica rosa."
+                "Li uma bactéria até o fim! A forma não basta:",
+                "existe coco Gram+ e coco Gram-. Quem mostra o grupo",
+                "é a {coloração de Gram}, um corante de laboratório."
             },
             {
-                "No jogo, todas as bactérias aparecem juntas no sangue,",
-                "só para simplificar. As armas são regra do jogo, inspirada",
-                "em {antibióticos} reais."
+                "O corante roxo fica preso ou sai conforme a parede.",
+                "Gram+: parede grossa de {peptidoglicano}, o roxo fica.",
+                "Gram-: parede fina e membrana externa; perde o roxo, fica rosa."
+            },
+            {
+                "Anotado: no jogo, todas aparecem juntas no sangue para",
+                "{simplificar}. A Moraxella vive nas vias respiratórias,",
+                "e o Clostridium tetani entra por ferimentos."
+            },
+            {
+                "Minhas armas são {regra do jogo}, inspiradas em antibióticos",
+                "reais, como a penicilina. Na vida real há exceções:",
+                "muitas cepas de S. aureus resistem à penicilina."
             }
         },
         true
     },
     [CARD_RESISTANCE] =
     {
-        "Resistência e Reserva", 1,
+        "Resistência e Reserva", 4,
         {
             {
-                "Uma dose só não basta: as bactérias que sobrevivem se multiplicam.",
-                "Esta ficou {resistente}: o mesmo antibiótico não age mais nela.",
-                "A Reserva age nela, mas tem poucas cargas: use só se precisar."
+                "Errei... anotado! Dei uma dose e demorei para dar a outra.",
+                "Esta bactéria {resistiu}: o mesmo antibiótico não age",
+                "mais nela nem nas filhas dela."
+            },
+            {
+                "Regra do jogo: duas doses, a segunda em até 6 segundos.",
+                "Na vida real, um tratamento mal feito faz {seleção}:",
+                "morrem as sensíveis e sobram as que já resistiam."
+            },
+            {
+                "As sobreviventes se multiplicam e passam a resistência",
+                "para as filhas. Com antibiótico de verdade, a regra é:",
+                "{siga a prescrição até o fim}."
+            },
+            {
+                "A {Reserva} age na resistente, mas tem 2 cargas por fase.",
+                "Até ela pode deixar de funcionar se for usada à toa.",
+                "Vou guardar para quando precisar!"
             }
         },
         true
     },
     [CARD_FLAGELLUM] =
     {
-        "Flagelo", 1,
+        "Flagelo", 3,
         {
             {
-                "O bacilo tem {flagelo}, um chicote que gira e o faz nadar.",
-                "Por isso ele vem atrás de você e dá investidas.",
-                "O coco não tem flagelo: é levado pelo sangue e gruda no tecido."
+                "Ei! Esse bacilo veio atrás de mim e me atacou!",
+                "Ele tem {flagelo}, um chicote que gira e o faz nadar.",
+                NULL
+            },
+            {
+                "O coco não nada sozinho: ele {gruda} no tecido",
+                "e fica ali, soltando toxinas que ferem as células.",
+                NULL
+            },
+            {
+                "Anotado: na natureza há {exceções}. Aqui, todo bacilo",
+                "do jogo nada e todo coco gruda.",
+                NULL
             }
         },
         true
     },
     [CARD_BIOFILM] =
     {
-        "Biofilme", 1,
+        "Biofilme", 3,
         {
             {
-                "Bactérias grudadas fazem uma camada pegajosa: o {biofilme}.",
-                "Ele protege as bactérias: dentro dele, o antibiótico age menos.",
-                "No biofilme a bactéria pede mais uma dose, e você anda devagar."
+                "Fiquei preso numa gosma! Bactérias grudadas fazem",
+                "uma camada pegajosa: o {biofilme}.",
+                NULL
+            },
+            {
+                "Dentro dele, o antibiótico {age menos}: entra devagar,",
+                "e as bactérias de dentro funcionam mais devagar.",
+                NULL
+            },
+            {
+                "Regra do jogo: no biofilme a bactéria pede uma {dose} a mais,",
+                "e eu ando devagar.",
+                NULL
             }
         },
         true
     },
     [CARD_ENDOTOXIN] =
     {
-        "Endotoxina", 1,
+        "Endotoxina", 3,
         {
             {
-                "A membrana externa da Gram- tem uma toxina, o {LPS}.",
-                "Quando a Gram- se rompe, até pelo antibiótico, o LPS se espalha.",
-                "Saia da nuvem: ela fere o Nanobô enquanto dura."
+                "Ai, esta nuvem me fere! Ela veio de uma Gram- eliminada.",
+                "A membrana externa da Gram- guarda uma {toxina}.",
+                NULL
+            },
+            {
+                "Quando a Gram- morre ou se divide, essa toxina se solta",
+                "e causa {inflamação} e febre no corpo.",
+                NULL
+            },
+            {
+                "Regra do jogo: a nuvem me fere enquanto dura.",
+                "Anotado: {sair da nuvem} bem rápido!",
+                NULL
             }
         },
         true
     },
     [CARD_VIRUS] =
     {
-        "Vírus não é célula", 2,
+        "Vírus não é célula", 4,
         {
             {
-                "O vírus não tem parede, ribossomos nem metabolismo próprio.",
-                "Ele só se multiplica {dentro de uma célula}.",
-                "Antibiótico não o atinge."
+                "Um {vírus}! Ele não é célula: não tem parede,",
+                "nem metabolismo, nem ribossomos próprios.",
+                NULL
             },
-            { "A Neutralização leva {anticorpos}, que se prendem ao vírus livre.", NULL, NULL }
+            {
+                "Ele só se multiplica {dentro de uma célula},",
+                "usando os ribossomos dela.",
+                NULL
+            },
+            {
+                "{Antibiótico} não age nele: não trata gripe nem resfriado.",
+                "Se gastei um tiro de antibiótico aqui, errei... anotado!",
+                NULL
+            },
+            {
+                "A Neutralização leva {anticorpos}: eles se prendem ao vírus",
+                "livre e o impedem de entrar nas células.",
+                "No corpo, quem faz anticorpos são os linfócitos B."
+            }
         },
         true
     },
     [CARD_CYCLE] =
     {
-        "Lisogênico e lítico", 3,
+        "Lisogênico e lítico", 4,
         {
-            { "{Lisogênico}: o vírus fica dentro da célula, sem destruí-la ainda.", NULL, NULL },
             {
-                "{Lítico}: ele faz cópias, a célula se rompe e libera novos vírus.",
-                "O Ataque T destrói a célula infectada, como faz o linfócito T.",
+                "Esta célula do Léo tem um vírus escondido dentro!",
+                "{Lisogênico}: o vírus fica na célula sem destruí-la ainda.",
                 NULL
             },
             {
-                "Lisogênico e lítico foram descritos em vírus de bactérias,",
-                "os {bacteriófagos}. Aqui servem de comparação.",
+                "{Lítico}: o vírus faz cópias, a célula se rompe",
+                "e libera vírus novos, que infectam outras células.",
                 NULL
+            },
+            {
+                "O {Ataque T} destrói a célula infectada antes que ela",
+                "se rompa, como faz o linfócito T no corpo.",
+                "No jogo, ele custa um pouco dos vitais do Léo."
+            },
+            {
+                "Anotado: lisogênico e lítico foram descritos em vírus de",
+                "bactérias, os {bacteriófagos}. Aqui servem de comparação.",
+                "Em nós, o mais parecido é o vírus da catapora, nos nervos."
             }
         },
         true
     },
     [CARD_WEAKENED] =
     {
-        "Organismo enfraquecido", 1,
+        "Organismo enfraquecido", 3,
         {
             {
-                "Fungos {oportunistas} aproveitam um organismo enfraquecido.",
-                "Os esporos de Aspergillus estão no ar; o corpo saudável os elimina.",
-                "Quanto pior o paciente chega, mais esporos se instalam no pulmão."
+                "Estes {esporos} são de Aspergillus, um bolor comum no ar.",
+                "A maioria das pessoas respira esporos e não adoece.",
+                NULL
+            },
+            {
+                "Fungos {oportunistas} se instalam com mais facilidade",
+                "em quem está com a defesa enfraquecida.",
+                "O risco vem da defesa fraca, não de respirar mais esporos."
+            },
+            {
+                "O Léo está com a {defesa} fraca. Regra do jogo: aqui,",
+                "defesa mais fraca aparece como mais esporos no chão.",
+                NULL
             }
         },
         true
     },
     [CARD_FUNGUS] =
     {
-        "Fungo", 2,
+        "Fungo", 4,
         {
             {
-                "O fungo tem núcleo, como as nossas células: é um {eucarionte}.",
-                "Sua parede é de quitina, não de peptidoglicano:",
-                "antibiótico não age."
+                "Um fungo! Ele tem núcleo, como as células do Léo:",
+                "é um {eucarionte}, bem diferente de uma bactéria.",
+                NULL
             },
-            { "A Perfuração abre poros na membrana dele, que tem {ergosterol}.", NULL, NULL }
+            {
+                "A parede dele é de {quitina}, não de peptidoglicano.",
+                "Antibiótico de bactéria não tem alvo nele.",
+                "Se gastei antibiótico aqui, errei... anotado!"
+            },
+            {
+                "A membrana dele tem {ergosterol}; a nossa tem colesterol.",
+                "Essa diferença é o alvo de muitos antifúngicos.",
+                NULL
+            },
+            {
+                "A {Perfuração} se inspira na anfotericina B: ela se prende",
+                "ao ergosterol e abre poros na membrana do fungo.",
+                "Esse remédio de verdade também pode fazer mal ao paciente."
+            }
         },
         true
     }
@@ -2266,7 +2381,7 @@ void draw_concept_card()
 }
 
 // abertura (#244): ficha do hospital e Anotacao 0, na caixa, com estado proprio
-// fora da fila de cards; textos em rascunho, registrados em textos-do-jogo.md §1.1
+// fora da fila de cards; textos aprovados em 26/11, registrados em textos-do-jogo.md §1.1
 #define OPENING_ENTRIES 2
 
 static const DialogEntry opening_entries[OPENING_ENTRIES] =
@@ -2280,12 +2395,12 @@ static const DialogEntry opening_entries[OPENING_ENTRIES] =
                 NULL
             },
             {
-                "Os exames mostram uma {infecção} que se espalha pelo sangue.",
+                "Exames: uma {infecção} que se espalha pelo sangue.",
                 NULL,
                 NULL
             },
             {
-                "A equipe testa um {nanorrobô} médico, menor que uma célula,",
+                "Conduta: testar um {nanorrobô} médico, ainda protótipo,",
                 "dentro do corpo de Léo.",
                 NULL
             }
@@ -2295,11 +2410,19 @@ static const DialogEntry opening_entries[OPENING_ENTRIES] =
     {
         "Nanobô · Anotação 0", 3,
         {
-            { "{Sistema ligado}. Minha memória está vazia.", NULL, NULL },
-            { "Meu paciente é o {Léo}, de 16 anos, com muita febre.", NULL, NULL },
             {
-                "Vou descobrir o que está {atacando} ele.",
-                "Anoto tudo aqui, até os meus erros.",
+                "{Sistema ligado}! Minha memória está vazia.",
+                "Minha missão: aprender a reconhecer as ameaças e eliminá-las.",
+                NULL
+            },
+            {
+                "Meu paciente é o {Léo}, de 16 anos, com febre alta.",
+                "Estou dentro do sangue dele.",
+                NULL
+            },
+            {
+                "Vou descobrir o que está {atacando} o Léo.",
+                "Anoto aqui tudo o que aprender, até os meus erros.",
                 NULL
             }
         },
