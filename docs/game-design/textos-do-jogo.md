@@ -56,29 +56,22 @@
 
 ## 1.1 Abertura da narrativa (cena `BRIEFING`, #244)
 
-Desenhada **em toda partida**: `MENU → BRIEFING → GAME`, e também depois de `VITÓRIA` e de `GAME OVER`. Desde 15/11 (#244), a cena conta a premissa em **quatro cards**, no lugar do briefing de 04/11 sobre o Gram, que passou para os cards de conceito dentro da fase (#222). `ENTER`, `→` ou clique avançam; `ESC` pula direto para a fase. As linhas vão de x = 52 num painel de 560 px, até 68 caracteres; a maior tem 55. O paciente não tem nome nem gênero no texto.
+Desenhada **em toda partida**: `MENU → BRIEFING → GAME`, e também depois de `VITÓRIA` e de `GAME OVER`. Desde 26/11 a cena mostra a abertura na caixa de diálogo do diário (ficha do hospital e Anotação 0, 3 páginas cada, rascunho): `ENTER`, `ESPAÇO` ou clique avançam; `ESC` pula tudo para a fase; o fim da Anotação 0 entra na Fase 1. A cada entrada em `BRIEFING` a abertura recomeça da ficha. Os IDs AB-01 a AB-08 substituem NR-01 a NR-14 e os botões e o passo do briefing de 15/11 (BR-02, BR-03, BR-05 e BR-06 saíram). Linhas de até 67 caracteres desde x = 80; texto final depende de aprovação do dono. O paciente se chama Léo (nome do interlúdio, IL-02).
 
 | ID | Local | Texto | Caracteres | Origem |
 |---|---|---|---|---|
-| BR-02 | abertura, cabeçalho | `A missão do Nanobô` | 18 | #244 |
-| BR-03 | abertura, passo | `cartão %d de %d` (`cartão 1 de 4`) | 13 | #103 |
-| BR-04 | abertura, rodapé | `enter ou clique avança · esc pula` | 33 | #103 |
-| BR-05 | abertura, botão | `SEGUIR` | 6 | #103 |
-| BR-06 | abertura, botão | `PULAR` | 5 | #103 |
-| NR-01 | card 1, título | `O paciente` | 10 | #244, gdd.md §"Narrativa" |
-| NR-02 | card 1, linha 1 | `Um paciente de 16 anos chega ao hospital com febre alta` | 55 | #244 |
-| NR-03 | card 1, linha 2 | `e uma infecção que se espalha pelo sangue.` | 42 | #244 |
-| NR-04 | card 2, título | `O Nanobô` | 8 | #244 |
-| NR-05 | card 2, linha 1 | `A equipe médica testa o Nanobô, um nanorrobô médico` | 51 | #244 |
-| NR-06 | card 2, linha 2 | `menor que uma célula, dentro do corpo do paciente.` | 50 | #244 |
-| NR-07 | card 3, título | `Ajudar sem ferir` | 16 | #244 |
-| NR-08 | card 3, linha 1 | `Ele ajuda o corpo sem ferir as células do paciente` | 50 | #244 |
-| NR-09 | card 3, linha 2 | `e vai atrás só dos invasores: a maioria das bactérias` | 53 | #244 |
-| NR-10 | card 3, linha 3 | `do corpo é inofensiva.` | 22 | #244 |
-| NR-11 | card 4, título | `A missão` | 8 | #244 |
-| NR-12 | card 4, linha 1 | `Manter os sinais vitais do paciente estáveis` | 44 | #244 |
-| NR-13 | card 4, linha 2 | `e o Nanobô inteiro: são as duas barras do painel.` | 49 | #244, #234 (duas barras) |
-| NR-14 | card 4, linha 3 | `Leia cada agente com o scanner antes de agir.` | 45 | #244 |
+| BR-04 | abertura, rodapé (y = 24, centrado) | `enter ou clique avança · esc pula` | 33 | #103 |
+| AB-01 | cabeçalho da ficha, sem retrato | `Hospital · ficha do paciente` | 28 | #244 |
+| AB-02a | ficha, página 1 de 3 | `Paciente: {Léo Martins Ferreira}, 16 anos.` | 40 | #244 |
+| AB-02b |  | `Chegou ao hospital com febre alta.` | 34 | #244 |
+| AB-03 | página 2 de 3 | `Os exames mostram uma {infecção} que se espalha pelo sangue.` | 58 | #244 |
+| AB-04a | página 3 de 3 | `A equipe testa um {nanorrobô} médico, menor que uma célula,` | 57 | #244 |
+| AB-04b |  | `dentro do corpo de Léo.` | 23 | #244 |
+| AB-05 | cabeçalho da Anotação 0, com retrato | `Nanobô · Anotação 0` | 19 | #244 |
+| AB-06 | Anotação 0, página 1 de 3 | `{Sistema ligado}. Minha memória está vazia.` | 41 | #244 |
+| AB-07 | página 2 de 3 | `Meu paciente é o {Léo}, de 16 anos, com muita febre.` | 50 | #244 |
+| AB-08a | página 3 de 3 | `Vou descobrir o que está {atacando} ele.` | 38 | #244 |
+| AB-08b |  | `Anoto tudo aqui, até os meus erros.` | 35 | #244 |
 | NR-15 | interlúdio: Resultados entre as fases, subtítulo | `sinais vitais: %s (%d) · a seguir: %s`, com `vírus nas vias aéreas` depois da Fase 1 (`estável` ≥ 70, `em observação` 40–69, `grave` < 40, já com o piso de 60) | até 67 | #244 |
 | NR-16 | interlúdio: Resultados depois da Fase 2, subtítulo | o `%s` do NR-15 depois da Fase 2 é `fungos no pulmão` (mesmos estados do NR-15) | até 63 | #227 |
 

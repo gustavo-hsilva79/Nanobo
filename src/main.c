@@ -52,12 +52,6 @@ _Static_assert((HUD_LINES - 1) * HUD_LINE_H + HUD_FONT_H + 2 * HUD_MARGIN <= PAN
 #define VITALS_LOW 30.0f
 #define TITLE_SCALE 3
 
-// cartoes do briefing de entrada (#103)
-#define BRIEFING_CARDS 4
-
-// linhas por cartao: o terceiro cartao usa quatro
-#define BRIEFING_LINES 4
-
 // paleta da interface: os mesmos hex do catalogo de recursos
 #define UI_INK       al_map_rgb(18, 26, 36)    // #121A24
 #define UI_PANEL     al_map_rgb(26, 38, 52)    // #1A2634
@@ -237,7 +231,7 @@ float mouse_y = 0.0f;
 
 // botao focado na tela atual e a ultima cena desenhada
 int ui_focus = 0;
-int briefing_card = 0;
+void start_opening(void);
 
 // Top 10 na interface (#81, #197): entrada de nome na Vitoria, painel do
 // ranking no menu e destaque do registro novo; nenhuma cena nova
@@ -877,10 +871,6 @@ const UiButton* screen_buttons(int* count)
     static const UiButton results_items[] = {
         { 240.0f, 256.0f, 160.0f, 28.0f, "CONTINUAR" }
     };
-    static const UiButton briefing_items[] = {
-        { 180.0f, 198.0f, 140.0f, 28.0f, "SEGUIR" },
-        { 330.0f, 198.0f, 140.0f, 28.0f, "PULAR" }
-    };
     static const UiButton victory_items[] = {
         { 240.0f, 268.0f, 160.0f, 28.0f, "NOVA PARTIDA" }
     };
@@ -895,10 +885,6 @@ const UiButton* screen_buttons(int* count)
         case GAME_SCENE_MENU:
             *count = 2;
             return menu_items;
-
-        case GAME_SCENE_BRIEFING:
-            *count = 2;
-            return briefing_items;
 
         case GAME_SCENE_PAUSE:
             return pause_items;
@@ -979,21 +965,8 @@ void activate_button(int index)
             }
 
             reset_match();
-            briefing_card = 0;
+            start_opening();
             game_set_scene(GAME_SCENE_BRIEFING);
-            break;
-
-        case GAME_SCENE_BRIEFING:
-            // indice 0 avanca um cartao e entra na fase no ultimo; 1 pula o resto
-            if (index == 1 || briefing_card + 1 == BRIEFING_CARDS)
-            {
-                game_set_scene(GAME_SCENE_GAME);
-            }
-            else
-            {
-                briefing_card = briefing_card + 1;
-                ui_focus = 0;
-            }
             break;
 
         case GAME_SCENE_PAUSE:
@@ -1024,7 +997,7 @@ void activate_button(int index)
         case GAME_SCENE_GAME_OVER:
             // briefing antes de toda partida, pulavel com ESC
             reset_match();
-            briefing_card = 0;
+            start_opening();
             game_set_scene(GAME_SCENE_BRIEFING);
             break;
 
@@ -1228,72 +1201,6 @@ void draw_scan_card(int target, bool from_cursor, float card_y)
 // menu inicial
 // ---------------------------------------------------------------
 
-
-// abertura da narrativa (#244): a premissa em 4 cards, no lugar do briefing
-// de 04/11; o Gram passou para os cards de conceito dentro da fase (#222).
-// O paciente nao tem nome nem genero no texto (gdd.md, "Narrativa")
-static const char* briefing_titles[BRIEFING_CARDS] = {
-    "O paciente",
-    "O Nanobô",
-    "Ajudar sem ferir",
-    "A missão"
-};
-
-static const char* briefing_lines[BRIEFING_CARDS][4] = {
-    { "Um paciente de 16 anos chega ao hospital com febre alta",
-      "e uma infecção que se espalha pelo sangue.",
-      NULL,
-      NULL },
-    { "A equipe médica testa o Nanobô, um nanorrobô médico",
-      "menor que uma célula, dentro do corpo do paciente.",
-      NULL,
-      NULL },
-    { "Ele ajuda o corpo sem ferir as células do paciente",
-      "e vai atrás só dos invasores: a maioria das bactérias",
-      "do corpo é inofensiva.",
-      NULL },
-    { "Manter os sinais vitais do paciente estáveis",
-      "e o Nanobô inteiro: são as duas barras do painel.",
-      "Leia cada agente com o scanner antes de agir.",
-      NULL }
-};
-
-// briefing: tres cartoes pulaveis antes da fase (#103, #106)
-void draw_briefing()
-{
-    char step[32];
-    int count;
-    int i;
-    const UiButton* buttons = screen_buttons(&count);
-
-    al_draw_text(font, UI_TEXT, SCREEN_W / 2, 26, ALLEGRO_ALIGN_CENTRE,
-        "A missão do Nanobô");
-    draw_rule((float)SCREEN_W / 2, 40.0f, 200.0f, UI_FRAME);
-
-    snprintf(step, sizeof(step), "cartão %d de %d", briefing_card + 1, BRIEFING_CARDS);
-    al_draw_text(font, UI_DIM, SCREEN_W / 2, 48, ALLEGRO_ALIGN_CENTRE, step);
-
-    draw_panel(40.0f, 70.0f, (float)SCREEN_W - 80.0f, 116.0f, UI_INK, UI_FRAME);
-
-    al_draw_text(font, UI_AMBER, 52.0f, 82.0f, 0, briefing_titles[briefing_card]);
-
-    for (i = 0; i < BRIEFING_LINES; i++)
-    {
-        // cartao com menos linhas termina no NULL
-        if (briefing_lines[briefing_card][i] == NULL)
-        {
-            continue;
-        }
-
-        al_draw_text(font, UI_TEXT, 52.0f, 106.0f + (float)i * 18.0f, 0,
-            briefing_lines[briefing_card][i]);
-    }
-
-    draw_buttons(buttons, count);
-
-    al_draw_text(font, UI_DIM, SCREEN_W / 2, 236, ALLEGRO_ALIGN_CENTRE,
-        "enter ou clique avança · esc pula");
-}
 
 void draw_menu()
 {
@@ -2284,7 +2191,7 @@ void draw_dialog(const DialogEntry* e, const DialogState* d)
     {
         al_draw_text(font, UI_AMBER, right - 32.0f, footer_y, ALLEGRO_ALIGN_RIGHT, "fechar");
     }
-    else if (fmodf(d->page_age, 1.0f) < 0.5f)
+    else if (fmodf(fmaxf(d->page_age - (float)d->page_chars[d->page] / DIALOG_CHARS_PER_SECOND, 0.0f), 1.0f) < 0.5f)
     {
         float tx = right - 40.0f;
 
@@ -2304,6 +2211,88 @@ void draw_concept_card()
     }
 
     draw_dialog(&diary_entries[card_dialog_entry], &card_dialog);
+}
+
+// abertura (#244): ficha do hospital e Anotacao 0, na caixa, com estado proprio
+// fora da fila de cards; textos em rascunho, registrados em textos-do-jogo.md §1.1
+#define OPENING_ENTRIES 2
+
+static const DialogEntry opening_entries[OPENING_ENTRIES] =
+{
+    {
+        "Hospital · ficha do paciente", 3,
+        {
+            {
+                "Paciente: {Léo Martins Ferreira}, 16 anos.",
+                "Chegou ao hospital com febre alta.",
+                NULL
+            },
+            {
+                "Os exames mostram uma {infecção} que se espalha pelo sangue.",
+                NULL,
+                NULL
+            },
+            {
+                "A equipe testa um {nanorrobô} médico, menor que uma célula,",
+                "dentro do corpo de Léo.",
+                NULL
+            }
+        },
+        false
+    },
+    {
+        "Nanobô · Anotação 0", 3,
+        {
+            { "{Sistema ligado}. Minha memória está vazia.", NULL, NULL },
+            { "Meu paciente é o {Léo}, de 16 anos, com muita febre.", NULL, NULL },
+            {
+                "Vou descobrir o que está {atacando} ele.",
+                "Anoto tudo aqui, até os meus erros.",
+                NULL
+            }
+        },
+        true
+    }
+};
+
+DialogState opening_dialog;
+int opening_entry = 0;
+
+// entrar em BRIEFING (menu ou Game Over) recomeca a abertura da ficha
+void start_opening(void)
+{
+    opening_entry = 0;
+    dialog_open_entry(&opening_dialog, &opening_entries[0]);
+}
+
+// enter, espaco ou clique: avanca; o fim da ultima entrada entra na Fase 1
+void press_opening()
+{
+    dialog_press(&opening_dialog);
+
+    if (opening_dialog.open)
+    {
+        return;
+    }
+
+    if (opening_entry + 1 < OPENING_ENTRIES)
+    {
+        opening_entry = opening_entry + 1;
+        dialog_open_entry(&opening_dialog, &opening_entries[opening_entry]);
+    }
+    else
+    {
+        game_set_scene(GAME_SCENE_GAME);
+    }
+}
+
+// fundo escuro, a caixa da entrada atual e o rodape (BR-04)
+void draw_briefing()
+{
+    draw_dialog(&opening_entries[opening_entry], &opening_dialog);
+
+    al_draw_text(font, UI_DIM, SCREEN_W / 2, 24, ALLEGRO_ALIGN_CENTRE,
+        "enter ou clique avança · esc pula");
 }
 
 void draw_hud()
@@ -3618,10 +3607,10 @@ void handle_key_down(int key)
             return;
         }
 
-        // no briefing a seta avanca mesmo com o foco no PULAR (#103)
-        if (scene == GAME_SCENE_BRIEFING && key == ALLEGRO_KEY_RIGHT)
+        // abertura: enter ou espaco avancam a caixa (#244)
+        if (scene == GAME_SCENE_BRIEFING && (key == ALLEGRO_KEY_ENTER || key == ALLEGRO_KEY_SPACE))
         {
-            activate_button(0);
+            press_opening();
             return;
         }
 
@@ -3915,6 +3904,17 @@ void handle_mouse_click(int button, float x, float y)
         return;
     }
 
+    // abertura: o clique esquerdo avanca a caixa
+    if (game_get_scene() == GAME_SCENE_BRIEFING)
+    {
+        if (button == 1)
+        {
+            press_opening();
+        }
+
+        return;
+    }
+
     buttons = screen_buttons(&count);
 
     if (buttons == NULL)
@@ -4137,6 +4137,11 @@ int main()
                 if (game_get_scene() == GAME_SCENE_GAME && card_dialog_entry != CARD_NONE)
                 {
                     dialog_tick(&card_dialog, (float)deltaTime);
+                }
+
+                if (game_get_scene() == GAME_SCENE_BRIEFING)
+                {
+                    dialog_tick(&opening_dialog, (float)deltaTime);
                 }
 
                 feel_trigger();
