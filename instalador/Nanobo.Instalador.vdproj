@@ -1,0 +1,1902 @@
+﻿"DeployProject"
+{
+"VSVersion" = "3:800"
+"ProjectType" = "8:{978C614F-708E-4E1A-B201-565925725DBA}"
+"IsWebType" = "8:FALSE"
+"ProjectName" = "8:Nanobo.Instalador"
+"LanguageId" = "3:1046"
+"CodePage" = "3:1252"
+"UILanguageId" = "3:1046"
+"SccProjectName" = "8:"
+"SccLocalPath" = "8:"
+"SccAuxPath" = "8:"
+"SccProvider" = "8:"
+	"Hierarchy"
+	{
+		"Entry"
+		{
+		"MsmKey" = "8:_9B0471ECB62C5E22BFC7410AB7BE5EAF"
+		"OwnerKey" = "8:_UNDEFINED"
+		"MsmSig" = "8:_UNDEFINED"
+		}
+		"Entry"
+		{
+		"MsmKey" = "8:_07652AED74F75879BC80B6571CDB9687"
+		"OwnerKey" = "8:_UNDEFINED"
+		"MsmSig" = "8:_UNDEFINED"
+		}
+		"Entry"
+		{
+		"MsmKey" = "8:_41E730B90A5F50AF8CB573E82FDA45DF"
+		"OwnerKey" = "8:_UNDEFINED"
+		"MsmSig" = "8:_UNDEFINED"
+		}
+		"Entry"
+		{
+		"MsmKey" = "8:_FFA240C4C0FC5670AB10B62B9FC3EB5A"
+		"OwnerKey" = "8:_UNDEFINED"
+		"MsmSig" = "8:_UNDEFINED"
+		}
+		"Entry"
+		{
+		"MsmKey" = "8:_105D2B057C3253FD857AF00B2A0CA8E0"
+		"OwnerKey" = "8:_UNDEFINED"
+		"MsmSig" = "8:_UNDEFINED"
+		}
+		"Entry"
+		{
+		"MsmKey" = "8:_74855BDB9C3F5B8DA5A68E136F7E2730"
+		"OwnerKey" = "8:_UNDEFINED"
+		"MsmSig" = "8:_UNDEFINED"
+		}
+		"Entry"
+		{
+		"MsmKey" = "8:_DCE2520F7EC758E6A08170862EEAF8D7"
+		"OwnerKey" = "8:_UNDEFINED"
+		"MsmSig" = "8:_UNDEFINED"
+		}
+		"Entry"
+		{
+		"MsmKey" = "8:_974B6DD780715592957250C4A1F383C3"
+		"OwnerKey" = "8:_UNDEFINED"
+		"MsmSig" = "8:_UNDEFINED"
+		}
+		"Entry"
+		{
+		"MsmKey" = "8:_D01DCB83B47652C2940426E2D2F59A8E"
+		"OwnerKey" = "8:_UNDEFINED"
+		"MsmSig" = "8:_UNDEFINED"
+		}
+		"Entry"
+		{
+		"MsmKey" = "8:_815D1206DBD7566686F3E08466247DC2"
+		"OwnerKey" = "8:_UNDEFINED"
+		"MsmSig" = "8:_UNDEFINED"
+		}
+		"Entry"
+		{
+		"MsmKey" = "8:_6150E07E3D8C5E10A6B55D83E1C9C27A"
+		"OwnerKey" = "8:_UNDEFINED"
+		"MsmSig" = "8:_UNDEFINED"
+		}
+		"Entry"
+		{
+		"MsmKey" = "8:_9452703D8F575492BEC0350E1BF5E732"
+		"OwnerKey" = "8:_UNDEFINED"
+		"MsmSig" = "8:_UNDEFINED"
+		}
+		"Entry"
+		{
+		"MsmKey" = "8:_4D9776ACADC453C9A6AFD563692DBDA4"
+		"OwnerKey" = "8:_UNDEFINED"
+		"MsmSig" = "8:_UNDEFINED"
+		}
+		"Entry"
+		{
+		"MsmKey" = "8:_3331A609206E52BB986ADF2A385652C4"
+		"OwnerKey" = "8:_UNDEFINED"
+		"MsmSig" = "8:_UNDEFINED"
+		}
+		"Entry"
+		{
+		"MsmKey" = "8:_8531847F30205F73A76DBA0FBE16D24C"
+		"OwnerKey" = "8:_UNDEFINED"
+		"MsmSig" = "8:_UNDEFINED"
+		}
+		"Entry"
+		{
+		"MsmKey" = "8:_21BC1B95679451078CF4C73B01C08FAA"
+		"OwnerKey" = "8:_UNDEFINED"
+		"MsmSig" = "8:_UNDEFINED"
+		}
+		"Entry"
+		{
+		"MsmKey" = "8:_82550D259FD9549D932DA19527B9C9E5"
+		"OwnerKey" = "8:_UNDEFINED"
+		"MsmSig" = "8:_UNDEFINED"
+		}
+		"Entry"
+		{
+		"MsmKey" = "8:_54857FF2CB525F8B9A1DEE9BFDE9878B"
+		"OwnerKey" = "8:_UNDEFINED"
+		"MsmSig" = "8:_UNDEFINED"
+		}
+		"Entry"
+		{
+		"MsmKey" = "8:_6111A1CE80DD5FEE91C949E1D30C3B4E"
+		"OwnerKey" = "8:_UNDEFINED"
+		"MsmSig" = "8:_UNDEFINED"
+		}
+		"Entry"
+		{
+		"MsmKey" = "8:_C5152DC53A2058AB902F76376198B91C"
+		"OwnerKey" = "8:_UNDEFINED"
+		"MsmSig" = "8:_UNDEFINED"
+		}
+		"Entry"
+		{
+		"MsmKey" = "8:_B90C86F719FB5F55870EB208B1C74A2F"
+		"OwnerKey" = "8:_UNDEFINED"
+		"MsmSig" = "8:_UNDEFINED"
+		}
+		"Entry"
+		{
+		"MsmKey" = "8:_BD1AA3A940BD5AB1A03AB3ED4DFF8DCB"
+		"OwnerKey" = "8:_UNDEFINED"
+		"MsmSig" = "8:_UNDEFINED"
+		}
+		"Entry"
+		{
+		"MsmKey" = "8:_4B20D45039125E0B8B99D622D7EAEAA7"
+		"OwnerKey" = "8:_UNDEFINED"
+		"MsmSig" = "8:_UNDEFINED"
+		}
+		"Entry"
+		{
+		"MsmKey" = "8:_905BFF56AB97507983F384AA0D124C18"
+		"OwnerKey" = "8:_UNDEFINED"
+		"MsmSig" = "8:_UNDEFINED"
+		}
+		"Entry"
+		{
+		"MsmKey" = "8:_8EA5D5C96D135E279770ED7317521368"
+		"OwnerKey" = "8:_UNDEFINED"
+		"MsmSig" = "8:_UNDEFINED"
+		}
+		"Entry"
+		{
+		"MsmKey" = "8:_2EDFC04CCA175C0D8FBF11A70679D40B"
+		"OwnerKey" = "8:_UNDEFINED"
+		"MsmSig" = "8:_UNDEFINED"
+		}
+		"Entry"
+		{
+		"MsmKey" = "8:_315430E7BFEC505BB17972BF35DAF423"
+		"OwnerKey" = "8:_UNDEFINED"
+		"MsmSig" = "8:_UNDEFINED"
+		}
+		"Entry"
+		{
+		"MsmKey" = "8:_4C7DCE48415F5BD4A1715FA13ADF284A"
+		"OwnerKey" = "8:_UNDEFINED"
+		"MsmSig" = "8:_UNDEFINED"
+		}
+		"Entry"
+		{
+		"MsmKey" = "8:_AE1F4F80F2BD5018976137AF8BEEC41C"
+		"OwnerKey" = "8:_UNDEFINED"
+		"MsmSig" = "8:_UNDEFINED"
+		}
+		"Entry"
+		{
+		"MsmKey" = "8:_C08C36D0E7635098ADF3BDC9303E5F46"
+		"OwnerKey" = "8:_UNDEFINED"
+		"MsmSig" = "8:_UNDEFINED"
+		}
+		"Entry"
+		{
+		"MsmKey" = "8:_070D7AA57192597A87C8C66ED8AD54E3"
+		"OwnerKey" = "8:_UNDEFINED"
+		"MsmSig" = "8:_UNDEFINED"
+		}
+		"Entry"
+		{
+		"MsmKey" = "8:_6A580FFF560C5DB8884DACA5C66BEC02"
+		"OwnerKey" = "8:_UNDEFINED"
+		"MsmSig" = "8:_UNDEFINED"
+		}
+		"Entry"
+		{
+		"MsmKey" = "8:_5ACB389D3BD950F595E39FBB44C12C5F"
+		"OwnerKey" = "8:_UNDEFINED"
+		"MsmSig" = "8:_UNDEFINED"
+		}
+		"Entry"
+		{
+		"MsmKey" = "8:_8D9B1298CC825D3C863DE6B81E1470A1"
+		"OwnerKey" = "8:_UNDEFINED"
+		"MsmSig" = "8:_UNDEFINED"
+		}
+		"Entry"
+		{
+		"MsmKey" = "8:_179233EC0A605B9CA22157A96E99B879"
+		"OwnerKey" = "8:_UNDEFINED"
+		"MsmSig" = "8:_UNDEFINED"
+		}
+		"Entry"
+		{
+		"MsmKey" = "8:_24124EBA85275D54A4BC729200CE104E"
+		"OwnerKey" = "8:_UNDEFINED"
+		"MsmSig" = "8:_UNDEFINED"
+		}
+		"Entry"
+		{
+		"MsmKey" = "8:_A6153307F2305715BE2F9D69247D875F"
+		"OwnerKey" = "8:_UNDEFINED"
+		"MsmSig" = "8:_UNDEFINED"
+		}
+		"Entry"
+		{
+		"MsmKey" = "8:_A2BD9F9ED7D251449ADCB11EB6AAA995"
+		"OwnerKey" = "8:_UNDEFINED"
+		"MsmSig" = "8:_UNDEFINED"
+		}
+		"Entry"
+		{
+		"MsmKey" = "8:_A6ACD9AE79F055DF8A4395F9EA5646E8"
+		"OwnerKey" = "8:_UNDEFINED"
+		"MsmSig" = "8:_UNDEFINED"
+		}
+		"Entry"
+		{
+		"MsmKey" = "8:_22933678A6D4574B925ACD1878DAD8A6"
+		"OwnerKey" = "8:_UNDEFINED"
+		"MsmSig" = "8:_UNDEFINED"
+		}
+		"Entry"
+		{
+		"MsmKey" = "8:_4D8A49ED95185906BC38BAF12A98BE83"
+		"OwnerKey" = "8:_UNDEFINED"
+		"MsmSig" = "8:_UNDEFINED"
+		}
+		"Entry"
+		{
+		"MsmKey" = "8:_46804D8E70005085961916B1E1A2C1FF"
+		"OwnerKey" = "8:_UNDEFINED"
+		"MsmSig" = "8:_UNDEFINED"
+		}
+		"Entry"
+		{
+		"MsmKey" = "8:_788BCA3CEBF75639868D7553934C26AD"
+		"OwnerKey" = "8:_UNDEFINED"
+		"MsmSig" = "8:_UNDEFINED"
+		}
+		"Entry"
+		{
+		"MsmKey" = "8:_0D2C284A630155B3A39C560B903FA1A6"
+		"OwnerKey" = "8:_UNDEFINED"
+		"MsmSig" = "8:_UNDEFINED"
+		}
+		"Entry"
+		{
+		"MsmKey" = "8:_DF3F274CDCD65CC48A6E9DB5AA50503F"
+		"OwnerKey" = "8:_UNDEFINED"
+		"MsmSig" = "8:_UNDEFINED"
+		}
+		"Entry"
+		{
+		"MsmKey" = "8:_90D1312C74F357CF9314273D70D7479E"
+		"OwnerKey" = "8:_UNDEFINED"
+		"MsmSig" = "8:_UNDEFINED"
+		}
+	}
+	"Configurations"
+	{
+		"Debug"
+		{
+		"DisplayName" = "8:Debug"
+		"IsDebugOnly" = "11:TRUE"
+		"IsReleaseOnly" = "11:FALSE"
+		"OutputFilename" = "8:Debug\\Nanobo-1.0.0.msi"
+		"PackageFilesAs" = "3:2"
+		"PackageFileSize" = "3:-2147483648"
+		"CabType" = "3:1"
+		"Compression" = "3:2"
+		"SignOutput" = "11:FALSE"
+		"CertificateFile" = "8:"
+		"PrivateKeyFile" = "8:"
+		"TimeStampServer" = "8:"
+		"InstallerBootstrapper" = "3:2"
+			"BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+			{
+			"Enabled" = "11:FALSE"
+			"PromptEnabled" = "11:TRUE"
+			"PrerequisitesLocation" = "2:1"
+			"Url" = "8:"
+			"ComponentsUrl" = "8:"
+				"Items"
+				{
+				}
+			}
+		}
+		"Release"
+		{
+		"DisplayName" = "8:Release"
+		"IsDebugOnly" = "11:FALSE"
+		"IsReleaseOnly" = "11:TRUE"
+		"OutputFilename" = "8:Release\\Nanobo-1.0.0.msi"
+		"PackageFilesAs" = "3:2"
+		"PackageFileSize" = "3:-2147483648"
+		"CabType" = "3:1"
+		"Compression" = "3:2"
+		"SignOutput" = "11:FALSE"
+		"CertificateFile" = "8:"
+		"PrivateKeyFile" = "8:"
+		"TimeStampServer" = "8:"
+		"InstallerBootstrapper" = "3:2"
+			"BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+			{
+			"Enabled" = "11:FALSE"
+			"PromptEnabled" = "11:TRUE"
+			"PrerequisitesLocation" = "2:1"
+			"Url" = "8:"
+			"ComponentsUrl" = "8:"
+				"Items"
+				{
+				}
+			}
+		}
+	}
+	"Deployable"
+	{
+		"CustomAction"
+		{
+		}
+		"DefaultFeature"
+		{
+		"Name" = "8:DefaultFeature"
+		"Title" = "8:"
+		"Description" = "8:"
+		}
+		"ExternalPersistence"
+		{
+			"LaunchCondition"
+			{
+			}
+		}
+		"File"
+		{
+			"{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9B0471ECB62C5E22BFC7410AB7BE5EAF"
+			{
+			"SourcePath" = "8:..\\dist\\Nanobo\\allegro-5.2.dll"
+			"TargetName" = "8:allegro-5.2.dll"
+			"Tag" = "8:"
+			"Folder" = "8:_69AD510C554A580FBE2AB52AA2EE7BB0"
+			"Condition" = "8:"
+			"Transitive" = "11:FALSE"
+			"Vital" = "11:TRUE"
+			"ReadOnly" = "11:FALSE"
+			"Hidden" = "11:FALSE"
+			"System" = "11:FALSE"
+			"Permanent" = "11:FALSE"
+			"SharedLegacy" = "11:FALSE"
+			"PackageAs" = "3:1"
+			"Register" = "3:1"
+			"Exclude" = "11:FALSE"
+			"IsDependency" = "11:FALSE"
+			"IsolateTo" = "8:"
+			}
+			"{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_07652AED74F75879BC80B6571CDB9687"
+			{
+			"SourcePath" = "8:..\\dist\\Nanobo\\allegro_acodec-5.2.dll"
+			"TargetName" = "8:allegro_acodec-5.2.dll"
+			"Tag" = "8:"
+			"Folder" = "8:_69AD510C554A580FBE2AB52AA2EE7BB0"
+			"Condition" = "8:"
+			"Transitive" = "11:FALSE"
+			"Vital" = "11:TRUE"
+			"ReadOnly" = "11:FALSE"
+			"Hidden" = "11:FALSE"
+			"System" = "11:FALSE"
+			"Permanent" = "11:FALSE"
+			"SharedLegacy" = "11:FALSE"
+			"PackageAs" = "3:1"
+			"Register" = "3:1"
+			"Exclude" = "11:FALSE"
+			"IsDependency" = "11:FALSE"
+			"IsolateTo" = "8:"
+			}
+			"{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_41E730B90A5F50AF8CB573E82FDA45DF"
+			{
+			"SourcePath" = "8:..\\dist\\Nanobo\\allegro_audio-5.2.dll"
+			"TargetName" = "8:allegro_audio-5.2.dll"
+			"Tag" = "8:"
+			"Folder" = "8:_69AD510C554A580FBE2AB52AA2EE7BB0"
+			"Condition" = "8:"
+			"Transitive" = "11:FALSE"
+			"Vital" = "11:TRUE"
+			"ReadOnly" = "11:FALSE"
+			"Hidden" = "11:FALSE"
+			"System" = "11:FALSE"
+			"Permanent" = "11:FALSE"
+			"SharedLegacy" = "11:FALSE"
+			"PackageAs" = "3:1"
+			"Register" = "3:1"
+			"Exclude" = "11:FALSE"
+			"IsDependency" = "11:FALSE"
+			"IsolateTo" = "8:"
+			}
+			"{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_FFA240C4C0FC5670AB10B62B9FC3EB5A"
+			{
+			"SourcePath" = "8:..\\dist\\Nanobo\\allegro_font-5.2.dll"
+			"TargetName" = "8:allegro_font-5.2.dll"
+			"Tag" = "8:"
+			"Folder" = "8:_69AD510C554A580FBE2AB52AA2EE7BB0"
+			"Condition" = "8:"
+			"Transitive" = "11:FALSE"
+			"Vital" = "11:TRUE"
+			"ReadOnly" = "11:FALSE"
+			"Hidden" = "11:FALSE"
+			"System" = "11:FALSE"
+			"Permanent" = "11:FALSE"
+			"SharedLegacy" = "11:FALSE"
+			"PackageAs" = "3:1"
+			"Register" = "3:1"
+			"Exclude" = "11:FALSE"
+			"IsDependency" = "11:FALSE"
+			"IsolateTo" = "8:"
+			}
+			"{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_105D2B057C3253FD857AF00B2A0CA8E0"
+			{
+			"SourcePath" = "8:..\\dist\\Nanobo\\allegro_image-5.2.dll"
+			"TargetName" = "8:allegro_image-5.2.dll"
+			"Tag" = "8:"
+			"Folder" = "8:_69AD510C554A580FBE2AB52AA2EE7BB0"
+			"Condition" = "8:"
+			"Transitive" = "11:FALSE"
+			"Vital" = "11:TRUE"
+			"ReadOnly" = "11:FALSE"
+			"Hidden" = "11:FALSE"
+			"System" = "11:FALSE"
+			"Permanent" = "11:FALSE"
+			"SharedLegacy" = "11:FALSE"
+			"PackageAs" = "3:1"
+			"Register" = "3:1"
+			"Exclude" = "11:FALSE"
+			"IsDependency" = "11:FALSE"
+			"IsolateTo" = "8:"
+			}
+			"{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_74855BDB9C3F5B8DA5A68E136F7E2730"
+			{
+			"SourcePath" = "8:..\\dist\\Nanobo\\allegro_primitives-5.2.dll"
+			"TargetName" = "8:allegro_primitives-5.2.dll"
+			"Tag" = "8:"
+			"Folder" = "8:_69AD510C554A580FBE2AB52AA2EE7BB0"
+			"Condition" = "8:"
+			"Transitive" = "11:FALSE"
+			"Vital" = "11:TRUE"
+			"ReadOnly" = "11:FALSE"
+			"Hidden" = "11:FALSE"
+			"System" = "11:FALSE"
+			"Permanent" = "11:FALSE"
+			"SharedLegacy" = "11:FALSE"
+			"PackageAs" = "3:1"
+			"Register" = "3:1"
+			"Exclude" = "11:FALSE"
+			"IsDependency" = "11:FALSE"
+			"IsolateTo" = "8:"
+			}
+			"{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_DCE2520F7EC758E6A08170862EEAF8D7"
+			{
+			"SourcePath" = "8:..\\dist\\Nanobo\\allegro_ttf-5.2.dll"
+			"TargetName" = "8:allegro_ttf-5.2.dll"
+			"Tag" = "8:"
+			"Folder" = "8:_69AD510C554A580FBE2AB52AA2EE7BB0"
+			"Condition" = "8:"
+			"Transitive" = "11:FALSE"
+			"Vital" = "11:TRUE"
+			"ReadOnly" = "11:FALSE"
+			"Hidden" = "11:FALSE"
+			"System" = "11:FALSE"
+			"Permanent" = "11:FALSE"
+			"SharedLegacy" = "11:FALSE"
+			"PackageAs" = "3:1"
+			"Register" = "3:1"
+			"Exclude" = "11:FALSE"
+			"IsDependency" = "11:FALSE"
+			"IsolateTo" = "8:"
+			}
+			"{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_974B6DD780715592957250C4A1F383C3"
+			{
+			"SourcePath" = "8:..\\dist\\Nanobo\\Nanobo.exe"
+			"TargetName" = "8:Nanobo.exe"
+			"Tag" = "8:"
+			"Folder" = "8:_69AD510C554A580FBE2AB52AA2EE7BB0"
+			"Condition" = "8:"
+			"Transitive" = "11:FALSE"
+			"Vital" = "11:TRUE"
+			"ReadOnly" = "11:FALSE"
+			"Hidden" = "11:FALSE"
+			"System" = "11:FALSE"
+			"Permanent" = "11:FALSE"
+			"SharedLegacy" = "11:FALSE"
+			"PackageAs" = "3:1"
+			"Register" = "3:1"
+			"Exclude" = "11:FALSE"
+			"IsDependency" = "11:FALSE"
+			"IsolateTo" = "8:"
+			}
+			"{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D01DCB83B47652C2940426E2D2F59A8E"
+			{
+			"SourcePath" = "8:..\\dist\\Nanobo\\VCRUNTIME140.dll"
+			"TargetName" = "8:VCRUNTIME140.dll"
+			"Tag" = "8:"
+			"Folder" = "8:_69AD510C554A580FBE2AB52AA2EE7BB0"
+			"Condition" = "8:"
+			"Transitive" = "11:FALSE"
+			"Vital" = "11:TRUE"
+			"ReadOnly" = "11:FALSE"
+			"Hidden" = "11:FALSE"
+			"System" = "11:FALSE"
+			"Permanent" = "11:FALSE"
+			"SharedLegacy" = "11:FALSE"
+			"PackageAs" = "3:1"
+			"Register" = "3:1"
+			"Exclude" = "11:FALSE"
+			"IsDependency" = "11:FALSE"
+			"IsolateTo" = "8:"
+			}
+			"{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_815D1206DBD7566686F3E08466247DC2"
+			{
+			"SourcePath" = "8:..\\dist\\Nanobo\\assets\\backgrounds\\mapa_fase1.png"
+			"TargetName" = "8:mapa_fase1.png"
+			"Tag" = "8:"
+			"Folder" = "8:_FAAF783BFE6C5121AD3977D7EF009363"
+			"Condition" = "8:"
+			"Transitive" = "11:FALSE"
+			"Vital" = "11:TRUE"
+			"ReadOnly" = "11:FALSE"
+			"Hidden" = "11:FALSE"
+			"System" = "11:FALSE"
+			"Permanent" = "11:FALSE"
+			"SharedLegacy" = "11:FALSE"
+			"PackageAs" = "3:1"
+			"Register" = "3:1"
+			"Exclude" = "11:FALSE"
+			"IsDependency" = "11:FALSE"
+			"IsolateTo" = "8:"
+			}
+			"{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6150E07E3D8C5E10A6B55D83E1C9C27A"
+			{
+			"SourcePath" = "8:..\\dist\\Nanobo\\assets\\backgrounds\\mapa_fase2.png"
+			"TargetName" = "8:mapa_fase2.png"
+			"Tag" = "8:"
+			"Folder" = "8:_FAAF783BFE6C5121AD3977D7EF009363"
+			"Condition" = "8:"
+			"Transitive" = "11:FALSE"
+			"Vital" = "11:TRUE"
+			"ReadOnly" = "11:FALSE"
+			"Hidden" = "11:FALSE"
+			"System" = "11:FALSE"
+			"Permanent" = "11:FALSE"
+			"SharedLegacy" = "11:FALSE"
+			"PackageAs" = "3:1"
+			"Register" = "3:1"
+			"Exclude" = "11:FALSE"
+			"IsDependency" = "11:FALSE"
+			"IsolateTo" = "8:"
+			}
+			"{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9452703D8F575492BEC0350E1BF5E732"
+			{
+			"SourcePath" = "8:..\\dist\\Nanobo\\assets\\backgrounds\\mapa_fase3.png"
+			"TargetName" = "8:mapa_fase3.png"
+			"Tag" = "8:"
+			"Folder" = "8:_FAAF783BFE6C5121AD3977D7EF009363"
+			"Condition" = "8:"
+			"Transitive" = "11:FALSE"
+			"Vital" = "11:TRUE"
+			"ReadOnly" = "11:FALSE"
+			"Hidden" = "11:FALSE"
+			"System" = "11:FALSE"
+			"Permanent" = "11:FALSE"
+			"SharedLegacy" = "11:FALSE"
+			"PackageAs" = "3:1"
+			"Register" = "3:1"
+			"Exclude" = "11:FALSE"
+			"IsDependency" = "11:FALSE"
+			"IsolateTo" = "8:"
+			}
+			"{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4D9776ACADC453C9A6AFD563692DBDA4"
+			{
+			"SourcePath" = "8:..\\dist\\Nanobo\\assets\\sprites\\bacilo_a.png"
+			"TargetName" = "8:bacilo_a.png"
+			"Tag" = "8:"
+			"Folder" = "8:_5DF0C4BEA26A5AF593979B99278D6248"
+			"Condition" = "8:"
+			"Transitive" = "11:FALSE"
+			"Vital" = "11:TRUE"
+			"ReadOnly" = "11:FALSE"
+			"Hidden" = "11:FALSE"
+			"System" = "11:FALSE"
+			"Permanent" = "11:FALSE"
+			"SharedLegacy" = "11:FALSE"
+			"PackageAs" = "3:1"
+			"Register" = "3:1"
+			"Exclude" = "11:FALSE"
+			"IsDependency" = "11:FALSE"
+			"IsolateTo" = "8:"
+			}
+			"{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3331A609206E52BB986ADF2A385652C4"
+			{
+			"SourcePath" = "8:..\\dist\\Nanobo\\assets\\sprites\\bacilo_b.png"
+			"TargetName" = "8:bacilo_b.png"
+			"Tag" = "8:"
+			"Folder" = "8:_5DF0C4BEA26A5AF593979B99278D6248"
+			"Condition" = "8:"
+			"Transitive" = "11:FALSE"
+			"Vital" = "11:TRUE"
+			"ReadOnly" = "11:FALSE"
+			"Hidden" = "11:FALSE"
+			"System" = "11:FALSE"
+			"Permanent" = "11:FALSE"
+			"SharedLegacy" = "11:FALSE"
+			"PackageAs" = "3:1"
+			"Register" = "3:1"
+			"Exclude" = "11:FALSE"
+			"IsDependency" = "11:FALSE"
+			"IsolateTo" = "8:"
+			}
+			"{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8531847F30205F73A76DBA0FBE16D24C"
+			{
+			"SourcePath" = "8:..\\dist\\Nanobo\\assets\\sprites\\bolor.png"
+			"TargetName" = "8:bolor.png"
+			"Tag" = "8:"
+			"Folder" = "8:_5DF0C4BEA26A5AF593979B99278D6248"
+			"Condition" = "8:"
+			"Transitive" = "11:FALSE"
+			"Vital" = "11:TRUE"
+			"ReadOnly" = "11:FALSE"
+			"Hidden" = "11:FALSE"
+			"System" = "11:FALSE"
+			"Permanent" = "11:FALSE"
+			"SharedLegacy" = "11:FALSE"
+			"PackageAs" = "3:1"
+			"Register" = "3:1"
+			"Exclude" = "11:FALSE"
+			"IsDependency" = "11:FALSE"
+			"IsolateTo" = "8:"
+			}
+			"{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_21BC1B95679451078CF4C73B01C08FAA"
+			{
+			"SourcePath" = "8:..\\dist\\Nanobo\\assets\\sprites\\celula_paciente_a.png"
+			"TargetName" = "8:celula_paciente_a.png"
+			"Tag" = "8:"
+			"Folder" = "8:_5DF0C4BEA26A5AF593979B99278D6248"
+			"Condition" = "8:"
+			"Transitive" = "11:FALSE"
+			"Vital" = "11:TRUE"
+			"ReadOnly" = "11:FALSE"
+			"Hidden" = "11:FALSE"
+			"System" = "11:FALSE"
+			"Permanent" = "11:FALSE"
+			"SharedLegacy" = "11:FALSE"
+			"PackageAs" = "3:1"
+			"Register" = "3:1"
+			"Exclude" = "11:FALSE"
+			"IsDependency" = "11:FALSE"
+			"IsolateTo" = "8:"
+			}
+			"{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_82550D259FD9549D932DA19527B9C9E5"
+			{
+			"SourcePath" = "8:..\\dist\\Nanobo\\assets\\sprites\\celula_paciente_b.png"
+			"TargetName" = "8:celula_paciente_b.png"
+			"Tag" = "8:"
+			"Folder" = "8:_5DF0C4BEA26A5AF593979B99278D6248"
+			"Condition" = "8:"
+			"Transitive" = "11:FALSE"
+			"Vital" = "11:TRUE"
+			"ReadOnly" = "11:FALSE"
+			"Hidden" = "11:FALSE"
+			"System" = "11:FALSE"
+			"Permanent" = "11:FALSE"
+			"SharedLegacy" = "11:FALSE"
+			"PackageAs" = "3:1"
+			"Register" = "3:1"
+			"Exclude" = "11:FALSE"
+			"IsDependency" = "11:FALSE"
+			"IsolateTo" = "8:"
+			}
+			"{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_54857FF2CB525F8B9A1DEE9BFDE9878B"
+			{
+			"SourcePath" = "8:..\\dist\\Nanobo\\assets\\sprites\\coco_a.png"
+			"TargetName" = "8:coco_a.png"
+			"Tag" = "8:"
+			"Folder" = "8:_5DF0C4BEA26A5AF593979B99278D6248"
+			"Condition" = "8:"
+			"Transitive" = "11:FALSE"
+			"Vital" = "11:TRUE"
+			"ReadOnly" = "11:FALSE"
+			"Hidden" = "11:FALSE"
+			"System" = "11:FALSE"
+			"Permanent" = "11:FALSE"
+			"SharedLegacy" = "11:FALSE"
+			"PackageAs" = "3:1"
+			"Register" = "3:1"
+			"Exclude" = "11:FALSE"
+			"IsDependency" = "11:FALSE"
+			"IsolateTo" = "8:"
+			}
+			"{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6111A1CE80DD5FEE91C949E1D30C3B4E"
+			{
+			"SourcePath" = "8:..\\dist\\Nanobo\\assets\\sprites\\coco_b.png"
+			"TargetName" = "8:coco_b.png"
+			"Tag" = "8:"
+			"Folder" = "8:_5DF0C4BEA26A5AF593979B99278D6248"
+			"Condition" = "8:"
+			"Transitive" = "11:FALSE"
+			"Vital" = "11:TRUE"
+			"ReadOnly" = "11:FALSE"
+			"Hidden" = "11:FALSE"
+			"System" = "11:FALSE"
+			"Permanent" = "11:FALSE"
+			"SharedLegacy" = "11:FALSE"
+			"PackageAs" = "3:1"
+			"Register" = "3:1"
+			"Exclude" = "11:FALSE"
+			"IsDependency" = "11:FALSE"
+			"IsolateTo" = "8:"
+			}
+			"{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C5152DC53A2058AB902F76376198B91C"
+			{
+			"SourcePath" = "8:..\\dist\\Nanobo\\assets\\sprites\\esporo.png"
+			"TargetName" = "8:esporo.png"
+			"Tag" = "8:"
+			"Folder" = "8:_5DF0C4BEA26A5AF593979B99278D6248"
+			"Condition" = "8:"
+			"Transitive" = "11:FALSE"
+			"Vital" = "11:TRUE"
+			"ReadOnly" = "11:FALSE"
+			"Hidden" = "11:FALSE"
+			"System" = "11:FALSE"
+			"Permanent" = "11:FALSE"
+			"SharedLegacy" = "11:FALSE"
+			"PackageAs" = "3:1"
+			"Register" = "3:1"
+			"Exclude" = "11:FALSE"
+			"IsDependency" = "11:FALSE"
+			"IsolateTo" = "8:"
+			}
+			"{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B90C86F719FB5F55870EB208B1C74A2F"
+			{
+			"SourcePath" = "8:..\\dist\\Nanobo\\assets\\sprites\\hifa.png"
+			"TargetName" = "8:hifa.png"
+			"Tag" = "8:"
+			"Folder" = "8:_5DF0C4BEA26A5AF593979B99278D6248"
+			"Condition" = "8:"
+			"Transitive" = "11:FALSE"
+			"Vital" = "11:TRUE"
+			"ReadOnly" = "11:FALSE"
+			"Hidden" = "11:FALSE"
+			"System" = "11:FALSE"
+			"Permanent" = "11:FALSE"
+			"SharedLegacy" = "11:FALSE"
+			"PackageAs" = "3:1"
+			"Register" = "3:1"
+			"Exclude" = "11:FALSE"
+			"IsDependency" = "11:FALSE"
+			"IsolateTo" = "8:"
+			}
+			"{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_BD1AA3A940BD5AB1A03AB3ED4DFF8DCB"
+			{
+			"SourcePath" = "8:..\\dist\\Nanobo\\assets\\sprites\\icone_coracao.png"
+			"TargetName" = "8:icone_coracao.png"
+			"Tag" = "8:"
+			"Folder" = "8:_5DF0C4BEA26A5AF593979B99278D6248"
+			"Condition" = "8:"
+			"Transitive" = "11:FALSE"
+			"Vital" = "11:TRUE"
+			"ReadOnly" = "11:FALSE"
+			"Hidden" = "11:FALSE"
+			"System" = "11:FALSE"
+			"Permanent" = "11:FALSE"
+			"SharedLegacy" = "11:FALSE"
+			"PackageAs" = "3:1"
+			"Register" = "3:1"
+			"Exclude" = "11:FALSE"
+			"IsDependency" = "11:FALSE"
+			"IsolateTo" = "8:"
+			}
+			"{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4B20D45039125E0B8B99D622D7EAEAA7"
+			{
+			"SourcePath" = "8:..\\dist\\Nanobo\\assets\\sprites\\icone_defesa.png"
+			"TargetName" = "8:icone_defesa.png"
+			"Tag" = "8:"
+			"Folder" = "8:_5DF0C4BEA26A5AF593979B99278D6248"
+			"Condition" = "8:"
+			"Transitive" = "11:FALSE"
+			"Vital" = "11:TRUE"
+			"ReadOnly" = "11:FALSE"
+			"Hidden" = "11:FALSE"
+			"System" = "11:FALSE"
+			"Permanent" = "11:FALSE"
+			"SharedLegacy" = "11:FALSE"
+			"PackageAs" = "3:1"
+			"Register" = "3:1"
+			"Exclude" = "11:FALSE"
+			"IsDependency" = "11:FALSE"
+			"IsolateTo" = "8:"
+			}
+			"{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_905BFF56AB97507983F384AA0D124C18"
+			{
+			"SourcePath" = "8:..\\dist\\Nanobo\\assets\\sprites\\icone_dissolucao.png"
+			"TargetName" = "8:icone_dissolucao.png"
+			"Tag" = "8:"
+			"Folder" = "8:_5DF0C4BEA26A5AF593979B99278D6248"
+			"Condition" = "8:"
+			"Transitive" = "11:FALSE"
+			"Vital" = "11:TRUE"
+			"ReadOnly" = "11:FALSE"
+			"Hidden" = "11:FALSE"
+			"System" = "11:FALSE"
+			"Permanent" = "11:FALSE"
+			"SharedLegacy" = "11:FALSE"
+			"PackageAs" = "3:1"
+			"Register" = "3:1"
+			"Exclude" = "11:FALSE"
+			"IsDependency" = "11:FALSE"
+			"IsolateTo" = "8:"
+			}
+			"{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8EA5D5C96D135E279770ED7317521368"
+			{
+			"SourcePath" = "8:..\\dist\\Nanobo\\assets\\sprites\\icone_lise.png"
+			"TargetName" = "8:icone_lise.png"
+			"Tag" = "8:"
+			"Folder" = "8:_5DF0C4BEA26A5AF593979B99278D6248"
+			"Condition" = "8:"
+			"Transitive" = "11:FALSE"
+			"Vital" = "11:TRUE"
+			"ReadOnly" = "11:FALSE"
+			"Hidden" = "11:FALSE"
+			"System" = "11:FALSE"
+			"Permanent" = "11:FALSE"
+			"SharedLegacy" = "11:FALSE"
+			"PackageAs" = "3:1"
+			"Register" = "3:1"
+			"Exclude" = "11:FALSE"
+			"IsDependency" = "11:FALSE"
+			"IsolateTo" = "8:"
+			}
+			"{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2EDFC04CCA175C0D8FBF11A70679D40B"
+			{
+			"SourcePath" = "8:..\\dist\\Nanobo\\assets\\sprites\\icone_neutralizacao.png"
+			"TargetName" = "8:icone_neutralizacao.png"
+			"Tag" = "8:"
+			"Folder" = "8:_5DF0C4BEA26A5AF593979B99278D6248"
+			"Condition" = "8:"
+			"Transitive" = "11:FALSE"
+			"Vital" = "11:TRUE"
+			"ReadOnly" = "11:FALSE"
+			"Hidden" = "11:FALSE"
+			"System" = "11:FALSE"
+			"Permanent" = "11:FALSE"
+			"SharedLegacy" = "11:FALSE"
+			"PackageAs" = "3:1"
+			"Register" = "3:1"
+			"Exclude" = "11:FALSE"
+			"IsDependency" = "11:FALSE"
+			"IsolateTo" = "8:"
+			}
+			"{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_315430E7BFEC505BB17972BF35DAF423"
+			{
+			"SourcePath" = "8:..\\dist\\Nanobo\\assets\\sprites\\icone_perfuracao.png"
+			"TargetName" = "8:icone_perfuracao.png"
+			"Tag" = "8:"
+			"Folder" = "8:_5DF0C4BEA26A5AF593979B99278D6248"
+			"Condition" = "8:"
+			"Transitive" = "11:FALSE"
+			"Vital" = "11:TRUE"
+			"ReadOnly" = "11:FALSE"
+			"Hidden" = "11:FALSE"
+			"System" = "11:FALSE"
+			"Permanent" = "11:FALSE"
+			"SharedLegacy" = "11:FALSE"
+			"PackageAs" = "3:1"
+			"Register" = "3:1"
+			"Exclude" = "11:FALSE"
+			"IsDependency" = "11:FALSE"
+			"IsolateTo" = "8:"
+			}
+			"{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4C7DCE48415F5BD4A1715FA13ADF284A"
+			{
+			"SourcePath" = "8:..\\dist\\Nanobo\\assets\\sprites\\icone_reserva.png"
+			"TargetName" = "8:icone_reserva.png"
+			"Tag" = "8:"
+			"Folder" = "8:_5DF0C4BEA26A5AF593979B99278D6248"
+			"Condition" = "8:"
+			"Transitive" = "11:FALSE"
+			"Vital" = "11:TRUE"
+			"ReadOnly" = "11:FALSE"
+			"Hidden" = "11:FALSE"
+			"System" = "11:FALSE"
+			"Permanent" = "11:FALSE"
+			"SharedLegacy" = "11:FALSE"
+			"PackageAs" = "3:1"
+			"Register" = "3:1"
+			"Exclude" = "11:FALSE"
+			"IsDependency" = "11:FALSE"
+			"IsolateTo" = "8:"
+			}
+			"{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_AE1F4F80F2BD5018976137AF8BEEC41C"
+			{
+			"SourcePath" = "8:..\\dist\\Nanobo\\assets\\sprites\\icone_ruptura.png"
+			"TargetName" = "8:icone_ruptura.png"
+			"Tag" = "8:"
+			"Folder" = "8:_5DF0C4BEA26A5AF593979B99278D6248"
+			"Condition" = "8:"
+			"Transitive" = "11:FALSE"
+			"Vital" = "11:TRUE"
+			"ReadOnly" = "11:FALSE"
+			"Hidden" = "11:FALSE"
+			"System" = "11:FALSE"
+			"Permanent" = "11:FALSE"
+			"SharedLegacy" = "11:FALSE"
+			"PackageAs" = "3:1"
+			"Register" = "3:1"
+			"Exclude" = "11:FALSE"
+			"IsDependency" = "11:FALSE"
+			"IsolateTo" = "8:"
+			}
+			"{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C08C36D0E7635098ADF3BDC9303E5F46"
+			{
+			"SourcePath" = "8:..\\dist\\Nanobo\\assets\\sprites\\icone_scanner.png"
+			"TargetName" = "8:icone_scanner.png"
+			"Tag" = "8:"
+			"Folder" = "8:_5DF0C4BEA26A5AF593979B99278D6248"
+			"Condition" = "8:"
+			"Transitive" = "11:FALSE"
+			"Vital" = "11:TRUE"
+			"ReadOnly" = "11:FALSE"
+			"Hidden" = "11:FALSE"
+			"System" = "11:FALSE"
+			"Permanent" = "11:FALSE"
+			"SharedLegacy" = "11:FALSE"
+			"PackageAs" = "3:1"
+			"Register" = "3:1"
+			"Exclude" = "11:FALSE"
+			"IsDependency" = "11:FALSE"
+			"IsolateTo" = "8:"
+			}
+			"{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_070D7AA57192597A87C8C66ED8AD54E3"
+			{
+			"SourcePath" = "8:..\\dist\\Nanobo\\assets\\sprites\\impactos.png"
+			"TargetName" = "8:impactos.png"
+			"Tag" = "8:"
+			"Folder" = "8:_5DF0C4BEA26A5AF593979B99278D6248"
+			"Condition" = "8:"
+			"Transitive" = "11:FALSE"
+			"Vital" = "11:TRUE"
+			"ReadOnly" = "11:FALSE"
+			"Hidden" = "11:FALSE"
+			"System" = "11:FALSE"
+			"Permanent" = "11:FALSE"
+			"SharedLegacy" = "11:FALSE"
+			"PackageAs" = "3:1"
+			"Register" = "3:1"
+			"Exclude" = "11:FALSE"
+			"IsDependency" = "11:FALSE"
+			"IsolateTo" = "8:"
+			}
+			"{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6A580FFF560C5DB8884DACA5C66BEC02"
+			{
+			"SourcePath" = "8:..\\dist\\Nanobo\\assets\\sprites\\levedura_a.png"
+			"TargetName" = "8:levedura_a.png"
+			"Tag" = "8:"
+			"Folder" = "8:_5DF0C4BEA26A5AF593979B99278D6248"
+			"Condition" = "8:"
+			"Transitive" = "11:FALSE"
+			"Vital" = "11:TRUE"
+			"ReadOnly" = "11:FALSE"
+			"Hidden" = "11:FALSE"
+			"System" = "11:FALSE"
+			"Permanent" = "11:FALSE"
+			"SharedLegacy" = "11:FALSE"
+			"PackageAs" = "3:1"
+			"Register" = "3:1"
+			"Exclude" = "11:FALSE"
+			"IsDependency" = "11:FALSE"
+			"IsolateTo" = "8:"
+			}
+			"{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5ACB389D3BD950F595E39FBB44C12C5F"
+			{
+			"SourcePath" = "8:..\\dist\\Nanobo\\assets\\sprites\\levedura_b.png"
+			"TargetName" = "8:levedura_b.png"
+			"Tag" = "8:"
+			"Folder" = "8:_5DF0C4BEA26A5AF593979B99278D6248"
+			"Condition" = "8:"
+			"Transitive" = "11:FALSE"
+			"Vital" = "11:TRUE"
+			"ReadOnly" = "11:FALSE"
+			"Hidden" = "11:FALSE"
+			"System" = "11:FALSE"
+			"Permanent" = "11:FALSE"
+			"SharedLegacy" = "11:FALSE"
+			"PackageAs" = "3:1"
+			"Register" = "3:1"
+			"Exclude" = "11:FALSE"
+			"IsDependency" = "11:FALSE"
+			"IsolateTo" = "8:"
+			}
+			"{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8D9B1298CC825D3C863DE6B81E1470A1"
+			{
+			"SourcePath" = "8:..\\dist\\Nanobo\\assets\\sprites\\nanobo_spritesheet.png"
+			"TargetName" = "8:nanobo_spritesheet.png"
+			"Tag" = "8:"
+			"Folder" = "8:_5DF0C4BEA26A5AF593979B99278D6248"
+			"Condition" = "8:"
+			"Transitive" = "11:FALSE"
+			"Vital" = "11:TRUE"
+			"ReadOnly" = "11:FALSE"
+			"Hidden" = "11:FALSE"
+			"System" = "11:FALSE"
+			"Permanent" = "11:FALSE"
+			"SharedLegacy" = "11:FALSE"
+			"PackageAs" = "3:1"
+			"Register" = "3:1"
+			"Exclude" = "11:FALSE"
+			"IsDependency" = "11:FALSE"
+			"IsolateTo" = "8:"
+			}
+			"{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_179233EC0A605B9CA22157A96E99B879"
+			{
+			"SourcePath" = "8:..\\dist\\Nanobo\\assets\\sprites\\silhueta.png"
+			"TargetName" = "8:silhueta.png"
+			"Tag" = "8:"
+			"Folder" = "8:_5DF0C4BEA26A5AF593979B99278D6248"
+			"Condition" = "8:"
+			"Transitive" = "11:FALSE"
+			"Vital" = "11:TRUE"
+			"ReadOnly" = "11:FALSE"
+			"Hidden" = "11:FALSE"
+			"System" = "11:FALSE"
+			"Permanent" = "11:FALSE"
+			"SharedLegacy" = "11:FALSE"
+			"PackageAs" = "3:1"
+			"Register" = "3:1"
+			"Exclude" = "11:FALSE"
+			"IsDependency" = "11:FALSE"
+			"IsolateTo" = "8:"
+			}
+			"{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_24124EBA85275D54A4BC729200CE104E"
+			{
+			"SourcePath" = "8:..\\dist\\Nanobo\\assets\\sprites\\tiros.png"
+			"TargetName" = "8:tiros.png"
+			"Tag" = "8:"
+			"Folder" = "8:_5DF0C4BEA26A5AF593979B99278D6248"
+			"Condition" = "8:"
+			"Transitive" = "11:FALSE"
+			"Vital" = "11:TRUE"
+			"ReadOnly" = "11:FALSE"
+			"Hidden" = "11:FALSE"
+			"System" = "11:FALSE"
+			"Permanent" = "11:FALSE"
+			"SharedLegacy" = "11:FALSE"
+			"PackageAs" = "3:1"
+			"Register" = "3:1"
+			"Exclude" = "11:FALSE"
+			"IsDependency" = "11:FALSE"
+			"IsolateTo" = "8:"
+			}
+			"{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A6153307F2305715BE2F9D69247D875F"
+			{
+			"SourcePath" = "8:..\\dist\\Nanobo\\assets\\sprites\\toxina.png"
+			"TargetName" = "8:toxina.png"
+			"Tag" = "8:"
+			"Folder" = "8:_5DF0C4BEA26A5AF593979B99278D6248"
+			"Condition" = "8:"
+			"Transitive" = "11:FALSE"
+			"Vital" = "11:TRUE"
+			"ReadOnly" = "11:FALSE"
+			"Hidden" = "11:FALSE"
+			"System" = "11:FALSE"
+			"Permanent" = "11:FALSE"
+			"SharedLegacy" = "11:FALSE"
+			"PackageAs" = "3:1"
+			"Register" = "3:1"
+			"Exclude" = "11:FALSE"
+			"IsDependency" = "11:FALSE"
+			"IsolateTo" = "8:"
+			}
+			"{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A2BD9F9ED7D251449ADCB11EB6AAA995"
+			{
+			"SourcePath" = "8:..\\dist\\Nanobo\\assets\\sprites\\virus_a.png"
+			"TargetName" = "8:virus_a.png"
+			"Tag" = "8:"
+			"Folder" = "8:_5DF0C4BEA26A5AF593979B99278D6248"
+			"Condition" = "8:"
+			"Transitive" = "11:FALSE"
+			"Vital" = "11:TRUE"
+			"ReadOnly" = "11:FALSE"
+			"Hidden" = "11:FALSE"
+			"System" = "11:FALSE"
+			"Permanent" = "11:FALSE"
+			"SharedLegacy" = "11:FALSE"
+			"PackageAs" = "3:1"
+			"Register" = "3:1"
+			"Exclude" = "11:FALSE"
+			"IsDependency" = "11:FALSE"
+			"IsolateTo" = "8:"
+			}
+			"{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A6ACD9AE79F055DF8A4395F9EA5646E8"
+			{
+			"SourcePath" = "8:..\\dist\\Nanobo\\assets\\sprites\\virus_b.png"
+			"TargetName" = "8:virus_b.png"
+			"Tag" = "8:"
+			"Folder" = "8:_5DF0C4BEA26A5AF593979B99278D6248"
+			"Condition" = "8:"
+			"Transitive" = "11:FALSE"
+			"Vital" = "11:TRUE"
+			"ReadOnly" = "11:FALSE"
+			"Hidden" = "11:FALSE"
+			"System" = "11:FALSE"
+			"Permanent" = "11:FALSE"
+			"SharedLegacy" = "11:FALSE"
+			"PackageAs" = "3:1"
+			"Register" = "3:1"
+			"Exclude" = "11:FALSE"
+			"IsDependency" = "11:FALSE"
+			"IsolateTo" = "8:"
+			}
+			"{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_22933678A6D4574B925ACD1878DAD8A6"
+			{
+			"SourcePath" = "8:..\\dist\\Nanobo\\assets\\audio\\music\\fundo.wav"
+			"TargetName" = "8:fundo.wav"
+			"Tag" = "8:"
+			"Folder" = "8:_E195405F839155DA86325F3B8A3DDE05"
+			"Condition" = "8:"
+			"Transitive" = "11:FALSE"
+			"Vital" = "11:TRUE"
+			"ReadOnly" = "11:FALSE"
+			"Hidden" = "11:FALSE"
+			"System" = "11:FALSE"
+			"Permanent" = "11:FALSE"
+			"SharedLegacy" = "11:FALSE"
+			"PackageAs" = "3:1"
+			"Register" = "3:1"
+			"Exclude" = "11:FALSE"
+			"IsDependency" = "11:FALSE"
+			"IsolateTo" = "8:"
+			}
+			"{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4D8A49ED95185906BC38BAF12A98BE83"
+			{
+			"SourcePath" = "8:..\\dist\\Nanobo\\assets\\audio\\sfx\\defesa.wav"
+			"TargetName" = "8:defesa.wav"
+			"Tag" = "8:"
+			"Folder" = "8:_9CDA7424C42557499A5A5FE732DEBB11"
+			"Condition" = "8:"
+			"Transitive" = "11:FALSE"
+			"Vital" = "11:TRUE"
+			"ReadOnly" = "11:FALSE"
+			"Hidden" = "11:FALSE"
+			"System" = "11:FALSE"
+			"Permanent" = "11:FALSE"
+			"SharedLegacy" = "11:FALSE"
+			"PackageAs" = "3:1"
+			"Register" = "3:1"
+			"Exclude" = "11:FALSE"
+			"IsDependency" = "11:FALSE"
+			"IsolateTo" = "8:"
+			}
+			"{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_46804D8E70005085961916B1E1A2C1FF"
+			{
+			"SourcePath" = "8:..\\dist\\Nanobo\\assets\\audio\\sfx\\disparo.wav"
+			"TargetName" = "8:disparo.wav"
+			"Tag" = "8:"
+			"Folder" = "8:_9CDA7424C42557499A5A5FE732DEBB11"
+			"Condition" = "8:"
+			"Transitive" = "11:FALSE"
+			"Vital" = "11:TRUE"
+			"ReadOnly" = "11:FALSE"
+			"Hidden" = "11:FALSE"
+			"System" = "11:FALSE"
+			"Permanent" = "11:FALSE"
+			"SharedLegacy" = "11:FALSE"
+			"PackageAs" = "3:1"
+			"Register" = "3:1"
+			"Exclude" = "11:FALSE"
+			"IsDependency" = "11:FALSE"
+			"IsolateTo" = "8:"
+			}
+			"{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_788BCA3CEBF75639868D7553934C26AD"
+			{
+			"SourcePath" = "8:..\\dist\\Nanobo\\assets\\audio\\sfx\\impacto.wav"
+			"TargetName" = "8:impacto.wav"
+			"Tag" = "8:"
+			"Folder" = "8:_9CDA7424C42557499A5A5FE732DEBB11"
+			"Condition" = "8:"
+			"Transitive" = "11:FALSE"
+			"Vital" = "11:TRUE"
+			"ReadOnly" = "11:FALSE"
+			"Hidden" = "11:FALSE"
+			"System" = "11:FALSE"
+			"Permanent" = "11:FALSE"
+			"SharedLegacy" = "11:FALSE"
+			"PackageAs" = "3:1"
+			"Register" = "3:1"
+			"Exclude" = "11:FALSE"
+			"IsDependency" = "11:FALSE"
+			"IsolateTo" = "8:"
+			}
+			"{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0D2C284A630155B3A39C560B903FA1A6"
+			{
+			"SourcePath" = "8:..\\dist\\Nanobo\\assets\\audio\\sfx\\neutralizacao.wav"
+			"TargetName" = "8:neutralizacao.wav"
+			"Tag" = "8:"
+			"Folder" = "8:_9CDA7424C42557499A5A5FE732DEBB11"
+			"Condition" = "8:"
+			"Transitive" = "11:FALSE"
+			"Vital" = "11:TRUE"
+			"ReadOnly" = "11:FALSE"
+			"Hidden" = "11:FALSE"
+			"System" = "11:FALSE"
+			"Permanent" = "11:FALSE"
+			"SharedLegacy" = "11:FALSE"
+			"PackageAs" = "3:1"
+			"Register" = "3:1"
+			"Exclude" = "11:FALSE"
+			"IsDependency" = "11:FALSE"
+			"IsolateTo" = "8:"
+			}
+			"{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_DF3F274CDCD65CC48A6E9DB5AA50503F"
+			{
+			"SourcePath" = "8:..\\dist\\Nanobo\\assets\\audio\\sfx\\penalidade.wav"
+			"TargetName" = "8:penalidade.wav"
+			"Tag" = "8:"
+			"Folder" = "8:_9CDA7424C42557499A5A5FE732DEBB11"
+			"Condition" = "8:"
+			"Transitive" = "11:FALSE"
+			"Vital" = "11:TRUE"
+			"ReadOnly" = "11:FALSE"
+			"Hidden" = "11:FALSE"
+			"System" = "11:FALSE"
+			"Permanent" = "11:FALSE"
+			"SharedLegacy" = "11:FALSE"
+			"PackageAs" = "3:1"
+			"Register" = "3:1"
+			"Exclude" = "11:FALSE"
+			"IsDependency" = "11:FALSE"
+			"IsolateTo" = "8:"
+			}
+			"{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_90D1312C74F357CF9314273D70D7479E"
+			{
+			"SourcePath" = "8:..\\dist\\Nanobo\\assets\\audio\\sfx\\scanner.wav"
+			"TargetName" = "8:scanner.wav"
+			"Tag" = "8:"
+			"Folder" = "8:_9CDA7424C42557499A5A5FE732DEBB11"
+			"Condition" = "8:"
+			"Transitive" = "11:FALSE"
+			"Vital" = "11:TRUE"
+			"ReadOnly" = "11:FALSE"
+			"Hidden" = "11:FALSE"
+			"System" = "11:FALSE"
+			"Permanent" = "11:FALSE"
+			"SharedLegacy" = "11:FALSE"
+			"PackageAs" = "3:1"
+			"Register" = "3:1"
+			"Exclude" = "11:FALSE"
+			"IsDependency" = "11:FALSE"
+			"IsolateTo" = "8:"
+			}
+		}
+		"Folder"
+		{
+			"{3C67513D-01DD-4637-8A68-80971EB9504F}:_69AD510C554A580FBE2AB52AA2EE7BB0"
+			{
+			"DefaultLocation" = "8:[LocalAppDataFolder]Programs\\Nanobo"
+			"Name" = "8:#1925"
+			"AlwaysCreate" = "11:FALSE"
+			"Condition" = "8:"
+			"Transitive" = "11:FALSE"
+			"Property" = "8:TARGETDIR"
+				"Folders"
+				{
+					"{9EF0B969-E518-4E46-987F-47570745A589}:_6FC06251B5995CD2B902474763006C66"
+					{
+					"Name" = "8:assets"
+					"AlwaysCreate" = "11:FALSE"
+					"Condition" = "8:"
+					"Transitive" = "11:FALSE"
+					"Property" = "8:_A8E16B8931505F23885D14BA3C8FE9F3"
+						"Folders"
+						{
+							"{9EF0B969-E518-4E46-987F-47570745A589}:_6922FABE57A95F04959DD4560E48A30A"
+							{
+							"Name" = "8:audio"
+							"AlwaysCreate" = "11:FALSE"
+							"Condition" = "8:"
+							"Transitive" = "11:FALSE"
+							"Property" = "8:_F312F40BE2A75AB19068B9CCB31A54AA"
+								"Folders"
+								{
+									"{9EF0B969-E518-4E46-987F-47570745A589}:_E195405F839155DA86325F3B8A3DDE05"
+									{
+									"Name" = "8:music"
+									"AlwaysCreate" = "11:FALSE"
+									"Condition" = "8:"
+									"Transitive" = "11:FALSE"
+									"Property" = "8:_BEAED4BCABD353A3B71B30B60926773A"
+										"Folders"
+										{
+										}
+									}
+									"{9EF0B969-E518-4E46-987F-47570745A589}:_9CDA7424C42557499A5A5FE732DEBB11"
+									{
+									"Name" = "8:sfx"
+									"AlwaysCreate" = "11:FALSE"
+									"Condition" = "8:"
+									"Transitive" = "11:FALSE"
+									"Property" = "8:_C0628D6353DE5C06918A6949BF8ECC72"
+										"Folders"
+										{
+										}
+									}
+								}
+							}
+							"{9EF0B969-E518-4E46-987F-47570745A589}:_FAAF783BFE6C5121AD3977D7EF009363"
+							{
+							"Name" = "8:backgrounds"
+							"AlwaysCreate" = "11:FALSE"
+							"Condition" = "8:"
+							"Transitive" = "11:FALSE"
+							"Property" = "8:_FEE175EA16A2582EB0234500D778FD07"
+								"Folders"
+								{
+								}
+							}
+							"{9EF0B969-E518-4E46-987F-47570745A589}:_5DF0C4BEA26A5AF593979B99278D6248"
+							{
+							"Name" = "8:sprites"
+							"AlwaysCreate" = "11:FALSE"
+							"Condition" = "8:"
+							"Transitive" = "11:FALSE"
+							"Property" = "8:_81FD5301BFA9563893F7CB57F4340E39"
+								"Folders"
+								{
+								}
+							}
+						}
+					}
+				}
+			}
+			"{1525181F-901A-416C-8A58-119130FE478E}:_515F9042EBEB58A280AACB70D5D79063"
+			{
+			"Name" = "8:#1916"
+			"AlwaysCreate" = "11:FALSE"
+			"Condition" = "8:"
+			"Transitive" = "11:FALSE"
+			"Property" = "8:DesktopFolder"
+				"Folders"
+				{
+				}
+			}
+			"{1525181F-901A-416C-8A58-119130FE478E}:_02D526E0DF7F5E319F3D21149C48E6FE"
+			{
+			"Name" = "8:#1919"
+			"AlwaysCreate" = "11:FALSE"
+			"Condition" = "8:"
+			"Transitive" = "11:FALSE"
+			"Property" = "8:ProgramMenuFolder"
+				"Folders"
+				{
+				}
+			}
+		}
+		"LaunchCondition"
+		{
+		}
+		"Locator"
+		{
+		}
+		"MsiBootstrapper"
+		{
+		"LangId" = "3:1046"
+		"RequiresElevation" = "11:FALSE"
+		}
+		"Product"
+		{
+		"Name" = "8:Microsoft Visual Studio"
+		"ProductName" = "8:Nanobô"
+		"ProductCode" = "8:{F91E5166-9927-5AEA-8D40-B63C2748DD3F}"
+		"PackageCode" = "8:{E713DCA2-13CC-518A-9FA6-EDD12FFD8D2B}"
+		"UpgradeCode" = "8:{31C85FCC-3923-5434-810C-7769FD68E6CA}"
+		"AspNetVersion" = "8:2.0.50727.0"
+		"RestartWWWService" = "11:FALSE"
+		"RemovePreviousVersions" = "11:TRUE"
+		"DetectNewerInstalledVersion" = "11:TRUE"
+		"InstallAllUsers" = "11:FALSE"
+		"ProductVersion" = "8:1.0.0"
+		"Manufacturer" = "8:Nanobô"
+		"ARPHELPTELEPHONE" = "8:"
+		"ARPHELPLINK" = "8:"
+		"Title" = "8:Nanobô"
+		"Subject" = "8:"
+		"ARPCONTACT" = "8:Nanobô"
+		"Keywords" = "8:"
+		"ARPCOMMENTS" = "8:Jogo educativo 2D sobre microbiologia"
+		"ARPURLINFOABOUT" = "8:"
+		"ARPPRODUCTICON" = "8:"
+		"ARPIconIndex" = "3:0"
+		"SearchPath" = "8:"
+		"UseSystemSearchPath" = "11:TRUE"
+		"TargetPlatform" = "3:1"
+		"PreBuildEvent" = "8:"
+		"PostBuildEvent" = "8:"
+		"RunPostBuildEvent" = "3:0"
+		}
+		"Registry"
+		{
+			"HKLM"
+			{
+				"Keys"
+				{
+				}
+			}
+			"HKCU"
+			{
+				"Keys"
+				{
+				}
+			}
+			"HKCR"
+			{
+				"Keys"
+				{
+				}
+			}
+			"HKU"
+			{
+				"Keys"
+				{
+				}
+			}
+			"HKPU"
+			{
+				"Keys"
+				{
+				}
+			}
+		}
+		"Sequences"
+		{
+		}
+		"Shortcut"
+		{
+			"{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_22D5D604276150DA901BF01A40152FFE"
+			{
+			"Name" = "8:Nanobô"
+			"Arguments" = "8:"
+			"Description" = "8:Nanobô"
+			"ShowCmd" = "3:1"
+			"IconIndex" = "3:0"
+			"Transitive" = "11:FALSE"
+			"Target" = "8:_974B6DD780715592957250C4A1F383C3"
+			"Folder" = "8:_515F9042EBEB58A280AACB70D5D79063"
+			"WorkingFolder" = "8:_69AD510C554A580FBE2AB52AA2EE7BB0"
+			"Icon" = "8:"
+			"Feature" = "8:"
+			}
+			"{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_90E1D44A057B5C3586F24DA206EF3790"
+			{
+			"Name" = "8:Nanobô"
+			"Arguments" = "8:"
+			"Description" = "8:Nanobô"
+			"ShowCmd" = "3:1"
+			"IconIndex" = "3:0"
+			"Transitive" = "11:FALSE"
+			"Target" = "8:_974B6DD780715592957250C4A1F383C3"
+			"Folder" = "8:_02D526E0DF7F5E319F3D21149C48E6FE"
+			"WorkingFolder" = "8:_69AD510C554A580FBE2AB52AA2EE7BB0"
+			"Icon" = "8:"
+			"Feature" = "8:"
+			}
+		}
+		"UserInterface"
+		{
+			"{2479F3F5-0309-486D-8047-8187E2CE5BA0}:_3FFE037336A3570D957594B1F17C634C"
+			{
+			"UseDynamicProperties" = "11:FALSE"
+			"IsDependency" = "11:FALSE"
+			"SourcePath" = "8:<VsdDialogDir>\\VsdUserInterface.wim"
+			}
+			"{2479F3F5-0309-486D-8047-8187E2CE5BA0}:_8FD2C72BD50859EBA9AD4874FC43C670"
+			{
+			"UseDynamicProperties" = "11:FALSE"
+			"IsDependency" = "11:FALSE"
+			"SourcePath" = "8:<VsdDialogDir>\\VsdBasicDialogs.wim"
+			}
+			"{DF760B10-853B-4699-99F2-AFF7185B4A62}:_A1A3F6D3EDB8596082E0BEF6DC512C91"
+			{
+			"Name" = "8:#1900"
+			"Sequence" = "3:1"
+			"Attributes" = "3:1"
+				"Dialogs"
+				{
+					"{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_FCF58D71EBBD563E99BD2F21E594A796"
+					{
+					"Sequence" = "3:100"
+					"DisplayName" = "8:Welcome"
+					"UseDynamicProperties" = "11:TRUE"
+					"IsDependency" = "11:FALSE"
+					"SourcePath" = "8:<VsdDialogDir>\\VsdWelcomeDlg.wid"
+						"Properties"
+						{
+							"BannerBitmap"
+							{
+							"Name" = "8:BannerBitmap"
+							"DisplayName" = "8:#1001"
+							"Description" = "8:#1101"
+							"Type" = "3:8"
+							"ContextData" = "8:Bitmap"
+							"Attributes" = "3:4"
+							"Setting" = "3:1"
+							"UsePlugInResources" = "11:TRUE"
+							}
+							"CopyrightWarning"
+							{
+							"Name" = "8:CopyrightWarning"
+							"DisplayName" = "8:#1002"
+							"Description" = "8:#1102"
+							"Type" = "3:3"
+							"ContextData" = "8:"
+							"Attributes" = "3:0"
+							"Setting" = "3:1"
+							"Value" = "8:#1202"
+							"DefaultValue" = "8:#1202"
+							"UsePlugInResources" = "11:TRUE"
+							}
+							"Welcome"
+							{
+							"Name" = "8:Welcome"
+							"DisplayName" = "8:#1003"
+							"Description" = "8:#1103"
+							"Type" = "3:3"
+							"ContextData" = "8:"
+							"Attributes" = "3:0"
+							"Setting" = "3:1"
+							"Value" = "8:#1203"
+							"DefaultValue" = "8:#1203"
+							"UsePlugInResources" = "11:TRUE"
+							}
+						}
+					}
+					"{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_2067B52F054C531D8F6E884882C78040"
+					{
+					"Sequence" = "3:200"
+					"DisplayName" = "8:Installation Folder"
+					"UseDynamicProperties" = "11:TRUE"
+					"IsDependency" = "11:FALSE"
+					"SourcePath" = "8:<VsdDialogDir>\\VsdFolderDlg.wid"
+						"Properties"
+						{
+							"BannerBitmap"
+							{
+							"Name" = "8:BannerBitmap"
+							"DisplayName" = "8:#1001"
+							"Description" = "8:#1101"
+							"Type" = "3:8"
+							"ContextData" = "8:Bitmap"
+							"Attributes" = "3:4"
+							"Setting" = "3:1"
+							"UsePlugInResources" = "11:TRUE"
+							}
+							"InstallAllUsersVisible"
+							{
+							"Name" = "8:InstallAllUsersVisible"
+							"DisplayName" = "8:#1059"
+							"Description" = "8:#1159"
+							"Type" = "3:5"
+							"ContextData" = "8:1;True=1;False=0"
+							"Attributes" = "3:0"
+							"Setting" = "3:0"
+							"Value" = "3:0"
+							"DefaultValue" = "3:1"
+							"UsePlugInResources" = "11:TRUE"
+							}
+						}
+					}
+					"{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_9BCB15AD2B49547E8188C963B386B2F9"
+					{
+					"Sequence" = "3:300"
+					"DisplayName" = "8:Confirm Installation"
+					"UseDynamicProperties" = "11:TRUE"
+					"IsDependency" = "11:FALSE"
+					"SourcePath" = "8:<VsdDialogDir>\\VsdConfirmDlg.wid"
+						"Properties"
+						{
+							"BannerBitmap"
+							{
+							"Name" = "8:BannerBitmap"
+							"DisplayName" = "8:#1001"
+							"Description" = "8:#1101"
+							"Type" = "3:8"
+							"ContextData" = "8:Bitmap"
+							"Attributes" = "3:4"
+							"Setting" = "3:1"
+							"UsePlugInResources" = "11:TRUE"
+							}
+						}
+					}
+				}
+			}
+			"{DF760B10-853B-4699-99F2-AFF7185B4A62}:_C6A7A6054B82541E8EBE0223AB00A0BD"
+			{
+			"Name" = "8:#1901"
+			"Sequence" = "3:1"
+			"Attributes" = "3:2"
+				"Dialogs"
+				{
+					"{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_C7E29EE284BA57F3A1DC290CB5C1A532"
+					{
+					"Sequence" = "3:100"
+					"DisplayName" = "8:Progress"
+					"UseDynamicProperties" = "11:TRUE"
+					"IsDependency" = "11:FALSE"
+					"SourcePath" = "8:<VsdDialogDir>\\VsdProgressDlg.wid"
+						"Properties"
+						{
+							"BannerBitmap"
+							{
+							"Name" = "8:BannerBitmap"
+							"DisplayName" = "8:#1001"
+							"Description" = "8:#1101"
+							"Type" = "3:8"
+							"ContextData" = "8:Bitmap"
+							"Attributes" = "3:4"
+							"Setting" = "3:1"
+							"UsePlugInResources" = "11:TRUE"
+							}
+							"ShowProgress"
+							{
+							"Name" = "8:ShowProgress"
+							"DisplayName" = "8:#1009"
+							"Description" = "8:#1109"
+							"Type" = "3:5"
+							"ContextData" = "8:1;True=1;False=0"
+							"Attributes" = "3:0"
+							"Setting" = "3:0"
+							"Value" = "3:1"
+							"DefaultValue" = "3:1"
+							"UsePlugInResources" = "11:TRUE"
+							}
+						}
+					}
+				}
+			}
+			"{DF760B10-853B-4699-99F2-AFF7185B4A62}:_9FA901E5107C523C9213B15211B1D9C6"
+			{
+			"Name" = "8:#1902"
+			"Sequence" = "3:1"
+			"Attributes" = "3:3"
+				"Dialogs"
+				{
+					"{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_050FF7B5CC275CD88B7FD844108BBDBB"
+					{
+					"Sequence" = "3:100"
+					"DisplayName" = "8:Finished"
+					"UseDynamicProperties" = "11:TRUE"
+					"IsDependency" = "11:FALSE"
+					"SourcePath" = "8:<VsdDialogDir>\\VsdFinishedDlg.wid"
+						"Properties"
+						{
+							"BannerBitmap"
+							{
+							"Name" = "8:BannerBitmap"
+							"DisplayName" = "8:#1001"
+							"Description" = "8:#1101"
+							"Type" = "3:8"
+							"ContextData" = "8:Bitmap"
+							"Attributes" = "3:4"
+							"Setting" = "3:1"
+							"UsePlugInResources" = "11:TRUE"
+							}
+							"UpdateText"
+							{
+							"Name" = "8:UpdateText"
+							"DisplayName" = "8:#1058"
+							"Description" = "8:#1158"
+							"Type" = "3:15"
+							"ContextData" = "8:"
+							"Attributes" = "3:0"
+							"Setting" = "3:1"
+							"Value" = "8:#1258"
+							"DefaultValue" = "8:#1258"
+							"UsePlugInResources" = "11:TRUE"
+							}
+						}
+					}
+				}
+			}
+			"{DF760B10-853B-4699-99F2-AFF7185B4A62}:_8BD3A2F465B357B7B4871667CF2E78BF"
+			{
+			"Name" = "8:#1900"
+			"Sequence" = "3:2"
+			"Attributes" = "3:1"
+				"Dialogs"
+				{
+					"{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_06C475E24EA45163B0CB6D49EE32B2FE"
+					{
+					"Sequence" = "3:100"
+					"DisplayName" = "8:Welcome"
+					"UseDynamicProperties" = "11:TRUE"
+					"IsDependency" = "11:FALSE"
+					"SourcePath" = "8:<VsdDialogDir>\\VsdAdminWelcomeDlg.wid"
+						"Properties"
+						{
+							"BannerBitmap"
+							{
+							"Name" = "8:BannerBitmap"
+							"DisplayName" = "8:#1001"
+							"Description" = "8:#1101"
+							"Type" = "3:8"
+							"ContextData" = "8:Bitmap"
+							"Attributes" = "3:4"
+							"Setting" = "3:1"
+							"UsePlugInResources" = "11:TRUE"
+							}
+							"CopyrightWarning"
+							{
+							"Name" = "8:CopyrightWarning"
+							"DisplayName" = "8:#1002"
+							"Description" = "8:#1102"
+							"Type" = "3:3"
+							"ContextData" = "8:"
+							"Attributes" = "3:0"
+							"Setting" = "3:1"
+							"Value" = "8:#1202"
+							"DefaultValue" = "8:#1202"
+							"UsePlugInResources" = "11:TRUE"
+							}
+							"Welcome"
+							{
+							"Name" = "8:Welcome"
+							"DisplayName" = "8:#1003"
+							"Description" = "8:#1103"
+							"Type" = "3:3"
+							"ContextData" = "8:"
+							"Attributes" = "3:0"
+							"Setting" = "3:1"
+							"Value" = "8:#1203"
+							"DefaultValue" = "8:#1203"
+							"UsePlugInResources" = "11:TRUE"
+							}
+						}
+					}
+					"{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_5F9A660384645B2B94B54E14AB9299F1"
+					{
+					"Sequence" = "3:200"
+					"DisplayName" = "8:Installation Folder"
+					"UseDynamicProperties" = "11:TRUE"
+					"IsDependency" = "11:FALSE"
+					"SourcePath" = "8:<VsdDialogDir>\\VsdAdminFolderDlg.wid"
+						"Properties"
+						{
+							"BannerBitmap"
+							{
+							"Name" = "8:BannerBitmap"
+							"DisplayName" = "8:#1001"
+							"Description" = "8:#1101"
+							"Type" = "3:8"
+							"ContextData" = "8:Bitmap"
+							"Attributes" = "3:4"
+							"Setting" = "3:1"
+							"UsePlugInResources" = "11:TRUE"
+							}
+						}
+					}
+					"{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_613CA0F8134B594C8FD2828887BE072E"
+					{
+					"Sequence" = "3:300"
+					"DisplayName" = "8:Confirm Installation"
+					"UseDynamicProperties" = "11:TRUE"
+					"IsDependency" = "11:FALSE"
+					"SourcePath" = "8:<VsdDialogDir>\\VsdAdminConfirmDlg.wid"
+						"Properties"
+						{
+							"BannerBitmap"
+							{
+							"Name" = "8:BannerBitmap"
+							"DisplayName" = "8:#1001"
+							"Description" = "8:#1101"
+							"Type" = "3:8"
+							"ContextData" = "8:Bitmap"
+							"Attributes" = "3:4"
+							"Setting" = "3:1"
+							"UsePlugInResources" = "11:TRUE"
+							}
+						}
+					}
+				}
+			}
+			"{DF760B10-853B-4699-99F2-AFF7185B4A62}:_FD0AACA45D4E5CB4A46C674661D77877"
+			{
+			"Name" = "8:#1901"
+			"Sequence" = "3:2"
+			"Attributes" = "3:2"
+				"Dialogs"
+				{
+					"{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_0971D66AB5165DA68D26A4D1F2BCF2FF"
+					{
+					"Sequence" = "3:100"
+					"DisplayName" = "8:Progress"
+					"UseDynamicProperties" = "11:TRUE"
+					"IsDependency" = "11:FALSE"
+					"SourcePath" = "8:<VsdDialogDir>\\VsdAdminProgressDlg.wid"
+						"Properties"
+						{
+							"BannerBitmap"
+							{
+							"Name" = "8:BannerBitmap"
+							"DisplayName" = "8:#1001"
+							"Description" = "8:#1101"
+							"Type" = "3:8"
+							"ContextData" = "8:Bitmap"
+							"Attributes" = "3:4"
+							"Setting" = "3:1"
+							"UsePlugInResources" = "11:TRUE"
+							}
+							"ShowProgress"
+							{
+							"Name" = "8:ShowProgress"
+							"DisplayName" = "8:#1009"
+							"Description" = "8:#1109"
+							"Type" = "3:5"
+							"ContextData" = "8:1;True=1;False=0"
+							"Attributes" = "3:0"
+							"Setting" = "3:0"
+							"Value" = "3:1"
+							"DefaultValue" = "3:1"
+							"UsePlugInResources" = "11:TRUE"
+							}
+						}
+					}
+				}
+			}
+			"{DF760B10-853B-4699-99F2-AFF7185B4A62}:_773045F05DFB52E584F2C0C18A8106DA"
+			{
+			"Name" = "8:#1902"
+			"Sequence" = "3:2"
+			"Attributes" = "3:3"
+				"Dialogs"
+				{
+					"{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_6FD39BC5367658188913B9014477C69C"
+					{
+					"Sequence" = "3:100"
+					"DisplayName" = "8:Finished"
+					"UseDynamicProperties" = "11:TRUE"
+					"IsDependency" = "11:FALSE"
+					"SourcePath" = "8:<VsdDialogDir>\\VsdAdminFinishedDlg.wid"
+						"Properties"
+						{
+							"BannerBitmap"
+							{
+							"Name" = "8:BannerBitmap"
+							"DisplayName" = "8:#1001"
+							"Description" = "8:#1101"
+							"Type" = "3:8"
+							"ContextData" = "8:Bitmap"
+							"Attributes" = "3:4"
+							"Setting" = "3:1"
+							"UsePlugInResources" = "11:TRUE"
+							}
+						}
+					}
+				}
+			}
+		}
+		"MergeModule"
+		{
+		}
+		"ProjectOutput"
+		{
+		}
+	}
+}
