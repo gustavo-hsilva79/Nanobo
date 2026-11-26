@@ -119,3 +119,25 @@ _Evitar_: hospedeiro, alvo
 **Interlúdio**:
 O trecho entre duas fases que mostra o estado do Paciente e o que acontece com ele no hospital.
 _Evitar_: transição, loading
+
+## Interface
+
+**Integridade**:
+A vida do Nanobô dentro do corpo. Cai quando ele sofre dano e volta cheia a cada fase; se acaba, a equipe retira o Nanobô.
+_Evitar_: vida do jogador, HP, energia
+
+**Vitais**:
+O estado do Paciente durante a missão. Caem quando uma célula dele é perdida ou atingida por engano; se acabam, a equipe retira o Nanobô e o Paciente segue o tratamento convencional.
+_Evitar_: vida do paciente, saúde
+
+**Mira**:
+O ponto para onde o Nanobô dispara a ferramenta escolhida; mostra se a ferramenta está pronta, recarregando ou travada.
+_Evitar_: cursor, retícula
+
+**Como jogar**:
+A tela que explica, em páginas, como mover, ler com o scanner, usar as ferramentas e acompanhar Integridade e Vitais. Abre do menu e da pausa.
+_Evitar_: tutorial, ajuda, manual
+
+**Aviso de objetivo**:
+A frase curta que aparece por alguns segundos quando a fase começa ou quando a meta dela muda.
+_Evitar_: missão, quest, objetivo do HUD

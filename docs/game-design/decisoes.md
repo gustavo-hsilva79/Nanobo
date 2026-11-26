@@ -521,6 +521,21 @@ Decisões do dono em 25/11/2026, depois da verificação do conteúdo de biologi
 
 **Pendente no código** (fora desta rodada): a troca de espécies nos dados e textos, a renomeação da Lise, a caixa de diálogo paginada, as telas do diário e dos interlúdios e a revisão de `textos-do-jogo.md`.
 
+### Interface (26/11/2026)
+
+Decisões do dono em 26/11/2026 para o redesenho das telas fora do Diário (#245) e a arte nova da interface (#246). Plano: design, inventário de textos e arte em 28/11; implementação em 29/11; 30/11 de folga.
+
+1. **Arte em issue própria (#246).** Barras de vida, mira e fundos; a #245 fica com textos e layout. A arte é gerada por script Lua no Aseprite (`../Nanobo-testes/gerar_interface.lua`) com a paleta atual, e cada imagem é aprovada pelo dono antes de entrar em `assets/`.
+2. **Fundos.** Quatro temas de 640×360: menu (vaso sanguíneo com o Nanobô e hemácias à deriva, o Nanobô flutuando), "como jogar", e o quarto do hospital em três luzes: abertura (fria, monitor acelerado), Vitória (dia, leito arrumado: alta) e Game Over (baixa, monitor estável). O Léo não tem rosto: é uma silhueta sob o lençol. Resultados e Pausa usam o mapa da fase atual escurecido.
+3. **Vida.** Integridade do Nanobô: ícone da cabeça do robô e barra de bateria em 10 segmentos. Vitais do Léo: coração que pulsa mais rápido com vitais baixos e barra com linha de ECG em 10 segmentos. Cor por faixa (verde, âmbar, vermelho), com os limites atuais.
+4. **Mira.** Sprite 16×16 com três quadros (pronto, recarga, travado), tingido com a cor da ferramenta; só dentro do jogo. Fora dele fica o cursor do Windows.
+5. **HUD continua com 40 px.** As barras viram uma coluna à esquerda (Nanobô na linha 0, Léo na linha 1); pontos e tempo vão para a linha 1; o objetivo da fase sai do HUD e vira um **aviso de objetivo** de 4 s no topo do mundo (início da fase e mudança de meta) e um texto completo na Pausa. `PLAY_H` não muda.
+6. **"Como jogar" vira cena própria** (`GAME_SCENE_HOWTO`), em 3–4 páginas com ícones (mover e mirar; scanner; ferramentas; Integridade e Vitais). Abre do menu e da Pausa e volta para a cena de origem; aberta da Pausa, a partida continua parada. O menu fica com INICIAR, COMO JOGAR e RECORDES.
+7. **Ficha do scanner** ganha retrato 24×24 do agente lido (silhueta antes da camada 1) e três marcadores de camada (forma, Gram, espécie), sem aumentar a altura.
+8. **Execução por subagentes**, como no Diário, com inventário "atual × proposto" aprovado pelo dono antes do código.
+
+- *Por quê:* a auditoria apontou telas que não explicam o jogo; o HUD estava no limite de largura (20 px livres) e o objetivo ali competia com as barras; fundos desenhados dão ao menu e ao hospital o mesmo cuidado visual das fases sem custo relevante de memória (~0,9 MB por fundo, com pico atual de 79 MB e limite de 100 MB).
+
 ### Refatoração pós-entrega (06/11/2026)
 
 - **Estrutura-alvo enxuta.** As cinco casas continuam: `main.c` (loop, recursos, entrada e composição das telas), `entities/`, `gameplay/`, `core/` e `scenes/`. A Wave 2 acrescenta só `src/ui/` (menus, HUD, painel do scanner, resultados, botões e textos) e `src/render/` (mapa, agentes, projéteis, destino e mira). `app/`, `input/`, `resources/` e `persistence/` não entram.

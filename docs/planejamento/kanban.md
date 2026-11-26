@@ -61,6 +61,8 @@
 | 01/12 | ensaios (#167, #168, #170) |
 | 02/12 | **M6:** entrega e apresentação |
 
+**Atualização de 26/11:** o instalador (#154–#161) e a Fase 3 (#226–#233) fecharam em 26/11, e o Diário do Nanobô entrou com os textos aprovados. O redesenho das interfaces (#245) e a arte nova da interface (#246: vida, mira e fundos) ocupam 28/11 (design, inventário e arte) e 29/11 (implementação), com 30/11 de folga. Decisões em `docs/game-design/decisoes.md` §"Interface (26/11/2026)". O teste em ambiente limpo (#162–#164) e a #42 seguem abertos.
+
 **Riscos aceitos:** o instalador fica com um dia e meio e cai no dia do M5 se a Fase 3 atrasar; o 30/11 concentra 17 tarefas e é o único dia para corrigir o que a regressão e a memória encontrarem; o teste externo não cobre a Fase 3 e, feito com um colega da turma, vale menos como "sem explicação prévia" (#136).
 
 **Ordem de corte**, do que nunca sai para o que sai primeiro (decisão do dono: nada cede; isto é só a rede de segurança):
