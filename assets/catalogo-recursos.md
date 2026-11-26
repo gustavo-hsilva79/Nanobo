@@ -22,11 +22,11 @@ Inventário dos recursos necessários à execução atual, para orientar o carre
 | Impactos (96×72) | Três linhas (dose certa: anel claro com faíscas; sem efeito: anel cinza que se parte; eliminado: clarão e anel dourado com fragmentos) × 4 quadros de 24×24, em 0,24 s | `assets/sprites/impactos.png` (15/11, #242) |
 | Ícones da Reserva, da Neutralização e da Lise (16×16) | Ferramenta ativa no HUD, no traço branco dos ícones da Ruptura e da Dissolução | `assets/sprites/icone_reserva.png`, `icone_neutralizacao.png` e `icone_lise.png` (15/11, #242) |
 | Ícone de coração (16×16) | HUD de vida | `assets/sprites/icone_coracao.png`; idem |
-| Ícone de scanner (16×16) | Cabeçalho do painel do scanner e bloco "como jogar" do menu | `assets/sprites/icone_scanner.png`; idem |
+| Ícone de scanner (16×16) | Ficha do scanner (sai da ficha no redesenho #245; passa para a página do scanner no "como jogar") | `assets/sprites/icone_scanner.png`; idem |
 | Ícone da arma Ruptura (16×16) | Indicador da arma na HUD: parede de tijolos, cor neutra e forma própria (04/11) | `assets/sprites/icone_ruptura.png` |
 | Ícone da arma Dissolução (16×16) | Indicador da arma na HUD: anéis concêntricos, cor neutra e forma própria (04/11) | `assets/sprites/icone_dissolucao.png` |
 | Vírus, 2 variantes (16×16) | Agente `SPECIES_VIRUS`, o vírus dentro da célula infectada e o vírus da rajada: capsídeo laranja com espículas | `assets/sprites/virus_a.png` (icosaédrico) e `virus_b.png` (redondo) (15/11, #241) |
-| Ícone de defesa (16×16) | Linha de controles do menu | `assets/sprites/icone_defesa.png`; idem |
+| Ícone de defesa (16×16) | HUD, barra de integridade (até o redesenho #245, que usa `icone_nanobo.png`) | `assets/sprites/icone_defesa.png`; idem |
 | Fonte embutida do Allegro | Todo o texto da interface: HUD, painel do scanner, menu, pausa e telas de fim | `al_create_builtin_font()` em `src/main.c`; não há arquivo de fonte |
 | Mapa do mundo da Fase 1 (1920×512) | Fundo do mundo, desenhado atrás de destino, agentes e Nanobô | `assets/backgrounds/mapa_fase1.png`; idem |
 | Mapa do mundo da Fase 2 (1920×512) | Fundo da Fase 2: interior do brônquio | `assets/backgrounds/mapa_fase2.png`; idem (14/11, #89) |
@@ -161,6 +161,25 @@ O fundo é escuro e de baixo contraste de propósito: os sprites precisam contin
 > - o vírus da rajada é o sprite do vírus reduzido a 12 px;
 > - os ícones da Neutralização (o Y do anticorpo) e da Lise (a célula com o poro) são desenhados por código, como a cápsula da Reserva.
 | Mapa da Fase 3 — pulmão (alvéolos e capilares) | 1920×512 | — | **feito em 25/11 (#233)**: `assets/backgrounds/mapa_fase3.png` |
+
+### Interface — vida, mira e fundos (#246, 26/11/2026)
+
+Gerados por `../Nanobo-testes/gerar_interface.lua` (Aseprite 1.3.18, modo batch; o cabeçalho do script documenta cada arquivo), aprovados pelo dono em 26/11. Entram no jogo com o redesenho da #245 (spec `docs/superpowers/specs/2026-11-28-redesenho-interface-design.md`); até lá ficam no disco sem uso.
+
+| Arquivo | Tamanho | Uso previsto |
+|---|---|---|
+| `assets/sprites/icone_nanobo.png` | 16×16 | HUD, integridade do Nanobô |
+| `assets/sprites/coracao_pulso.png` | 48×16 (3 quadros) | HUD, vitais do Léo (pulsa mais rápido com vitais baixos) |
+| `assets/sprites/barra_bateria.png` | 64×8 | moldura da barra de integridade (10 vagas de 5×4 em x = 2 + 6i, y = 2; tampa em x 63) |
+| `assets/sprites/barra_ecg.png` | 64×8 | moldura da barra de vitais, com traço de ECG ao fundo (mesma geometria, sem tampa) |
+| `assets/sprites/segmento.png` | 5×4 | segmento branco das duas barras, tingido pela faixa |
+| `assets/sprites/mira.png` | 48×16 (3 quadros) | mira: pronto, recarga, travado; branca, tingida pela ferramenta |
+| `assets/backgrounds/fundo_menu.png` | 640×360 | menu: vaso sanguíneo |
+| `assets/backgrounds/hemacias_deriva.png` | 640×360, transparente | camada do menu que desliza e emenda na horizontal |
+| `assets/backgrounds/fundo_como_jogar.png` | 640×360 | tela "como jogar" |
+| `assets/backgrounds/hospital_abertura.png` | 640×360 | abertura: quarto à noite, monitor acelerado |
+| `assets/backgrounds/hospital_vitoria.png` | 640×360 | Vitória: dia, leito arrumado, mochila (alta) |
+| `assets/backgrounds/hospital_gameover.png` | 640×360 | Game Over: luz baixa, monitor estável |
 
 ## Recursos previstos
 
