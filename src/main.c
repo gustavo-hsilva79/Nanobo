@@ -2097,6 +2097,12 @@ void press_card_dialog()
 // esc fecha a entrada inteira; a seguinte da fila abre do inicio
 void skip_card_dialog()
 {
+    // esc duplo nao pode fechar a entrada seguinte antes de ler
+    if (card_dialog_entry != CARD_NONE && card_dialog.page_age < DIALOG_DEBOUNCE)
+    {
+        return;
+    }
+
     dismiss_card();
     sync_card_dialog();
 }
@@ -2145,6 +2151,29 @@ int draw_dialog_line(const char* line, float x, float y, int budget)
     al_draw_text(font, term ? UI_AMBER : UI_TEXT, x, y, 0, segment);
 
     return budget;
+}
+
+// idade da pagina desde que ficou completa (natural ou por toque): o triangulo pisca daqui
+float dialog_complete_age(const DialogEntry* e, const DialogState* d)
+{
+    static const DialogEntry* last_entry = NULL;
+    static int last_page = -1;
+    static float complete_at = -1.0f;
+    float natural = (float)d->page_chars[d->page] / DIALOG_CHARS_PER_SECOND;
+
+    if (e != last_entry || d->page != last_page || d->page_age < complete_at)
+    {
+        last_entry = e;
+        last_page = d->page;
+        complete_at = -1.0f;
+    }
+
+    if (complete_at < 0.0f)
+    {
+        complete_at = fminf(d->page_age, natural);
+    }
+
+    return d->page_age - complete_at;
 }
 
 // caixa sobre a fase parada: veu, retrato, cabecalho, linhas que aparecem
@@ -2201,7 +2230,7 @@ void draw_dialog(const DialogEntry* e, const DialogState* d)
     {
         al_draw_text(font, UI_AMBER, right - 32.0f, footer_y, ALLEGRO_ALIGN_RIGHT, "fechar");
     }
-    else if (fmodf(fmaxf(d->page_age - (float)d->page_chars[d->page] / DIALOG_CHARS_PER_SECOND, 0.0f), 1.0f) < 0.5f)
+    else if (fmodf(dialog_complete_age(e, d), 1.0f) < 0.5f)
     {
         float tx = right - 40.0f;
 
@@ -3107,7 +3136,7 @@ void results_report_line(int row, char* line, size_t size)
         }
         else if (row == 1)
         {
-            snprintf(line, size, "Ataque T: %d células contidas antes de romper", progress.cells_lysed);
+            snprintf(line, size, "Ataque T: %d células contidas a tempo", progress.cells_lysed);
         }
         else if (row == 2)
         {
@@ -4203,7 +4232,7 @@ int main()
                 mouse_y = event.mouse.y;
 
                 // roda do mouse troca o modulo dentro da fase (#198)
-                if (event.mouse.dz != 0 && game_get_scene() == GAME_SCENE_GAME)
+                if (event.mouse.dz != 0 && game_get_scene() == GAME_SCENE_GAME && pending_card() == CARD_NONE)
                 {
                     toggle_module();
                 }

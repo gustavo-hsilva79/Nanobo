@@ -2691,7 +2691,7 @@ static void start_phase(int index)
     spore_load_applied = 0;
 
     // interludio no hospital: entra na fila antes dos cards da fase (diario)
-    if (index == 1)
+    if (phase_has_viruses())
     {
         queue_card(CARD_INTERLUDE_2);
     }

@@ -209,7 +209,7 @@ Regras que valem para todo texto novo:
 
 ## 2.2 Relatório da fase (resultados, #210 e #223)
 
-Desde 14/11 (#223), o painel "o que a partida mostrou" fala em linguagem de jogador, sem os códigos internos "OA1:" a "OA4:". São cinco linhas de 14 px, uma por conteúdo, com os números da partida (`MatchProgress`), geradas por `results_report_line` em `src/main.c`. A maior linha tem 41 caracteres (328 px) e cabe nos 344 px do painel. As mensagens OA-01 a OA-04 da #210 saíram do código.
+Desde 14/11 (#223), o painel "o que a partida mostrou" fala em linguagem de jogador, sem os códigos internos "OA1:" a "OA4:". São cinco linhas de 14 px, uma por conteúdo, com os números da partida (`MatchProgress`), geradas por `results_report_line` em `src/main.c`. A maior linha tem 42 caracteres (336 px, com contadores de dois dígitos) e cabe nos 344 px do painel (43 caracteres); a da Fase 2, `Ataque T: %d células contidas a tempo`, tem 38 com dois dígitos (304 px). As mensagens OA-01 a OA-04 da #210 saíram do código.
 
 | ID | Linha | Texto | Caracteres | Contador |
 |---|---|---|---:|---|
@@ -219,7 +219,7 @@ Desde 14/11 (#223), o painel "o que a partida mostrou" fala em linguagem de joga
 | RR-04 | 4, fase com bactéria | `Reserva guardada: nenhuma carga gasta` / `Reserva: %d na resistente, %d na comum` | 37 / 36 | `reserve_on_resistant`, `reserve_on_common` |
 | RR-05 | 5, fase com bactéria | `células do paciente feridas: %d` | 30 | `cell_attacks` |
 | RR-06 | 1, fase de vírus | `anticorpos: %d vírus livres presos` | 34 | `viruses_neutralized` (#88) |
-| RR-07 | 2, fase de vírus | `Ataque T: %d células contidas antes de romper` | 45 | `cells_lysed` (#88) |
+| RR-07 | 2, fase de vírus | `Ataque T: %d células contidas a tempo` | 37 | `cells_lysed` (#88) |
 | RR-08 | 3, fase de vírus | `ciclo lítico: %d células romperam` | 32 | `cells_burst` (#86) |
 | RR-09 | 4, fase de vírus | `ameaças eliminadas: %d de %d` | 28 | ameaças da fase, com os vírus da rajada |
 | RR-10 | 5, fase de vírus | `vírus não têm parede nem ribossomos` | 35 | — (OA6) |
@@ -251,7 +251,7 @@ Desde 14/11 (#223), o painel "o que a partida mostrou" fala em linguagem de joga
 
 | ID | Card / quando aparece | Linha | Car. |
 |---|---|---|---:|
-| CC-01a | Nanobô · Anotação 1 · Coloração de Gram · 1ª leitura completa de bactéria · página 1 de 1 | No laboratório, um corante roxo tinge a parede das bactérias. | 61 |
+| CC-01a | Nanobô · Anotação 1 · Coloração de Gram · 1ª leitura completa de bactéria · página 1 de 2 | No laboratório, um corante roxo tinge a parede das bactérias. | 61 |
 | CC-01b |  | Gram+: parede grossa de {peptidoglicano}, que segura o roxo. | 58 |
 | CC-01c |  | Gram-: parede fina e membrana externa; perde o roxo e fica rosa. | 64 |
 | CC-01d | página 2 de 2 | No jogo, todas as bactérias aparecem juntas no sangue, | 54 |
