@@ -6,21 +6,26 @@
 #include "../gameplay/gameplay.h"
 
 // tela logica: o jogo desenha num bitmap deste tamanho e a janela amplia
-#define SCREEN_W 640
-#define SCREEN_H 360
+#define SCREEN_W 1280
+#define SCREEN_H 720
+
+// menor janela aceita e passo do tamanho inicial dela: abaixo de 1280x720 o
+// canvas e reduzido na janela
+#define MIN_WINDOW_W 640
+#define MIN_WINDOW_H 360
 
 // pixels da tela por pixel do mundo: o mapa e os sprites sao desenhados
 // ampliados, com o mesmo enquadramento em qualquer resolucao (27/11)
-#define WORLD_SCALE 1
+#define WORLD_SCALE 2
 
 // pixels da tela por pixel da fonte de 8 px e da arte em 1x na interface
-#define UI_SCALE 1
+#define UI_SCALE 2
 
 // a faixa do mundo em pixels da tela
 #define PLAY_H (VIEW_H * WORLD_SCALE)
 
 // HUD no rodape da tela logica: duas linhas; a ficha do scanner flutua no mundo
-#define PANEL_H 40
+#define PANEL_H 80
 
 // o painel comeca onde a faixa visivel do mundo acaba
 #define SCAN_PANEL_Y PLAY_H
@@ -29,45 +34,46 @@
 _Static_assert(PANEL_H + PLAY_H == SCREEN_H, "tela = faixa do mundo + painel");
 _Static_assert(SCREEN_W % 32 == 0, "largura da tela precisa ser multipla de 32");
 
-#define BUTTON_X 240
-#define BUTTON_Y 266
-#define BUTTON_W 160
-#define BUTTON_H 28
+#define BUTTON_X 480
+#define BUTTON_Y 532
+#define BUTTON_W 320
+#define BUTTON_H 56
 
 // medidas do HUD: tudo derivado do painel, nunca coordenada magica.
-// duas linhas de 8 px separadas por 8 px, com 8 px em cima e embaixo (#243)
-#define HUD_MARGIN 8
+// duas linhas de 16 px separadas por 16 px, com 16 px em cima e embaixo (#243)
+#define HUD_MARGIN 16
 #define HUD_LINES 2
-#define HUD_LINE_H 16
-#define HUD_FONT_H 8
+#define HUD_LINE_H 32
+#define HUD_FONT_H (8 * UI_SCALE)
 
-// a fonte embutida tem 8 px: menos de 12 por linha encosta uma na outra
-_Static_assert(HUD_LINE_H >= 12, "linha do HUD apertada demais para a fonte");
+// a fonte embutida tem 8 px, desenhada em UI_SCALE: menos de 12 px dela por
+// linha encosta uma na outra
+_Static_assert(HUD_LINE_H >= 12 * UI_SCALE, "linha do HUD apertada demais para a fonte");
 _Static_assert((HUD_LINES - 1) * HUD_LINE_H + HUD_FONT_H + 2 * HUD_MARGIN <= PANEL_H,
     "HUD nao cabe no painel");
 
 // ficha do scanner: tres linhas flutuando na faixa do mundo, so com alvo (#243)
-#define CARD_ROW_H 14
-#define CARD_H (3 * CARD_ROW_H + 8)
-#define CARD_MARGIN 8
-// retrato do agente a esquerda e o texto depois dele; marcador 6x6 por camada (SC-01)
-#define CARD_PORTRAIT 24
-#define CARD_TEXT_X 46
-#define CARD_MARK 6
+#define CARD_ROW_H 28
+#define CARD_H (3 * CARD_ROW_H + 16)
+#define CARD_MARGIN 16
+// retrato do agente a esquerda e o texto depois dele; marcador 12x12 por camada (SC-01)
+#define CARD_PORTRAIT 48
+#define CARD_TEXT_X 92
+#define CARD_MARK 12
 
 // medidas do kit de interface, todas derivadas do painel e da fonte
-#define UI_PAD 8
-#define UI_GAP 12
+#define UI_PAD 16
+#define UI_GAP 24
 #define UI_BAR_SEGMENTS 4
-#define UI_SEG_W 8
-#define UI_SEG_H 6
-#define UI_SEG_GAP 2
+#define UI_SEG_W 16
+#define UI_SEG_H 12
+#define UI_SEG_GAP 4
 #define UI_BAR_W (UI_BAR_SEGMENTS * UI_SEG_W + (UI_BAR_SEGMENTS - 1) * UI_SEG_GAP)
 
 // largura de cada barra do HUD (integridade e vitais) e a faixa vermelha (#218, #234)
-#define VITALS_BAR_W 36
+#define VITALS_BAR_W 72
 #define VITALS_LOW 30.0f
-#define TITLE_SCALE 3
+#define TITLE_SCALE 6
 
 // paleta clinica em azul-petroleo (decisao do dono, 27/11): os hex de decisoes.md
 #define UI_INK       al_map_rgb(15, 25, 34)    // #0F1922
@@ -83,8 +89,8 @@ _Static_assert((HUD_LINES - 1) * HUD_LINE_H + HUD_FONT_H + 2 * HUD_MARGIN <= PAN
 // veu de tinta com alfa a (pre-multiplicado): escurece o fundo puxando para o petroleo
 #define UI_VEIL(a)   al_map_rgba_f(0.059f * (a), 0.098f * (a), 0.133f * (a), (a))
 
-// folga de cada lado do nome na tampa de tecla: [tecla] ocupa o texto + 4 px
-#define KEY_CAP_PAD 3
+// folga de cada lado do nome na tampa de tecla: [tecla] ocupa o texto + 12 px
+#define KEY_CAP_PAD 6
 
 // mapa recuado e silhueta neutra: os agentes precisam se destacar do vermelho (#220)
 #define MAP_TINT        al_map_rgb_f(0.68f, 0.62f, 0.66f)
@@ -105,6 +111,7 @@ _Static_assert((HUD_LINES - 1) * HUD_LINE_H + HUD_FONT_H + 2 * HUD_MARGIN <= PAN
 #define UI_HOVER     al_map_rgb(58, 50, 24)    // #3A3218, fundo do botao sob o cursor
 #define UI_LINE      al_map_rgb(34, 52, 63)    // #22343F, separador e molduras discretas
 #define UI_FRAME     al_map_rgb(58, 85, 102)   // #3A5566, moldura de painel
+// quadros das folhas em pixels da arte, nao da tela
 #define SHOT_FRAME 12
 #define IMPACT_FRAME 24
 
@@ -113,24 +120,24 @@ _Static_assert((HUD_LINES - 1) * HUD_LINE_H + HUD_FONT_H + 2 * HUD_MARGIN <= PAN
 // o desenho e simetrico em volta do pixel 7: e ele que fica sob o mouse
 #define AIM_CENTER 7
 
-// aviso de objetivo: placa de 16 px de altura e esmaecer no ultimo 0,5 s (#246)
-#define NOTICE_H 16
+// aviso de objetivo: placa de 32 px de altura e esmaecer no ultimo 0,5 s (#246)
+#define NOTICE_H 32
 #define NOTICE_FADE_TIME 0.5f
 
 // caixa de dialogo do diario: faixa de baixo, retrato a esquerda e ate 3 linhas
-#define DIALOG_X 16
-#define DIALOG_W 608
-#define DIALOG_H 88
-#define DIALOG_Y (SCREEN_H - 8 - DIALOG_H)
-#define DIALOG_PAD 8
-#define DIALOG_LINE_H 16
+#define DIALOG_X 32
+#define DIALOG_W 1216
+#define DIALOG_H 176
+#define DIALOG_Y (SCREEN_H - 16 - DIALOG_H)
+#define DIALOG_PAD 16
+#define DIALOG_LINE_H 32
 
 // a area de texto comeca depois da coluna do retrato mesmo sem retrato
-#define DIALOG_TEXT_X (DIALOG_X + DIALOG_PAD + PLAYER_FRAME + DIALOG_PAD)
-#define DIALOG_TEXT_COLS ((DIALOG_X + DIALOG_W - DIALOG_PAD - DIALOG_TEXT_X) / 8)
+#define DIALOG_TEXT_X (DIALOG_X + DIALOG_PAD + PLAYER_FRAME * UI_SCALE + DIALOG_PAD)
+#define DIALOG_TEXT_COLS ((DIALOG_X + DIALOG_W - DIALOG_PAD - DIALOG_TEXT_X) / (8 * UI_SCALE))
 
 _Static_assert(DIALOG_TEXT_COLS >= 66, "linha da caixa de dialogo estreita demais");
-_Static_assert(DIALOG_PAD + DIALOG_LINE_H * 3 + 8 + DIALOG_PAD + 8 + DIALOG_PAD <= DIALOG_H,
+_Static_assert(DIALOG_PAD + DIALOG_LINE_H * 3 + 16 + DIALOG_PAD + 16 + DIALOG_PAD <= DIALOG_H,
     "cabecalho, 3 linhas e rodape nao cabem na caixa");
 
 #endif

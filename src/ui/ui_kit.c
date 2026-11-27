@@ -108,14 +108,14 @@ int ui_bitmap_h(ALLEGRO_BITMAP* bitmap)
 void draw_panel(float x, float y, float w, float h, ALLEGRO_COLOR fill, ALLEGRO_COLOR border)
 {
     al_draw_filled_rectangle(x, y, x + w, y + h, fill);
-    al_draw_rectangle(x + 0.5f, y + 0.5f, x + w - 0.5f, y + h - 0.5f, border, 1.0f);
+    al_draw_rectangle(x + 1.0f, y + 1.0f, x + w - 1.0f, y + h - 1.0f, border, 2.0f);
 }
 
 // regua fina sob o titulo de uma tela
 void draw_rule(float center_x, float y, float w, ALLEGRO_COLOR color)
 {
-    al_draw_line(floorf(center_x - w / 2.0f), y + 0.5f,
-        floorf(center_x + w / 2.0f), y + 0.5f, color, 1.0f);
+    al_draw_line(floorf(center_x - w / 2.0f), y + 1.0f,
+        floorf(center_x + w / 2.0f), y + 1.0f, color, 2.0f);
 }
 
 // 0 normal, 1 foco do teclado, 2 cursor em cima
@@ -136,8 +136,8 @@ static void draw_button(const UiButton* button, int state)
             button->y + button->h, UI_HOVER);
     }
 
-    al_draw_rectangle(button->x + 0.5f, button->y + 0.5f,
-        button->x + button->w - 0.5f, button->y + button->h - 0.5f, border, 1.0f);
+    al_draw_rectangle(button->x + 1.0f, button->y + 1.0f,
+        button->x + button->w - 1.0f, button->y + button->h - 1.0f, border, 2.0f);
     ui_text(label, floorf(button->x + button->w / 2.0f),
         floorf(button->y + (button->h - (float)ui_line_height()) / 2.0f),
         ALLEGRO_ALIGN_CENTRE, button->label);
@@ -154,22 +154,22 @@ int button_hit(const UiButton* button, float x, float y)
 const UiButton* screen_buttons(int* count)
 {
     static const UiButton menu_items[] = {
-        { (float)BUTTON_X - 180.0f, (float)BUTTON_Y, (float)BUTTON_W, (float)BUTTON_H, "INICIAR" },
+        { (float)BUTTON_X - 360.0f, (float)BUTTON_Y, (float)BUTTON_W, (float)BUTTON_H, "INICIAR" },
         { (float)BUTTON_X, (float)BUTTON_Y, (float)BUTTON_W, (float)BUTTON_H, "COMO JOGAR" },
-        { (float)BUTTON_X + 180.0f, (float)BUTTON_Y, (float)BUTTON_W, (float)BUTTON_H, "RECORDES" }
+        { (float)BUTTON_X + 360.0f, (float)BUTTON_Y, (float)BUTTON_W, (float)BUTTON_H, "RECORDES" }
     };
     static const UiButton pause_items[] = {
-        { 152.0f, 222.0f, 160.0f, 28.0f, "CONTINUAR" },
-        { 328.0f, 222.0f, 160.0f, 28.0f, "COMO JOGAR" }
+        { 304.0f, 444.0f, 320.0f, 56.0f, "CONTINUAR" },
+        { 656.0f, 444.0f, 320.0f, 56.0f, "COMO JOGAR" }
     };
     static const UiButton results_items[] = {
-        { 240.0f, 256.0f, 160.0f, 28.0f, "CONTINUAR" }
+        { 480.0f, 512.0f, 320.0f, 56.0f, "CONTINUAR" }
     };
     static const UiButton victory_items[] = {
-        { 240.0f, 276.0f, 160.0f, 28.0f, "NOVA PARTIDA" }
+        { 480.0f, 552.0f, 320.0f, 56.0f, "NOVA PARTIDA" }
     };
     static const UiButton over_items[] = {
-        { 240.0f, 216.0f, 160.0f, 28.0f, "NOVA PARTIDA" }
+        { 480.0f, 432.0f, 320.0f, 56.0f, "NOVA PARTIDA" }
     };
 
     *count = 1;
@@ -763,15 +763,15 @@ ALLEGRO_COLOR faded_color(ALLEGRO_COLOR color, float alpha)
     return al_map_rgba_f(r * alpha, g * alpha, b * alpha, a * alpha);
 }
 
-// tampa de tecla: nome em ciano numa caixa de 14 px com borda ciano e fundo
+// tampa de tecla: nome em ciano numa caixa de 28 px com borda ciano e fundo
 // de tinta, KEY_CAP_PAD de folga de cada lado; devolve a largura ocupada
 static float draw_key_cap(float x, float y, const char* name, float alpha)
 {
     float w = (float)(ui_text_width(name) + 2 * KEY_CAP_PAD);
 
-    // 14 px de altura: a borda nao encosta nas letras nem nos acentos e cedilhas
-    al_draw_filled_rectangle(x, y - 3.0f, x + w, y + 11.0f, faded_color(UI_INK, alpha));
-    al_draw_rectangle(x + 0.5f, y - 2.5f, x + w - 0.5f, y + 10.5f, faded_color(UI_KEY, alpha), 1.0f);
+    // 28 px de altura: a borda nao encosta nas letras nem nos acentos e cedilhas
+    al_draw_filled_rectangle(x, y - 6.0f, x + w, y + 22.0f, faded_color(UI_INK, alpha));
+    al_draw_rectangle(x + 1.0f, y - 5.0f, x + w - 1.0f, y + 21.0f, faded_color(UI_KEY, alpha), 2.0f);
     ui_text(faded_color(UI_KEY, alpha), x + (float)KEY_CAP_PAD, y, 0, name);
 
     return w;
@@ -978,7 +978,7 @@ void draw_dialog(const DialogEntry* e, const DialogState* d)
     int line;
     char counter[16];
     float right = (float)(DIALOG_X + DIALOG_W - DIALOG_PAD);
-    float footer_y = (float)(DIALOG_Y + DIALOG_H - DIALOG_PAD - 8);
+    float footer_y = (float)(DIALOG_Y + DIALOG_H - DIALOG_PAD - HUD_FONT_H);
 
     al_draw_filled_rectangle(0.0f, 0.0f, (float)SCREEN_W, (float)SCREEN_H,
         UI_VEIL(0.6f));
@@ -990,7 +990,7 @@ void draw_dialog(const DialogEntry* e, const DialogState* d)
         float px = (float)(DIALOG_X + DIALOG_PAD);
         float py = (float)(DIALOG_Y + DIALOG_PAD);
 
-        draw_panel(px - 1.0f, py - 1.0f, (float)PLAYER_FRAME + 2.0f, (float)PLAYER_FRAME + 2.0f,
+        draw_panel(px - 2.0f, py - 2.0f, (float)(PLAYER_FRAME * UI_SCALE) + 4.0f, (float)(PLAYER_FRAME * UI_SCALE) + 4.0f,
             UI_PANEL, UI_FRAME);
         ui_bitmap_region(nanobo, 0.0f, (float)(PLAYER_FACING_DOWN * PLAYER_FRAME),
             (float)PLAYER_FRAME, (float)PLAYER_FRAME, px, py, 0);
@@ -1022,14 +1022,14 @@ void draw_dialog(const DialogEntry* e, const DialogState* d)
     // a ultima pagina fecha; as outras piscam o triangulo a cada 0,5 s
     if (dialog_last_page(d))
     {
-        ui_text(UI_AMBER, right - 32.0f, footer_y, ALLEGRO_ALIGN_RIGHT, "fechar");
+        ui_text(UI_AMBER, right - 64.0f, footer_y, ALLEGRO_ALIGN_RIGHT, "fechar");
     }
     else if (fmodf(dialog_complete_age(e, d), 1.0f) < 0.5f)
     {
-        float tx = right - 40.0f;
+        float tx = right - 80.0f;
 
-        al_draw_filled_triangle(tx, footer_y + 1.0f, tx + 8.0f, footer_y + 1.0f,
-            tx + 4.0f, footer_y + 7.0f, UI_AMBER);
+        al_draw_filled_triangle(tx, footer_y + 2.0f, tx + 16.0f, footer_y + 2.0f,
+            tx + 8.0f, footer_y + 14.0f, UI_AMBER);
     }
 }
 

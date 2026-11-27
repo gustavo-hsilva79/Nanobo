@@ -49,7 +49,7 @@ static void draw_scan_swatch(Species species, float x, float y)
         return;
     }
 
-    al_draw_filled_rectangle(x, y + 1.0f, x + 8.0f, y + 9.0f,
+    al_draw_filled_rectangle(x, y + 2.0f, x + 16.0f, y + 18.0f,
         species == SPECIES_GRAM_POSITIVE ? UI_PURPLE : UI_PINK);
 }
 
@@ -140,16 +140,16 @@ static void draw_scan_portrait(int target, float x, float y)
 // um marcador de camada: quadrado 6x6 e o rotulo; devolve o x depois dele
 static float draw_scan_marker(float x, float y, ALLEGRO_COLOR color, bool lit, const char* label)
 {
-    al_draw_filled_rectangle(x, y + 1.0f, x + (float)CARD_MARK, y + 1.0f + (float)CARD_MARK, color);
-    ui_text(lit ? UI_TEXT : UI_DIM, x + (float)CARD_MARK + 4.0f, y, 0, label);
+    al_draw_filled_rectangle(x, y + 2.0f, x + (float)CARD_MARK, y + 2.0f + (float)CARD_MARK, color);
+    ui_text(lit ? UI_TEXT : UI_DIM, x + (float)CARD_MARK + 8.0f, y, 0, label);
 
-    return x + (float)CARD_MARK + 4.0f + (float)ui_text_width(label);
+    return x + (float)CARD_MARK + 8.0f + (float)ui_text_width(label);
 }
 
 void draw_scan_card(int target, bool from_cursor, float card_y)
 {
     int text_x = CARD_TEXT_X;
-    int row_state = (int)card_y + 6;
+    int row_state = (int)card_y + 12;
     int row_info = row_state + CARD_ROW_H;
     int row_action = row_info + CARD_ROW_H;
     const char* state;
@@ -161,8 +161,8 @@ void draw_scan_card(int target, bool from_cursor, float card_y)
     float marks_x;
     bool is_bacteria = species_is_bacterium(agents[target].species);
 
-    draw_panel(8.0f, card_y, (float)SCREEN_W - 16.0f, (float)CARD_H, UI_PANEL, UI_FRAME);
-    draw_scan_portrait(target, 14.0f, card_y + 5.0f);
+    draw_panel(16.0f, card_y, (float)SCREEN_W - 32.0f, (float)CARD_H, UI_PANEL, UI_FRAME);
+    draw_scan_portrait(target, 28.0f, card_y + 10.0f);
 
     // de onde vem a leitura: o cursor manda, a ultima leitura e o retorno (#199)
     if (from_cursor)
@@ -212,20 +212,20 @@ void draw_scan_card(int target, bool from_cursor, float card_y)
         (float)row_state, 0, source);
     // a categoria so aparece sem leitura: depois, as linhas 1 e 2 ja dizem o
     // tipo e a linha de estado precisa do espaco para os marcadores
-    marks_x = (float)(SCREEN_W - 16);
+    marks_x = (float)(SCREEN_W - 32);
 
     if (agents[target].layers == 0)
     {
-        ui_text(UI_TEXT, (float)(SCREEN_W - 16), (float)row_state,
+        ui_text(UI_TEXT, (float)(SCREEN_W - 32), (float)row_state,
             ALLEGRO_ALIGN_RIGHT, category);
-        marks_x = marks_x - (float)(ui_text_width(category) + 8);
+        marks_x = marks_x - (float)(ui_text_width(category) + 16);
     }
 
     // marcadores das 2 camadas, encostados a direita: forma acende na 1a;
     // o 2o acende na 2a e fica verde com a identificacao (SC-11 a SC-13)
     second_label = is_bacteria ? "Gram e espécie" : "estrutura";
     marks_x = marks_x
-        - (float)(2 * (CARD_MARK + 4) + 8)
+        - (float)(2 * (CARD_MARK + 8) + 16)
         - (float)ui_text_width("forma") - (float)ui_text_width(second_label);
     second_color = UI_SLOT;
 
@@ -236,7 +236,7 @@ void draw_scan_card(int target, bool from_cursor, float card_y)
 
     marks_x = draw_scan_marker(marks_x, (float)row_state,
         agents[target].layers >= 1 ? UI_AMBER : UI_SLOT, agents[target].layers >= 1, "forma");
-    draw_scan_marker(marks_x + 8.0f, (float)row_state, second_color,
+    draw_scan_marker(marks_x + 16.0f, (float)row_state, second_color,
         agents[target].layers >= MAX_LAYERS, second_label);
 
     if (agents[target].layers == 0)
@@ -251,7 +251,7 @@ void draw_scan_card(int target, bool from_cursor, float card_y)
     // camada 1: so a forma, sem amostra de cor que entregue o grupo (#214)
     if (agents[target].layers < MAX_LAYERS)
     {
-        ui_text(UI_TEXT, (float)(text_x + 12), (float)row_info, 0,
+        ui_text(UI_TEXT, (float)(text_x + 24), (float)row_info, 0,
             layer_one_text(target));
         draw_marked_text((float)text_x, (float)row_action, UI_DIM,
             is_bacteria
@@ -262,7 +262,7 @@ void draw_scan_card(int target, bool from_cursor, float card_y)
 
     // camada 2: coloracao, estrutura e o que a celula e, sem indicar a arma (#214)
     draw_scan_swatch(agents[target].species, (float)text_x, (float)row_info);
-    draw_marked_text((float)(text_x + 12), (float)row_info, UI_WARM,
+    draw_marked_text((float)(text_x + 24), (float)row_info, UI_WARM,
         layer_two_text(target));
     ui_text(UI_WARM, (float)text_x, (float)row_action, 0,
         layer_two_reason(target));
@@ -277,7 +277,7 @@ static void draw_life_bar(ALLEGRO_BITMAP* frame, float x, float y, int segments,
 
     for (i = 0; i < segments && i < LIFE_SEGMENTS; i++)
     {
-        ui_tinted_bitmap(bar_segment, color, x + 2.0f + 6.0f * (float)i, y + 2.0f, 0);
+        ui_tinted_bitmap(bar_segment, color, x + 4.0f + 12.0f * (float)i, y + 4.0f, 0);
     }
 }
 // icone de cada arma no HUD, ao lado do nome
@@ -343,16 +343,16 @@ void draw_hud()
     ALLEGRO_BITMAP* laser_icon;
 
     al_draw_filled_rectangle(0.0f, (float)SCAN_PANEL_Y, (float)SCREEN_W, (float)SCREEN_H, UI_INK);
-    al_draw_line(0.0f, (float)SCAN_PANEL_Y - 0.5f, (float)SCREEN_W,
-        (float)SCAN_PANEL_Y - 0.5f, UI_LINE, 1.0f);
+    al_draw_line(0.0f, (float)SCAN_PANEL_Y - 1.0f, (float)SCREEN_W,
+        (float)SCAN_PANEL_Y - 1.0f, UI_LINE, 2.0f);
 
     // nada do HUD pode vazar para a faixa do mundo; o clip vale so no painel
     al_set_clipping_rectangle(0, SCAN_PANEL_Y, SCREEN_W, PANEL_H);
 
     // coluna de vida: icone 16x16 centrado na linha + barra 64x8 em x 28
     // linha 0: integridade do nanobo, bateria em ciano
-    ui_bitmap(nanobo_icon, (float)HUD_MARGIN, (float)(hud_y(0) - 4), 0);
-    draw_life_bar(battery_bar, 28.0f, (float)hud_y(0),
+    ui_bitmap(nanobo_icon, (float)HUD_MARGIN, (float)(hud_y(0) - 8), 0);
+    draw_life_bar(battery_bar, 56.0f, (float)hud_y(0),
         life_segments(player.health, PLAYER_MAX_HEALTH), UI_CYAN);
 
     // linha 1: vitais do paciente no ECG, na cor da faixa
@@ -382,19 +382,19 @@ void draw_hud()
         heart_frame = 2;
     }
     ui_bitmap_region(heart_pulse, (float)(heart_frame * 16), 0.0f, 16.0f, 16.0f,
-        (float)HUD_MARGIN, (float)(hud_y(1) - 4), 0);
-    draw_life_bar(ecg_bar, 28.0f, (float)hud_y(1),
+        (float)HUD_MARGIN, (float)(hud_y(1) - 8), 0);
+    draw_life_bar(ecg_bar, 56.0f, (float)hud_y(1),
         life_segments(patient_vitals, PATIENT_VITALS_MAX), vitals_color);
 
-    // linha 1, depois da coluna de vida: pontos e tempo a partir de x 100
+    // linha 1, depois da coluna de vida: pontos e tempo a partir de x 200
     total_seconds = (int)match_time;
     snprintf(timer_text, sizeof(timer_text), "%02d:%02d", total_seconds / 60, total_seconds % 60);
     snprintf(score_text, sizeof(score_text), "pontos %d", score);
-    x = 100;
+    x = 200;
     ui_text(UI_TEXT, (float)x, (float)hud_y(1), 0, score_text);
-    x += ui_text_width(score_text) + 4;
+    x += ui_text_width(score_text) + 8;
     ui_text(UI_DIM, (float)x, (float)hud_y(1), 0, "·");
-    x += ui_text_width("·") + 4;
+    x += ui_text_width("·") + 8;
     ui_text(UI_DIM, (float)x, (float)hud_y(1), 0, timer_text);
 
     // linha 0, a direita: a ferramenta com o alvo dela, o icone e a recarga,
@@ -434,15 +434,15 @@ void draw_hud()
     }
 
     x_word = SCREEN_W - HUD_MARGIN - ui_text_width(state_text);
-    x_bar = x_word - 6 - UI_BAR_W;
-    x_icon = x_bar - 4 - ui_bitmap_w(laser_icon);
-    x_weapon = x_icon - 4 - marked_text_width(module_name);
+    x_bar = x_word - 12 - UI_BAR_W;
+    x_icon = x_bar - 8 - ui_bitmap_w(laser_icon);
+    x_weapon = x_icon - 8 - marked_text_width(module_name);
 
     // o nome da arma sai na cor dela (<wX:...>)
     draw_marked_text((float)x_weapon, (float)hud_y(0), UI_TEXT, module_name);
 
-    ui_bitmap(laser_icon, (float)x_icon, (float)(hud_y(0) - 4), 0);
-    draw_cooldown_bar((float)x_bar, (float)(hud_y(0) + 1),
+    ui_bitmap(laser_icon, (float)x_icon, (float)(hud_y(0) - 8), 0);
+    draw_cooldown_bar((float)x_bar, (float)(hud_y(0) + 2),
         fire_locked() ? fire_lock_left() : attack_cooldown_left());
     ui_text(UI_DIM, (float)x_word, (float)hud_y(0), 0, state_text);
 

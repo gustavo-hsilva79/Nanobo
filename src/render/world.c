@@ -73,8 +73,8 @@ static void draw_destination_hint(float top, float bottom)
     float sy = view_y(DESTINATION_Y) * WORLD_SCALE;
     int label_w = ui_text_width("destino");
     int label_h = ui_line_height();
-    float margin_x = (float)label_w / 2.0f + 2.0f;
-    float margin_y = 10.0f + (float)label_h + 6.0f;
+    float margin_x = (float)label_w / 2.0f + 4.0f;
+    float margin_y = 20.0f + (float)label_h + 12.0f;
     float cx;
     float cy;
 
@@ -106,17 +106,17 @@ static void draw_destination_hint(float top, float bottom)
         cy = bottom - margin_y;
     }
 
-    al_draw_filled_circle(cx, cy, 6.0f, UI_AMBER);
+    al_draw_filled_circle(cx, cy, 12.0f, UI_AMBER);
 
     // na metade de baixo o rotulo sobe, para nao encostar na linha do painel
     if (cy > (top + bottom) / 2.0f)
     {
-        ui_text(UI_AMBER, cx, cy - 10.0f - (float)label_h,
+        ui_text(UI_AMBER, cx, cy - 20.0f - (float)label_h,
             ALLEGRO_ALIGN_CENTRE, "destino");
     }
     else
     {
-        ui_text(UI_AMBER, cx, cy + 10.0f, ALLEGRO_ALIGN_CENTRE, "destino");
+        ui_text(UI_AMBER, cx, cy + 20.0f, ALLEGRO_ALIGN_CENTRE, "destino");
     }
 }
 
@@ -229,7 +229,7 @@ static void draw_objective_notice(int card_target, float card_y)
     const char* text;
     int text_w;
     float box_x;
-    float box_y = 8.0f;
+    float box_y = 16.0f;
 
     // com a caixa do diario aberta o aviso espera ela fechar
     if (left <= 0.0f || pending_card() != CARD_NONE)
@@ -257,7 +257,7 @@ static void draw_objective_notice(int card_target, float card_y)
 
     if (card_target != -1 && card_y < (float)PLAY_H / 2.0f)
     {
-        box_y = card_y + (float)CARD_H + 8.0f;
+        box_y = card_y + (float)CARD_H + 16.0f;
     }
 
     text_w = marked_text_width(text);
@@ -553,14 +553,14 @@ void draw_game()
         int hint_w = marked_text_width(hint);
         float hx = floorf(view_x(agents[tutorial_hint_target()].x) * WORLD_SCALE - (float)hint_w / 2.0f);
         float hy = (view_y(agents[tutorial_hint_target()].y) - agent_radius(tutorial_hint_target()))
-            * WORLD_SCALE - 20.0f;
+            * WORLD_SCALE - 40.0f;
 
         // a placa e da interface: desenhada na tela, so com o tremor
         al_use_transform(&shake);
 
-        // a tampa de tecla de 14 px cabe com folga; a moldura neutra nao briga
+        // a tampa de tecla de 28 px cabe com folga; a moldura neutra nao briga
         // com a borda ciano da tecla
-        draw_panel(hx - 4.0f, hy - 6.0f, (float)hint_w + 8.0f, 20.0f, UI_INK, UI_FRAME);
+        draw_panel(hx - 8.0f, hy - 12.0f, (float)hint_w + 16.0f, 40.0f, UI_INK, UI_FRAME);
         draw_marked_text(hx, hy, UI_CYAN, hint);
         al_use_transform(&world);
     }
@@ -677,15 +677,15 @@ void draw_game()
     {
         int text_w = marked_text_width(message);
         float box_x = floorf(((float)SCREEN_W - (float)text_w) / 2.0f);
-        float box_y = (float)(PLAY_H - 30);
+        float box_y = (float)(PLAY_H - 60);
 
         // com a ficha embaixo, o aviso sobe para cima dela
         if (card_target != -1 && card_y > (float)PLAY_H / 2.0f)
         {
-            box_y = card_y - 22.0f;
+            box_y = card_y - 44.0f;
         }
 
-        draw_panel(box_x - UI_PAD, box_y - 4.0f, (float)text_w + 2.0f * UI_PAD, 16.0f, UI_INK, UI_FRAME);
+        draw_panel(box_x - UI_PAD, box_y - 8.0f, (float)text_w + 2.0f * UI_PAD, 32.0f, UI_INK, UI_FRAME);
         draw_marked_text(box_x, box_y, UI_WARM, message);
     }
 
@@ -750,7 +750,7 @@ void draw_game()
                 agents[i].lysogenic_timer);
         }
 
-        ui_text(UI_DIM, 8, 8, 0, line);
+        ui_text(UI_DIM, 16, 16, 0, line);
     }
 #endif
 

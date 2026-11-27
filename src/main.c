@@ -283,7 +283,7 @@ void update_screen_fit()
     screen_off_y = floorf(((float)h - (float)SCREEN_H * fit) / 2.0f);
 }
 
-// abre a janela no maior multiplo inteiro que cabe no monitor
+// abre a janela no maior multiplo de 640x360 que cabe no monitor
 bool create_window()
 {
     ALLEGRO_MONITOR_INFO monitor;
@@ -293,8 +293,8 @@ bool create_window()
     {
         int monitor_w = monitor.x2 - monitor.x1;
         int monitor_h = monitor.y2 - monitor.y1;
-        int fit_w = (monitor_w - 80) / SCREEN_W;
-        int fit_h = (monitor_h - 120) / SCREEN_H;
+        int fit_w = (monitor_w - 80) / MIN_WINDOW_W;
+        int fit_h = (monitor_h - 120) / MIN_WINDOW_H;
 
         scale = fit_w < fit_h ? fit_w : fit_h;
 
@@ -310,7 +310,7 @@ bool create_window()
     }
 
     al_set_new_display_flags(ALLEGRO_WINDOWED | ALLEGRO_RESIZABLE | ALLEGRO_MAXIMIZED);
-    display = al_create_display(SCREEN_W * scale, SCREEN_H * scale);
+    display = al_create_display(MIN_WINDOW_W * scale, MIN_WINDOW_H * scale);
 
     if (!display)
     {
@@ -332,8 +332,9 @@ bool create_window()
     al_acknowledge_resize(display);
     update_screen_fit();
 
-    // janela menor que a tela logica deixa a escala quebrada: 640x360 e o minimo
-    al_set_window_constraints(display, SCREEN_W, SCREEN_H, 0, 0);
+    // 640x360 e o minimo: o canvas de 1280x720 reduz para caber em notebooks
+    // de 1366x768 com a barra de titulo (27/11)
+    al_set_window_constraints(display, MIN_WINDOW_W, MIN_WINDOW_H, 0, 0);
     al_apply_window_constraints(display, true);
 
     return true;
@@ -943,8 +944,8 @@ void draw_perf_readout()
 
     snprintf(line, sizeof(line), "fps %d · quadro %.1f ms", perf_fps, perf_frame_ms);
     w = ui_text_width(line);
-    al_draw_filled_rectangle((float)(SCREEN_W - w - 12), 2.0f, (float)(SCREEN_W - 2), 14.0f, UI_INK);
-    ui_text(UI_DIM, (float)(SCREEN_W - 7), 4.0f, ALLEGRO_ALIGN_RIGHT, line);
+    al_draw_filled_rectangle((float)(SCREEN_W - w - 24), 4.0f, (float)(SCREEN_W - 4), 28.0f, UI_INK);
+    ui_text(UI_DIM, (float)(SCREEN_W - 14), 8.0f, ALLEGRO_ALIGN_RIGHT, line);
 }
 
 void render()

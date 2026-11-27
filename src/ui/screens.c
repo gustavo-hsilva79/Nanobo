@@ -31,7 +31,7 @@ void draw_menu()
 
     if (menu_cells)
     {
-        float offset = (float)fmod(now * 8.0, (double)SCREEN_W);
+        float offset = (float)fmod(now * 16.0, (double)SCREEN_W);
 
         ui_bitmap(menu_cells, -offset, 0.0f, 0);
         ui_bitmap(menu_cells, (float)SCREEN_W - offset, 0.0f, 0);
@@ -53,7 +53,7 @@ void draw_menu()
                 ((float)SCREEN_W -
                     (float)(tw * TITLE_SCALE)) / 2.0f
             ),
-            26.0f,
+            52.0f,
             (float)(tw * TITLE_SCALE),
             (float)(th * TITLE_SCALE),
             0
@@ -64,18 +64,18 @@ void draw_menu()
         {
             float title_right = floorf(((float)SCREEN_W + (float)(tw * TITLE_SCALE)) / 2.0f);
             int frame = (int)(now / 0.22) % 4;
-            float float_y = 2.0f * (float)sin(2.0 * ALLEGRO_PI * now / 2.0);
+            float float_y = 4.0f * (float)sin(2.0 * ALLEGRO_PI * now / 2.0);
 
             ui_bitmap_region(nanobo, (float)(frame * PLAYER_FRAME),
                 (float)(PLAYER_FACING_DOWN * PLAYER_FRAME),
                 (float)PLAYER_FRAME, (float)PLAYER_FRAME,
-                title_right + 24.0f, 26.0f + float_y, 0);
+                title_right + 48.0f, 52.0f + float_y, 0);
         }
     }
 
     ui_text(UI_DIM,
         SCREEN_W / 2,
-        52,
+        104,
         ALLEGRO_ALIGN_CENTRE,
         "DEFENDA O ORGANISMO"
     );
@@ -86,7 +86,7 @@ void draw_menu()
 
     draw_buttons(buttons, count);
 
-    draw_marked_text_aligned(SCREEN_W / 2, BUTTON_Y + 36, UI_DIM, ALLEGRO_ALIGN_CENTRE,
+    draw_marked_text_aligned(SCREEN_W / 2, BUTTON_Y + 72, UI_DIM, ALLEGRO_ALIGN_CENTRE,
         "[setas] escolhem · [enter] confirma");
 
     // o melhor do Top 10, com o nome (#34)
@@ -98,9 +98,9 @@ void draw_menu()
     {
         snprintf(record, sizeof(record), "nenhum recorde ainda");
     }
-    ui_text(UI_DIM, SCREEN_W / 2, BUTTON_Y + 52, ALLEGRO_ALIGN_CENTRE, record);
+    ui_text(UI_DIM, SCREEN_W / 2, BUTTON_Y + 104, ALLEGRO_ALIGN_CENTRE, record);
 
-    draw_marked_text_aligned(SCREEN_W - HUD_MARGIN, 336, UI_DIM, ALLEGRO_ALIGN_RIGHT,
+    draw_marked_text_aligned(SCREEN_W - HUD_MARGIN, 672, UI_DIM, ALLEGRO_ALIGN_RIGHT,
         "[F11] tela cheia");
 
     // painel do Top 10 por cima do menu, aberto pelo RECORDES (#197)
@@ -109,8 +109,8 @@ void draw_menu()
         al_draw_filled_rectangle(0.0f, 0.0f, (float)SCREEN_W, (float)SCREEN_H,
             UI_VEIL(0.85f));
         // painel de 184 px: termina em 244 e o rodape fica acima dos botoes (y 261)
-        draw_ranking_panel(177.0f, 60.0f, 286.0f, -1, true);
-        draw_marked_text_aligned(SCREEN_W / 2, 250, UI_DIM, ALLEGRO_ALIGN_CENTRE, "[enter] ou [esc] fecha");
+        draw_ranking_panel(354.0f, 120.0f, 572.0f, -1, true);
+        draw_marked_text_aligned(SCREEN_W / 2, 500, UI_DIM, ALLEGRO_ALIGN_CENTRE, "[enter] ou [esc] fecha");
     }
 }
 
@@ -201,7 +201,7 @@ void draw_briefing()
     }
     draw_dialog(&opening_entries[opening_entry], &opening_dialog);
 
-    draw_marked_text_aligned(SCREEN_W / 2, 24, UI_DIM, ALLEGRO_ALIGN_CENTRE,
+    draw_marked_text_aligned(SCREEN_W / 2, 48, UI_DIM, ALLEGRO_ALIGN_CENTRE,
         "[enter] ou [clique] avança · [esc] pula");
 }
 
@@ -244,31 +244,31 @@ void draw_pause()
     // veu mais escuro que o antigo: o painel maior precisa de contraste
     al_draw_filled_rectangle(0.0f, 0.0f, (float)SCREEN_W, (float)SCREEN_H,
         UI_VEIL(210.0f / 255.0f));
-    draw_panel(80.0f, 70.0f, 480.0f, 216.0f, UI_INK, UI_FRAME);
-    ui_text(UI_TEXT, SCREEN_W / 2, 82, ALLEGRO_ALIGN_CENTRE, "PAUSA");
-    draw_rule((float)SCREEN_W / 2, 96.0f, 200.0f, UI_FRAME);
-    ui_text(UI_AMBER, SCREEN_W / 2, 104, ALLEGRO_ALIGN_CENTRE, phase_names[phase]);
+    draw_panel(160.0f, 140.0f, 960.0f, 432.0f, UI_INK, UI_FRAME);
+    ui_text(UI_TEXT, SCREEN_W / 2, 164, ALLEGRO_ALIGN_CENTRE, "PAUSA");
+    draw_rule((float)SCREEN_W / 2, 192.0f, 400.0f, UI_FRAME);
+    ui_text(UI_AMBER, SCREEN_W / 2, 208, ALLEGRO_ALIGN_CENTRE, phase_names[phase]);
 
     // texto de x 96 a 544: a maior linha tem 56 caracteres (448 px)
     for (i = 0; i < 3; i++)
     {
-        draw_marked_text(96.0f, 124.0f + 16.0f * (float)i, UI_TEXT, goals[phase][i]);
+        draw_marked_text(192.0f, 248.0f + 32.0f * (float)i, UI_TEXT, goals[phase][i]);
     }
 
-    draw_marked_text(96.0f, 180.0f, UI_DIM, "[WASD] mover · [clique] dispara · [botão direito] lê");
-    draw_marked_text(96.0f, 196.0f, UI_DIM, "[X] defesa · [1] [2] [3] ou [roda]: arma");
+    draw_marked_text(192.0f, 360.0f, UI_DIM, "[WASD] mover · [clique] dispara · [botão direito] lê");
+    draw_marked_text(192.0f, 392.0f, UI_DIM, "[X] defesa · [1] [2] [3] ou [roda]: arma");
 
     draw_buttons(buttons, count);
-    draw_marked_text_aligned(SCREEN_W / 2, 264, UI_DIM, ALLEGRO_ALIGN_CENTRE, "[esc] continua");
+    draw_marked_text_aligned(SCREEN_W / 2, 528, UI_DIM, ALLEGRO_ALIGN_CENTRE, "[esc] continua");
 }
 
 // ---------------------------------------------------------------
 // como jogar: 4 paginas, abre do menu e da pausa
 // ---------------------------------------------------------------
 
-#define HOWTO_PANEL_Y 104.0f
-#define HOWTO_ICON_X  40.0f   // coluna de icone 48x48 entre x 24 e 104
-#define HOWTO_TEXT_X  120.0f
+#define HOWTO_PANEL_Y 208.0f
+#define HOWTO_ICON_X  80.0f   // coluna de icone 96x96 entre x 48 e 208
+#define HOWTO_TEXT_X  240.0f
 #define HOWTO_LINES   6
 
 // volta para a cena de onde o como jogar abriu (menu ou pausa)
@@ -289,7 +289,7 @@ void howto_advance()
     howto_page++;
 }
 
-// coluna de icone da pagina, em 48x48
+// coluna de icone da pagina, em 96x96
 static void draw_howto_icon(float x, float y)
 {
     float row_y;
@@ -304,29 +304,29 @@ static void draw_howto_icon(float x, float y)
     else if (howto_page == 1)
     {
         // scanner x2 e os dois marcadores da ficha: camada 1 lida, camada 2 vazia
-        al_draw_scaled_bitmap(scanner_icon, 0.0f, 0.0f, 16.0f, 16.0f, x + 8.0f, y, 32.0f, 32.0f, 0);
-        al_draw_filled_rectangle(x + 15.0f, y + 38.0f, x + 15.0f + (float)CARD_MARK, y + 38.0f + (float)CARD_MARK, UI_AMBER);
-        al_draw_filled_rectangle(x + 27.0f, y + 38.0f, x + 27.0f + (float)CARD_MARK, y + 38.0f + (float)CARD_MARK, UI_SLOT);
+        al_draw_scaled_bitmap(scanner_icon, 0.0f, 0.0f, 16.0f, 16.0f, x + 16.0f, y, 64.0f, 64.0f, 0);
+        al_draw_filled_rectangle(x + 30.0f, y + 76.0f, x + 30.0f + (float)CARD_MARK, y + 76.0f + (float)CARD_MARK, UI_AMBER);
+        al_draw_filled_rectangle(x + 54.0f, y + 76.0f, x + 54.0f + (float)CARD_MARK, y + 76.0f + (float)CARD_MARK, UI_SLOT);
     }
     else if (howto_page == 2)
     {
         // as 6 armas: fase 1 em cima, fases 2 e 3 embaixo
-        row_y = y + 4.0f;
+        row_y = y + 8.0f;
         ui_bitmap(rupture_icon, x, row_y, 0);
-        ui_bitmap(dissolution_icon, x + 16.0f, row_y, 0);
-        ui_bitmap(reserve_icon, x + 32.0f, row_y, 0);
-        row_y = y + 28.0f;
+        ui_bitmap(dissolution_icon, x + 32.0f, row_y, 0);
+        ui_bitmap(reserve_icon, x + 64.0f, row_y, 0);
+        row_y = y + 56.0f;
         ui_bitmap(antibody_icon, x, row_y, 0);
-        ui_bitmap(lyse_icon, x + 16.0f, row_y, 0);
-        ui_bitmap(perforate_icon, x + 32.0f, row_y, 0);
+        ui_bitmap(lyse_icon, x + 32.0f, row_y, 0);
+        ui_bitmap(perforate_icon, x + 64.0f, row_y, 0);
     }
     else
     {
         // cabeca do robo ao lado das linhas da integridade, coracao ao lado dos vitais
         frame = (int)fmod(al_get_time() / 0.25, 3.0);
-        al_draw_scaled_bitmap(nanobo_icon, 0.0f, 0.0f, 16.0f, 16.0f, x + 8.0f, y - 24.0f, 32.0f, 32.0f, 0);
+        al_draw_scaled_bitmap(nanobo_icon, 0.0f, 0.0f, 16.0f, 16.0f, x + 16.0f, y - 48.0f, 64.0f, 64.0f, 0);
         al_draw_scaled_bitmap(heart_pulse, (float)(frame * 16), 0.0f, 16.0f, 16.0f,
-            x + 8.0f, y + 8.0f, 32.0f, 32.0f, 0);
+            x + 16.0f, y + 16.0f, 64.0f, 64.0f, 0);
     }
 }
 
@@ -373,7 +373,7 @@ void draw_howto()
         }
     };
     char counter[16];
-    float line_y = HOWTO_PANEL_Y + 36.0f;
+    float line_y = HOWTO_PANEL_Y + 72.0f;
     int page = howto_page;
     int i;
 
@@ -387,24 +387,24 @@ void draw_howto()
     {
         ui_bitmap(howto_background, 0.0f, 0.0f, 0);
     }
-    ui_text(UI_TEXT, SCREEN_W / 2, 16, ALLEGRO_ALIGN_CENTRE, "Como jogar");
-    draw_rule((float)SCREEN_W / 2, 30.0f, 200.0f, UI_FRAME);
+    ui_text(UI_TEXT, SCREEN_W / 2, 32, ALLEGRO_ALIGN_CENTRE, "Como jogar");
+    draw_rule((float)SCREEN_W / 2, 60.0f, 400.0f, UI_FRAME);
 
     // painel central quase opaco (cor pre-multiplicada): o radar do fundo aparece de leve
-    draw_panel(16.0f, HOWTO_PANEL_Y, (float)SCREEN_W - 32.0f, 144.0f,
+    draw_panel(32.0f, HOWTO_PANEL_Y, (float)SCREEN_W - 64.0f, 288.0f,
         UI_VEIL(230.0f / 255.0f), UI_FRAME);
-    ui_text(UI_AMBER, HOWTO_TEXT_X, HOWTO_PANEL_Y + 12.0f, 0, titles[page]);
+    ui_text(UI_AMBER, HOWTO_TEXT_X, HOWTO_PANEL_Y + 24.0f, 0, titles[page]);
     snprintf(counter, sizeof(counter), "%d/%d", page + 1, HOWTO_PAGES);
-    ui_text(UI_DIM, (float)SCREEN_W - 24.0f, HOWTO_PANEL_Y + 12.0f, ALLEGRO_ALIGN_RIGHT, counter);
+    ui_text(UI_DIM, (float)SCREEN_W - 48.0f, HOWTO_PANEL_Y + 24.0f, ALLEGRO_ALIGN_RIGHT, counter);
 
-    draw_howto_icon(HOWTO_ICON_X, line_y + 20.0f);
+    draw_howto_icon(HOWTO_ICON_X, line_y + 40.0f);
 
     for (i = 0; i < HOWTO_LINES; i++)
     {
-        draw_marked_text(HOWTO_TEXT_X, line_y + 16.0f * (float)i, UI_TEXT, lines[page][i]);
+        draw_marked_text(HOWTO_TEXT_X, line_y + 32.0f * (float)i, UI_TEXT, lines[page][i]);
     }
 
-    draw_marked_text_aligned(SCREEN_W / 2, 336, UI_DIM, ALLEGRO_ALIGN_CENTRE,
+    draw_marked_text_aligned(SCREEN_W / 2, 672, UI_DIM, ALLEGRO_ALIGN_CENTRE,
         page == HOWTO_PAGES - 1
             ? "[enter], [espaço] ou [clique] volta · [setas] trocam · [esc] volta"
             : "[enter], [espaço] ou [clique] avança · [setas] trocam · [esc] volta");
@@ -529,8 +529,8 @@ void draw_results()
     int count;
     const UiButton* buttons = screen_buttons(&count);
     int neutralized = threats_total() - threats_left();
-    float left = 152.0f;
-    float right = (float)SCREEN_W - 152.0f;
+    float left = 304.0f;
+    float right = (float)SCREEN_W - 304.0f;
     float row;
     int report_row;
     ALLEGRO_COLOR bonus_color;
@@ -548,8 +548,8 @@ void draw_results()
         UI_VEIL(160.0f / 255.0f));
 
     snprintf(line, sizeof(line), "Fase %d concluída", current_phase());
-    ui_text(UI_TEXT, SCREEN_W / 2, 24, ALLEGRO_ALIGN_CENTRE, line);
-    draw_rule((float)SCREEN_W / 2, 38.0f, 200.0f, UI_FRAME);
+    ui_text(UI_TEXT, SCREEN_W / 2, 48, ALLEGRO_ALIGN_CENTRE, line);
+    draw_rule((float)SCREEN_W / 2, 76.0f, 400.0f, UI_FRAME);
 
     // interludio (#244): entre as fases, o estado do paciente e o proximo
     // invasor; os vitais ja com o piso de 60 que a passagem aplica (#218)
@@ -560,7 +560,7 @@ void draw_results()
 
         snprintf(line, sizeof(line), "vitais do Léo: %s (%d) · a seguir: %s",
             state, vitals, current_phase() == 1 ? "vírus nas vias aéreas" : "fungos no pulmão");
-        ui_text(UI_DIM, SCREEN_W / 2, 46, ALLEGRO_ALIGN_CENTRE, line);
+        ui_text(UI_DIM, SCREEN_W / 2, 92, ALLEGRO_ALIGN_CENTRE, line);
     }
     else
     {
@@ -569,23 +569,23 @@ void draw_results()
         const char* state = vitals >= 70 ? "estável" : (vitals >= 40 ? "em observação" : "grave");
 
         snprintf(line, sizeof(line), "vitais do Léo: %s (%d)", state, vitals);
-        ui_text(UI_DIM, SCREEN_W / 2, 46, ALLEGRO_ALIGN_CENTRE, line);
+        ui_text(UI_DIM, SCREEN_W / 2, 92, ALLEGRO_ALIGN_CENTRE, line);
     }
 
     // resultado principal: pontos e ameacas, o que fecha a fase
-    draw_panel(140.0f, 58.0f, 360.0f, 44.0f, UI_INK, UI_FRAME);
+    draw_panel(280.0f, 116.0f, 720.0f, 88.0f, UI_INK, UI_FRAME);
 
     snprintf(value, sizeof(value), "%d", score);
-    draw_stat(left, 66.0f, right, "pontos", value, UI_AMBER);
+    draw_stat(left, 132.0f, right, "pontos", value, UI_AMBER);
 
     snprintf(value, sizeof(value), "%d/%d", neutralized, threats_total());
-    draw_stat(left, 82.0f, right, "ameaças eliminadas", value, UI_TEXT);
+    draw_stat(left, 164.0f, right, "ameaças eliminadas", value, UI_TEXT);
 
     // objetivos secundarios: identificacao e bonus
-    draw_panel(140.0f, 106.0f, 360.0f, 52.0f, UI_INK, UI_FRAME);
+    draw_panel(280.0f, 212.0f, 720.0f, 104.0f, UI_INK, UI_FRAME);
 
     snprintf(value, sizeof(value), "%d/%d", identified_count, identification_goal());
-    draw_stat(left, 114.0f, right, "agentes identificados", value, UI_TEXT);
+    draw_stat(left, 228.0f, right, "agentes identificados", value, UI_TEXT);
 
     if (identification_bonus_awarded())
     {
@@ -598,32 +598,32 @@ void draw_results()
         snprintf(value, sizeof(value), "não obtido");
     }
 
-    draw_stat(left, 130.0f, right, "bônus de identificação", value, bonus_color);
+    draw_stat(left, 260.0f, right, "bônus de identificação", value, bonus_color);
 
     // o bonus dos vitais fecha o painel dos objetivos secundarios (#218)
     snprintf(value, sizeof(value), "+%d", vitals_bonus_awarded());
-    draw_stat(left, 146.0f, right, "bônus pelos vitais do Léo", value,
+    draw_stat(left, 292.0f, right, "bônus pelos vitais do Léo", value,
         vitals_bonus_awarded() > 0 ? UI_GREEN : UI_DIM);
 
     // resumo educativo: so contadores da partida atual (#174, #202)
-    draw_panel(140.0f, 162.0f, 360.0f, 92.0f, UI_INK, UI_FRAME);
+    draw_panel(280.0f, 324.0f, 720.0f, 184.0f, UI_INK, UI_FRAME);
 
-    ui_text(UI_AMBER, left, 170.0f, 0, "O que anotei nesta fase");
+    ui_text(UI_AMBER, left, 340.0f, 0, "O que anotei nesta fase");
 
 
     // relatorio da fase: cinco linhas com os numeros da partida (#223)
-    row = 184.0f;
+    row = 368.0f;
 
     for (report_row = 0; report_row < 5; report_row++)
     {
         results_report_line(report_row, line, sizeof(line));
         draw_marked_text(left, row, UI_TEXT, line);
-        row = row + 14.0f;
+        row = row + 28.0f;
     }
 
     draw_buttons(buttons, count);
 
-    draw_marked_text_aligned(SCREEN_W / 2, 296, UI_DIM, ALLEGRO_ALIGN_CENTRE,
+    draw_marked_text_aligned(SCREEN_W / 2, 592, UI_DIM, ALLEGRO_ALIGN_CENTRE,
         "[enter] também continua");
 
 #ifdef _DEBUG
@@ -633,7 +633,7 @@ void draw_results()
         snprintf(line, sizeof(line), "QA scans %d/%d decisoes %d/%d celulas %d",
             progress.scans_gram_positive, progress.scans_gram_negative,
             progress.correct_decisions, progress.wrong_decisions, progress.cell_attacks);
-        ui_text(UI_DIM, SCREEN_W / 2, 340, ALLEGRO_ALIGN_CENTRE, line);
+        ui_text(UI_DIM, SCREEN_W / 2, 680, ALLEGRO_ALIGN_CENTRE, line);
     }
 #endif
 }
@@ -644,17 +644,17 @@ static void draw_ranking_panel(float x, float y, float w, int highlight, bool in
     char line[32];
     int i;
 
-    draw_panel(x, y, w, 184.0f, UI_INK, UI_FRAME);
-    ui_text(UI_AMBER, x + w / 2.0f, y + 8.0f, ALLEGRO_ALIGN_CENTRE, "Top 10");
+    draw_panel(x, y, w, 368.0f, UI_INK, UI_FRAME);
+    ui_text(UI_AMBER, x + w / 2.0f, y + 16.0f, ALLEGRO_ALIGN_CENTRE, "Top 10");
 
     if (ranking_count() == 0)
     {
-        ui_text(UI_DIM, x + w / 2.0f, y + 86.0f, ALLEGRO_ALIGN_CENTRE,
+        ui_text(UI_DIM, x + w / 2.0f, y + 172.0f, ALLEGRO_ALIGN_CENTRE,
             "nenhum recorde ainda");
         // a dica so no menu: na vitoria o Leo ja deu alta
         if (in_menu)
         {
-            ui_text(UI_DIM, x + w / 2.0f, y + 102.0f, ALLEGRO_ALIGN_CENTRE,
+            ui_text(UI_DIM, x + w / 2.0f, y + 204.0f, ALLEGRO_ALIGN_CENTRE,
                 "dê alta ao Léo para entrar aqui");
         }
         return;
@@ -663,19 +663,19 @@ static void draw_ranking_panel(float x, float y, float w, int highlight, bool in
     for (i = 0; i < ranking_count(); i++)
     {
         const RankingEntry* e = ranking_entry(i);
-        float row = y + 28.0f + (float)i * 15.0f;
+        float row = y + 56.0f + (float)i * 30.0f;
         ALLEGRO_COLOR color = i == highlight ? UI_AMBER : UI_TEXT;
 
         if (i == highlight)
         {
-            al_draw_filled_rectangle(x + 4.0f, row - 3.0f, x + w - 4.0f, row + 11.0f, UI_HOVER);
+            al_draw_filled_rectangle(x + 8.0f, row - 6.0f, x + w - 8.0f, row + 22.0f, UI_HOVER);
         }
 
         snprintf(line, sizeof(line), "%2d", i + 1);
-        ui_text(UI_DIM, x + 12.0f, row, 0, line);
-        ui_text(color, x + 40.0f, row, 0, e->name);
+        ui_text(UI_DIM, x + 24.0f, row, 0, line);
+        ui_text(color, x + 80.0f, row, 0, e->name);
         snprintf(line, sizeof(line), "%d", e->score);
-        ui_text(color, x + w - 12.0f, row, ALLEGRO_ALIGN_RIGHT, line);
+        ui_text(color, x + w - 24.0f, row, ALLEGRO_ALIGN_RIGHT, line);
     }
 }
 
@@ -686,8 +686,8 @@ void draw_victory()
     int total_seconds = (int)run_time;
     int count;
     const UiButton* buttons = screen_buttons(&count);
-    float left = 36.0f;
-    float right = 302.0f;
+    float left = 72.0f;
+    float right = 604.0f;
 
     // o quarto de dia, leito arrumado: o Leo foi para casa; o veu segura o texto
     if (hospital_victory)
@@ -696,69 +696,69 @@ void draw_victory()
     }
     al_draw_filled_rectangle(0.0f, 0.0f, (float)SCREEN_W, (float)SCREEN_H, UI_VEIL(150.0f / 255.0f));
 
-    ui_text(UI_TEXT, SCREEN_W / 2, 18, ALLEGRO_ALIGN_CENTRE, "Vitória");
-    draw_rule((float)SCREEN_W / 2, 32.0f, 200.0f, UI_FRAME);
+    ui_text(UI_TEXT, SCREEN_W / 2, 36, ALLEGRO_ALIGN_CENTRE, "Vitória");
+    draw_rule((float)SCREEN_W / 2, 64.0f, 400.0f, UI_FRAME);
     // final da narrativa (#244): a alta do Leo e a linha do Nanobo
-    ui_text(UI_TEXT, SCREEN_W / 2, 38, ALLEGRO_ALIGN_CENTRE,
+    ui_text(UI_TEXT, SCREEN_W / 2, 76, ALLEGRO_ALIGN_CENTRE,
         "O Léo recebeu alta e vai para casa. Missão cumprida!");
-    ui_text(UI_CYAN, SCREEN_W / 2, 54, ALLEGRO_ALIGN_CENTRE,
+    ui_text(UI_CYAN, SCREEN_W / 2, 108, ALLEGRO_ALIGN_CENTRE,
         "Anotei tudo o que aprendi. Obrigado por me guiar!");
 
     // o resultado da run, a esquerda
-    draw_panel(24.0f, 74.0f, 290.0f, 92.0f, UI_INK, UI_FRAME);
+    draw_panel(48.0f, 148.0f, 580.0f, 184.0f, UI_INK, UI_FRAME);
 
     snprintf(value, sizeof(value), "%d", score);
-    draw_stat(left, 84.0f, right, "pontuação final", value, UI_AMBER);
+    draw_stat(left, 168.0f, right, "pontuação final", value, UI_AMBER);
 
     snprintf(value, sizeof(value), "%d/%d", run_progress.neutralized, run_progress.threats);
-    draw_stat(left, 102.0f, right, "ameaças eliminadas", value, UI_TEXT);
+    draw_stat(left, 204.0f, right, "ameaças eliminadas", value, UI_TEXT);
 
     snprintf(value, sizeof(value), "%d/%d", run_progress.identified, run_progress.agents);
-    draw_stat(left, 120.0f, right, "agentes identificados", value, UI_TEXT);
+    draw_stat(left, 240.0f, right, "agentes identificados", value, UI_TEXT);
 
     snprintf(timer_text, sizeof(timer_text), "%02d:%02d", total_seconds / 60,
         total_seconds % 60);
-    draw_stat(left, 138.0f, right, "tempo total", timer_text, UI_TEXT);
+    draw_stat(left, 276.0f, right, "tempo total", timer_text, UI_TEXT);
 
     // o Top 10, a direita, com o registro novo em destaque (#197)
-    draw_ranking_panel(330.0f, 74.0f, 286.0f, ranking_highlight, false);
+    draw_ranking_panel(660.0f, 148.0f, 572.0f, ranking_highlight, false);
 
     // entrada do nome quando a pontuacao entra no Top 10 (#81)
-    draw_panel(24.0f, 174.0f, 290.0f, 84.0f, UI_INK, name_entry_active ? UI_AMBER : UI_FRAME);
+    draw_panel(48.0f, 348.0f, 580.0f, 168.0f, UI_INK, name_entry_active ? UI_AMBER : UI_FRAME);
 
     if (name_entry_active)
     {
-        float tx = 40.0f;
+        float tx = 80.0f;
         bool blink = (int)(al_get_time() * 2.0) % 2 == 0;
 
-        ui_text(UI_AMBER, 169.0f, 182.0f, ALLEGRO_ALIGN_CENTRE, "novo recorde no Top 10!");
-        draw_marked_text_aligned(169.0f, 198.0f, UI_DIM, ALLEGRO_ALIGN_CENTRE, "digite seu nome e tecle [enter]");
-        al_draw_filled_rectangle(tx, 214.0f, 298.0f, 232.0f, UI_PANEL);
-        al_draw_rectangle(tx + 0.5f, 214.5f, 297.5f, 231.5f, UI_FRAME, 1.0f);
-        ui_text(UI_TEXT, tx + 6.0f, 219.0f, 0, name_entry);
+        ui_text(UI_AMBER, 338.0f, 364.0f, ALLEGRO_ALIGN_CENTRE, "novo recorde no Top 10!");
+        draw_marked_text_aligned(338.0f, 396.0f, UI_DIM, ALLEGRO_ALIGN_CENTRE, "digite seu nome e tecle [enter]");
+        al_draw_filled_rectangle(tx, 428.0f, 596.0f, 464.0f, UI_PANEL);
+        al_draw_rectangle(tx + 1.0f, 429.0f, 595.0f, 463.0f, UI_FRAME, 2.0f);
+        ui_text(UI_TEXT, tx + 12.0f, 438.0f, 0, name_entry);
 
         if (blink && name_entry_chars < RANKING_NAME_CHARS)
         {
-            ui_text(UI_CYAN, tx + 6.0f + (float)ui_text_width(name_entry), 219.0f, 0, "_");
+            ui_text(UI_CYAN, tx + 12.0f + (float)ui_text_width(name_entry), 438.0f, 0, "_");
         }
 
         // o limite de 10 caracteres dito na tela
-        draw_marked_text_aligned(169.0f, 240.0f, UI_DIM, ALLEGRO_ALIGN_CENTRE, "até 10 letras · [backspace] apaga");
+        draw_marked_text_aligned(338.0f, 480.0f, UI_DIM, ALLEGRO_ALIGN_CENTRE, "até 10 letras · [backspace] apaga");
     }
     else if (ranking_highlight >= 0)
     {
         snprintf(value, sizeof(value), "posição %d no Top 10", ranking_highlight + 1);
-        ui_text(UI_GREEN, 169.0f, 202.0f, ALLEGRO_ALIGN_CENTRE, value);
+        ui_text(UI_GREEN, 338.0f, 404.0f, ALLEGRO_ALIGN_CENTRE, value);
 
         if (ranking_save_failed)
         {
-            ui_text(UI_RED, 169.0f, 222.0f, ALLEGRO_ALIGN_CENTRE,
+            ui_text(UI_RED, 338.0f, 444.0f, ALLEGRO_ALIGN_CENTRE,
                 "não foi possível gravar o recorde");
         }
     }
     else
     {
-        ui_text(UI_DIM, 169.0f, 210.0f, ALLEGRO_ALIGN_CENTRE,
+        ui_text(UI_DIM, 338.0f, 420.0f, ALLEGRO_ALIGN_CENTRE,
             "a pontuação não entrou no Top 10");
     }
 
@@ -766,7 +766,7 @@ void draw_victory()
     if (!name_entry_active)
     {
         draw_buttons(buttons, count);
-        draw_marked_text_aligned(SCREEN_W / 2, 312, UI_DIM, ALLEGRO_ALIGN_CENTRE,
+        draw_marked_text_aligned(SCREEN_W / 2, 624, UI_DIM, ALLEGRO_ALIGN_CENTRE,
             "[enter] também começa de novo");
     }
 }
@@ -778,8 +778,8 @@ void draw_game_over()
     int total_seconds = (int)run_time;
     int count;
     const UiButton* buttons = screen_buttons(&count);
-    float left = 152.0f;
-    float right = (float)SCREEN_W - 152.0f;
+    float left = 304.0f;
+    float right = (float)SCREEN_W - 304.0f;
 
     // o quarto em luz baixa, monitor estavel: o Leo segue internado
     if (hospital_game_over)
@@ -788,35 +788,35 @@ void draw_game_over()
     }
     al_draw_filled_rectangle(0.0f, 0.0f, (float)SCREEN_W, (float)SCREEN_H, UI_VEIL(100.0f / 255.0f));
 
-    ui_text(UI_RED, SCREEN_W / 2, 30, ALLEGRO_ALIGN_CENTRE, "GAME OVER");
-    draw_rule((float)SCREEN_W / 2, 44.0f, 200.0f, UI_RED);
+    ui_text(UI_RED, SCREEN_W / 2, 60, ALLEGRO_ALIGN_CENTRE, "GAME OVER");
+    draw_rule((float)SCREEN_W / 2, 88.0f, 400.0f, UI_RED);
     // game over da narrativa (#244): a equipe retira o Nanobô e diz por que;
     // o Leo nao morre, segue no tratamento convencional
-    ui_text(UI_TEXT, SCREEN_W / 2, 52, ALLEGRO_ALIGN_CENTRE,
+    ui_text(UI_TEXT, SCREEN_W / 2, 104, ALLEGRO_ALIGN_CENTRE,
         game_over_patient ? "Os vitais do Léo caíram demais: a equipe retirou o Nanobô."
                           : "O Nanobô foi danificado: a equipe o retirou do corpo.");
-    ui_text(UI_TEXT, SCREEN_W / 2, 68, ALLEGRO_ALIGN_CENTRE,
+    ui_text(UI_TEXT, SCREEN_W / 2, 136, ALLEGRO_ALIGN_CENTRE,
         "O Léo segue no tratamento convencional do hospital.");
-    ui_text(UI_CYAN, SCREEN_W / 2, 84, ALLEGRO_ALIGN_CENTRE,
+    ui_text(UI_CYAN, SCREEN_W / 2, 168, ALLEGRO_ALIGN_CENTRE,
         "Anotei os meus erros. Vamos tentar de novo?");
 
-    draw_panel(140.0f, 104.0f, 360.0f, 96.0f, UI_INK, UI_FRAME);
+    draw_panel(280.0f, 208.0f, 720.0f, 192.0f, UI_INK, UI_FRAME);
 
     snprintf(value, sizeof(value), "%d", score);
-    draw_stat(left, 114.0f, right, "pontos", value, UI_TEXT);
+    draw_stat(left, 228.0f, right, "pontos", value, UI_TEXT);
 
     snprintf(value, sizeof(value), "%d/%d", run_progress.neutralized, run_progress.threats);
-    draw_stat(left, 134.0f, right, "ameaças eliminadas", value, UI_TEXT);
+    draw_stat(left, 268.0f, right, "ameaças eliminadas", value, UI_TEXT);
 
     snprintf(value, sizeof(value), "%d/%d", run_progress.identified, run_progress.agents);
-    draw_stat(left, 154.0f, right, "agentes identificados", value, UI_TEXT);
+    draw_stat(left, 308.0f, right, "agentes identificados", value, UI_TEXT);
 
     snprintf(timer_text, sizeof(timer_text), "%02d:%02d", total_seconds / 60,
         total_seconds % 60);
-    draw_stat(left, 174.0f, right, "tempo total", timer_text, UI_TEXT);
+    draw_stat(left, 348.0f, right, "tempo total", timer_text, UI_TEXT);
 
     draw_buttons(buttons, count);
 
-    draw_marked_text_aligned(SCREEN_W / 2, 260, UI_DIM, ALLEGRO_ALIGN_CENTRE,
+    draw_marked_text_aligned(SCREEN_W / 2, 520, UI_DIM, ALLEGRO_ALIGN_CENTRE,
         "[enter] também reinicia");
 }
