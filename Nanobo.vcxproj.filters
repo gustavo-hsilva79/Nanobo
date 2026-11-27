@@ -42,6 +42,9 @@
     <ClCompile Include="src\gameplay\gameplay.c">
       <Filter>Gameplay</Filter>
     </ClCompile>
+    <ClCompile Include="src\gameplay\ranking.c">
+      <Filter>Gameplay</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core\game.h">
