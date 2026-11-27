@@ -988,8 +988,8 @@ const UiButton* screen_buttons(int* count)
         { (float)BUTTON_X + 180.0f, (float)BUTTON_Y, (float)BUTTON_W, (float)BUTTON_H, "RECORDES" }
     };
     static const UiButton pause_items[] = {
-        { 240.0f, 152.0f, 160.0f, 28.0f, "CONTINUAR" },
-        { 240.0f, 188.0f, 160.0f, 28.0f, "COMO JOGAR" }
+        { 152.0f, 222.0f, 160.0f, 28.0f, "CONTINUAR" },
+        { 328.0f, 222.0f, 160.0f, 28.0f, "COMO JOGAR" }
     };
     static const UiButton results_items[] = {
         { 240.0f, 256.0f, 160.0f, 28.0f, "CONTINUAR" }
@@ -2914,6 +2914,20 @@ void draw_objective_notice(int card_target, float card_y)
         faded_color(UI_WARM, alpha), text);
 }
 
+// mapa da fase atual com o tinte da fase e o veu azulado ate a altura h;
+// o jogo e os resultados desenham o mesmo fundo
+void draw_phase_map(float x, float y, float h)
+{
+    load_phase_map(current_phase());
+
+    if (world_map)
+    {
+        al_draw_tinted_bitmap(world_map, phase_has_viruses() ? MAP_TINT_AIRWAY : MAP_TINT,
+            x, y, 0);
+    }
+    al_draw_filled_rectangle(0.0f, 0.0f, (float)SCREEN_W, h, MAP_VEIL);
+}
+
 void draw_game()
 {
     int i;
@@ -2940,14 +2954,7 @@ void draw_game()
     // mapa do mundo deslocado pela camera, atras de destino, agentes e nanobo
     // recuado: escurecido e com um veu azulado, sem mudar o PNG (#220); a fase
     // nova troca o mapa no primeiro quadro dela (#89)
-    load_phase_map(current_phase());
-
-    if (world_map)
-    {
-        al_draw_tinted_bitmap(world_map, phase_has_viruses() ? MAP_TINT_AIRWAY : MAP_TINT,
-            -floorf(camera.x), -floorf(camera.y), 0);
-    }
-    al_draw_filled_rectangle(0.0f, 0.0f, (float)SCREEN_W, (float)PLAY_H, MAP_VEIL);
+    draw_phase_map(-floorf(camera.x), -floorf(camera.y), (float)PLAY_H);
 
     // destino da fase: anel e rotulo visiveis desde o inicio (#26)
     al_draw_filled_circle(view_x(DESTINATION_X), view_y(DESTINATION_Y), DESTINATION_RADIUS,
@@ -3384,15 +3391,58 @@ void draw_game()
 // pausa: o jogo fica visivel e congelado atras do painel
 void draw_pause()
 {
+    static const char* phase_names[] = {
+        "Fase 1 · bactérias no sangue",
+        "Fase 2 · vírus nas vias aéreas",
+        "Fase 3 · fungos no pulmão"
+    };
+    // objetivo completo da fase atual: tres linhas por fase (PA-03)
+    static const char* goals[][3] = {
+        {
+            "Elimine as bactérias do sangue do Léo e vá ao destino.",
+            "Gram+: Ruptura. Gram-: Dissolução. Resistente: Reserva.",
+            "Leia antes de disparar. Ler todos vale +15 pontos."
+        },
+        {
+            "Elimine os vírus nas vias aéreas do Léo e vá ao destino.",
+            "Vírus livre: Neutralização. Célula infectada: Ataque T.",
+            "Leia a célula antes: o Ataque T custa vitais do Léo."
+        },
+        {
+            "Elimine os fungos no pulmão do Léo e vá ao destino.",
+            "Antibiótico não tem alvo no fungo: use a Perfuração.",
+            "No bolor, mire na base da colônia, não na hifa."
+        }
+    };
     int count;
     const UiButton* buttons = screen_buttons(&count);
+    int phase = current_phase() - 1;
+    int i;
 
+    if (phase < 0 || phase > 2)
+    {
+        phase = 0;
+    }
+
+    // veu mais escuro que o antigo: o painel maior precisa de contraste
     al_draw_filled_rectangle(0.0f, 0.0f, (float)SCREEN_W, (float)SCREEN_H,
-        al_map_rgba(0, 0, 0, 180));
-    draw_panel(190.0f, 120.0f, 260.0f, 132.0f, UI_INK, UI_FRAME);
-    al_draw_text(font, UI_TEXT, SCREEN_W / 2, 132, ALLEGRO_ALIGN_CENTRE, "PAUSE");
+        al_map_rgba(0, 0, 0, 210));
+    draw_panel(80.0f, 70.0f, 480.0f, 216.0f, UI_INK, UI_FRAME);
+    al_draw_text(font, UI_TEXT, SCREEN_W / 2, 82, ALLEGRO_ALIGN_CENTRE, "PAUSA");
+    draw_rule((float)SCREEN_W / 2, 96.0f, 200.0f, UI_FRAME);
+    al_draw_text(font, UI_AMBER, SCREEN_W / 2, 104, ALLEGRO_ALIGN_CENTRE, phase_names[phase]);
+
+    // texto de x 96 a 544: a maior linha tem 56 caracteres (448 px)
+    for (i = 0; i < 3; i++)
+    {
+        al_draw_text(font, UI_TEXT, 96.0f, 124.0f + 16.0f * (float)i, 0, goals[phase][i]);
+    }
+
+    al_draw_text(font, UI_DIM, 96.0f, 180.0f, 0, "WASD mover · clique dispara · botão direito lê");
+    al_draw_text(font, UI_DIM, 96.0f, 196.0f, 0, "X defesa · 1 2 3 ou roda: arma");
+
     draw_buttons(buttons, count);
-    al_draw_text(font, UI_DIM, SCREEN_W / 2, 230, ALLEGRO_ALIGN_CENTRE, "esc para voltar");
+    al_draw_text(font, UI_DIM, SCREEN_W / 2, 264, ALLEGRO_ALIGN_CENTRE, "esc continua");
 }
 
 // ---------------------------------------------------------------
@@ -3661,6 +3711,18 @@ void draw_results()
     float row;
     int report_row;
     ALLEGRO_COLOR bonus_color;
+    float map_y = camera.y;
+
+    // fundo: o mapa da fase concluida onde a camera parou, na tela inteira
+    // (sem passar da borda de baixo do PNG) e com um veu escuro por cima
+    if (world_map && map_y > (float)(al_get_bitmap_height(world_map) - SCREEN_H))
+    {
+        map_y = fmaxf(0.0f, (float)(al_get_bitmap_height(world_map) - SCREEN_H));
+    }
+
+    draw_phase_map(-floorf(camera.x), -floorf(map_y), (float)SCREEN_H);
+    al_draw_filled_rectangle(0.0f, 0.0f, (float)SCREEN_W, (float)SCREEN_H,
+        al_map_rgba(0, 0, 0, 160));
 
     snprintf(line, sizeof(line), "Fase %d concluída", current_phase());
     al_draw_text(font, UI_TEXT, SCREEN_W / 2, 24, ALLEGRO_ALIGN_CENTRE, line);
@@ -3673,13 +3735,18 @@ void draw_results()
         int vitals = (int)fmaxf(patient_vitals, VITALS_MIN_BETWEEN);
         const char* state = vitals >= 70 ? "estável" : (vitals >= 40 ? "em observação" : "grave");
 
-        snprintf(line, sizeof(line), "sinais vitais: %s (%d) · a seguir: %s",
+        snprintf(line, sizeof(line), "vitais do Léo: %s (%d) · a seguir: %s",
             state, vitals, current_phase() == 1 ? "vírus nas vias aéreas" : "fungos no pulmão");
         al_draw_text(font, UI_DIM, SCREEN_W / 2, 46, ALLEGRO_ALIGN_CENTRE, line);
     }
     else
     {
-        al_draw_text(font, UI_DIM, SCREEN_W / 2, 46, ALLEGRO_ALIGN_CENTRE, "resumo da fase");
+        // ultima fase: so o estado e os vitais reais, sem o piso; a alta vem na vitoria
+        int vitals = (int)fmaxf(patient_vitals, 0.0f);
+        const char* state = vitals >= 70 ? "estável" : (vitals >= 40 ? "em observação" : "grave");
+
+        snprintf(line, sizeof(line), "vitais do Léo: %s (%d)", state, vitals);
+        al_draw_text(font, UI_DIM, SCREEN_W / 2, 46, ALLEGRO_ALIGN_CENTRE, line);
     }
 
     // resultado principal: pontos e ameacas, o que fecha a fase
@@ -3689,7 +3756,7 @@ void draw_results()
     draw_stat(left, 66.0f, right, "pontos", value, UI_AMBER);
 
     snprintf(value, sizeof(value), "%d/%d", neutralized, threats_total());
-    draw_stat(left, 82.0f, right, "ameaças neutralizadas", value, UI_TEXT);
+    draw_stat(left, 82.0f, right, "ameaças eliminadas", value, UI_TEXT);
 
     // objetivos secundarios: identificacao e bonus
     draw_panel(140.0f, 106.0f, 360.0f, 52.0f, UI_INK, UI_FRAME);
@@ -3712,7 +3779,7 @@ void draw_results()
 
     // o bonus dos vitais fecha o painel dos objetivos secundarios (#218)
     snprintf(value, sizeof(value), "+%d", vitals_bonus_awarded());
-    draw_stat(left, 146.0f, right, "bônus de vitais", value,
+    draw_stat(left, 146.0f, right, "bônus pelos vitais do Léo", value,
         vitals_bonus_awarded() > 0 ? UI_GREEN : UI_DIM);
 
     // resumo educativo: so contadores da partida atual (#174, #202)
@@ -3989,8 +4056,9 @@ void render()
     // trocou de tela, o foco volta para o primeiro botao
     if (scene != ui_last_scene)
     {
+        // de volta do como jogar, a pausa foca o COMO JOGAR de onde saiu
+        ui_focus = scene == GAME_SCENE_PAUSE && ui_last_scene == GAME_SCENE_HOWTO ? 1 : 0;
         ui_last_scene = scene;
-        ui_focus = 0;
 
         // na fase o cursor do sistema vira mira; nas outras telas ele volta (#198)
         if (scene == GAME_SCENE_GAME)

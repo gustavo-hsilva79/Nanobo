@@ -75,8 +75,10 @@ Desenhada **em toda partida**: `MENU → BRIEFING → GAME`, e também depois de
 | AB-07b |  | `Estou dentro do sangue dele.` | 28 | #244 |
 | AB-08a | página 3 de 3 | `Vou descobrir o que está {atacando} o Léo.` | 40 | #244 |
 | AB-08b |  | `Anoto aqui tudo o que aprender, até os meus erros.` | 50 | #244 |
-| NR-15 | interlúdio: Resultados entre as fases, subtítulo | `sinais vitais: %s (%d) · a seguir: %s`, com `vírus nas vias aéreas` depois da Fase 1 (`estável` ≥ 70, `em observação` 40–69, `grave` < 40, já com o piso de 60) | até 67 | #244 |
-| NR-16 | interlúdio: Resultados depois da Fase 2, subtítulo | o `%s` do NR-15 depois da Fase 2 é `fungos no pulmão` (mesmos estados do NR-15) | até 63 | #227 |
+| NR-15 | — | `sinais vitais: %s (%d) · a seguir: %s` | — | #244; saiu em 28/11: substituída pela RS-01 |
+| NR-16 | — | o `%s` do NR-15 depois da Fase 2 era `fungos no pulmão` | — | #227; saiu em 28/11: substituída pela RS-01 |
+| RS-01 | interlúdio: Resultados entre as fases, subtítulo (y 46) | `vitais do Léo: %s (%d) · a seguir: %s`, com `vírus nas vias aéreas` depois da Fase 1 e `fungos no pulmão` depois da Fase 2 (`estável` ≥ 70, `em observação` 40–69, `grave` < 40, já com o piso de 60) | até 67 | redesenho de 28/11; substitui a NR-15 e a NR-16 |
+| RS-02 | Resultados da última fase, subtítulo (y 46) | `vitais do Léo: %s (%d)` (mesmos estados da RS-01, com os vitais reais, sem o piso de 60) | até 34 | redesenho de 28/11; substitui a CT-30; a alta aparece na Vitória |
 
 Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as armas) saíram do jogo em 15/11 e ficam no histórico do git.
 
@@ -96,7 +98,8 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 | CT-09 | — | `Objetivo da missão` | — | #201; saiu do menu em 28/11 (MN-05): o conteúdo foi para a cena como jogar (HW-01 a HW-04) |
 | CT-10 | — | `neutralizar as %d bactérias e chegar ao destino` | — | #201; saiu do menu em 28/11 (MN-05): o conteúdo foi para a cena como jogar (HW-01 a HW-04) |
 | CT-11 | — | `identificar os %d agentes vale +%d pontos` | — | #201; saiu do menu em 28/11 (MN-05): o conteúdo foi para a cena como jogar (HW-01 a HW-04) |
-| CT-11b | resultados, painel dos objetivos secundários | `bônus de vitais` · `+%d` | 15 | #218; ocupa a linha da CT-11 nos resultados |
+| CT-11b | — | `bônus de vitais` · `+%d` | — | #218; saiu em 28/11: substituída pela RS-04 |
+| RS-04 | resultados, painel dos objetivos secundários | `bônus pelos vitais do Léo` · `+%d` | 25 | redesenho de 28/11; substitui a CT-11b |
 | CT-11c | HUD, coluna de vida (x 8 a 92) | duas barras de 10 segmentos sem número nem rótulo: linha 0, ícone do Nanobô + bateria da integridade (ciano); linha 1, coração pulsando + ECG dos vitais do paciente (verde ≥ 60, âmbar ≥ 30, vermelho abaixo) | — | #218; #234; redesenho de 28/11 (HD-01) |
 | CT-11d | mundo, acima do agente da dica | `botão direito: escanear` (some no primeiro scan; volta no tiro num invasor sem leitura) | 23 | #219 |
 | CT-11e | — | `conceito` / `enter ou clique para continuar` | — | #222; saíram em 25/11: a caixa do diário (§3.1) tem cabeçalho, contador `n/N` e triângulo |
@@ -116,8 +119,9 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 | SC-05 | scanner, 1 camada, bactéria | `botão direito de novo: revela a coloração de Gram` | 49 | redesenho de 28/11; substitui a CT-26 |
 | CT-27 | scanner, identificado | `Identificação concluída` | 23 | #199 |
 | CT-29 | scanner, cabeçalho | `célula` / `bactéria` | 6 / 7 | #199 |
-| CT-30 | resultados | `resumo da fase` | 14 | #202 |
-| CT-31 | resultados | `pontos` / `ameaças neutralizadas` | 6 / 21 | #202 |
+| CT-30 | — | `resumo da fase` | — | #202; saiu em 28/11: substituída pela RS-02 |
+| CT-31 | resultados (`pontos`); vitória e game over (`ameaças neutralizadas`) | `pontos` / `ameaças neutralizadas` | 6 / 21 | #202; nos resultados, o segundo rótulo virou a RS-03 em 28/11 |
+| RS-03 | resultados, painel principal | `ameaças eliminadas` | 18 | redesenho de 28/11; substitui a CT-31b nos resultados; casa com a RR-09 e a OB-04 |
 | CT-32 | resultados | `agentes identificados` / `bônus de identificação` | 21 / 22 | #202 |
 | CT-33 | resultados | `não obtido` | 10 | #202 |
 | CT-34 | resultados | `enter também continua` | 21 | #202 |
@@ -147,8 +151,25 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 | OB-02 | aviso de objetivo, topo do mundo (Fase 2) | `Objetivo: elimine os vírus e chegue ao {destino}` | 46 | redesenho de 28/11; substitui a CT-42; `destino` em âmbar |
 | OB-03 | aviso de objetivo, topo do mundo (Fase 3) | `Objetivo: elimine os fungos e chegue ao {destino}` | 47 | redesenho de 28/11; substitui a CT-42b; `destino` em âmbar |
 | OB-04 | aviso de objetivo, ameaças zeradas | `Ameaças eliminadas! Agora vá ao {destino}` | 39 | redesenho de 28/11; substitui a CT-51; `destino` em âmbar |
-| CT-53 | pausa, título | `PAUSE` | 5 | varredura de 05/11 |
-| CT-54 | pausa, rodapé | `esc para voltar` | 15 | varredura de 05/11 |
+| CT-53 | — | `PAUSE` | — | varredura de 05/11; saiu em 28/11: substituída pela PA-01 |
+| CT-54 | — | `esc para voltar` | — | varredura de 05/11; saiu em 28/11: substituída pela PA-06 |
+| PA-01 | pausa, título (y 82) | `PAUSA` | 5 | redesenho de 28/11; substitui a CT-53. Painel de 480 px (x 80 a 560, y 70 a 286), texto de x 96 a 544 (limite 56 caracteres) |
+| PA-02a | pausa, linha da fase (Fase 1, `UI_AMBER`, y 104) | `Fase 1 · bactérias no sangue` | 28 | redesenho de 28/11 |
+| PA-02b | pausa, linha da fase (Fase 2) | `Fase 2 · vírus nas vias aéreas` | 30 | redesenho de 28/11 |
+| PA-02c | pausa, linha da fase (Fase 3) | `Fase 3 · fungos no pulmão` | 25 | redesenho de 28/11 |
+| PA-03a | pausa, objetivo da Fase 1, linha 1 (y 124) | `Elimine as bactérias do sangue do Léo e vá ao destino.` | 54 | redesenho de 28/11 |
+| PA-03b | pausa, objetivo da Fase 1, linha 2 (y 140) | `Gram+: Ruptura. Gram-: Dissolução. Resistente: Reserva.` | 55 | redesenho de 28/11; mapeamento de arma do glossário (regra do jogo) |
+| PA-03c | pausa, objetivo da Fase 1, linha 3 (y 156) | `Leia antes de disparar. Ler todos vale +15 pontos.` | 50 | redesenho de 28/11; o 15 é o `IDENTIFICATION_BONUS` |
+| PA-03d | pausa, objetivo da Fase 2, linha 1 | `Elimine os vírus nas vias aéreas do Léo e vá ao destino.` | 56 | redesenho de 28/11 |
+| PA-03e | pausa, objetivo da Fase 2, linha 2 | `Vírus livre: Neutralização. Célula infectada: Ataque T.` | 55 | redesenho de 28/11 |
+| PA-03f | pausa, objetivo da Fase 2, linha 3 | `Leia a célula antes: o Ataque T custa vitais do Léo.` | 52 | redesenho de 28/11; `LYSE_VITALS` 5 |
+| PA-03g | pausa, objetivo da Fase 3, linha 1 | `Elimine os fungos no pulmão do Léo e vá ao destino.` | 51 | redesenho de 28/11 |
+| PA-03h | pausa, objetivo da Fase 3, linha 2 | `Antibiótico não tem alvo no fungo: use a Perfuração.` | 52 | redesenho de 28/11 |
+| PA-03i | pausa, objetivo da Fase 3, linha 3 | `No bolor, mire na base da colônia, não na hifa.` | 47 | redesenho de 28/11; RT-18 |
+| PA-04a | pausa, lembrete de teclas, linha 1 (`UI_DIM`, y 180) | `WASD mover · clique dispara · botão direito lê` | 46 | redesenho de 28/11 |
+| PA-04b | pausa, lembrete de teclas, linha 2 (y 196) | `X defesa · 1 2 3 ou roda: arma` | 30 | redesenho de 28/11 |
+| PA-05 | pausa, segundo botão (x 328, y 222, ao lado do CONTINUAR em x 152) | `COMO JOGAR` | 10 | redesenho de 28/11; o mesmo literal da MN-01; de volta do como jogar, o foco cai nele |
+| PA-06 | pausa, rodapé (y 264) | `esc continua` | 12 | redesenho de 28/11; substitui a CT-54 |
 | CT-55 | menu, botão | `INICIAR` | 7 | varredura de 05/11 |
 | CT-56 | pausa/resultados, botão | `CONTINUAR` | 9 | varredura de 05/11 |
 | CT-57 | vitória/game over, botão | `NOVA PARTIDA` | 12 | varredura de 05/11 |
