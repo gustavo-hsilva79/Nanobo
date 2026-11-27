@@ -107,6 +107,7 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 | CT-12 | — | `enter ou clique para começar` | — | #201; saiu em 28/11: substituída pela MN-04 |
 | MN-04 | menu, rodapé dos botões | `[setas] escolhem · [enter] confirma` | 31 | redesenho de 28/11 (MN-01); substitui a CT-12 |
 | CT-13 | menu, rodapé | `[F11] tela cheia` | 14 | #201 |
+| QA-01 | leitura do F1, canto de cima à direita, qualquer cena e build | `fps %d · quadro %.1f ms` (`fps 60 · quadro 1.8 ms`) | 22 a 25 | revisão de 27/11: medição da otimização; o resto da leitura de QA continua só no Debug |
 | CT-14 | HUD, linha 1, à direita | `ameaças %d/%d · identificados %d/%d` (`ameaças 0/6 · identificados 0/9`) | 31 (até 35) | #199; juntas na mesma linha em 15/11 (#243) |
 | CT-15 | — | `identificados %d/%d` | — | entrou na CT-14 em 15/11 (#243) |
 | CT-16 | HUD, linha 1, a partir de x 100 | `pontos %d` + `·` + tempo mm:ss (`pontos 9999 · 99:59`) | 9 (até 19 com o tempo) | #199; #243; desceu para a linha 1 em 28/11 (HD-01) |

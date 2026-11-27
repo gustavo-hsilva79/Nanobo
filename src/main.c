@@ -332,8 +332,17 @@ void draw_ranking_panel(float x, float y, float w, int highlight, bool in_menu);
 void draw_marked_text(float x, float y, ALLEGRO_COLOR base, const char* text);
 void draw_marked_text_aligned(float x, float y, ALLEGRO_COLOR base, int flags, const char* text);
 
-// overlay de depuracao da interface: F1 liga e desliga, so existe no Debug
+// leitura de QA: F1 liga e desliga; FPS e tempo de quadro em todo build,
+// o estado interno dos agentes so no Debug
 bool show_debug = false;
+
+// medicao do F1: soma de 1 s do tempo de atualizacao e de desenho (sem o flip)
+double perf_window_start = 0.0;
+double perf_update_time = 0.0;
+double perf_draw_time = 0.0;
+int perf_frames = 0;
+int perf_fps = 0;
+float perf_frame_ms = 0.0f;
 GameScene ui_last_scene = GAME_SCENE_MENU;
 
 // rele a posicao do cursor na janela: resize e fullscreen mudam o referencial
@@ -4268,9 +4277,43 @@ void draw_game_over()
 }
 
 // cada estado desenha so o que e dele, tudo no canvas logico
+// fecha a janela de 1 s da medicao do F1: quadros desenhados e tempo medio
+// de atualizacao + desenho por quadro, sem a espera do flip
+void perf_sample(double now)
+{
+    double elapsed = now - perf_window_start;
+
+    if (elapsed < 1.0)
+    {
+        return;
+    }
+
+    perf_fps = (int)((double)perf_frames / elapsed + 0.5);
+    perf_frame_ms = perf_frames > 0
+        ? (float)((perf_update_time + perf_draw_time) * 1000.0 / (double)perf_frames)
+        : 0.0f;
+    perf_window_start = now;
+    perf_update_time = 0.0;
+    perf_draw_time = 0.0;
+    perf_frames = 0;
+}
+
+// F1: fps e tempo de quadro no canto de cima, por cima de qualquer cena
+void draw_perf_readout()
+{
+    char line[48];
+    int w;
+
+    snprintf(line, sizeof(line), "fps %d · quadro %.1f ms", perf_fps, perf_frame_ms);
+    w = al_get_text_width(font, line);
+    al_draw_filled_rectangle((float)(SCREEN_W - w - 12), 2.0f, (float)(SCREEN_W - 2), 14.0f, UI_INK);
+    al_draw_text(font, UI_DIM, (float)(SCREEN_W - 7), 4.0f, ALLEGRO_ALIGN_RIGHT, line);
+}
+
 void render()
 {
     GameScene scene = game_get_scene();
+    double draw_start = al_get_time();
 
     // trocou de tela, o foco volta para o primeiro botao
     if (scene != ui_last_scene)
@@ -4331,6 +4374,11 @@ void render()
         draw_howto();
     }
 
+    if (show_debug)
+    {
+        draw_perf_readout();
+    }
+
     // o canvas vai para a janela com escala inteira e barras pretas
     al_set_target_backbuffer(display);
     al_clear_to_color(al_map_rgb(0, 0, 0));
@@ -4338,6 +4386,8 @@ void render()
         screen_off_x, screen_off_y,
         (float)SCREEN_W * screen_scale, (float)SCREEN_H * screen_scale, 0);
 
+    perf_draw_time = perf_draw_time + (al_get_time() - draw_start);
+    perf_frames = perf_frames + 1;
     al_flip_display();
 }
 
@@ -4926,6 +4976,7 @@ int main()
 
     bool done = false;
     bool redraw = true;
+    double tick_start = 0.0;
 
     ALLEGRO_EVENT event;
 
@@ -4944,6 +4995,8 @@ int main()
         switch (event.type)
         {
             case ALLEGRO_EVENT_TIMER:
+                tick_start = al_get_time();
+
                 // a partida so atualiza no estado GAME
                 // hit-stop: o mundo segura uns quadros depois de uma eliminacao;
                 // a entrada continua chegando (#221)
@@ -4993,6 +5046,8 @@ int main()
                 play_pending_sfx();
                 sync_music();
 
+                perf_update_time = perf_update_time + (al_get_time() - tick_start);
+                perf_sample(al_get_time());
                 redraw = true;
                 break;
 
