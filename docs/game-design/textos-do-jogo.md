@@ -120,8 +120,8 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 | CT-27 | scanner, identificado | `Identificação concluída` | 23 | #199 |
 | CT-29 | scanner, cabeçalho | `célula` / `bactéria` | 6 / 7 | #199 |
 | CT-30 | — | `resumo da fase` | — | #202; saiu em 28/11: substituída pela RS-02 |
-| CT-31 | resultados (`pontos`); vitória e game over (`ameaças neutralizadas`) | `pontos` / `ameaças neutralizadas` | 6 / 21 | #202; nos resultados, o segundo rótulo virou a RS-03 em 28/11 |
-| RS-03 | resultados, painel principal | `ameaças eliminadas` | 18 | redesenho de 28/11; substitui a CT-31b nos resultados; casa com a RR-09 e a OB-04 |
+| CT-31 | resultados e game over (`pontos`) | `pontos` | 6 | #202; o segundo rótulo (`ameaças neutralizadas`, 21) foi trocado pela RS-03 em 28/11: nos resultados na Task 8 e na vitória e no game over na Task 9 |
+| RS-03 | resultados, painel principal; vitória e game over, painel de números | `ameaças eliminadas` | 18 | redesenho de 28/11; substitui a CT-31b nas três telas; casa com a RR-09 e a OB-04 |
 | CT-32 | resultados | `agentes identificados` / `bônus de identificação` | 21 / 22 | #202 |
 | CT-33 | resultados | `não obtido` | 10 | #202 |
 | CT-34 | resultados | `enter também continua` | 21 | #202 |
@@ -173,11 +173,18 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 | CT-55 | menu, botão | `INICIAR` | 7 | varredura de 05/11 |
 | CT-56 | pausa/resultados, botão | `CONTINUAR` | 9 | varredura de 05/11 |
 | CT-57 | vitória/game over, botão | `NOVA PARTIDA` | 12 | varredura de 05/11 |
-| CT-58 | vitória, subtítulo | `o paciente recebeu alta: missão cumprida` | 40 | #244 (final da narrativa) |
+| CT-58 | — | `o paciente recebeu alta: missão cumprida` | — | #244; saiu em 28/11: substituída pela VI-02 |
+| VI-02 | vitória, subtítulo centrado (y 38), sobre o quarto de dia (`hospital_vitoria.png` com véu de alfa 150) | `O Léo recebeu alta e vai para casa. Missão cumprida!` | 52 | redesenho de 28/11 (VI-01); substitui a CT-58 |
+| VI-03 | vitória, linha do Nanobô em ciano, centrada (y 54) | `Anotei tudo o que aprendi. Obrigado por me guiar!` | 49 | redesenho de 28/11 (VI-01), voz do Nanobô por decisão do dono; os painéis desceram 16 px (y 58 → 74) e o botão de 268 para 276 |
+| VI-04 | vitória, painel do nome, sob a caixa (y 240), só com a entrada ativa | `até 10 letras · backspace apaga` | 31 | redesenho de 28/11 (VI-01); o nome aceita qualquer caractere do Latin-1 |
 | CT-59 | vitória, linha de estatística | `pontuação final` | 15 | varredura de 05/11 |
 | CT-60 | vitória, rodapé | `enter também começa de novo` | 27 | varredura de 05/11 |
 | CT-61 | game over, título | `GAME OVER` | 9 | varredura de 05/11 |
-| CT-62 | game over, subtítulo | `os sinais vitais caíram demais: a equipe retirou o Nanobô` (vitais em 0) / `o Nanobô foi danificado: a equipe o retirou do corpo` (integridade em 0) | 57 / 52 | #218; #234; #244 |
+| CT-62 | — | `os sinais vitais caíram demais: a equipe retirou o Nanobô` / `o Nanobô foi danificado: a equipe o retirou do corpo` | — | #218; #234; #244; saiu em 28/11: substituída pelas GO-02a e GO-02b |
+| GO-02a | game over, causa (y 52), vitais em 0, sobre o quarto em luz baixa (`hospital_gameover.png` com véu de alfa 100) | `Os vitais do Léo caíram demais: a equipe retirou o Nanobô.` | 58 | redesenho de 28/11 (GO-01); substitui a CT-62a |
+| GO-02b | game over, causa (y 52), integridade do Nanobô em 0 | `O Nanobô foi danificado: a equipe o retirou do corpo.` | 53 | redesenho de 28/11 (GO-01); substitui a CT-62b |
+| GO-03 | game over, linha fixa (y 68) | `O Léo segue no tratamento convencional do hospital.` | 51 | redesenho de 28/11 (GO-01); não há morte |
+| GO-04 | game over, linha do Nanobô em ciano (y 84) | `Anotei os meus erros. Vamos tentar de novo?` | 43 | redesenho de 28/11 (GO-01), voz do Nanobô por decisão do dono; o painel desceu 32 px (y 72 → 104), o botão de 204 para 216 e o rodapé de 248 para 260 |
 | CT-63 | game over, rodapé | `enter também reinicia` | 21 | varredura de 05/11 |
 | CT-64 | menu, botão | `RECORDES` | 8 | #197 |
 | MN-01 | menu, botão do meio (entre INICIAR e RECORDES) / pausa, segundo botão | `COMO JOGAR` | 10 | redesenho de 28/11 (linhas do menu: CT-48, CT-55, MN-01, CT-64, MN-04, CT-47, CT-13); abre a cena como jogar. Substitui o antigo MN-03 |

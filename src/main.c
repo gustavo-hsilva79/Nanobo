@@ -995,10 +995,10 @@ const UiButton* screen_buttons(int* count)
         { 240.0f, 256.0f, 160.0f, 28.0f, "CONTINUAR" }
     };
     static const UiButton victory_items[] = {
-        { 240.0f, 268.0f, 160.0f, 28.0f, "NOVA PARTIDA" }
+        { 240.0f, 276.0f, 160.0f, 28.0f, "NOVA PARTIDA" }
     };
     static const UiButton over_items[] = {
-        { 240.0f, 204.0f, 160.0f, 28.0f, "NOVA PARTIDA" }
+        { 240.0f, 216.0f, 160.0f, 28.0f, "NOVA PARTIDA" }
     };
 
     *count = 1;
@@ -2576,6 +2576,8 @@ void press_opening()
 // fundo escuro, a caixa da entrada atual e o rodape (BR-04)
 void draw_briefing()
 {
+    // o quarto do Léo atrás da ficha; o véu de 60% vem do draw_dialog
+    al_draw_bitmap(hospital_opening, 0.0f, 0.0f, 0);
     draw_dialog(&opening_entries[opening_entry], &opening_dialog);
 
     al_draw_text(font, UI_DIM, SCREEN_W / 2, 24, ALLEGRO_ALIGN_CENTRE,
@@ -3940,64 +3942,73 @@ void draw_victory()
     float left = 36.0f;
     float right = 302.0f;
 
+    // o quarto de dia, leito arrumado: o Leo foi para casa; o veu segura o texto
+    al_draw_bitmap(hospital_victory, 0.0f, 0.0f, 0);
+    al_draw_filled_rectangle(0.0f, 0.0f, (float)SCREEN_W, (float)SCREEN_H, al_map_rgba(0, 0, 0, 150));
+
     al_draw_text(font, UI_TEXT, SCREEN_W / 2, 18, ALLEGRO_ALIGN_CENTRE, "Vitória");
     draw_rule((float)SCREEN_W / 2, 32.0f, 200.0f, UI_FRAME);
-    // final da narrativa (#244): a alta do paciente, com o relatório ao lado
-    al_draw_text(font, UI_DIM, SCREEN_W / 2, 38, ALLEGRO_ALIGN_CENTRE,
-        "o paciente recebeu alta: missão cumprida");
+    // final da narrativa (#244): a alta do Leo e a linha do Nanobo
+    al_draw_text(font, UI_TEXT, SCREEN_W / 2, 38, ALLEGRO_ALIGN_CENTRE,
+        "O Léo recebeu alta e vai para casa. Missão cumprida!");
+    al_draw_text(font, UI_CYAN, SCREEN_W / 2, 54, ALLEGRO_ALIGN_CENTRE,
+        "Anotei tudo o que aprendi. Obrigado por me guiar!");
 
     // o resultado da run, a esquerda
-    draw_panel(24.0f, 58.0f, 290.0f, 92.0f, UI_INK, UI_FRAME);
+    draw_panel(24.0f, 74.0f, 290.0f, 92.0f, UI_INK, UI_FRAME);
 
     snprintf(value, sizeof(value), "%d", score);
-    draw_stat(left, 68.0f, right, "pontuação final", value, UI_AMBER);
+    draw_stat(left, 84.0f, right, "pontuação final", value, UI_AMBER);
 
     snprintf(value, sizeof(value), "%d/%d", run_progress.neutralized, run_progress.threats);
-    draw_stat(left, 86.0f, right, "ameaças neutralizadas", value, UI_TEXT);
+    draw_stat(left, 102.0f, right, "ameaças eliminadas", value, UI_TEXT);
 
     snprintf(value, sizeof(value), "%d/%d", run_progress.identified, run_progress.agents);
-    draw_stat(left, 104.0f, right, "agentes identificados", value, UI_TEXT);
+    draw_stat(left, 120.0f, right, "agentes identificados", value, UI_TEXT);
 
     snprintf(timer_text, sizeof(timer_text), "%02d:%02d", total_seconds / 60,
         total_seconds % 60);
-    draw_stat(left, 122.0f, right, "tempo total", timer_text, UI_TEXT);
+    draw_stat(left, 138.0f, right, "tempo total", timer_text, UI_TEXT);
 
     // o Top 10, a direita, com o registro novo em destaque (#197)
-    draw_ranking_panel(330.0f, 58.0f, 286.0f, ranking_highlight, false);
+    draw_ranking_panel(330.0f, 74.0f, 286.0f, ranking_highlight, false);
 
     // entrada do nome quando a pontuacao entra no Top 10 (#81)
-    draw_panel(24.0f, 158.0f, 290.0f, 84.0f, UI_INK, name_entry_active ? UI_AMBER : UI_FRAME);
+    draw_panel(24.0f, 174.0f, 290.0f, 84.0f, UI_INK, name_entry_active ? UI_AMBER : UI_FRAME);
 
     if (name_entry_active)
     {
         float tx = 40.0f;
         bool blink = (int)(al_get_time() * 2.0) % 2 == 0;
 
-        al_draw_text(font, UI_AMBER, 169.0f, 168.0f, ALLEGRO_ALIGN_CENTRE, "novo recorde no Top 10!");
-        al_draw_text(font, UI_DIM, 169.0f, 186.0f, ALLEGRO_ALIGN_CENTRE, "digite seu nome e tecle enter");
-        al_draw_filled_rectangle(tx, 204.0f, 298.0f, 222.0f, UI_PANEL);
-        al_draw_rectangle(tx + 0.5f, 204.5f, 297.5f, 221.5f, UI_FRAME, 1.0f);
-        al_draw_text(font, UI_TEXT, tx + 6.0f, 209.0f, 0, name_entry);
+        al_draw_text(font, UI_AMBER, 169.0f, 182.0f, ALLEGRO_ALIGN_CENTRE, "novo recorde no Top 10!");
+        al_draw_text(font, UI_DIM, 169.0f, 198.0f, ALLEGRO_ALIGN_CENTRE, "digite seu nome e tecle enter");
+        al_draw_filled_rectangle(tx, 214.0f, 298.0f, 232.0f, UI_PANEL);
+        al_draw_rectangle(tx + 0.5f, 214.5f, 297.5f, 231.5f, UI_FRAME, 1.0f);
+        al_draw_text(font, UI_TEXT, tx + 6.0f, 219.0f, 0, name_entry);
 
         if (blink && name_entry_chars < RANKING_NAME_CHARS)
         {
-            al_draw_text(font, UI_CYAN, tx + 6.0f + (float)al_get_text_width(font, name_entry), 209.0f, 0, "_");
+            al_draw_text(font, UI_CYAN, tx + 6.0f + (float)al_get_text_width(font, name_entry), 219.0f, 0, "_");
         }
+
+        // o limite de 10 caracteres dito na tela
+        al_draw_text(font, UI_DIM, 169.0f, 240.0f, ALLEGRO_ALIGN_CENTRE, "até 10 letras · backspace apaga");
     }
     else if (ranking_highlight >= 0)
     {
         snprintf(value, sizeof(value), "posição %d no Top 10", ranking_highlight + 1);
-        al_draw_text(font, UI_GREEN, 169.0f, 186.0f, ALLEGRO_ALIGN_CENTRE, value);
+        al_draw_text(font, UI_GREEN, 169.0f, 202.0f, ALLEGRO_ALIGN_CENTRE, value);
 
         if (ranking_save_failed)
         {
-            al_draw_text(font, UI_RED, 169.0f, 206.0f, ALLEGRO_ALIGN_CENTRE,
+            al_draw_text(font, UI_RED, 169.0f, 222.0f, ALLEGRO_ALIGN_CENTRE,
                 "não foi possível gravar o recorde");
         }
     }
     else
     {
-        al_draw_text(font, UI_DIM, 169.0f, 194.0f, ALLEGRO_ALIGN_CENTRE,
+        al_draw_text(font, UI_DIM, 169.0f, 210.0f, ALLEGRO_ALIGN_CENTRE,
             "a pontuação não entrou no Top 10");
     }
 
@@ -4005,7 +4016,7 @@ void draw_victory()
     if (!name_entry_active)
     {
         draw_buttons(buttons, count);
-        al_draw_text(font, UI_DIM, SCREEN_W / 2, 304, ALLEGRO_ALIGN_CENTRE,
+        al_draw_text(font, UI_DIM, SCREEN_W / 2, 312, ALLEGRO_ALIGN_CENTRE,
             "enter também começa de novo");
     }
 }
@@ -4020,31 +4031,40 @@ void draw_game_over()
     float left = 152.0f;
     float right = (float)SCREEN_W - 152.0f;
 
+    // o quarto em luz baixa, monitor estavel: o Leo segue internado
+    al_draw_bitmap(hospital_game_over, 0.0f, 0.0f, 0);
+    al_draw_filled_rectangle(0.0f, 0.0f, (float)SCREEN_W, (float)SCREEN_H, al_map_rgba(0, 0, 0, 100));
+
     al_draw_text(font, UI_RED, SCREEN_W / 2, 30, ALLEGRO_ALIGN_CENTRE, "GAME OVER");
     draw_rule((float)SCREEN_W / 2, 44.0f, 200.0f, al_map_rgb(150, 60, 60));
-    // game over da narrativa (#244): a equipe retira o Nanobô e diz por que
-    al_draw_text(font, UI_DIM, SCREEN_W / 2, 52, ALLEGRO_ALIGN_CENTRE,
-        game_over_patient ? "os sinais vitais caíram demais: a equipe retirou o Nanobô"
-                          : "o Nanobô foi danificado: a equipe o retirou do corpo");
+    // game over da narrativa (#244): a equipe retira o Nanobô e diz por que;
+    // o Leo nao morre, segue no tratamento convencional
+    al_draw_text(font, UI_TEXT, SCREEN_W / 2, 52, ALLEGRO_ALIGN_CENTRE,
+        game_over_patient ? "Os vitais do Léo caíram demais: a equipe retirou o Nanobô."
+                          : "O Nanobô foi danificado: a equipe o retirou do corpo.");
+    al_draw_text(font, UI_TEXT, SCREEN_W / 2, 68, ALLEGRO_ALIGN_CENTRE,
+        "O Léo segue no tratamento convencional do hospital.");
+    al_draw_text(font, UI_CYAN, SCREEN_W / 2, 84, ALLEGRO_ALIGN_CENTRE,
+        "Anotei os meus erros. Vamos tentar de novo?");
 
-    draw_panel(140.0f, 72.0f, 360.0f, 96.0f, UI_INK, UI_FRAME);
+    draw_panel(140.0f, 104.0f, 360.0f, 96.0f, UI_INK, UI_FRAME);
 
     snprintf(value, sizeof(value), "%d", score);
-    draw_stat(left, 82.0f, right, "pontos", value, UI_TEXT);
+    draw_stat(left, 114.0f, right, "pontos", value, UI_TEXT);
 
     snprintf(value, sizeof(value), "%d/%d", run_progress.neutralized, run_progress.threats);
-    draw_stat(left, 102.0f, right, "ameaças neutralizadas", value, UI_TEXT);
+    draw_stat(left, 134.0f, right, "ameaças eliminadas", value, UI_TEXT);
 
     snprintf(value, sizeof(value), "%d/%d", run_progress.identified, run_progress.agents);
-    draw_stat(left, 122.0f, right, "agentes identificados", value, UI_TEXT);
+    draw_stat(left, 154.0f, right, "agentes identificados", value, UI_TEXT);
 
     snprintf(timer_text, sizeof(timer_text), "%02d:%02d", total_seconds / 60,
         total_seconds % 60);
-    draw_stat(left, 142.0f, right, "tempo total", timer_text, UI_TEXT);
+    draw_stat(left, 174.0f, right, "tempo total", timer_text, UI_TEXT);
 
     draw_buttons(buttons, count);
 
-    al_draw_text(font, UI_DIM, SCREEN_W / 2, 248, ALLEGRO_ALIGN_CENTRE,
+    al_draw_text(font, UI_DIM, SCREEN_W / 2, 260, ALLEGRO_ALIGN_CENTRE,
         "enter também reinicia");
 }
 
