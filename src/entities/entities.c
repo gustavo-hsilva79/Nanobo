@@ -59,7 +59,7 @@ static const Current phase_one_currents[] =
 
 // muco das vias aereas: os cilios empurram o muco rumo a garganta; duas faixas
 // levam o nanobo e os virus livres para a direita (#89, revisao de 14/11).
-// As faixas seguem as correntes de muco desenhadas em mapa_fase2.png
+// as faixas seguem as correntes de muco desenhadas em mapa_fase2.png
 static const Current phase_two_currents[] =
 {
     { 0.0f, 80.0f, 1920.0f, 130.0f, 40.0f, 0.0f },

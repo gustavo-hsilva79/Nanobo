@@ -23,7 +23,7 @@ _Static_assert(__STDC_VERSION__ >= 201112L, "compilar com /std:c11 (ver Nanobo.v
 #define SCREEN_H 360
 
 // faixa visivel do mundo; multipla de 32, o lado de um tile do mapa futuro.
-// Cresceu de 256 para 320 com o HUD de duas linhas (#243)
+// cresceu de 256 para 320 com o HUD de duas linhas (#243)
 #define PLAY_H 320
 
 // HUD no rodape da tela logica: duas linhas; a ficha do scanner flutua no mundo

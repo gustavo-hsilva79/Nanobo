@@ -3018,7 +3018,7 @@ int tutorial_hint_target(void)
     return hint_target;
 }
 
-// Verifica se a fase atual possui pelo menos uma bactéria.
+// a fase atual tem pelo menos uma bacteria
 bool phase_has_bacteria()
 {
     int i;

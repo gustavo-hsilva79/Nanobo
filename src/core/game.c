@@ -1,17 +1,17 @@
 #include "game.h"
 
-static GameScene currentScene = GAME_SCENE_MENU;
+static GameScene current_scene = GAME_SCENE_MENU;
 // origem do "como jogar", gravada ao entrar: a volta so vale para ela
-static GameScene howtoOrigin = GAME_SCENE_MENU;
+static GameScene howto_origin = GAME_SCENE_MENU;
 
 GameScene game_get_scene(void)
 {
-    return currentScene;
+    return current_scene;
 }
 
 GameScene game_howto_origin(void)
 {
-    return howtoOrigin;
+    return howto_origin;
 }
 
 // troca a cena atual, mas so se a transicao existir no fluxo
@@ -22,63 +22,63 @@ void game_set_scene(GameScene scene)
         return;
     }
 
-    if (scene == currentScene)
+    if (scene == current_scene)
     {
         return;
     }
 
-    switch (currentScene)
+    switch (current_scene)
     {
         case GAME_SCENE_MENU:
             if (scene == GAME_SCENE_BRIEFING)
             {
-                currentScene = scene;
+                current_scene = scene;
             }
             else if (scene == GAME_SCENE_HOWTO)
             {
-                howtoOrigin = GAME_SCENE_MENU;
-                currentScene = scene;
+                howto_origin = GAME_SCENE_MENU;
+                current_scene = scene;
             }
             break;
 
         case GAME_SCENE_BRIEFING:
             if (scene == GAME_SCENE_GAME)
             {
-                currentScene = scene;
+                current_scene = scene;
             }
             break;
 
         case GAME_SCENE_GAME:
             if (scene == GAME_SCENE_PAUSE || scene == GAME_SCENE_RESULTS || scene == GAME_SCENE_GAME_OVER)
             {
-                currentScene = scene;
+                current_scene = scene;
             }
             break;
 
         case GAME_SCENE_PAUSE:
             if (scene == GAME_SCENE_GAME)
             {
-                currentScene = scene;
+                current_scene = scene;
             }
             else if (scene == GAME_SCENE_HOWTO)
             {
-                howtoOrigin = GAME_SCENE_PAUSE;
-                currentScene = scene;
+                howto_origin = GAME_SCENE_PAUSE;
+                current_scene = scene;
             }
             break;
 
         case GAME_SCENE_HOWTO:
             // a volta so vale para a cena de onde ele abriu
-            if (scene == howtoOrigin)
+            if (scene == howto_origin)
             {
-                currentScene = scene;
+                current_scene = scene;
             }
             break;
 
         case GAME_SCENE_RESULTS:
             if (scene == GAME_SCENE_GAME || scene == GAME_SCENE_VICTORY)
             {
-                currentScene = scene;
+                current_scene = scene;
             }
             break;
 
@@ -86,7 +86,7 @@ void game_set_scene(GameScene scene)
             // briefing antes de toda partida, pulavel com ESC
             if (scene == GAME_SCENE_BRIEFING)
             {
-                currentScene = scene;
+                current_scene = scene;
             }
             break;
 
@@ -94,7 +94,7 @@ void game_set_scene(GameScene scene)
             // mesma regra: toda partida passa pelo briefing
             if (scene == GAME_SCENE_BRIEFING)
             {
-                currentScene = scene;
+                current_scene = scene;
             }
             break;
     }

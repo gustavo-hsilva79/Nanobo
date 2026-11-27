@@ -10,10 +10,10 @@
 // ocupa as vagas seguintes, uma por filha (#217)
 #define MAX_AGENTS 24
 
-// quantas fases a partida tem hoje (#M4: Fase 1 e a Fase 2 minima de virus)
+// quantas fases a partida tem: bacterias, virus e fungos
 #define PHASE_COUNT 3
 
-// tamanho total do mundo em pixels: 3 telas de 640 por 2 faixas de 256
+// tamanho total do mundo em pixels: 3 faixas de 640 de largura, 512 de altura
 #define WORLD_W 1920
 #define WORLD_H 512
 

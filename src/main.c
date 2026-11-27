@@ -22,7 +22,7 @@
 #define BUTTON_H 28
 
 // medidas do HUD: tudo derivado do painel, nunca coordenada magica.
-// Duas linhas de 8 px separadas por 8 px, com 8 px em cima e embaixo (#243)
+// duas linhas de 8 px separadas por 8 px, com 8 px em cima e embaixo (#243)
 #define HUD_MARGIN 8
 #define HUD_LINES 2
 #define HUD_LINE_H 16
@@ -112,8 +112,8 @@ bool game_over_patient = false;
 
 // icones da interface: scanner e as duas armas
 ALLEGRO_BITMAP* scanner_icon = NULL;
-ALLEGRO_BITMAP* ruptura_icon = NULL;
-ALLEGRO_BITMAP* dissolucao_icon = NULL;
+ALLEGRO_BITMAP* rupture_icon = NULL;
+ALLEGRO_BITMAP* dissolution_icon = NULL;
 
 // icones da Reserva, da Neutralizacao e da Lise, no traco das armas (#242)
 ALLEGRO_BITMAP* reserve_icon = NULL;
@@ -568,15 +568,15 @@ bool load_resources()
         return false;
     }
 
-    ruptura_icon = al_load_bitmap("assets/sprites/icone_ruptura.png");
-    if (!ruptura_icon)
+    rupture_icon = al_load_bitmap("assets/sprites/icone_ruptura.png");
+    if (!rupture_icon)
     {
         printf("couldn't load ruptura icon\n");
         return false;
     }
 
-    dissolucao_icon = al_load_bitmap("assets/sprites/icone_dissolucao.png");
-    if (!dissolucao_icon)
+    dissolution_icon = al_load_bitmap("assets/sprites/icone_dissolucao.png");
+    if (!dissolution_icon)
     {
         printf("couldn't load dissolucao icon\n");
         return false;
@@ -856,16 +856,16 @@ void free_resources()
         impacts_sheet = NULL;
     }
 
-    if (dissolucao_icon)
+    if (dissolution_icon)
     {
-        al_destroy_bitmap(dissolucao_icon);
-        dissolucao_icon = NULL;
+        al_destroy_bitmap(dissolution_icon);
+        dissolution_icon = NULL;
     }
 
-    if (ruptura_icon)
+    if (rupture_icon)
     {
-        al_destroy_bitmap(ruptura_icon);
-        ruptura_icon = NULL;
+        al_destroy_bitmap(rupture_icon);
+        rupture_icon = NULL;
     }
 
     if (scanner_icon)
@@ -2386,8 +2386,8 @@ ALLEGRO_COLOR faded_color(ALLEGRO_COLOR color, float alpha)
     return al_map_rgba_f(r * alpha, g * alpha, b * alpha, a * alpha);
 }
 
-// tampa de tecla: nome em ciano numa caixa de 12 px com borda ciano e fundo
-// de tinta, 2 px de folga de cada lado; devolve a largura ocupada
+// tampa de tecla: nome em ciano numa caixa de 14 px com borda ciano e fundo
+// de tinta, KEY_CAP_PAD de folga de cada lado; devolve a largura ocupada
 float draw_key_cap(float x, float y, const char* name, float alpha)
 {
     float w = (float)(al_get_text_width(font, name) + 2 * KEY_CAP_PAD);
@@ -2884,7 +2884,7 @@ void draw_hud()
         state_text = "recarga";
     }
 
-    laser_icon = player.laser == LASER_GRAM_POSITIVE ? ruptura_icon : dissolucao_icon;
+    laser_icon = player.laser == LASER_GRAM_POSITIVE ? rupture_icon : dissolution_icon;
 
     // o HUD diz a ferramenta pelo nome e o que ela atinge (#199, #243)
     module_name = player.laser == LASER_GRAM_POSITIVE ? "<wR:Ruptura> · parede" : "<wD:Dissolução> · membrana";
@@ -2924,7 +2924,7 @@ void draw_hud()
     // o nome da arma sai na cor dela (<wX:...>)
     draw_marked_text((float)x_weapon, (float)hud_y(0), UI_TEXT, module_name);
 
-    // a Reserva ainda nao tem icone proprio (Etapa 3): uma capsula provisoria
+    // cada arma desenha o proprio icone ao lado do nome
     if (player.laser == LASER_RESERVE)
     {
         al_draw_bitmap(reserve_icon, (float)x_icon, (float)(hud_y(0) - 4), 0);
@@ -3693,8 +3693,8 @@ void draw_howto_icon(float x, float y)
     {
         // as 6 armas: fase 1 em cima, fases 2 e 3 embaixo
         row_y = y + 4.0f;
-        al_draw_bitmap(ruptura_icon, x, row_y, 0);
-        al_draw_bitmap(dissolucao_icon, x + 16.0f, row_y, 0);
+        al_draw_bitmap(rupture_icon, x, row_y, 0);
+        al_draw_bitmap(dissolution_icon, x + 16.0f, row_y, 0);
         al_draw_bitmap(reserve_icon, x + 32.0f, row_y, 0);
         row_y = y + 28.0f;
         al_draw_bitmap(antibody_icon, x, row_y, 0);
