@@ -71,7 +71,7 @@ _Static_assert((HUD_LINES - 1) * HUD_LINE_H + HUD_FONT_H + 2 * HUD_MARGIN <= PAN
 #define UI_VEIL(a)   al_map_rgba_f(0.059f * (a), 0.098f * (a), 0.133f * (a), (a))
 
 // folga de cada lado do nome na tampa de tecla: [tecla] ocupa o texto + 4 px
-#define KEY_CAP_PAD 2
+#define KEY_CAP_PAD 3
 
 // mapa recuado e silhueta neutra: os agentes precisam se destacar do vermelho (#220)
 #define MAP_TINT        al_map_rgb_f(0.68f, 0.62f, 0.66f)
@@ -2310,8 +2310,9 @@ float draw_key_cap(float x, float y, const char* name, float alpha)
 {
     float w = (float)(al_get_text_width(font, name) + 2 * KEY_CAP_PAD);
 
-    al_draw_filled_rectangle(x, y - 2.0f, x + w, y + 10.0f, faded_color(UI_INK, alpha));
-    al_draw_rectangle(x + 0.5f, y - 1.5f, x + w - 0.5f, y + 9.5f, faded_color(UI_KEY, alpha), 1.0f);
+    // 14 px de altura: a borda nao encosta nas letras nem nos acentos e cedilhas
+    al_draw_filled_rectangle(x, y - 3.0f, x + w, y + 11.0f, faded_color(UI_INK, alpha));
+    al_draw_rectangle(x + 0.5f, y - 2.5f, x + w - 0.5f, y + 10.5f, faded_color(UI_KEY, alpha), 1.0f);
     al_draw_text(font, faded_color(UI_KEY, alpha), x + (float)KEY_CAP_PAD, y, 0, name);
 
     return w;
@@ -3271,9 +3272,10 @@ void draw_game()
         float hx = floorf(view_x(agents[tutorial_hint_target()].x) - (float)hint_w / 2.0f);
         float hy = view_y(agents[tutorial_hint_target()].y) - agent_radius(tutorial_hint_target()) - 20.0f;
 
-        // 2 px a mais em cima e embaixo: a tampa de tecla de 12 px nao encosta na borda
-        al_draw_filled_rectangle(hx - 4.0f, hy - 5.0f, hx + (float)hint_w + 4.0f, hy + 13.0f, UI_INK);
-        al_draw_rectangle(hx - 3.5f, hy - 4.5f, hx + (float)hint_w + 3.5f, hy + 12.5f, UI_CYAN, 1.0f);
+        // a tampa de tecla de 14 px cabe com folga; a moldura neutra nao briga
+        // com a borda ciano da tecla
+        al_draw_filled_rectangle(hx - 4.0f, hy - 6.0f, hx + (float)hint_w + 4.0f, hy + 14.0f, UI_INK);
+        al_draw_rectangle(hx - 3.5f, hy - 5.5f, hx + (float)hint_w + 3.5f, hy + 13.5f, UI_FRAME, 1.0f);
         draw_marked_text(hx, hy, UI_CYAN, hint);
     }
 

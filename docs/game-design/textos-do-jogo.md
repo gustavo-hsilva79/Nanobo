@@ -284,7 +284,7 @@ Regras que valem para todo texto novo:
 - Títulos e rótulos em **caixa de frase** (`Fase 1 concluída`, `Objetivo da missão`, `Identificação concluída`).
 - Caixa alta só em texto **sem acento** (`INICIAR`, `CONTINUAR`, `COMO JOGAR` quando não houver acento).
 - Nenhum texto desenhado pode ter maiúscula acentuada. `NANOBÔ` é exceção registrada: é o nome do jogo, desenhado em bitmap ampliado 3×, onde o glifo é legível mas não correto.
-- **Tecla em caixinha (27/11, decisão do dono):** o nome de tecla ou botão vem entre colchetes (`[enter]`, `[botão direito]`) e é desenhado como tampa de tecla: nome em `UI_KEY` numa caixa de 12 px de altura com borda `UI_KEY` e fundo `UI_INK`, 2 px de folga de cada lado. Os colchetes não aparecem nem contam nos caracteres (como as chaves do `{termo}`), mas cada tecla soma **+4 px** à largura da linha (`marked_text_width`). Só nomes de tecla/botão levam colchetes, nunca verbos.
+- **Tecla em caixinha (27/11, decisão do dono):** o nome de tecla ou botão vem entre colchetes (`[enter]`, `[botão direito]`) e é desenhado como tampa de tecla: nome em `UI_KEY` numa caixa de 14 px de altura com borda `UI_KEY` e fundo `UI_INK`, 3 px de folga de cada lado. Os colchetes não aparecem nem contam nos caracteres (como as chaves do `{termo}`), mas cada tecla soma **+6 px** à largura da linha (`marked_text_width`). Só nomes de tecla/botão levam colchetes, nunca verbos.
 - Antes de commitar texto novo, rodar `python -c "print([c for c in 'TEXTO' if ord(c) > 0xFF])"` (codepoint fora de Latin-1 vira `^` na tela).
 
 ## 2.2 Relatório da fase (resultados, #210 e #223)

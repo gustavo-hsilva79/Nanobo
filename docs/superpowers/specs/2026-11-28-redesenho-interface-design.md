@@ -58,7 +58,7 @@ Tela lógica 640×360, fonte de 8 px por caractere, sem maiúscula acentuada, bo
 
 ### Paleta e teclas
 - Decisão do dono em 27/11 ([`decisoes.md`](../../game-design/decisoes.md) §"Interface (26/11/2026)", item 10): paleta clínica em azul-petróleo nas constantes `UI_*` de `main.c` (`UI_INK` `#0F1922`, `UI_PANEL` `#16242F`, `UI_FRAME` `#3A5566`, `UI_TEXT` `#EEF3F6`, `UI_DIM` `#9DB2C2`, `UI_AMBER` `#FFC94A`, `UI_KEY`/`UI_CYAN` `#6FE7F2`, `UI_RED` `#FF6B6B`, `UI_GREEN` `#5FD6A0`); véus de tela em tinta (`UI_VEIL`), não em preto.
-- `[tecla]` no texto vira tampa de tecla: nome em `UI_KEY`, caixa de 12 px centrada na linha de 8 px, borda `UI_KEY`, fundo `UI_INK`, 2 px de folga de cada lado. O mesmo parser do `{termo}` (`draw_dialog_line`, `draw_marked_text`, `marked_text_width`, mais `draw_marked_text_aligned` para centro e direita); os colchetes não contam nos caracteres, cada tecla soma 4 px.
+- `[tecla]` no texto vira tampa de tecla: nome em `UI_KEY`, caixa de 14 px centrada na linha de 8 px, borda `UI_KEY`, fundo `UI_INK`, 3 px de folga de cada lado. O mesmo parser do `{termo}` (`draw_dialog_line`, `draw_marked_text`, `marked_text_width`, mais `draw_marked_text_aligned` para centro e direita); os colchetes não contam nos caracteres, cada tecla soma 6 px; a dica do mundo tem moldura neutra `UI_FRAME` para não dobrar a borda ciano.
 - Vale nas páginas e no rodapé do "como jogar", no lembrete e no rodapé da Pausa, nos rodapés do menu, dos RECORDES, da abertura, dos Resultados, da Vitória e do Game Over, em `F11 tela cheia`, na dica do mundo, na ficha do scanner e nas instruções do nome na Vitória.
 
 ### Pausa
