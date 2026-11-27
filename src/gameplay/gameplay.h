@@ -365,6 +365,42 @@ float attack_cooldown_left();
 int threats_left();
 bool phase_completed();
 
+// barras em segmentos: ceil(valor / maximo * 10), de 0 a 10; maximo <= 0 da 0
+#define LIFE_SEGMENTS 10
+int life_segments(float value, float max);
+
+// pulso do coracao: 1 s com os vitais cheios, encurta ate 0,4 s em 0
+#define HEART_PERIOD_FULL 1.0f
+#define HEART_PERIOD_EMPTY 0.4f
+float heart_period(float vitals);
+
+// quadro da mira: pronta, recarregando ou travada (defesa, arma errada, Reserva vazia)
+typedef enum
+{
+    AIM_READY = 0,
+    AIM_RELOAD = 1,
+    AIM_LOCKED = 2
+} AimFrame;
+
+AimFrame aim_frame(void);
+
+// aviso de objetivo: aparece no inicio da fase e quando a meta vira
+#define OBJECTIVE_NOTICE_TIME 4.0f
+#define OBJECTIVE_REPEAT_GAP 1.0f
+
+typedef enum
+{
+    GOAL_PHASE = 0,
+    GOAL_DESTINATION = 1
+} ObjectiveGoal;
+
+// meta de agora: sem ameacas, ir ao destino
+ObjectiveGoal objective_goal(void);
+
+// segundos que faltam do aviso na tela, 0 sem aviso; e a meta que ele mostra
+float objective_notice_left(void);
+ObjectiveGoal objective_notice_goal(void);
+
 // evento de audio da ultima acao: o main toca o som, o gameplay fica sem Allegro (#31)
 typedef enum
 {

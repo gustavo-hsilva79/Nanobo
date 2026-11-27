@@ -2438,6 +2438,129 @@ bool phase_completed()
     return phase_finished;
 }
 
+// barra em segmentos: multiplica antes de dividir para 30 de 100 dar 3, nao 4
+int life_segments(float value, float max)
+{
+    int n;
+
+    if (max <= 0.0f)
+    {
+        return 0;
+    }
+
+    n = (int)ceilf(value * (float)LIFE_SEGMENTS / max);
+
+    if (n < 0)
+    {
+        return 0;
+    }
+
+    if (n > LIFE_SEGMENTS)
+    {
+        return LIFE_SEGMENTS;
+    }
+
+    return n;
+}
+
+// pulso do coracao: linear entre 0,4 s (vitais 0) e 1 s (vitais cheios)
+float heart_period(float vitals)
+{
+    float t = vitals / PATIENT_VITALS_MAX;
+
+    if (t < 0.0f)
+    {
+        t = 0.0f;
+    }
+
+    if (t > 1.0f)
+    {
+        t = 1.0f;
+    }
+
+    return HEART_PERIOD_EMPTY + (HEART_PERIOD_FULL - HEART_PERIOD_EMPTY) * t;
+}
+
+// mira: travada quando o disparo nao vai sair, em recarga, ou pronta
+AimFrame aim_frame(void)
+{
+    if (defense_state() == 1 || fire_locked()
+        || (player.laser == LASER_RESERVE && reserve_charges_left() <= 0))
+    {
+        return AIM_LOCKED;
+    }
+
+    if (!attack_ready())
+    {
+        return AIM_RELOAD;
+    }
+
+    return AIM_READY;
+}
+
+// aviso de objetivo: a fase rearma o disparo e o update_match o conduz
+static bool objective_armed = true;
+static float objective_left = 0.0f;
+static float objective_since = 0.0f;
+static ObjectiveGoal objective_last = GOAL_PHASE;
+static ObjectiveGoal objective_shown = GOAL_PHASE;
+
+ObjectiveGoal objective_goal(void)
+{
+    return threats_left() == 0 ? GOAL_DESTINATION : GOAL_PHASE;
+}
+
+float objective_notice_left(void)
+{
+    return objective_left;
+}
+
+ObjectiveGoal objective_notice_goal(void)
+{
+    return objective_shown;
+}
+
+// dispara no primeiro quadro e a cada virada; com card na tela o tempo nao corre
+static void update_objective_notice(double dt)
+{
+    ObjectiveGoal goal = objective_goal();
+
+    if (objective_armed)
+    {
+        objective_armed = false;
+        objective_last = goal;
+        objective_shown = goal;
+        objective_left = OBJECTIVE_NOTICE_TIME;
+        objective_since = 0.0f;
+    }
+    else if (goal != objective_last)
+    {
+        objective_last = goal;
+        objective_shown = goal;
+
+        // virada logo depois da outra so troca a meta: nao vira um segundo aviso
+        if (objective_since >= OBJECTIVE_REPEAT_GAP)
+        {
+            objective_left = OBJECTIVE_NOTICE_TIME;
+        }
+
+        objective_since = 0.0f;
+    }
+
+    if (pending_card() != CARD_NONE)
+    {
+        return;
+    }
+
+    objective_since = objective_since + (float)dt;
+    objective_left = objective_left - (float)dt;
+
+    if (objective_left < 0.0f)
+    {
+        objective_left = 0.0f;
+    }
+}
+
 // conclusao: sem ameacas e com o nanobo no destino, uma vez por partida (#26)
 static void conclude_phase_if_ready()
 {
@@ -2774,6 +2897,13 @@ static void start_phase(int index)
     }
 
     scan_target = -1;
+
+    // o aviso de objetivo volta no primeiro quadro da fase
+    objective_armed = true;
+    objective_left = 0.0f;
+    objective_since = 0.0f;
+    objective_last = GOAL_PHASE;
+    objective_shown = GOAL_PHASE;
 
     // a camera ja nasce no lugar certo do mundo novo
     update_camera();
@@ -4323,6 +4453,9 @@ void update_match(double dt)
 {
     float dir_x = 0.0f;
     float dir_y = 0.0f;
+
+    // o aviso dispara mesmo com card na tela; o tempo dele so corre sem card
+    update_objective_notice(dt);
 
     // card de conceito na tela: a partida fica parada ate ele fechar (#222)
     if (pending_card() != CARD_NONE)
