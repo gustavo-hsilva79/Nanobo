@@ -103,14 +103,10 @@ ALLEGRO_BITMAP* nanobo = NULL;
 // game over pelos vitais do paciente (true) ou pela integridade do nanobo (#234)
 bool game_over_patient = false;
 
-// coracao do HUD: icone dos sinais vitais (#19, #218)
-ALLEGRO_BITMAP* heart_icon = NULL;
-
-// icones da interface: scanner, as duas armas e a defesa
+// icones da interface: scanner e as duas armas
 ALLEGRO_BITMAP* scanner_icon = NULL;
 ALLEGRO_BITMAP* ruptura_icon = NULL;
 ALLEGRO_BITMAP* dissolucao_icon = NULL;
-ALLEGRO_BITMAP* defense_icon = NULL;
 
 // icones da Reserva, da Neutralizacao e da Lise, no traco das armas (#242)
 ALLEGRO_BITMAP* reserve_icon = NULL;
@@ -545,13 +541,6 @@ bool load_resources()
         return false;
     }
 
-    heart_icon = al_load_bitmap("assets/sprites/icone_coracao.png");
-    if (!heart_icon)
-    {
-        printf("couldn't load heart icon\n");
-        return false;
-    }
-
     scanner_icon = al_load_bitmap("assets/sprites/icone_scanner.png");
     if (!scanner_icon)
     {
@@ -570,13 +559,6 @@ bool load_resources()
     if (!dissolucao_icon)
     {
         printf("couldn't load dissolucao icon\n");
-        return false;
-    }
-
-    defense_icon = al_load_bitmap("assets/sprites/icone_defesa.png");
-    if (!defense_icon)
-    {
-        printf("couldn't load defense icon\n");
         return false;
     }
 
@@ -744,18 +726,6 @@ void free_resources()
             al_destroy_bitmap(bacillus_grey[v]);
             bacillus_grey[v] = NULL;
         }
-    }
-
-    if (heart_icon)
-    {
-        al_destroy_bitmap(heart_icon);
-        heart_icon = NULL;
-    }
-
-    if (defense_icon)
-    {
-        al_destroy_bitmap(defense_icon);
-        defense_icon = NULL;
     }
 
     if (reserve_icon)
@@ -1374,10 +1344,10 @@ void draw_scan_card(int target, bool from_cursor, float card_y)
         state = "Identificação concluída";
     }
 
-    // a celula infectada so aparece como tal depois da leitura (#87)
+    // a categoria so e desenhada sem leitura, entao a celula e sempre "celula"
     if (agents[target].species == SPECIES_CELL)
     {
-        category = agents[target].layers > 0 && cell_virus(target) != -1 ? "célula infectada" : "célula";
+        category = "célula";
     }
     else if (agents[target].species == SPECIES_VIRUS)
     {
@@ -4131,8 +4101,8 @@ void render()
     // trocou de tela, o foco volta para o primeiro botao
     if (scene != ui_last_scene)
     {
-        // de volta do como jogar, a pausa foca o COMO JOGAR de onde saiu
-        ui_focus = scene == GAME_SCENE_PAUSE && ui_last_scene == GAME_SCENE_HOWTO ? 1 : 0;
+        // de volta do como jogar, a pausa e o menu focam o COMO JOGAR de onde saiu
+        ui_focus = (scene == GAME_SCENE_PAUSE || scene == GAME_SCENE_MENU) && ui_last_scene == GAME_SCENE_HOWTO ? 1 : 0;
         ui_last_scene = scene;
 
         // na fase o cursor do sistema vira mira; nas outras telas ele volta (#198)

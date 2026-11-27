@@ -137,7 +137,7 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 | SC-11 | scanner, marcador da camada 1 (linha de estado, à direita) | `forma` | 5 | redesenho de 28/11; quadrado 6×6 apagado `UI_SLOT`, aceso `UI_AMBER` |
 | SC-12 | scanner, marcador da camada 2, bactéria | `Gram e espécie` | 14 | redesenho de 28/11; aceso `UI_AMBER`, verde com a identificação |
 | SC-13 | scanner, marcador da camada 2, vírus, célula e fungo | `estrutura` | 9 | redesenho de 28/11; aceso `UI_AMBER`, verde com a identificação |
-| CT-44 | scanner, categoria | `vírus` / `célula infectada` (depois da leitura) | 5 / 16 | Fase 2 mínima (04/11); #87 |
+| CT-44 | scanner, categoria (só sem leitura; a variante `célula infectada` saiu da linha 0 do cartão em 27/11) | `vírus` / `célula` | 5 / 6 | Fase 2 mínima (04/11); #87 |
 | CT-44b | scanner, categoria, fungo (levedura, bolor e esporo pousado) | `fungo` | 5 | #228 |
 | CT-45 | resultados, título | `Fase %d concluída` | 17 | Fase 2 mínima (04/11) |
 | CT-46 | vitória / game over | `tempo total` / `recorde` | 11 / 7 | Recorde mínimo (04/11) |
