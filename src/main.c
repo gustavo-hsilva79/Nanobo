@@ -1418,29 +1418,27 @@ void draw_scan_card(int target, bool from_cursor, float card_y)
 
 void draw_menu()
 {
-    char objective[96];
-    char bonus[96];
     char record[48];
     int count;
 
     const UiButton* buttons = screen_buttons(&count);
 
-    float panel_x = 40.0f;
-    float panel_w = (float)SCREEN_W - 80.0f;
-    float col_x = panel_x + 12.0f;
+    // tempo real: o menu nao tem match_time
+    double now = al_get_time();
 
-    /*
-     Menu organizado para acomodar:
-     - movimentacao;
-     - combate;
-     - equipamentos;
-     - objetivo dinamico.
-    */
-    float controls_y = 66.0f;
-    float controls_h = 136.0f;
+    /* Fundo: vaso sanguineo com hemacias deslizando para a esquerda */
+    if (menu_background)
+    {
+        al_draw_bitmap(menu_background, 0.0f, 0.0f, 0);
+    }
 
-    float goal_y = 208.0f;
-    float goal_h = 48.0f;
+    if (menu_cells)
+    {
+        float offset = (float)fmod(now * 8.0, (double)SCREEN_W);
+
+        al_draw_bitmap(menu_cells, -offset, 0.0f, 0);
+        al_draw_bitmap(menu_cells, (float)SCREEN_W - offset, 0.0f, 0);
+    }
 
     /* Titulo */
     if (title_bitmap)
@@ -1463,6 +1461,19 @@ void draw_menu()
             (float)(th * TITLE_SCALE),
             0
         );
+
+        // Nanobo parado, flutuando a direita do titulo
+        if (nanobo)
+        {
+            float title_right = floorf(((float)SCREEN_W + (float)(tw * TITLE_SCALE)) / 2.0f);
+            int frame = (int)(now / 0.22) % 4;
+            float float_y = 2.0f * (float)sin(2.0 * 3.14159265358979 * now / 2.0);
+
+            al_draw_bitmap_region(nanobo, (float)(frame * PLAYER_FRAME),
+                (float)(PLAYER_FACING_DOWN * PLAYER_FRAME),
+                (float)PLAYER_FRAME, (float)PLAYER_FRAME,
+                title_right + 24.0f, 26.0f + float_y, 0);
+        }
     }
 
     al_draw_text(
@@ -1472,170 +1483,6 @@ void draw_menu()
         52,
         ALLEGRO_ALIGN_CENTRE,
         "DEFENDA O ORGANISMO"
-    );
-
-    /* =========================================
-       CONTROLES
-       ========================================= */
-
-    draw_panel(
-        panel_x,
-        controls_y,
-        panel_w,
-        controls_h,
-        UI_INK,
-        UI_FRAME
-    );
-
-    al_draw_text(
-        font,
-        UI_AMBER,
-        col_x,
-        controls_y + 8.0f,
-        0,
-        "Como jogar"
-    );
-
-    /* Movimentacao */
-
-    al_draw_text(
-        font,
-        UI_AMBER,
-        col_x,
-        controls_y + 22.0f,
-        0,
-        "Movimentação"
-    );
-
-    al_draw_text(
-        font,
-        UI_TEXT,
-        col_x + 120.0f,
-        controls_y + 22.0f,
-        0,
-        "setas ou WASD mover · cursor mirar"
-    );
-
-    /* Combate */
-
-    al_draw_text(
-        font,
-        UI_AMBER,
-        col_x,
-        controls_y + 38.0f,
-        0,
-        "Combate"
-    );
-
-    al_draw_text(
-        font,
-        UI_TEXT,
-        col_x + 120.0f,
-        controls_y + 38.0f,
-        0,
-        "botão esquerdo atirar · botão direito escanear"
-    );
-
-    /* Equipamentos */
-
-    al_draw_text(
-        font,
-        UI_AMBER,
-        col_x,
-        controls_y + 54.0f,
-        0,
-        "Equipamentos"
-    );
-
-    al_draw_text(
-        font,
-        UI_TEXT,
-        col_x + 120.0f,
-        controls_y + 70.0f,
-        0,
-        "1: Ruptura - age na parede celular"
-    );
-
-    al_draw_text(
-        font,
-        UI_TEXT,
-        col_x + 120.0f,
-        controls_y + 86.0f,
-        0,
-        "2: Dissolução - age na camada externa"
-    );
-
-    al_draw_text(
-        font,
-        UI_DIM,
-        col_x,
-        controls_y + 102.0f,
-        0,
-        "1, 2, 3 ou roda: trocar de arma"
-    );
-
-    al_draw_text(
-        font,
-        UI_DIM,
-        col_x,
-        controls_y + 118.0f,
-        0,
-        "interprete as informações do scanner antes de atacar"
-    );
-
-    /* =========================================
-       OBJETIVO DA MISSAO
-       ========================================= */
-
-    draw_panel(
-        panel_x,
-        goal_y,
-        panel_w,
-        goal_h,
-        UI_INK,
-        UI_FRAME
-    );
-
-    al_draw_text(
-        font,
-        UI_AMBER,
-        col_x,
-        goal_y + 8.0f,
-        0,
-        "Objetivo da missão"
-    );
-
-    snprintf(
-        objective,
-        sizeof(objective),
-        "neutralizar as %d bactérias e chegar ao destino",
-        threats_total()
-    );
-
-    al_draw_text(
-        font,
-        UI_TEXT,
-        col_x,
-        goal_y + 22.0f,
-        0,
-        objective
-    );
-
-    snprintf(
-        bonus,
-        sizeof(bonus),
-        "identificar os %d agentes vale +%d pontos",
-        agents_initial(),
-        IDENTIFICATION_BONUS
-    );
-
-    al_draw_text(
-        font,
-        UI_DIM,
-        col_x,
-        goal_y + 34.0f,
-        0,
-        bonus
     );
 
     /* =========================================
@@ -1650,7 +1497,7 @@ void draw_menu()
         SCREEN_W / 2,
         BUTTON_Y + 36,
         ALLEGRO_ALIGN_CENTRE,
-        "enter ou clique para começar"
+        "setas escolhem · enter confirma"
     );
 
     // o melhor do Top 10, com o nome (#34)
@@ -3915,7 +3762,7 @@ void draw_ranking_panel(float x, float y, float w, int highlight)
         al_draw_text(font, UI_DIM, x + w / 2.0f, y + 86.0f, ALLEGRO_ALIGN_CENTRE,
             "nenhum recorde ainda");
         al_draw_text(font, UI_DIM, x + w / 2.0f, y + 102.0f, ALLEGRO_ALIGN_CENTRE,
-            "vença uma partida");
+            "dê alta ao Léo para entrar aqui");
         return;
     }
 

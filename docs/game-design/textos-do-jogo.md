@@ -84,24 +84,25 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 
 | ID | Local | Texto | Caracteres | Origem |
 |---|---|---|---|---|
-| CT-01 | menu, título do painel; título da cena como jogar (HW-00, y 16) | `Como jogar` | 10 | #201; cena própria em 28/11 |
-| CT-02 | menu, grupo 1 | `Movimentação` | 12 | #201 |
-| CT-03 | menu, grupo 1 | `setas ou WASD mover · cursor mirar` | 34 | #201 |
-| CT-04 | menu, grupo 2 | `Combate` | 7 | #201 |
-| CT-05 | menu, grupo 2 | `botão esquerdo atirar · botão direito escanear` | 46 | #201 |
-| CT-06 | menu, grupo 3 | `Equipamentos` | 12 | #201 |
-| CT-07 | menu, grupo 3 | `1, 2, 3 ou roda: trocar de arma` | 31 | #201 + #216 |
-| CT-08 | menu, grupo 3 | `1: Ruptura - age na parede celular` | 34 | decisão 03/11 (noite) |
-| CT-08b | menu, grupo 3 | `2: Dissolução - age na camada externa` | 36 | decisão 03/11 (noite) |
-| CT-09 | menu, painel do objetivo | `Objetivo da missão` | 18 | #201 |
-| CT-10 | menu, painel do objetivo | `neutralizar as %d bactérias e chegar ao destino` | 47 | #201 |
-| CT-11 | menu, painel do objetivo | `identificar os %d agentes vale +%d pontos` | 41 | #201 |
+| CT-01 | título da cena como jogar (HW-00, y 16) | `Como jogar` | 10 | #201; o painel saiu do menu em 28/11 (MN-05), fica o título da cena |
+| CT-02 | — | `Movimentação` | — | #201; saiu do menu em 28/11 (MN-05): o conteúdo foi para a cena como jogar (HW-01 a HW-04) |
+| CT-03 | — | `setas ou WASD mover · cursor mirar` | — | #201; saiu do menu em 28/11 (MN-05): o conteúdo foi para a cena como jogar (HW-01 a HW-04) |
+| CT-04 | — | `Combate` | — | #201; saiu do menu em 28/11 (MN-05): o conteúdo foi para a cena como jogar (HW-01 a HW-04) |
+| CT-05 | — | `botão esquerdo atirar · botão direito escanear` | — | #201; saiu do menu em 28/11 (MN-05): o conteúdo foi para a cena como jogar (HW-01 a HW-04) |
+| CT-06 | — | `Equipamentos` | — | #201; saiu do menu em 28/11 (MN-05): o conteúdo foi para a cena como jogar (HW-01 a HW-04) |
+| CT-07 | — | `1, 2, 3 ou roda: trocar de arma` | — | #201 + #216; saiu do menu em 28/11 (MN-05): o conteúdo foi para a cena como jogar (HW-01 a HW-04) |
+| CT-08 | — | `1: Ruptura - age na parede celular` | — | decisão 03/11 (noite); saiu do menu em 28/11 (MN-05): o conteúdo foi para a cena como jogar (HW-01 a HW-04) |
+| CT-08b | — | `2: Dissolução - age na camada externa` | — | decisão 03/11 (noite); saiu do menu em 28/11 (MN-05): o conteúdo foi para a cena como jogar (HW-01 a HW-04) |
+| CT-09 | — | `Objetivo da missão` | — | #201; saiu do menu em 28/11 (MN-05): o conteúdo foi para a cena como jogar (HW-01 a HW-04) |
+| CT-10 | — | `neutralizar as %d bactérias e chegar ao destino` | — | #201; saiu do menu em 28/11 (MN-05): o conteúdo foi para a cena como jogar (HW-01 a HW-04) |
+| CT-11 | — | `identificar os %d agentes vale +%d pontos` | — | #201; saiu do menu em 28/11 (MN-05): o conteúdo foi para a cena como jogar (HW-01 a HW-04) |
 | CT-11b | resultados, painel dos objetivos secundários | `bônus de vitais` · `+%d` | 15 | #218; ocupa a linha da CT-11 nos resultados |
 | CT-11c | HUD, coluna de vida (x 8 a 92) | duas barras de 10 segmentos sem número nem rótulo: linha 0, ícone do Nanobô + bateria da integridade (ciano); linha 1, coração pulsando + ECG dos vitais do paciente (verde ≥ 60, âmbar ≥ 30, vermelho abaixo) | — | #218; #234; redesenho de 28/11 (HD-01) |
 | CT-11d | mundo, acima do agente da dica | `botão direito: escanear` (some no primeiro scan; volta no tiro num invasor sem leitura) | 23 | #219 |
 | CT-11e | — | `conceito` / `enter ou clique para continuar` | — | #222; saíram em 25/11: a caixa do diário (§3.1) tem cabeçalho, contador `n/N` e triângulo |
 | CT-11f | caixa do diário, título no cabeçalho (DG-01, DG-02) | `Coloração de Gram` (CC-01) / `Resistência e Reserva` (CC-02) | 17 / 21 | #222; linhas em §3.1 |
-| CT-12 | menu, rodapé | `enter ou clique para começar` | 28 | #201 |
+| CT-12 | — | `enter ou clique para começar` | — | #201; saiu em 28/11: substituída pela MN-04 |
+| MN-04 | menu, rodapé dos botões | `setas escolhem · enter confirma` | 31 | redesenho de 28/11 (MN-01); substitui a CT-12 |
 | CT-13 | menu, rodapé | `F11 tela cheia` | 14 | #201 |
 | CT-14 | HUD, linha 1, à direita | `ameaças %d/%d · identificados %d/%d` (`ameaças 0/6 · identificados 0/9`) | 31 (até 35) | #199; juntas na mesma linha em 15/11 (#243) |
 | CT-15 | — | `identificados %d/%d` | — | entrou na CT-14 em 15/11 (#243) |
@@ -138,7 +139,7 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 | CT-46 | vitória / game over | `tempo total` / `recorde` | 11 / 7 | Recorde mínimo (04/11) |
 | CT-47 | menu, rodapé | `recorde %d · %s` (`recorde 1234 · Jogador`) / `nenhum recorde ainda` | até 29 / 20 | Top 10 (#34), 15/11 |
 | CT-48 | menu, subtítulo | `DEFENDA O ORGANISMO` | 19 | varredura de 05/11 |
-| CT-49 | menu, rodapé do painel de controles | `interprete as informações do scanner antes de atacar` | 52 | varredura de 05/11 |
+| CT-49 | — | `interprete as informações do scanner antes de atacar` | — | varredura de 05/11; saiu do menu em 28/11 (MN-05): o conteúdo foi para a cena como jogar (HW-01 a HW-04) |
 | CT-50 | — | `neutralize as bactérias e vá ao destino` | — | varredura de 05/11; encurtada em 15/11 (#243); saiu do HUD em 28/11 (HD-01): vira uma variante do aviso de objetivo OB-01 |
 | CT-51 | — | `vá ao destino` | — | varredura de 05/11; #243; saiu do HUD em 28/11 (HD-01): vira uma variante do aviso de objetivo OB-01 |
 | CT-52 | mundo / marca de destino | `destino` | 7 | varredura de 05/11 |
@@ -158,9 +159,10 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 | CT-62 | game over, subtítulo | `os sinais vitais caíram demais: a equipe retirou o Nanobô` (vitais em 0) / `o Nanobô foi danificado: a equipe o retirou do corpo` (integridade em 0) | 57 / 52 | #218; #234; #244 |
 | CT-63 | game over, rodapé | `enter também reinicia` | 21 | varredura de 05/11 |
 | CT-64 | menu, botão | `RECORDES` | 8 | #197 |
-| MN-03 | menu, botão do meio (entre INICIAR e RECORDES) / pausa, segundo botão | `COMO JOGAR` | 10 | redesenho de 28/11 (MN-01); abre a cena como jogar |
+| MN-01 | menu, botão do meio (entre INICIAR e RECORDES) / pausa, segundo botão | `COMO JOGAR` | 10 | redesenho de 28/11 (linhas do menu: CT-48, CT-55, MN-01, CT-64, MN-04, CT-47, CT-13); abre a cena como jogar. Substitui o antigo MN-03 |
 | CT-65 | painel do Top 10, título | `Top 10` | 6 | #197 |
-| CT-66 | painel do Top 10, vazio | `nenhum recorde ainda` / `vença uma partida` | 20 / 17 | #197 |
+| CT-66 | painel do Top 10, vazio | `nenhum recorde ainda` / `vença uma partida` | 20 / 17 | #197; a segunda linha saiu em 28/11: substituída pela MN-07 |
+| MN-07 | painel do Top 10, vazio (segunda linha) | `dê alta ao Léo para entrar aqui` | 31 | redesenho de 28/11 (MN-06); substitui a CT-66b; liga o recorde à alta do Léo |
 | CT-67 | painel do Top 10 no menu, rodapé | `enter ou esc fecha` | 18 | #197 |
 | CT-68 | vitória, entrada de nome | `novo recorde no Top 10!` | 23 | #81 |
 | CT-69 | vitória, entrada de nome | `digite seu nome e tecle enter` | 29 | #81 |
@@ -176,7 +178,7 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 
 ### Como jogar (cena `HOWTO`, redesenho de 28/11)
 
-Cena própria, aberta pelo botão COMO JOGAR (MN-03) do menu e da pausa; volta para a cena de origem. Título CT-01 em y 16; painel em y 104 com o título da página em `UI_AMBER` em x 120, o contador à direita (x 616) e até 6 linhas em `UI_TEXT` a partir de x 120, a cada 16 px (limite de 60 caracteres, 480 px). `{termo}` sai em âmbar (`draw_marked_text`). Rodapé centrado em y 336.
+Cena própria, aberta pelo botão COMO JOGAR (MN-01) do menu e da pausa; volta para a cena de origem. Título CT-01 em y 16; painel em y 104 com o título da página em `UI_AMBER` em x 120, o contador à direita (x 616) e até 6 linhas em `UI_TEXT` a partir de x 120, a cada 16 px (limite de 60 caracteres, 480 px). `{termo}` sai em âmbar (`draw_marked_text`). Rodapé centrado em y 336.
 
 | ID | Local | Texto | Caracteres | Origem |
 |---|---|---|---|---|
