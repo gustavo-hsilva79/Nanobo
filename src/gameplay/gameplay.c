@@ -4088,6 +4088,8 @@ static float coccus_ai(int index, float dt)
             if (agents[cell].cell_health <= 0.0f)
             {
                 agents[cell].cell_health = 0.0f;
+                // celula perdida sem leitura sai da meta, como na Fase 2 (revisao de 27/11)
+                exclude_from_goal(cell);
                 lose_patient_cell(cell);
                 a->colonizing = false;
                 a->target_cell = -1;
