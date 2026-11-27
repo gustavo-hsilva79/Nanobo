@@ -227,3 +227,19 @@ A #118 continua **aberta** até esses dois cenários serem medidos. Se ficarem p
 - **Leitura:** os seis fundos de 640×360 custam muito mais carregados que os 6 MB de textura bruta, como já acontecera com os mapas (14/11). Agora só um conjunto fica carregado por vez (menu e hemácias no MENU, `fundo_como_jogar` no HOWTO, o fundo do hospital na abertura, na Vitória ou no Game Over; GAME, PAUSE e RESULTS não usam nenhum), e a carga só confere que os seis arquivos existem. O pico de 86,78 MB fica **13,2 MB abaixo** de 100 MB, 7 a 8 MB acima dos ~79 MB de 25/11 (os ícones e a faixa de HUD novos mais o fundo do menu aberto durante a carga). Fica sem mudar a conta: o pior instante é a carga.
 - **Desvio declarado:** os cartões do Diário abrem sozinhos na Fase 1 e seguraram o script, então a medição não cobriu o ciclo Pausa → Como jogar → volta nem as telas de Vitória e Game Over no Release. Esses estados foram exercitados à parte no Debug (capturas em `.superpowers/sdd/2026-11-28-redesenho-interface/capturas/task-10/`) e cada um troca de fundo carregando um só; o custo de um fundo a mais é menor que a folga de 13 MB.
 - **CSVs:** `release.csv` (rejeitado), `release2.csv` e `release3.csv`, em `.superpowers/sdd/2026-11-28-redesenho-interface/mem/` (fora do git).
+
+## 27/11/2026 — tela lógica de 1280×720
+
+- **Build:** branch `refactor/modulos-720p`, `Release|x64` com 0 avisos. O master foi medido no mesmo roteiro, com o mesmo método, para comparar.
+- **Método:** `medir_memoria.ps1 -Seconds 75 -EveryMs 250`, iniciado antes do jogo; `qa_jogo.ps1` abre o menu, entra e sai do como jogar, inicia, pula a abertura, passa cerca de 36 s na Fase 1 avançando os cartões do Diário com ENTER e termina na pausa.
+
+| Build | Pico (MB) | Fase 1 (MB) | Observação |
+|---|---:|---:|---|
+| master (640×360) | 87,29 | ~78 | referência do mesmo roteiro |
+| 1280×720, canvas com cópia de segurança | 96,26 | 79–82 | rejeitado: +9 MB no pico, sobram 3,7 MB até o limite |
+| **1280×720, canvas com `ALLEGRO_NO_PRESERVE_TEXTURE` (adotado)** | **89,95** | ~78 | pico na carga e no menu (t < 8 s) |
+| mesma versão, segunda execução | 89,76 | ~75 | |
+
+- **Leitura:** o canvas de 1280×720 custa 3,7 MB de textura, e o Direct3D guardava uma cópia de segurança dele por ser alvo de desenho. Como o canvas é redesenhado inteiro a cada quadro, a cópia saiu. O pico fica 10 MB abaixo do limite de 100 MB, 2,5 MB acima do master no mesmo roteiro; na fase não muda.
+- **Tempo de quadro (F1):** 60 fps e 0,1–0,2 ms de atualização + desenho (sem o flip) em todas as cenas no Release, e o mesmo no Debug com 16 bactérias, perigos ativos, Fase 2 e game over na Fase 3. Por isso as otimizações condicionais (cache do texto com marcas, `al_hold_bitmap_drawing`, menos traços nas correntes) não entraram.
+- **Desvio declarado:** no Release não há a tecla F, então as Fases 2 e 3 foram medidas no tempo de quadro do Debug, não na memória do Release.

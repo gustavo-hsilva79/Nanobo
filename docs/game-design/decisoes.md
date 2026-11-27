@@ -560,6 +560,7 @@ Decisão do dono, depois de uma sessão de perguntas sobre refatorar, otimizar e
 - **Otimização por medição.** O F1 passa a mostrar FPS e tempo de quadro em todos os builds, e a leitura interna dos agentes continua só no Debug. O catch-up do loop é limitado a 4 ticks por desenho. Saem as cargas sem uso. O resto só entra se a medição mostrar custo.
 - **Correções antes da refatoração.** Os bugs achados na revisão de 27/11 são corrigidos primeiro, para que cada passo de refatoração tenha o gate "nada muda". Entre eles, uma célula perdida sem leitura nas Fases 1 e 3 sai da meta de identificação, como já acontecia na Fase 2.
 - *Por quê:* nitidez de linhas, ícones e movimento sem tocar nas regras nem nos mapas. A fonte em 2× mantém todo o registro de textos válido.
+- **Resultado da execução (27/11).** A interface em 1280×720 saiu pixel a pixel igual à de 640×360 ampliada em 2× (capturas comparadas cena a cena), com o mundo agora em meio pixel. O F1 mediu 60 fps e 0,1–0,2 ms por quadro em todas as cenas, então nenhuma otimização condicional entrou. O pico de memória ficou em 89,95 MB, depois de o canvas deixar de ter a cópia de segurança do Direct3D (96,26 MB com ela); ver `docs/planejamento/qa-memoria.md`. `bar_segment` e `menu_cells` **continuam** carregados: a revisão os apontou como sem uso, mas são desenhados (segmentos das barras do HUD e hemácias do menu). O addon de TTF saiu, porque nenhuma fonte de arquivo é carregada.
 
 ### Refatoração pós-entrega (06/11/2026)
 

@@ -270,6 +270,8 @@ Cena própria, aberta pelo botão COMO JOGAR (MN-01) do menu e da pausa; volta p
 | RT-18 | scanner, camada 2, colônia de bolor (sem amostra de cor) | `eucarionte · parede de quitina · corte a base da colônia` | 56 | #229 |
 | RT-19 | scanner, camada 1, esporo pousado (sem amostra de cor) | `esporo de bolor · vai germinar` | 30 | #229 |
 
+> **Escala desde 27/11:** a tela lógica passou a 1280×720 e a fonte embutida é desenhada em 2×, então cada caractere ocupa 16 px de tela. As medidas em px desta seção estão na escala de 640×360 (multiplique por 2 para o código atual); as contagens de caracteres e os limites por linha não mudam.
+
 **Limite:** a fonte embutida é de **8 px por caractere** (medido com `al_get_text_width`, não estimado) e a área útil da ficha do scanner é de 588 px, a partir de `text_x = 36`. Desde 15/11 (#243), o HUD tem duas linhas, com estas folgas no pior caso:
 - **linha 0:** sobram 20 px entre o tempo e a arma (`Neutralização · vírus livre`, `recarga`, pontos de 3 dígitos);
 - **linha 1:** sobram 32 px entre o objetivo da Fase 1 e os contadores com 2 dígitos.
