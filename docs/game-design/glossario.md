@@ -65,8 +65,8 @@ _Evitar_: descoberta, conclusão
 ## Combate
 
 **Arma**:
-O recurso que o jogador escolhe conforme a pista do scanner. São duas: **Ruptura**, que age na parede e neutraliza Gram+, e **Dissolução**, que age na camada externa e neutraliza Gram−. A escolha é regra do jogo, não recomendação de tratamento.
-_Evitar_: laser, raio, tiro, módulo A/B
+O recurso que o jogador escolhe conforme a pista do scanner. Cada fase tem as suas: na Fase 1, **Ruptura** (parede, Gram+), **Dissolução** (membrana externa, Gram−) e **Reserva** (bactéria resistente); na Fase 2, **Neutralização** (vírus livre) e **Ataque T** (célula infectada); na Fase 3, **Perfuração** (fungo) e **Ruptura**. A escolha é regra do jogo, inspirada em remédios e defesas reais, não recomendação de tratamento.
+_Evitar_: ferramenta, laser, raio, tiro, módulo A/B
 
 **Projétil**:
 O corpo que viaja depois do disparo. Existe um por arma, e os dois se distinguem pela forma, não pela cor.
@@ -131,11 +131,11 @@ O estado do Paciente durante a missão. Caem quando uma célula dele é perdida 
 _Evitar_: vida do paciente, saúde
 
 **Mira**:
-O ponto para onde o Nanobô dispara a ferramenta escolhida; mostra se a ferramenta está pronta, recarregando ou travada.
+O ponto para onde o Nanobô dispara a arma escolhida; mostra se a arma está pronta, recarregando ou travada.
 _Evitar_: cursor, retícula
 
 **Como jogar**:
-A tela que explica, em páginas, como mover, ler com o scanner, usar as ferramentas e acompanhar Integridade e Vitais. Abre do menu e da pausa.
+A tela que explica, em páginas, como mover, ler com o scanner, usar as armas e acompanhar Integridade e Vitais. Abre do menu e da pausa.
 _Evitar_: tutorial, ajuda, manual
 
 **Aviso de objetivo**:

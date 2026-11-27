@@ -18,7 +18,7 @@
 | FB-05 | antibiótico errado depois de ler só a forma (camada 1) | `a forma não define o grupo: veja a coloração` | 44 | #215 (FB2-02) |
 | FB-06 | Dissolução em Gram+ | `a Gram+ não tem membrana externa para a Dissolução` | 50 | #215 (FB2-04) |
 | FB-07 | Ruptura em Gram- | `a membrana externa barrou a Ruptura` | 35 | #215 (FB2-03) |
-| FB-08 | célula do paciente ferida por qualquer ferramenta (-15 vitais) | `você feriu uma célula do paciente: ela tem núcleo, não é bactéria` | 65 | #218 (FB2-01); substitui as três versões por arma |
+| FB-08 | célula do paciente ferida por qualquer arma (-15 vitais) | `você feriu uma célula do paciente: ela tem núcleo, não é bactéria` | 65 | #218 (FB2-01); substitui as três versões por arma |
 | FB-11 | Reserva elimina uma resistente | `a Reserva eliminou a resistente: +10 pontos` | 43 | #216 |
 | FB-12 | Reserva gasta numa bactéria comum | `Reserva numa bactéria comum: guarde para a resistente` | 53 | #216 (uso racional) |
 | FB-13 | disparo da Reserva sem carga | `Reserva esgotada` | 16 | #216 (FB2-07) |
@@ -120,7 +120,7 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 | CT-33 | resultados | `não obtido` | 10 | #202 |
 | CT-34 | resultados | `enter também continua` | 21 | #202 |
 | CT-35 | vitória | `Vitória` | 7 | #202 |
-| CT-36 | HUD, linha 0, à direita | `Ruptura · parede` / `Dissolução · membrana` / `Reserva %d/%d · resistente` (`Reserva 2/2 · resistente`) | 16 / 21 / 24 | decisão 03/11 (noite); #216; a ferramenta com o alvo dela em 15/11 (#243) |
+| CT-36 | HUD, linha 0, à direita | `Ruptura · parede` / `Dissolução · membrana` / `Reserva %d/%d · resistente` (`Reserva 2/2 · resistente`) | 16 / 21 / 24 | decisão 03/11 (noite); #216; a arma com o alvo dela em 15/11 (#243) |
 | CT-36b | HUD, linha 0, Fase 2 | `Neutralização · vírus livre` / `Ataque T · célula infectada` | 27 / 27 | #88; #243 |
 | CT-36c | HUD, linha 0, Fase 3 | `Perfuração · antifúngico` | 24 | #230 |
 | CT-37 | resultados, título do painel do relatório | `O que anotei nesta fase` | 23 | #202, build de 04/11; voz do Diário desde 26/11 |
@@ -192,7 +192,7 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 | RT-19 | scanner, camada 1, esporo pousado (sem amostra de cor) | `esporo de bolor · vai germinar` | 30 | #229 |
 
 **Limite:** a fonte embutida é de **8 px por caractere** (medido com `al_get_text_width`, não estimado) e a área útil da ficha do scanner é de 588 px, a partir de `text_x = 36`. Desde 15/11 (#243), o HUD tem duas linhas, com estas folgas no pior caso:
-- **linha 0:** sobram 20 px entre o tempo e a ferramenta (`Neutralização · vírus livre`, `recarga`, pontos de 3 dígitos);
+- **linha 0:** sobram 20 px entre o tempo e a arma (`Neutralização · vírus livre`, `recarga`, pontos de 3 dígitos);
 - **linha 1:** sobram 32 px entre o objetivo da Fase 1 e os contadores com 2 dígitos.
  A linha mais longa desenhada na fase é a RT-04 com *Streptococcus pyogenes*: **68 caracteres** (544 px) mais a amostra de 12 px, 556 px no total (medido em 13/11, #214). A mais longa do briefing tem 54 (432 px, dentro dos 548 px do painel) e a dos resultados, 36 (288 px). Nenhuma passa da área do painel em 640×360. A RT-08 (revisão Gram- separada) saiu em 13/11: Gram+ e Gram- compartilham a RT-07, porque a revisão agora fala do procarionte, não do grupo.
 
@@ -239,7 +239,7 @@ Desde 26/11 o painel se chama `O que anotei nesta fase` (23 caracteres) e as lin
 
 ## 3. Nanobô 2.0 — rascunhos (13/11/2026)
 
-> **Rascunhos, ainda não estão no código.** Regras em `ensino-e-aprendizagem.md` (§"Nanobô 2.0"). Os cards têm 3 linhas de até 70 caracteres (contagem abaixo, feita com Python). Os textos de HUD e ficha seguem a regra da seção 2.1: a fonte embutida foi mantida em 15/11. Os IDs `CC-` são cards de conceito, `FB2-` são feedback do 2.0 e `FE-` são ferramentas.
+> **Rascunhos, ainda não estão no código.** Regras em `ensino-e-aprendizagem.md` (§"Nanobô 2.0"). Os cards têm 3 linhas de até 70 caracteres (contagem abaixo, feita com Python). Os textos de HUD e ficha seguem a regra da seção 2.1: a fonte embutida foi mantida em 15/11. Os IDs `CC-` são cards de conceito, `FB2-` são feedback do 2.0 e `FE-` são armas.
 
 ### 3.1 Cards de conceito
 
@@ -361,7 +361,7 @@ Desde 26/11 o painel se chama `O que anotei nesta fase` (23 caracteres) e as lin
 | DG-12 | rodapé, última página completa, à esquerda do contador | `fechar` | 6 | em `UI_AMBER`, no lugar do triângulo |
 | DG-13 | cabeçalho da anotação, x = 80, em `UI_DIM`; `%d` é a ordem em que a anotação abre na partida (1, 2, ...) e `%s` o tema DG-01 a DG-09 | `Nanobô · Anotação %d · %s` | 25 | o interlúdio não leva número (DG-10); a abertura é a Anotação 0 |
 
-### 3.2 Ferramentas (menu "como jogar" e HUD)
+### 3.2 Armas (menu "como jogar" e HUD)
 
 | ID | Texto | Fase |
 |---|---|---|

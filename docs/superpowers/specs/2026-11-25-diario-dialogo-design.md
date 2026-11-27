@@ -93,7 +93,7 @@ O subtítulo atual do interlúdio na tela de Resultados (NR-15/NR-16) pode ficar
 Estas mudanças de conteúdo dependem do código e entram no mesmo trabalho, com fontes já registradas nos docs:
 
 - Espécies: *Neisseria meningitidis* → ***Moraxella catarrhalis*** (coco Gram−); *Bacillus cereus* → ***Clostridium tetani*** (bacilo Gram+). Nomes, textos do scanner e dados em `entities.c`; ver `conteudo-biologico.md`.
-- Ferramenta **"Lise" → "Ataque T"** (nome, HUD, feedback, registro de textos), porque o nome antigo se confundia com a lise da célula no ciclo lítico.
+- Arma **"Lise" → "Ataque T"** (nome, HUD, feedback, registro de textos), porque o nome antigo se confundia com a lise da célula no ciclo lítico.
 - Uma anotação explica que, no jogo, todas as bactérias aparecem juntas no sangue para simplificar; outra, que lisogênico/lítico foram descritos em vírus de bactérias e servem de comparação.
 
 ### Textos

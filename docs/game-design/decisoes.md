@@ -114,7 +114,7 @@ Este arquivo registra decisões já tomadas pela dupla. Quando uma decisão impo
 - **Trava do antibiótico errado (call de 13/11, #215):** a perseguição saiu, mas a trava de 2 s do disparo ficou. Sem ela, chutar a arma custaria só 1 s de recarga, e a simulação de 01/11 mostrou que o chute vence quando o erro sai barato. A bactéria não muda; só o disparo trava. A resistência perde 5 pontos, sem deixar a pontuação negativa. Os bots da #224 conferem se a trava basta.
 - **Fase 2:** vias aéreas; vírus livres na eclosão, que infectam células livres; **Lise** para a célula infectada (custa poucos vitais); teto de 12 vírus (`fase2-virus.md`).
 - **Fase 3:** pulmão; levedura (*Cryptococcus*, brotamento) e bolor (*Aspergillus*, hifas e esporos); a parede de quitina impede o antibiótico; **Perfuração** é o antifúngico. A carga de esporos depende do estado do paciente ao fim da Fase 2 e das cargas de Reserva gastas, e o jogo não afirma que o antibiótico causa aspergilose. A Perfuração **não** custa vitais (o dono não escolheu o efeito colateral).
-- **Nomes das ferramentas:** Ruptura e Dissolução continuam; entram **Reserva**, **Neutralização**, **Lise** e **Perfuração**. Cada fase mostra só as suas ferramentas (até 3).
+- **Nomes das armas:** Ruptura e Dissolução continuam; entram **Reserva**, **Neutralização**, **Lise** e **Perfuração**. Cada fase mostra só as suas armas (até 3).
 - A identificação deixa de ser condição de vitória.
 
 **Arte e interface**
@@ -345,7 +345,7 @@ O jogo terá pontuação, bônus por identificação e progressão. O hi-score d
 - A Fase 1 passa a ter **9 agentes** (3 Gram+, 3 Gram−, 3 células) para não esvaziar o mapa maior; o **alcance do scanner continua 130 px**.
 - O scanner mostra **só a leitura do alvo atual**; `space` de novo relê o alvo. A lista de todos os agentes saiu: ela estourava o painel (12 linhas de 14 px = 168 px num espaço de 110 px).
 - O HUD não usa coordenada fixa: cada linha sai de `hud_y()`, que soma `SCAN_PANEL_Y`, `HUD_MARGIN` e `line * HUD_LINE_H`. São 2 linhas a 16 px uma da outra, com 8 px de margem, nos 40 px do painel (#243).
-  - **Linha 0:** as duas barras, pontos e tempo à esquerda; a ferramenta com o alvo, o ícone, a recarga e o estado à direita, medidos da borda.
+  - **Linha 0:** as duas barras, pontos e tempo à esquerda; a arma com o alvo, o ícone, a recarga e o estado à direita, medidos da borda.
   - **Linha 1:** o objetivo à esquerda; as ameaças e os identificados à direita.
   - A regra "o mundo tem um número inteiro de faixas" (`WORLD_H % PLAY_H`) virou "a faixa cabe no mundo", porque a câmera já para em `[0, WORLD_H - PLAY_H]`.
 - Princípio de escala inteira para pixel art conforme a documentação do Godot sobre múltiplas resoluções; 1920×1080 como resolução de exibição mais comum.
@@ -467,13 +467,13 @@ Substitui o recorde mínimo de 04/11. As regras de #34 continuam: 10 posições,
 Decisões do dono em 24–25/11/2026 para a #226 (#227–#233). As regras implementadas estão em [`fase3-fungos.md`](fase3-fungos.md).
 
 - **D1 — onde trabalhar:** branch `feat/fase3`; o merge na `master` só acontece com o sim do dono.
-- **D2 — ferramentas (#227 × #230):** **Perfuração** na tecla 1 e **Ruptura** na tecla 2; a tecla 3 fica sem ferramenta e a roda alterna as duas.
+- **D2 — armas (#227 × #230):** **Perfuração** na tecla 1 e **Ruptura** na tecla 2; a tecla 3 fica sem arma e a roda alterna as duas.
 - **D3 — arte:** sprites e mapa gerados por script Lua no Aseprite, no estilo aprovado em 14/11. O dono aprovou os sprites e o mapa em 25/11.
 - **D4 — carga de esporos (#231):** extras = (1 se os vitais ao fim da Fase 2 < 80) + (1 se < 60) + cargas de Reserva gastas na partida, no máximo 4.
 - **D5 — esporo:** voa 1,5 s, pousa e vira ameaça no chão (1 tiro de Perfuração mata), germina em colônia em 6 s; com 4 colônias vivas, espera a vaga. Os esporos da carga inicial seguem a mesma regra.
 - **D6 — hifa:** cresce rumo à célula do paciente mais próxima, fixada quando a colônia nasce; machuca o Nanobô (−10) e não fere a célula.
 - **D7 — silhueta:** fungos aparecem como silhueta até a 1ª camada; a hifa é desenhada desde o início, porque é parede que machuca.
-- **D8 — ferramenta inicial:** a Fase 3 começa com a Ruptura na mão.
+- **D8 — arma inicial:** a Fase 3 começa com a Ruptura na mão.
 - **Esporo sem pontos e sem dano de contato (25/11, depois da revisão da Task 4):** o esporo, em voo ou pousado, não dá pontos; o pousado não causa dano de contato. O que fere é o esporo em voo que acerta o Nanobô (−8).
 - **Decisões técnicas (aceitas na revisão):**
   - **R1:** partida e destino continuam os globais; a "partida e destino próprios" da #227 fica como dívida.
@@ -500,8 +500,8 @@ Decisões do dono em 25/11/2026, depois da verificação do conteúdo de biologi
    - ***Neisseria meningitidis* sai, *Moraxella catarrhalis* entra** (coco Gram−, diplococo); ***Bacillus cereus* sai, *Clostridium tetani* entra** (bacilo Gram+). *S. aureus* fica, com a nota de que muitas cepas resistem à penicilina.
    - Uma linha do diário diz que as armas são **regra do jogo, inspirada em antibióticos reais**, e que **no jogo todas as espécies aparecem juntas no sangue, por simplicidade**.
    - *Por quê:* o meningococo é Gram− mas é tratado com penicilina e não responde à polimixina (inverte os dois lados); *B. cereus* é Gram+ com β-lactamase potente e resiste à "arma de Gram+". *M. catarrhalis* resiste à penicilina e, em geral, é sensível à colistina; *C. tetani* é sensível à penicilina G (Guia de Vigilância do Ministério da Saúde) e não responde à polimixina por ser Gram+. Ressalva: nenhuma das duas é típica de corrente sanguínea, e a fonte da polimixina para *Moraxella* é fraca. Detalhe e fontes em `conteudo-biologico.md`.
-3. **A ferramenta "Lise" será renomeada** (proposta: **"Ataque T"**, que evoca o linfócito T).
-   - *Por quê:* "lise" é, no ensino médio, o rompimento da célula pelo vírus no ciclo lítico, e a ferramenta que "destrói a célula infectada" com esse nome confunde as duas coisas. A renomeação **no código e nos textos acontece depois**; até lá, os documentos (inclusive `fase2-virus.md` e `gdd.md`) ainda dizem "Lise".
+3. **A arma "Lise" será renomeada** (proposta: **"Ataque T"**, que evoca o linfócito T).
+   - *Por quê:* "lise" é, no ensino médio, o rompimento da célula pelo vírus no ciclo lítico, e a arma que "destrói a célula infectada" com esse nome confunde as duas coisas. A renomeação **no código e nos textos acontece depois**; até lá, os documentos (inclusive `fase2-virus.md` e `gdd.md`) ainda dizem "Lise".
 4. **A analogia dos ciclos lisogênico e lítico entra no jogo.** No primeiro encontro com uma célula infectada, o diário diz que esses ciclos foram descritos em vírus de bactérias (bacteriófagos) e que aqui são uma analogia.
    - *Por quê:* a nota só existia nos documentos internos, e sem ela a descrição é enganosa para vírus humanos (em que o análogo real é a latência, como no herpes; não há fonte que atribua isso ao vírus da gripe).
 5. **Texto da resistência.** "Siga a prescrição até o fim"; a resistência é explicada por **seleção** (as sobreviventes passam a resistência às filhas); a mecânica de 2 doses e 6 s é apresentada **como regra do jogo**.
@@ -528,11 +528,12 @@ Decisões do dono em 26/11/2026 para o redesenho das telas fora do Diário (#245
 1. **Arte em issue própria (#246).** Barras de vida, mira e fundos; a #245 fica com textos e layout. A arte é gerada por script Lua no Aseprite (`../Nanobo-testes/gerar_interface.lua`) com a paleta atual, e cada imagem é aprovada pelo dono antes de entrar em `assets/`.
 2. **Fundos.** Quatro temas de 640×360: menu (vaso sanguíneo com o Nanobô e hemácias à deriva, o Nanobô flutuando), "como jogar", e o quarto do hospital em três luzes: abertura (fria, monitor acelerado), Vitória (dia, leito arrumado: alta) e Game Over (baixa, monitor estável). O Léo não tem rosto: é uma silhueta sob o lençol. Resultados e Pausa usam o mapa da fase atual escurecido.
 3. **Vida.** Integridade do Nanobô: ícone da cabeça do robô e barra de bateria em 10 segmentos. Vitais do Léo: coração que pulsa mais rápido com vitais baixos e barra com linha de ECG em 10 segmentos. Cor por faixa (verde, âmbar, vermelho), com os limites atuais.
-4. **Mira.** Sprite 16×16 com três quadros (pronto, recarga, travado), tingido com a cor da ferramenta; só dentro do jogo. Fora dele fica o cursor do Windows.
+4. **Mira.** Sprite 16×16 com três quadros (pronto, recarga, travado), tingido com a cor da arma; só dentro do jogo. Fora dele fica o cursor do Windows.
 5. **HUD continua com 40 px.** As barras viram uma coluna à esquerda (Nanobô na linha 0, Léo na linha 1); pontos e tempo vão para a linha 1; o objetivo da fase sai do HUD e vira um **aviso de objetivo** de 4 s no topo do mundo (início da fase e mudança de meta) e um texto completo na Pausa. `PLAY_H` não muda.
-6. **"Como jogar" vira cena própria** (`GAME_SCENE_HOWTO`), em 3–4 páginas com ícones (mover e mirar; scanner; ferramentas; Integridade e Vitais). Abre do menu e da Pausa e volta para a cena de origem; aberta da Pausa, a partida continua parada. O menu fica com INICIAR, COMO JOGAR e RECORDES.
+6. **"Como jogar" vira cena própria** (`GAME_SCENE_HOWTO`), em 3–4 páginas com ícones (mover e mirar; scanner; armas; Integridade e Vitais). Abre do menu e da Pausa e volta para a cena de origem; aberta da Pausa, a partida continua parada. O menu fica com INICIAR, COMO JOGAR e RECORDES.
 7. **Ficha do scanner** ganha retrato 24×24 do agente lido (silhueta antes da camada 1) e três marcadores de camada (forma, Gram, espécie), sem aumentar a altura.
 8. **Execução por subagentes**, como no Diário, com inventário "atual × proposto" aprovado pelo dono antes do código.
+9. **"Arma" em todo texto** (revisão do inventário, 26/11): o recurso que o jogador escolhe se chama **arma** em todo texto do jogo e nos docs vivos, como o glossário já definia; "ferramenta" sai. Os controles do "como jogar" ficam no formato direto "tecla: ação", sem primeira pessoa; as páginas que ensinam (scanner, barras) seguem na voz do Nanobô. Os nomes no código (`select_tool`, `Laser`) não mudam.
 
 - *Por quê:* a auditoria apontou telas que não explicam o jogo; o HUD estava no limite de largura (20 px livres) e o objetivo ali competia com as barras; fundos desenhados dão ao menu e ao hospital o mesmo cuidado visual das fases sem custo relevante de memória (~0,9 MB por fundo, com pico atual de 79 MB e limite de 100 MB).
 

@@ -8,7 +8,7 @@
 
 - **Local:** o pulmão, num mapa de alvéolos e capilares (`mapa_fase3.png`, 1920×512).
 - **Composição (`phases[]`, `PHASE_COUNT` 3):** 4 leveduras (*Cryptococcus*), 2 colônias de bolor (*Aspergillus*) e 3 células alveolares do paciente, nove agentes em ids de 1 a 9. Mais os esporos de carga (§"Carga de esporos") e o que a fase gerar sozinha.
-- **Ferramentas:** só a **Perfuração** (antifúngico, tecla 1) e a **Ruptura** (tecla 2). A tecla 3 não tem ferramenta na fase. A roda do mouse alterna as duas. A fase **começa na Ruptura** (D8).
+- **Armas:** só a **Perfuração** (antifúngico, tecla 1) e a **Ruptura** (tecla 2). A tecla 3 não tem arma na fase. A roda do mouse alterna as duas. A fase **começa na Ruptura** (D8).
 - **Lição da fase (verificada em 25/11, [`conteudo-biologico.md`](conteudo-biologico.md)):** a parede do fungo é de quitina, não de peptidoglicano, então o antibiótico não age (a causa é o alvo ausente; o texto seguro é "antibiótico de bactéria não tem alvo no fungo"); a **Perfuração é inspirada na anfotericina B**, que se liga ao ergosterol e forma poros e é tóxica para o paciente, e o alvo do antifúngico é o ergosterol da membrana. O jogador erra a arma de propósito, ou não, e o jogo cobra com a trava de 2 s.
 - **Conclusão:** zero fungos vivos e o Nanobô no destino. Vale como ameaça tudo o que é fungo: levedura, colônia, esporo no chão e esporo em voo.
 - **Fim de jogo:** a Fase 3 é a última. `CONTINUAR` nos Resultados leva a `VICTORY` (`has_next_phase()` é falso nela).
@@ -53,9 +53,9 @@
   - Não há mensagem na germinação.
 - **Scanner:** colônia, camada 1 `forma: bolor (filamentos)` e camada 2 `eucarionte · parede de quitina · corte a base da colônia`; esporo no chão, camada 1 `esporo de bolor · vai germinar` e camada 2 `eucarionte · parede de quitina · membrana com ergosterol`.
 
-## Ferramentas e combate
+## Armas e combate
 
-| ferramenta | tecla | age em | efeito |
+| arma | tecla | age em | efeito |
 |---|---|---|---|
 | **Perfuração** (`LASER_PERFORATE`) | 1 | levedura, colônia, esporo no chão; corta a hifa | 1 dose por tiro; elimina a colônia e o esporo com 1, a levedura com 3; +10 por eliminação de levedura ou de colônia inicial (a germinada não pontua) |
 | **Ruptura** (`LASER_GRAM_POSITIVE`) | 2 | nada na fase | em fungo é "arma errada" |
@@ -89,7 +89,7 @@
 - **Silhueta (D7):** os fungos (levedura, colônia e esporo no chão) aparecem como silhueta **até a 1ª camada**, no tamanho de cada um. A **hifa é desenhada mesmo antes da leitura**, porque é parede que machuca.
 - **Relatório dos Resultados (5 linhas, contadores próprios):** leveduras eliminadas; colônias eliminadas (inclui as germinadas); tiros de antibiótico em fungo; esporos pelo estado do paciente (a carga colocada); e a frase fixa `fungo: parede de quitina, alvo: ergosterol`. Os contadores zeram em `start_phase`. A tecla F de QA (Debug) não soma neles.
 - **Interlúdio:** depois da Fase 2, o subtítulo diz `a seguir: fungos no pulmão` (NR-16).
-- **HUD:** objetivo `elimine os fungos e vá ao destino` (CT-42b); ferramenta `Perfuração · antifúngico` (CT-36c).
+- **HUD:** objetivo `elimine os fungos e vá ao destino` (CT-42b); arma `Perfuração · antifúngico` (CT-36c).
 
 ## Arte (D3)
 
@@ -105,7 +105,7 @@ Gerada por script Lua no Aseprite, no estilo aprovado em 14/11, com os scripts e
 | # | Decisão |
 |---|---|
 | D1 | Trabalho na branch `feat/fase3`; merge na `master` só com o sim do dono. |
-| D2 | Ferramentas da fase: **Perfuração** (tecla 1) e **Ruptura** (tecla 2); tecla 3 sem ferramenta; a roda alterna as duas. |
+| D2 | Armas da fase: **Perfuração** (tecla 1) e **Ruptura** (tecla 2); tecla 3 sem arma; a roda alterna as duas. |
 | D3 | Sprites e mapa por script Lua no Aseprite, no estilo de 14/11; capturas aprovadas pelo dono em 25/11. |
 | D4 | Carga de esporos: (1 se vitais < 80) + (1 se < 60) + cargas de Reserva gastas, no máximo 4. |
 | D5 | Esporo voa 1,5 s, pousa e vira ameaça no chão (1 dose mata), germina em colônia em 6 s; com 4 colônias vivas, espera a vaga. Vale também para os esporos da carga inicial. |
@@ -134,7 +134,7 @@ Gerada por script Lua no Aseprite, no estilo aprovado em 14/11, com os scripts e
 
 ## Correções da revisão final (25/11)
 
-- **Colônia germinada sem pontos:** ver a decisão do dono acima e §"Ferramentas e combate".
+- **Colônia germinada sem pontos:** ver a decisão do dono acima e §"Armas e combate".
 - **Reinício com tiros no ar:** `start_phase` apaga os tiros inimigos (esporos e vírus da rajada) **antes** de contar as ameaças. Um Game Over com esporos no ar seguido de partida nova não infla mais `run_progress.threats`, e o `ameaças X/Y` da run nova chega a N/N.
 - **Dose da levedura:** o texto diz quantas doses faltam (FB-33 e FB-33b).
 - **Parede sem dano parado:** o empurrão da hifa e da base da colônia deixa o Nanobô **meio pixel além do alcance** (`reach + 0.5f`). O toque continua ferindo quem entra na parede (−10, no máximo uma vez por segundo), mas o Nanobô parado ao lado dela não perde mais integridade. O empurrão da célula do paciente (Fases 1 e 2) não mudou.

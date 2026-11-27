@@ -15,12 +15,12 @@ Decisões do dono em 13/11, que valem acima do texto de 11/11 abaixo:
   - se um vírus livre tocar uma **célula livre** do paciente, ele a infecta e vira lisogênico dentro dela, com o tempo cheio;
   - sem célula livre, ele continua livre.
 - **Nota de analogia (25/11/2026):** lisogênico e lítico são ciclos descritos em **bacteriófagos** ([OpenStax 6.2](https://openstax.org/books/microbiology/pages/6-2-the-viral-life-cycle)); no jogo são uma **analogia**, dita na Anotação da 1ª célula infectada do Diário (pendente de redação). Em vírus humanos o análogo real é a latência (herpes, varicela-zóster); não há fonte que a atribua ao vírus da gripe, e o jogo não afirma isso. Fatos corrigidos em [`conteudo-biologico.md`](conteudo-biologico.md) §"Verificação com fontes".
-- **Ferramentas:**
+- **Armas:**
   - **Neutralização** (anticorpos) só atinge o vírus **livre**, e não alcança o lisogênico dentro da célula;
   - **Ataque T** destrói a **célula infectada já lida** pelo scan, custando poucos vitais (`VITALS_LYSE`, ponto de partida −5) e impedindo a eclosão; numa célula saudável ela não dispara;
   - o antibiótico (Ruptura, Dissolução, Reserva) não age em vírus.
 - **Sem aliados:** o linfócito T não é um personagem; o Ataque T faz o papel dele, e o card (hoje Anotação do Diário) cita isso.
-- **Nome do Ataque T (decisão de 25/11/2026, no código desde 26/11):** a ferramenta que era a "Lise" passou a se chamar **"Ataque T"**, que evoca o linfócito T, porque "lise" é também o rompimento da célula no ciclo lítico e o nome confundia as duas coisas. Nomes do código (`LASER_LYSE`, `VITALS_LYSE`, `cells_lysed`) e do arquivo do ícone ficam.
+- **Nome do Ataque T (decisão de 25/11/2026, no código desde 26/11):** a arma que era a "Lise" passou a se chamar **"Ataque T"**, que evoca o linfócito T, porque "lise" é também o rompimento da célula no ciclo lítico e o nome confundia as duas coisas. Nomes do código (`LASER_LYSE`, `VITALS_LYSE`, `cells_lysed`) e do arquivo do ícone ficam.
 - **Teto de 12 vírus vivos.** Resolve a [PENDÊNCIA] de "Capacidade do mundo": `MAX_AGENTS` sobe para 24.
 - **Conflito com D2.1:** deixou de existir, porque a identificação não é mais condição de vitória. A célula hospedeira rompida só sai da conta do bônus de identificação.
 - **Custo da ruptura:** a célula hospedeira rompida continua custando vitais (`VITALS_HOST_RUPTURE`, ponto de partida −10), agora na barra de vitais de 0 a 100, e não em corações.
@@ -54,7 +54,7 @@ Decisões do dono em 13/11, que valem acima do texto de 11/11 abaixo:
   - a defesa o destrói, e esse vírus não nasce;
   - o teto é de 12 vírus vivos: o vírus que cai acima do teto se perde;
   - o vírus livre ocupa uma vaga do array fora da composição, reaproveitando as vagas vazias.
-- **Ferramentas (#88):** a Fase 2 tem só a Neutralização (tecla 1) e o Ataque T (tecla 2).
+- **Armas (#88):** a Fase 2 tem só a Neutralização (tecla 1) e o Ataque T (tecla 2).
   - **Neutralização:** anticorpos. Prendem o vírus livre (+10). Não alcançam o vírus dentro da célula (FB-21) e **não ferem a célula do paciente**: anticorpo não ataca célula, então o tiro nela não custa vitais.
   - **Ataque T:** só dispara quando a primeira coisa no caminho do tiro é uma célula infectada com pelo menos uma camada lida. Numa célula saudável ou sem leitura ela não dispara e não gasta a recarga.
     - O acerto tira a célula sem rompê-la (−5 vitais) e elimina o vírus de dentro (+10).

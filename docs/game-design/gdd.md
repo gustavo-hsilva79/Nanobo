@@ -42,11 +42,11 @@ A história é contada pelo **Diário do Nanobô**: o Nanobô é um protótipo *
 
 ### O Nanobô é o único defensor
 
-Não há aliados: o macrófago e o linfócito T planejados foram retirados em 13/11. O que o corpo faria aparece nas ferramentas do Nanobô e na explicação dos cards.
+Não há aliados: o macrófago e o linfócito T planejados foram retirados em 13/11. O que o corpo faria aparece nas armas do Nanobô e na explicação dos cards.
 
 ### Fases
 
-| Fase | Local | Invasor | Ferramentas | Vitória |
+| Fase | Local | Invasor | Armas | Vitória |
 |---|---|---|---|---|
 | 1 | corrente sanguínea (mapa atual) | 6 bactérias (cocos e bacilos, Gram+ e Gram−) + 3 células do paciente | **Ruptura** (antibiótico de parede), **Dissolução** (antibiótico de membrana), **Reserva** (antibiótico de reserva, 2 cargas) | zero bactérias e Nanobô no destino |
 | 2 | vias aéreas (brônquio, mapa novo) | vírus respiratório: 3 vírus lisogênicos dentro de células + 2 células livres | **Neutralização** (anticorpos, vírus livre), **Lise** (destrói célula infectada já lida, papel do linfócito T; **nome a trocar por "Ataque T", renomeação pendente no código**) | zero vírus e Nanobô no destino |
@@ -134,7 +134,7 @@ O agente volta a vagar se o Nanobô ficar a mais de 320 px por 3 s. Todo ataque 
 - **HUD (no build desde 15/11, #243):**
   - 40 px em duas linhas, no lugar dos 104; o mundo passou de 256 para 320 px de altura;
   - barra de vitais;
-  - ferramenta ativa com o alvo ("Ruptura · parede");
+  - arma ativa com o alvo ("Ruptura · parede");
   - ficha do scanner só quando há alvo.
 - **Telas novas:** narrativa (substitui o briefing), interlúdios, 6 cards de conceito, entrada de nome e Top 10.
 - **Navegação:** ←/→ entre botões lado a lado, e volta ao menu (#195).
@@ -219,7 +219,7 @@ Os agentes nascem em pontos fixos do mundo, sorteados a cada partida sem repetir
 A Fase 2 do 2.0 entrou no build em 14/11 (#85–#89).
 - **Composição:** 3 vírus lisogênicos dentro de células do epitélio e 2 células livres, cada uma vizinha de uma infectada.
 - **Ciclo:** o vírus fica lisogênico (10, 14 e 18 s), entra no eclipse (2 s) e rompe a célula numa rajada de 6 vírus livres, que derivam no muco e infectam a célula livre que tocam.
-- **Ferramentas:** a Neutralização prende o vírus livre; a Lise tira a célula infectada já lida (−5 vitais) antes de ela romper.
+- **Armas:** a Neutralização prende o vírus livre; a Lise tira a célula infectada já lida (−5 vitais) antes de ela romper.
 - **Mapa:** o interior de um brônquio (`mapa_fase2.png`), com paredes de epitélio ciliado, as duas correntes de muco e a saída no destino.
 - **Regras completas:** `fase2-virus.md` (§"Implementação de 14/11").
 
@@ -229,7 +229,7 @@ A Fase 3 do 2.0 entrou no build em 25/11 (#226, #227–#233), na branch `feat/fa
 - **Composição:** 4 leveduras, 2 colônias de bolor e 3 células alveolares, mais esporos no chão conforme o estado do paciente ao fim da Fase 2 (de 0 a 4).
 - **Levedura:** cápsula de 3 doses, avança a 35 px/s em alerta e brota a cada 20 ± 3 s, até 12 vivas.
 - **Bolor:** colônia fixa; a hifa cresce 1 segmento a cada 5 ± 1 s, até 5, rumo à célula mais próxima, e é parede que tira 10 de integridade; com a hifa cheia e a colônia em alerta saem 3 esporos em leque a cada 5 s. O esporo pousa, vira ameaça e germina em colônia em 6 s (teto de 4 colônias).
-- **Ferramentas:** Perfuração (tecla 1) e Ruptura (tecla 2, a ferramenta inicial); o antibiótico não age em fungo e trava o disparo por 2 s. O esporo não dá pontos.
+- **Armas:** Perfuração (tecla 1) e Ruptura (tecla 2, a arma inicial); o antibiótico não age em fungo e trava o disparo por 2 s. O esporo não dá pontos.
 - **Mapa:** o pulmão (`mapa_fase3.png`), com alvéolos e capilares.
 - **Regras completas:** `fase3-fungos.md`.
 
@@ -283,7 +283,7 @@ O ataque e o scanner **não têm tecla** no M4 (#198).
 > **Ainda ausentes do build, no M5:** o pulso de 0,75 s com imobilização (#209) e a identificação como condição de conclusão (D2.1/D2.2, #206/#207). A trava de 2 s com perseguição (RF-06) entrou no build de 04/11. Ver `decisoes.md` e a Spec.
 
 O HUD ocupa o rodapé de 40 px em duas linhas (#243, 15/11):
-- **Linha 0:** a integridade do Nanobô e os vitais do paciente, pontos, tempo e a ferramenta ativa com o alvo (`Ruptura · parede`), o ícone, a recarga e o estado (`pronto`/`recarga`/`travado`/`defesa`/`esgotada`).
+- **Linha 0:** a integridade do Nanobô e os vitais do paciente, pontos, tempo e a arma ativa com o alvo (`Ruptura · parede`), o ícone, a recarga e o estado (`pronto`/`recarga`/`travado`/`defesa`/`esgotada`).
 - **Linha 1:** o objetivo da fase, as ameaças x/total e os identificados x/total.
 
 A ficha do scanner só aparece quando há alvo e flutua na faixa do mundo, longe do agente lido. Os controles ficam no menu e na pausa, para não competir com a leitura do jogo. A marca do destino aparece na borda da faixa visível quando ele está fora da câmera (#19).

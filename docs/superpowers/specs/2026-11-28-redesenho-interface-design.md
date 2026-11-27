@@ -28,8 +28,8 @@ Tela lógica 640×360, fonte de 8 px por caractere, sem maiúscula acentuada, bo
 - Saem do menu os painéis "Como jogar" e "Objetivo da missão" (o conteúdo vai para a cena nova).
 
 ### Como jogar (`GAME_SCENE_HOWTO`)
-- Fundo `fundo_como_jogar.png`; um painel central com uma coluna de ícone à esquerda (sprites do jogo ampliados ×2: Nanobô, scanner, ícones das ferramentas, ícones de vida) e até 6 linhas de texto.
-- 4 páginas: mover e mirar; ler com o scanner; ferramentas; Integridade e Vitais. Rodapé `n/4` e a dica de teclas.
+- Fundo `fundo_como_jogar.png`; um painel central com uma coluna de ícone à esquerda (sprites do jogo ampliados ×2: Nanobô, scanner, ícones das armas, ícones de vida) e até 6 linhas de texto.
+- 4 páginas: mover e mirar; ler com o scanner; armas; Integridade e Vitais. Rodapé `n/4` e a dica de teclas.
 - Enter, Espaço ou clique avançam; na última página voltam; Esc volta a qualquer momento. Setas ←/→ andam entre páginas.
 - **Transições novas:** `MENU→HOWTO`, `HOWTO→MENU`, `PAUSE→HOWTO`, `HOWTO→PAUSE`. A cena lembra a origem (`game.c`), e ao voltar entra nela; vinda da Pausa, a partida continua parada (só `GAME` avança a lógica). A página volta à 1 a cada entrada.
 
@@ -37,7 +37,7 @@ Tela lógica 640×360, fonte de 8 px por caractere, sem maiúscula acentuada, bo
 
 | Linha | Esquerda (x 8) | Meio | Direita (até x 632) |
 |---|---|---|---|
-| 0 (y 328) | ícone do Nanobô 16×16 + barra de bateria 64×8 (Integridade) | livre | ferramenta · ícone · recarga · estado (como hoje) |
+| 0 (y 328) | ícone do Nanobô 16×16 + barra de bateria 64×8 (Integridade) | livre | arma · ícone · recarga · estado (como hoje) |
 | 1 (y 344) | coração 16×16 pulsando + barra de ECG 64×8 (Vitais) | `pontos N · mm:ss` a partir de x 100 | `ameaças x/y · identificados a/b` |
 
 - **Medidas:** coluna de vida = 16 + 4 + 64 = 84 px (x 8 a 92). Pior caso do bloco direito da linha 0 = `Neutralização · vírus livre` (216) + 4 + ícone 16 + 4 + recarga 38 + 6 + `recarga` (56) = 340 px, de x 292 a 632: sobram ~200 px. Linha 1: `pontos 9999 · 99:59` (19 car., 152 px) de x 100 a 252; contador à direita com 35 car. (280 px) de x 352: sobram ~100 px.
@@ -67,8 +67,8 @@ Tela lógica 640×360, fonte de 8 px por caractere, sem maiúscula acentuada, bo
 - Controles no "como jogar" seguem o código (decisão de 26/11): botão direito escaneia, tecla X liga a defesa.
 
 ### Mira
-- `mira.png` 48×16 (3 quadros 16×16, brancos), desenhada centrada no mouse, só em `GAME` e dentro da área de jogo, tingida com a cor da ferramenta atual.
-- Quadro: 2 (travado) se `fire_locked()`; 1 (recarga) se `attack_cooldown_left() > 0`; senão 0 (pronto). Cor por ferramenta: a mesma usada no HUD/tiros para cada `Laser` (definida na implementação, uma tabela de 6 cores).
+- `mira.png` 48×16 (3 quadros 16×16, brancos), desenhada centrada no mouse, só em `GAME` e dentro da área de jogo, tingida com a cor da arma atual.
+- Quadro: 2 (travado) se `fire_locked()`; 1 (recarga) se `attack_cooldown_left() > 0`; senão 0 (pronto). Cor por arma: a mesma usada no HUD/tiros para cada `Laser` (definida na implementação, uma tabela de 6 cores).
 
 ## Arte (#246)
 
@@ -95,7 +95,7 @@ Inventário "atual × proposto" por tela (menu, como jogar, HUD, aviso de objeti
 ## O que fica para quem implementa
 
 - Nomes das funções e estados novos no `main.c` (seguindo o estilo plano do arquivo).
-- A tabela de cor por ferramenta da mira.
+- A tabela de cor por arma da mira.
 - O ajuste fino de posições (±2 px) depois das capturas.
 
 ## Verificação
