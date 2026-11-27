@@ -212,3 +212,18 @@ A #118 continua **aberta** até esses dois cenários serem medidos. Se ficarem p
 
 - **Leitura:** o mapa do pulmão não sobe o pico. Na troca, o mapa da Fase 2 sai antes de o da Fase 3 entrar (`load_phase_map()`), e a Fase 3 roda ~0,4 MB abaixo da Fase 2. O pior instante continua sendo a carga: 78,25–79,18 MB, **20,8 MB abaixo** do limite de 100 MB. A memória privada chega a 106,39 MB na Fase 2 e a 106,02 MB na Fase 3. É o mesmo platô de ~100 MB das medições anteriores, e o critério adotado continua sendo o working set.
 - **CSVs:** `mem_releaseqa_3fases.csv`, `mem_releaseqa_3fases_b.csv` e `mem_release_f1.csv`, no scratchpad da sessão de 25/11/2026 (fora do repositório).
+
+## 27/11/2026 — redesenho da interface (#245/#246): fundos sob demanda
+
+- **Build:** branch `feat/redesenho-interface`, `Release|x64` e `Debug|x64` com 0 avisos.
+- **Método:** `medir_memoria.ps1 -EveryMs 250`, iniciado **antes** do jogo; o jogo dirigido por `../Nanobo-testes/qa_jogo.ps1` (menu, INICIAR, abertura pulada com ESC, Fase 1 andando nas quatro direções). Os 12 bitmaps novos da #246 entraram na carga em 28/11.
+
+| Build e situação | Amostras | Pico (MB) | Privada no pico (MB) | Observação |
+|---|---:|---:|---:|---|
+| Release, os 12 bitmaps novos carregados na abertura (rejeitado) | 158 | **102,39** | 128,87 | platô de 102,4 MB na carga; menu em repouso a 87,5–89,1 MB |
+| **Release, fundos de tela sob demanda (adotado)** | 205 | **86,78** | 113,12 | pico na carga (t ≈ 4–9 s); Fase 1 em 75,2–75,5 MB; última amostra 75,47 MB |
+| Release, mesma versão, segunda execução | 197 | 86,78 | — | última amostra 75,25 MB |
+
+- **Leitura:** os seis fundos de 640×360 custam muito mais carregados que os 6 MB de textura bruta, como já acontecera com os mapas (14/11). Agora só um conjunto fica carregado por vez (menu e hemácias no MENU, `fundo_como_jogar` no HOWTO, o fundo do hospital na abertura, na Vitória ou no Game Over; GAME, PAUSE e RESULTS não usam nenhum), e a carga só confere que os seis arquivos existem. O pico de 86,78 MB fica **13,2 MB abaixo** de 100 MB, 7 a 8 MB acima dos ~79 MB de 25/11 (os ícones e a faixa de HUD novos mais o fundo do menu aberto durante a carga). Fica sem mudar a conta: o pior instante é a carga.
+- **Desvio declarado:** os cartões do Diário abrem sozinhos na Fase 1 e seguraram o script, então a medição não cobriu o ciclo Pausa → Como jogar → volta nem as telas de Vitória e Game Over no Release. Esses estados foram exercitados à parte no Debug (capturas em `.superpowers/sdd/2026-11-28-redesenho-interface/capturas/task-10/`) e cada um troca de fundo carregando um só; o custo de um fundo a mais é menor que a folga de 13 MB.
+- **CSVs:** `release.csv` (rejeitado), `release2.csv` e `release3.csv`, em `.superpowers/sdd/2026-11-28-redesenho-interface/mem/` (fora do git).

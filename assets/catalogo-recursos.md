@@ -32,7 +32,7 @@ Inventário dos recursos necessários à execução atual, para orientar o carre
 | Mapa do mundo da Fase 2 (1920×512) | Fundo da Fase 2: interior do brônquio | `assets/backgrounds/mapa_fase2.png`; idem (14/11, #89) |
 | Mapa do mundo da Fase 3 (1920×512) | Fundo da Fase 3: alvéolos do pulmão (sacos em concha separados por septos rosa-claros, cada um com um capilar vermelho-escuro) e o bronquíolo terminal aberto no destino, com a arteríola ao lado; cada ponto de nascimento cai no meio de um alvéolo. Desenhado com `MAP_TINT`, como a Fase 1 | `assets/backgrounds/mapa_fase3.png` e `mapa_fase3.aseprite` (camadas `fundo`, `septos`, `capilares`, `pneumocitos`, `vasos`, `particulas`, `marcos`), gerados por `../Nanobo-testes/gerar_mapa_fase3.lua` (25/11, #233) |
 
-`load_resources()` abre os trinta e nove bitmaps (os seis dos fungos e da Perfuração entraram em 25/11 e os doze da arte nova da interface — `icone_nanobo`, `coracao_pulso`, `barra_bateria`, `barra_ecg`, `segmento`, `mira`, `fundo_menu`, `hemacias_deriva`, `fundo_como_jogar` e as três telas do hospital — em 28/11), mais o mapa da fase atual por `load_phase_map()`, a fonte e, quando o áudio está instalado, os seis efeitos de `assets/audio/sfx/*.wav` e a música `assets/audio/music/fundo.wav`. `free_resources()` libera os bitmaps na ordem inversa, depois os seis efeitos e a música — os samples saem antes de `al_uninstall_audio()` — e por fim a fonte. O título do menu (`NANOBÔ`) é um bitmap montado em tempo de carregamento a partir da fonte (`make_text_bitmap`), também liberado ali. Desde 15/11 (#242), o projétil vem da folha `tiros.png`: cor neutra, e cada ferramenta se distingue pela **forma**, que mostra o mecanismo. Os tiros e os ícones são gerados por `../Nanobo-testes/gerar_tiros_icones.lua` (Aseprite), e os fungos da Fase 3 por `../Nanobo-testes/gerar_fungos.lua` (Aseprite, no padrão do `gerar_agentes.lua`). O mapa da Fase 3 vem de `../Nanobo-testes/gerar_mapa_fase3.lua` (Aseprite, no padrão do `gerar_mapa_fase2.lua`); como os outros mapas, só fica carregado na fase dele, e a carga só confere que o arquivo existe. Os ícones `icone_laser_roxo.png` e `icone_laser_vermelho.png` saíram do `load_resources()` e continuam no disco como histórico.
+`load_resources()` abre trinta e três bitmaps (os seis dos fungos e da Perfuração entraram em 25/11 e os seis pequenos da arte nova da interface — `icone_nanobo`, `coracao_pulso`, `barra_bateria`, `barra_ecg`, `segmento` e `mira` — em 28/11); os seis fundos de tela de 640×360 (`fundo_menu`, `hemacias_deriva`, `fundo_como_jogar` e as três telas do hospital) não entram na carga: a carga só confere que existem, e `sync_screen_backgrounds()` abre o conjunto da cena atual e libera o anterior, como o mapa da fase (medido em 28/11: carregados todos de uma vez, o pico foi 102,39 MB), mais o mapa da fase atual por `load_phase_map()`, a fonte e, quando o áudio está instalado, os seis efeitos de `assets/audio/sfx/*.wav` e a música `assets/audio/music/fundo.wav`. `free_resources()` libera os bitmaps na ordem inversa, depois os seis efeitos e a música — os samples saem antes de `al_uninstall_audio()` — e por fim a fonte. O título do menu (`NANOBÔ`) é um bitmap montado em tempo de carregamento a partir da fonte (`make_text_bitmap`), também liberado ali. Desde 15/11 (#242), o projétil vem da folha `tiros.png`: cor neutra, e cada ferramenta se distingue pela **forma**, que mostra o mecanismo. Os tiros e os ícones são gerados por `../Nanobo-testes/gerar_tiros_icones.lua` (Aseprite), e os fungos da Fase 3 por `../Nanobo-testes/gerar_fungos.lua` (Aseprite, no padrão do `gerar_agentes.lua`). O mapa da Fase 3 vem de `../Nanobo-testes/gerar_mapa_fase3.lua` (Aseprite, no padrão do `gerar_mapa_fase2.lua`); como os outros mapas, só fica carregado na fase dele, e a carga só confere que o arquivo existe. Os ícones `icone_laser_roxo.png` e `icone_laser_vermelho.png` saíram do `load_resources()` e continuam no disco como histórico.
 
 **Agentes finais (15/11, #241):**
 - os sprites da tabela acima são gerados por `../Nanobo-testes/gerar_agentes.lua` (Aseprite), no estilo da amostra aprovada (#225): contorno escuro de 1 px, luz no alto à esquerda, especular e luz de retorno;
@@ -164,22 +164,22 @@ O fundo é escuro e de baixo contraste de propósito: os sprites precisam contin
 
 ### Interface — vida, mira e fundos (#246, 26/11/2026)
 
-Gerados por `../Nanobo-testes/gerar_interface.lua` (Aseprite 1.3.18, modo batch; o cabeçalho do script documenta cada arquivo), aprovados pelo dono em 26/11. Entram no jogo com o redesenho da #245 (spec `docs/superpowers/specs/2026-11-28-redesenho-interface-design.md`); até lá ficam no disco sem uso.
+Gerados por `../Nanobo-testes/gerar_interface.lua` (Aseprite 1.3.18, modo batch; o cabeçalho do script documenta cada arquivo), aprovados pelo dono em 26/11. **Em uso desde o redesenho da #245** (28/11, branch `feat/redesenho-interface`, ainda não mesclada; spec `docs/superpowers/specs/2026-11-28-redesenho-interface-design.md`). Os seis ícones e molduras pequenos abrem na carga; os seis fundos de 640×360 abrem por cena e só um conjunto fica na memória por vez (`sync_screen_backgrounds()` em `src/main.c`).
 
-| Arquivo | Tamanho | Uso previsto |
+| Arquivo | Tamanho | Em uso |
 |---|---|---|
-| `assets/sprites/icone_nanobo.png` | 16×16 | HUD, integridade do Nanobô |
-| `assets/sprites/coracao_pulso.png` | 48×16 (3 quadros) | HUD, vitais do Léo (pulsa mais rápido com vitais baixos) |
-| `assets/sprites/barra_bateria.png` | 64×8 | moldura da barra de integridade (10 vagas de 5×4 em x = 2 + 6i, y = 2; tampa em x 63) |
-| `assets/sprites/barra_ecg.png` | 64×8 | moldura da barra de vitais, com traço de ECG ao fundo (mesma geometria, sem tampa) |
-| `assets/sprites/segmento.png` | 5×4 | segmento branco das duas barras, tingido pela faixa |
-| `assets/sprites/mira.png` | 48×16 (3 quadros) | mira: pronto, recarga, travado; branca, tingida pela ferramenta |
-| `assets/backgrounds/fundo_menu.png` | 640×360 | menu: vaso sanguíneo |
-| `assets/backgrounds/hemacias_deriva.png` | 640×360, transparente | camada do menu que desliza e emenda na horizontal |
-| `assets/backgrounds/fundo_como_jogar.png` | 640×360 | tela "como jogar" |
-| `assets/backgrounds/hospital_abertura.png` | 640×360 | abertura: quarto à noite, monitor acelerado |
-| `assets/backgrounds/hospital_vitoria.png` | 640×360 | Vitória: dia, leito arrumado, mochila (alta) |
-| `assets/backgrounds/hospital_gameover.png` | 640×360 | Game Over: luz baixa, monitor estável |
+| `assets/sprites/icone_nanobo.png` | 16×16 | HUD, integridade do Nanobô (carga) |
+| `assets/sprites/coracao_pulso.png` | 48×16 (3 quadros) | HUD, vitais do Léo (pulsa mais rápido com vitais baixos; carga) |
+| `assets/sprites/barra_bateria.png` | 64×8 | HUD, moldura da barra de integridade (10 vagas de 5×4 em x = 2 + 6i, y = 2; tampa em x 63; carga) |
+| `assets/sprites/barra_ecg.png` | 64×8 | HUD, moldura da barra de vitais, com traço de ECG ao fundo (mesma geometria, sem tampa; carga) |
+| `assets/sprites/segmento.png` | 5×4 | HUD, segmento branco das duas barras, tingido pela faixa (carga) |
+| `assets/sprites/mira.png` | 48×16 (3 quadros) | mira no jogo: pronto, recarga, travado; branca, tingida pela arma (carga) |
+| `assets/backgrounds/fundo_menu.png` | 640×360 | menu e painel RECORDES: vaso sanguíneo (sob demanda, cena MENU) |
+| `assets/backgrounds/hemacias_deriva.png` | 640×360, transparente | menu: camada que desliza e emenda na horizontal (sob demanda, junto do fundo do menu) |
+| `assets/backgrounds/fundo_como_jogar.png` | 640×360 | tela "como jogar", do menu e da Pausa (sob demanda, cena HOWTO) |
+| `assets/backgrounds/hospital_abertura.png` | 640×360 | abertura de três cartas (sob demanda, cena BRIEFING) |
+| `assets/backgrounds/hospital_vitoria.png` | 640×360 | tela de Vitória (sob demanda, cena VICTORY) |
+| `assets/backgrounds/hospital_gameover.png` | 640×360 | tela de Game Over (sob demanda, cena GAME_OVER) |
 
 ## Recursos previstos
 
