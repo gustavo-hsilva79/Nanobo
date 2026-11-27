@@ -2574,13 +2574,26 @@ void draw_briefing()
         "enter ou clique avança · esc pula");
 }
 
+// moldura da barra de vida e os segmentos cheios tingidos (10 de 5x4)
+void draw_life_bar(ALLEGRO_BITMAP* frame, float x, float y, int segments, ALLEGRO_COLOR color)
+{
+    int i;
+
+    al_draw_bitmap(frame, x, y, 0);
+
+    for (i = 0; i < segments && i < LIFE_SEGMENTS; i++)
+    {
+        al_draw_tinted_bitmap(bar_segment, color, x + 2.0f + 6.0f * (float)i, y + 2.0f, 0);
+    }
+}
+
 void draw_hud()
 {
     int x;
-    float bar_x;
-    float fill;
     ALLEGRO_COLOR vitals_color;
-    int heart_y;
+    float period;
+    double beat;
+    int heart_frame;
     int total_seconds;
     int x_weapon;
     int x_icon;
@@ -2601,19 +2614,13 @@ void draw_hud()
     // nada do HUD pode vazar para a faixa do mundo; o clip vale so no painel
     al_set_clipping_rectangle(0, SCAN_PANEL_Y, SCREEN_W, PANEL_H);
 
-    // coracao centrado na altura do texto, nao topo a topo
-    heart_y = hud_y(0) + (al_get_font_line_height(font) - al_get_bitmap_height(heart_icon)) / 2;
+    // coluna de vida: icone 16x16 centrado na linha + barra 64x8 em x 28
+    // linha 0: integridade do nanobo, bateria em ciano
+    al_draw_bitmap(nanobo_icon, (float)HUD_MARGIN, (float)(hud_y(0) - 4), 0);
+    draw_life_bar(battery_bar, 28.0f, (float)hud_y(0),
+        life_segments(player.health, PLAYER_MAX_HEALTH), UI_CYAN);
 
-    // duas barras (#234): escudo + integridade do nanobo em ciano;
-    // coracao + vitais do paciente na cor da faixa
-    al_draw_bitmap(defense_icon, (float)HUD_MARGIN, (float)heart_y, 0);
-    bar_x = (float)(HUD_MARGIN + al_get_bitmap_width(defense_icon) + 4);
-    fill = (float)VITALS_BAR_W * player.health / PLAYER_MAX_HEALTH;
-    al_draw_filled_rectangle(bar_x, (float)(hud_y(0) + 1), bar_x + (float)VITALS_BAR_W,
-        (float)(hud_y(0) + 1 + UI_SEG_H), UI_SLOT);
-    al_draw_filled_rectangle(bar_x, (float)(hud_y(0) + 1), bar_x + fill,
-        (float)(hud_y(0) + 1 + UI_SEG_H), UI_CYAN);
-
+    // linha 1: vitais do paciente no ECG, na cor da faixa
     if (patient_vitals >= VITALS_MIN_BETWEEN)
     {
         vitals_color = UI_GREEN;
@@ -2627,24 +2634,33 @@ void draw_hud()
         vitals_color = UI_RED;
     }
 
-    x = (int)bar_x + VITALS_BAR_W + 8;
-    al_draw_bitmap(heart_icon, (float)x, (float)heart_y, 0);
-    bar_x = (float)(x + al_get_bitmap_width(heart_icon) + 4);
-    fill = (float)VITALS_BAR_W * patient_vitals / PATIENT_VITALS_MAX;
-    al_draw_filled_rectangle(bar_x, (float)(hud_y(0) + 1), bar_x + (float)VITALS_BAR_W,
-        (float)(hud_y(0) + 1 + UI_SEG_H), UI_SLOT);
-    al_draw_filled_rectangle(bar_x, (float)(hud_y(0) + 1), bar_x + fill,
-        (float)(hud_y(0) + 1 + UI_SEG_H), vitals_color);
+    // coracao: batida (1), contracao (2) e repouso (0); bate mais rapido com vitais baixos
+    period = heart_period(patient_vitals);
+    beat = fmod(match_time, (double)period);
+    heart_frame = 0;
+    if (beat < 0.15 * period)
+    {
+        heart_frame = 1;
+    }
+    else if (beat < 0.30 * period)
+    {
+        heart_frame = 2;
+    }
+    al_draw_bitmap_region(heart_pulse, (float)(heart_frame * 16), 0.0f, 16.0f, 16.0f,
+        (float)HUD_MARGIN, (float)(hud_y(1) - 4), 0);
+    draw_life_bar(ecg_bar, 28.0f, (float)hud_y(1),
+        life_segments(patient_vitals, PATIENT_VITALS_MAX), vitals_color);
 
-    x = (int)bar_x + VITALS_BAR_W + UI_GAP;
-
-    // linha 0, a esquerda: pontos e tempo logo depois das barras (#243)
+    // linha 1, depois da coluna de vida: pontos e tempo a partir de x 100
     total_seconds = (int)match_time;
     snprintf(timer_text, sizeof(timer_text), "%02d:%02d", total_seconds / 60, total_seconds % 60);
     snprintf(score_text, sizeof(score_text), "pontos %d", score);
-    al_draw_text(font, UI_TEXT, (float)x, (float)hud_y(0), 0, score_text);
-    x += al_get_text_width(font, score_text) + UI_GAP;
-    al_draw_text(font, UI_DIM, (float)x, (float)hud_y(0), 0, timer_text);
+    x = 100;
+    al_draw_text(font, UI_TEXT, (float)x, (float)hud_y(1), 0, score_text);
+    x += al_get_text_width(font, score_text) + 4;
+    al_draw_text(font, UI_DIM, (float)x, (float)hud_y(1), 0, "·");
+    x += al_get_text_width(font, "·") + 4;
+    al_draw_text(font, UI_DIM, (float)x, (float)hud_y(1), 0, timer_text);
 
     // linha 0, a direita: a ferramenta com o alvo dela, o icone e a recarga,
     // tudo medido da borda
@@ -2729,31 +2745,7 @@ void draw_hud()
         fire_locked() ? fire_lock_left() : attack_cooldown_left());
     al_draw_text(font, UI_DIM, (float)x_word, (float)hud_y(0), 0, state_text);
 
-    // linha 1: o objetivo em ambar; a frase curta deixa espaco para os contadores (#243)
-    if (threats_left() > 0)
-    {
-        // a Fase 2 tem vírus, não bactéria: a frase acompanha a fase (#M4)
-        if (current_phase() == 1)
-        {
-            al_draw_text(font, UI_AMBER, HUD_MARGIN, hud_y(1), 0,
-                "neutralize as bactérias e vá ao destino");
-        }
-        else if (current_phase() == 2)
-        {
-            al_draw_text(font, UI_AMBER, HUD_MARGIN, hud_y(1), 0,
-                "neutralize os vírus e vá ao destino");
-        }
-        else
-        {
-            al_draw_text(font, UI_AMBER, HUD_MARGIN, hud_y(1), 0,
-                "elimine os fungos e vá ao destino");
-        }
-    }
-    else
-    {
-        al_draw_text(font, UI_AMBER, HUD_MARGIN, hud_y(1), 0, "vá ao destino");
-    }
-
+    // linha 1, a direita: o objetivo saiu do HUD (vira o aviso de objetivo)
     // ameacas com contador e identificados, que e o progresso do bonus
     snprintf(line, sizeof(line), "ameaças %d/%d · identificados %d/%d",
         threats_total() - threats_left(), threats_total(),

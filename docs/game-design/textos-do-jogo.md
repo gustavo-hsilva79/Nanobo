@@ -96,7 +96,7 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 | CT-10 | menu, painel do objetivo | `neutralizar as %d bactérias e chegar ao destino` | 47 | #201 |
 | CT-11 | menu, painel do objetivo | `identificar os %d agentes vale +%d pontos` | 41 | #201 |
 | CT-11b | resultados, painel dos objetivos secundários | `bônus de vitais` · `+%d` | 15 | #218; ocupa a linha da CT-11 nos resultados |
-| CT-11c | HUD, linha 0 | duas barras de 36 px sem número: escudo + integridade do Nanobô (ciano) e coração + vitais do paciente (verde ≥ 60, âmbar ≥ 30, vermelho abaixo) | — | #218; #234 |
+| CT-11c | HUD, coluna de vida (x 8 a 92) | duas barras de 10 segmentos sem número nem rótulo: linha 0, ícone do Nanobô + bateria da integridade (ciano); linha 1, coração pulsando + ECG dos vitais do paciente (verde ≥ 60, âmbar ≥ 30, vermelho abaixo) | — | #218; #234; redesenho de 28/11 (HD-01) |
 | CT-11d | mundo, acima do agente da dica | `botão direito: escanear` (some no primeiro scan; volta no tiro num invasor sem leitura) | 23 | #219 |
 | CT-11e | — | `conceito` / `enter ou clique para continuar` | — | #222; saíram em 25/11: a caixa do diário (§3.1) tem cabeçalho, contador `n/N` e triângulo |
 | CT-11f | caixa do diário, título no cabeçalho (DG-01, DG-02) | `Coloração de Gram` (CC-01) / `Resistência e Reserva` (CC-02) | 17 / 21 | #222; linhas em §3.1 |
@@ -104,7 +104,7 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 | CT-13 | menu, rodapé | `F11 tela cheia` | 14 | #201 |
 | CT-14 | HUD, linha 1, à direita | `ameaças %d/%d · identificados %d/%d` (`ameaças 0/6 · identificados 0/9`) | 31 (até 35) | #199; juntas na mesma linha em 15/11 (#243) |
 | CT-15 | — | `identificados %d/%d` | — | entrou na CT-14 em 15/11 (#243) |
-| CT-16 | HUD, linha 0, depois das barras | `pontos %d` | 9 | #199; #243 |
+| CT-16 | HUD, linha 1, a partir de x 100 | `pontos %d` + `·` + tempo mm:ss (`pontos 9999 · 99:59`) | 9 (até 19 com o tempo) | #199; #243; desceu para a linha 1 em 28/11 (HD-01) |
 | CT-17 | HUD, linha 0 | `pronto` / `recarga` / `travado` / `defesa` / `esgotada` | 6 / 7 / 7 / 6 / 8 | #199; #215 (trava); #216 (Reserva sem carga) |
 | CT-18 a CT-21 | — | `Nenhum alvo`, `Aproxime-se de um agente para escanear.`, `botão direito sobre o agente`, `Alvo neutralizado`, `Chegue perto de outro agente.` | — | saíram em 15/11 (#243): sem alvo, a ficha do scanner some; a dica do tutorial no mundo ensina o botão direito |
 | CT-22 | scanner, alvo no alcance | `Alvo detectado` | 14 | #199 |
@@ -125,8 +125,8 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 | CT-36c | HUD, linha 0, Fase 3 | `Perfuração · antifúngico` | 24 | #230 |
 | CT-37 | resultados, título do painel do relatório | `O que anotei nesta fase` | 23 | #202, build de 04/11; voz do Diário desde 26/11 |
 | CT-38 a CT-41 | — | contadores e frase de revisão do painel de 04/11 | — | saíram com o relatório por objetivo (#210, #223); os textos atuais são as RR-01 a RR-10 da §2.2 |
-| CT-42 | HUD, linha 1, Fase 2 | `neutralize os vírus e vá ao destino` | 35 | Fase 2 mínima (04/11); encurtada em 15/11 (#243) |
-| CT-42b | HUD, linha 1, Fase 3 | `elimine os fungos e vá ao destino` | 33 | #227 |
+| CT-42 | — | `neutralize os vírus e vá ao destino` | — | Fase 2 mínima (04/11); encurtada em 15/11 (#243); saiu do HUD em 28/11 (HD-01): vira uma variante do aviso de objetivo OB-01 |
+| CT-42b | — | `elimine os fungos e vá ao destino` | — | #227; saiu do HUD em 28/11 (HD-01): vira uma variante do aviso de objetivo OB-01 |
 | CT-43 | scanner, camada 1, vírus | `clique de novo para concluir a leitura` | 38 | Fase 2 mínima (04/11) |
 | CT-44 | scanner, categoria | `vírus` / `célula infectada` (depois da leitura) | 5 / 16 | Fase 2 mínima (04/11); #87 |
 | CT-44b | scanner, categoria, fungo (levedura, bolor e esporo pousado) | `fungo` | 5 | #228 |
@@ -135,8 +135,8 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 | CT-47 | menu, rodapé | `recorde %d · %s` (`recorde 1234 · Jogador`) / `nenhum recorde ainda` | até 29 / 20 | Top 10 (#34), 15/11 |
 | CT-48 | menu, subtítulo | `DEFENDA O ORGANISMO` | 19 | varredura de 05/11 |
 | CT-49 | menu, rodapé do painel de controles | `interprete as informações do scanner antes de atacar` | 52 | varredura de 05/11 |
-| CT-50 | HUD, linha 1, Fase 1 | `neutralize as bactérias e vá ao destino` | 39 | varredura de 05/11; encurtada em 15/11 (#243) |
-| CT-51 | HUD, linha 1, sem ameaças | `vá ao destino` | 13 | varredura de 05/11; #243 |
+| CT-50 | — | `neutralize as bactérias e vá ao destino` | — | varredura de 05/11; encurtada em 15/11 (#243); saiu do HUD em 28/11 (HD-01): vira uma variante do aviso de objetivo OB-01 |
+| CT-51 | — | `vá ao destino` | — | varredura de 05/11; #243; saiu do HUD em 28/11 (HD-01): vira uma variante do aviso de objetivo OB-01 |
 | CT-52 | mundo / marca de destino | `destino` | 7 | varredura de 05/11 |
 | CT-53 | pausa, título | `PAUSE` | 5 | varredura de 05/11 |
 | CT-54 | pausa, rodapé | `esc para voltar` | 15 | varredura de 05/11 |
