@@ -18,27 +18,18 @@ _Static_assert(__STDC_VERSION__ >= 201112L, "compilar com /std:c11 (ver Nanobo.v
 // tolerancia do scan por clique: distancia do cursor ao centro do agente (#198)
 #define CURSOR_SCAN_TOLERANCE 24.0f
 
-// tela logica: o jogo desenha num bitmap deste tamanho e a janela amplia
-#define SCREEN_W 640
-#define SCREEN_H 360
+// faixa do mundo: o pedaco do mundo que a camera mostra, em pixels do mundo;
+// nao depende da resolucao da tela, que mora em src/ui/layout.h (27/11).
+// multipla de 32, o lado de um tile; a altura cresceu de 256 para 320 com o
+// HUD de duas linhas (#243)
+#define VIEW_W 640
+#define VIEW_H 320
 
-// faixa visivel do mundo; multipla de 32, o lado de um tile do mapa futuro.
-// cresceu de 256 para 320 com o HUD de duas linhas (#243)
-#define PLAY_H 320
-
-// HUD no rodape da tela logica: duas linhas; a ficha do scanner flutua no mundo
-#define PANEL_H 40
-
-// o painel comeca onde a faixa visivel do mundo acaba
-#define SCAN_PANEL_Y PLAY_H
-
-// a tela e a faixa mais o painel, e tudo fecha com o tile de 32 px
-_Static_assert(PANEL_H + PLAY_H == SCREEN_H, "tela = faixa do mundo + painel");
-_Static_assert(SCREEN_W % 32 == 0, "largura da tela precisa ser multipla de 32");
-_Static_assert(PLAY_H % 32 == 0, "faixa do mundo precisa ser multipla de 32");
-_Static_assert(WORLD_W % SCREEN_W == 0, "mundo precisa ter um numero inteiro de telas");
-// a camera para em [0, WORLD_H - PLAY_H]: basta a faixa caber no mundo (#243)
-_Static_assert(WORLD_H >= PLAY_H, "a faixa visivel precisa caber no mundo");
+_Static_assert(VIEW_W % 32 == 0, "largura da faixa precisa ser multipla de 32");
+_Static_assert(VIEW_H % 32 == 0, "altura da faixa precisa ser multipla de 32");
+_Static_assert(WORLD_W % VIEW_W == 0, "mundo precisa ter um numero inteiro de faixas");
+// a camera para em [0, WORLD_H - VIEW_H]: basta a faixa caber no mundo (#243)
+_Static_assert(WORLD_H >= VIEW_H, "a faixa visivel precisa caber no mundo");
 _Static_assert(WORLD_W % 32 == 0 && WORLD_H % 32 == 0, "mundo precisa fechar no tile de 32");
 
 // camadas que o scanner revela antes de identificar o agente

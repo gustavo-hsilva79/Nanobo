@@ -1762,11 +1762,11 @@ static void place_agents()
 // a camera segue o nanobo e para nas bordas do mundo
 static void update_camera()
 {
-    float max_x = (float)(WORLD_W - SCREEN_W);
-    float max_y = (float)(WORLD_H - PLAY_H);
+    float max_x = (float)(WORLD_W - VIEW_W);
+    float max_y = (float)(WORLD_H - VIEW_H);
 
-    camera.x = player.x - (float)SCREEN_W / 2.0f;
-    camera.y = player.y - (float)PLAY_H / 2.0f;
+    camera.x = player.x - (float)VIEW_W / 2.0f;
+    camera.y = player.y - (float)VIEW_H / 2.0f;
 
     if (camera.x < 0.0f)
     {

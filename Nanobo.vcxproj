@@ -133,6 +133,7 @@
     <ClInclude Include="src\entities\entities.h" />
     <ClInclude Include="src\gameplay\gameplay.h" />
     <ClInclude Include="src\scenes\scenes.h" />
+    <ClInclude Include="src\ui\layout.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

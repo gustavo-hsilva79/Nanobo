@@ -15,6 +15,7 @@
 #include "core/game.h"
 #include "entities/entities.h"
 #include "gameplay/gameplay.h"
+#include "ui/layout.h"
 
 #define BUTTON_X 240
 #define BUTTON_Y 266
