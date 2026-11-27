@@ -61,7 +61,7 @@ Desenhada **em toda partida**: `MENU → BRIEFING → GAME`, e também depois de
 
 | ID | Local | Texto | Caracteres | Origem |
 |---|---|---|---|---|
-| BR-04 | abertura, rodapé (y = 24, centrado) | `enter ou clique avança · esc pula` | 33 | #103 |
+| BR-04 | abertura, rodapé (y = 24, centrado) | `[enter] ou [clique] avança · [esc] pula` | 33 | #103 |
 | AB-01 | cabeçalho da ficha, sem retrato | `Hospital · ficha do paciente` | 28 | #244 |
 | AB-02a | ficha, página 1 de 3 | `Paciente: {Léo Martins Ferreira}, 16 anos.` | 40 | #244 |
 | AB-02b |  | `Chegou ao hospital com febre alta.` | 34 | #244 |
@@ -101,22 +101,22 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 | CT-11b | — | `bônus de vitais` · `+%d` | — | #218; saiu em 28/11: substituída pela RS-04 |
 | RS-04 | resultados, painel dos objetivos secundários | `bônus pelos vitais do Léo` · `+%d` | 25 | redesenho de 28/11; substitui a CT-11b |
 | CT-11c | HUD, coluna de vida (x 8 a 92) | duas barras de 10 segmentos sem número nem rótulo: linha 0, ícone do Nanobô + bateria da integridade (ciano); linha 1, coração pulsando + ECG dos vitais do paciente (verde ≥ 60, âmbar ≥ 30, vermelho abaixo) | — | #218; #234; redesenho de 28/11 (HD-01) |
-| CT-11d | mundo, acima do agente da dica | `botão direito: escanear` (some no primeiro scan; volta no tiro num invasor sem leitura) | 23 | #219 |
+| CT-11d | mundo, acima do agente da dica | `[botão direito]: escanear` (some no primeiro scan; volta no tiro num invasor sem leitura) | 23 | #219 |
 | CT-11e | — | `conceito` / `enter ou clique para continuar` | — | #222; saíram em 25/11: a caixa do diário (§3.1) tem cabeçalho, contador `n/N` e triângulo |
 | CT-11f | caixa do diário, título no cabeçalho (DG-01, DG-02) | `Coloração de Gram` (CC-01) / `Resistência e Reserva` (CC-02) | 17 / 21 | #222; linhas em §3.1 |
 | CT-12 | — | `enter ou clique para começar` | — | #201; saiu em 28/11: substituída pela MN-04 |
-| MN-04 | menu, rodapé dos botões | `setas escolhem · enter confirma` | 31 | redesenho de 28/11 (MN-01); substitui a CT-12 |
-| CT-13 | menu, rodapé | `F11 tela cheia` | 14 | #201 |
+| MN-04 | menu, rodapé dos botões | `[setas] escolhem · [enter] confirma` | 31 | redesenho de 28/11 (MN-01); substitui a CT-12 |
+| CT-13 | menu, rodapé | `[F11] tela cheia` | 14 | #201 |
 | CT-14 | HUD, linha 1, à direita | `ameaças %d/%d · identificados %d/%d` (`ameaças 0/6 · identificados 0/9`) | 31 (até 35) | #199; juntas na mesma linha em 15/11 (#243) |
 | CT-15 | — | `identificados %d/%d` | — | entrou na CT-14 em 15/11 (#243) |
 | CT-16 | HUD, linha 1, a partir de x 100 | `pontos %d` + `·` + tempo mm:ss (`pontos 9999 · 99:59`) | 9 (até 19 com o tempo) | #199; #243; desceu para a linha 1 em 28/11 (HD-01) |
 | CT-17 | HUD, linha 0 | `pronto` / `recarga` / `travado` / `defesa` / `esgotada` | 6 / 7 / 7 / 6 / 8 | #199; #215 (trava); #216 (Reserva sem carga) |
 | CT-18 a CT-21 | — | `Nenhum alvo`, `Aproxime-se de um agente para escanear.`, `botão direito sobre o agente`, `Alvo neutralizado`, `Chegue perto de outro agente.` | — | saíram em 15/11 (#243): sem alvo, a ficha do scanner some; a dica do tutorial no mundo ensina o botão direito |
 | CT-22 | scanner, alvo no alcance | `Alvo detectado` | 14 | #199 |
-| SC-03 | scanner, alvo no alcance, linha 1 | `botão direito: escanear` | 23 | redesenho de 28/11; substitui a CT-23 |
+| SC-03 | scanner, alvo no alcance, linha 1 | `[botão direito]: escanear` | 23 | redesenho de 28/11; substitui a CT-23 |
 | SC-04 | scanner, alvo no alcance, linha 2 | `cada clique revela uma camada` | 29 | redesenho de 28/11; substitui a CT-24 |
 | SC-02 | scanner, 1 camada | `Leitura incompleta` | 18 | redesenho de 28/11; substitui a CT-25 (os marcadores mostram o que falta) |
-| SC-05 | scanner, 1 camada, bactéria | `botão direito de novo: revela a coloração de Gram` | 49 | redesenho de 28/11; substitui a CT-26 |
+| SC-05 | scanner, 1 camada, bactéria | `[botão direito] de novo: revela a coloração de Gram` | 49 | redesenho de 28/11; substitui a CT-26 |
 | CT-27 | scanner, identificado | `Identificação concluída` | 23 | #199 |
 | CT-29 | scanner, cabeçalho | `célula` / `bactéria` | 6 / 7 | #199 |
 | CT-30 | — | `resumo da fase` | — | #202; saiu em 28/11: substituída pela RS-02 |
@@ -124,7 +124,7 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 | RS-03 | resultados, painel principal; vitória e game over, painel de números | `ameaças eliminadas` | 18 | redesenho de 28/11; substitui a CT-31b nas três telas; casa com a RR-09 e a OB-04 |
 | CT-32 | resultados | `agentes identificados` / `bônus de identificação` | 21 / 22 | #202 |
 | CT-33 | resultados | `não obtido` | 10 | #202 |
-| CT-34 | resultados | `enter também continua` | 21 | #202 |
+| CT-34 | resultados | `[enter] também continua` | 21 | #202 |
 | CT-35 | vitória | `Vitória` | 7 | #202 |
 | CT-36 | HUD, linha 0, à direita | `Ruptura · parede` / `Dissolução · membrana` / `Reserva %d/%d · resistente` (`Reserva 2/2 · resistente`) | 16 / 21 / 24 | decisão 03/11 (noite); #216; a arma com o alvo dela em 15/11 (#243) |
 | CT-36b | HUD, linha 0, Fase 2 | `Neutralização · vírus livre` / `Ataque T · célula infectada` | 27 / 27 | #88; #243 |
@@ -133,7 +133,7 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 | CT-38 a CT-41 | — | contadores e frase de revisão do painel de 04/11 | — | saíram com o relatório por objetivo (#210, #223); os textos atuais são as RR-01 a RR-10 da §2.2 |
 | CT-42 | — | `neutralize os vírus e vá ao destino` | — | Fase 2 mínima (04/11); encurtada em 15/11 (#243); saiu do HUD em 28/11 (HD-01): vira uma variante do aviso de objetivo OB-01 |
 | CT-42b | — | `elimine os fungos e vá ao destino` | — | #227; saiu do HUD em 28/11 (HD-01): vira uma variante do aviso de objetivo OB-01 |
-| SC-06 | scanner, camada 1, vírus, célula e fungo | `botão direito de novo: conclui a leitura` | 40 | redesenho de 28/11; substitui a CT-43 |
+| SC-06 | scanner, camada 1, vírus, célula e fungo | `[botão direito] de novo: conclui a leitura` | 40 | redesenho de 28/11; substitui a CT-43 |
 | SC-11 | scanner, marcador da camada 1 (linha de estado, à direita) | `forma` | 5 | redesenho de 28/11; quadrado 6×6 apagado `UI_SLOT`, aceso `UI_AMBER` |
 | SC-12 | scanner, marcador da camada 2, bactéria | `Gram e espécie` | 14 | redesenho de 28/11; aceso `UI_AMBER`, verde com a identificação |
 | SC-13 | scanner, marcador da camada 2, vírus, célula e fungo | `estrutura` | 9 | redesenho de 28/11; aceso `UI_AMBER`, verde com a identificação |
@@ -166,34 +166,34 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 | PA-03g | pausa, objetivo da Fase 3, linha 1 | `Elimine os fungos no pulmão do Léo e vá ao destino.` | 51 | redesenho de 28/11 |
 | PA-03h | pausa, objetivo da Fase 3, linha 2 | `Antibiótico não tem alvo no fungo: use a Perfuração.` | 52 | redesenho de 28/11 |
 | PA-03i | pausa, objetivo da Fase 3, linha 3 | `No bolor, mire na base da colônia, não na hifa.` | 47 | redesenho de 28/11; RT-18 |
-| PA-04a | pausa, lembrete de teclas, linha 1 (`UI_DIM`, y 180) | `WASD mover · clique dispara · botão direito lê` | 46 | redesenho de 28/11 |
-| PA-04b | pausa, lembrete de teclas, linha 2 (y 196) | `X defesa · 1 2 3 ou roda: arma` | 30 | redesenho de 28/11 |
+| PA-04a | pausa, lembrete de teclas, linha 1 (`UI_DIM`, y 180) | `[WASD] mover · [clique] dispara · [botão direito] lê` | 46 | redesenho de 28/11 |
+| PA-04b | pausa, lembrete de teclas, linha 2 (y 196) | `[X] defesa · [1] [2] [3] ou [roda]: arma` | 30 | redesenho de 28/11 |
 | PA-05 | pausa, segundo botão (x 328, y 222, ao lado do CONTINUAR em x 152) | `COMO JOGAR` | 10 | redesenho de 28/11; o mesmo literal da MN-01; de volta do como jogar, o foco cai nele |
-| PA-06 | pausa, rodapé (y 264) | `esc continua` | 12 | redesenho de 28/11; substitui a CT-54 |
+| PA-06 | pausa, rodapé (y 264) | `[esc] continua` | 12 | redesenho de 28/11; substitui a CT-54 |
 | CT-55 | menu, botão | `INICIAR` | 7 | varredura de 05/11 |
 | CT-56 | pausa/resultados, botão | `CONTINUAR` | 9 | varredura de 05/11 |
 | CT-57 | vitória/game over, botão | `NOVA PARTIDA` | 12 | varredura de 05/11 |
 | CT-58 | — | `o paciente recebeu alta: missão cumprida` | — | #244; saiu em 28/11: substituída pela VI-02 |
 | VI-02 | vitória, subtítulo centrado (y 38), sobre o quarto de dia (`hospital_vitoria.png` com véu de alfa 150) | `O Léo recebeu alta e vai para casa. Missão cumprida!` | 52 | redesenho de 28/11 (VI-01); substitui a CT-58 |
 | VI-03 | vitória, linha do Nanobô em ciano, centrada (y 54) | `Anotei tudo o que aprendi. Obrigado por me guiar!` | 49 | redesenho de 28/11 (VI-01), voz do Nanobô por decisão do dono; os painéis desceram 16 px (y 58 → 74) e o botão de 268 para 276 |
-| VI-04 | vitória, painel do nome, sob a caixa (y 240), só com a entrada ativa | `até 10 letras · backspace apaga` | 31 | redesenho de 28/11 (VI-01); o nome aceita qualquer caractere do Latin-1 |
+| VI-04 | vitória, painel do nome, sob a caixa (y 240), só com a entrada ativa | `até 10 letras · [backspace] apaga` | 31 | redesenho de 28/11 (VI-01); o nome aceita qualquer caractere do Latin-1 |
 | CT-59 | vitória, linha de estatística | `pontuação final` | 15 | varredura de 05/11 |
-| CT-60 | vitória, rodapé | `enter também começa de novo` | 27 | varredura de 05/11 |
+| CT-60 | vitória, rodapé | `[enter] também começa de novo` | 27 | varredura de 05/11 |
 | CT-61 | game over, título | `GAME OVER` | 9 | varredura de 05/11 |
 | CT-62 | — | `os sinais vitais caíram demais: a equipe retirou o Nanobô` / `o Nanobô foi danificado: a equipe o retirou do corpo` | — | #218; #234; #244; saiu em 28/11: substituída pelas GO-02a e GO-02b |
 | GO-02a | game over, causa (y 52), vitais em 0, sobre o quarto em luz baixa (`hospital_gameover.png` com véu de alfa 100) | `Os vitais do Léo caíram demais: a equipe retirou o Nanobô.` | 58 | redesenho de 28/11 (GO-01); substitui a CT-62a |
 | GO-02b | game over, causa (y 52), integridade do Nanobô em 0 | `O Nanobô foi danificado: a equipe o retirou do corpo.` | 53 | redesenho de 28/11 (GO-01); substitui a CT-62b |
 | GO-03 | game over, linha fixa (y 68) | `O Léo segue no tratamento convencional do hospital.` | 51 | redesenho de 28/11 (GO-01); não há morte |
 | GO-04 | game over, linha do Nanobô em ciano (y 84) | `Anotei os meus erros. Vamos tentar de novo?` | 43 | redesenho de 28/11 (GO-01), voz do Nanobô por decisão do dono; o painel desceu 32 px (y 72 → 104), o botão de 204 para 216 e o rodapé de 248 para 260 |
-| CT-63 | game over, rodapé | `enter também reinicia` | 21 | varredura de 05/11 |
+| CT-63 | game over, rodapé | `[enter] também reinicia` | 21 | varredura de 05/11 |
 | CT-64 | menu, botão | `RECORDES` | 8 | #197 |
 | MN-01 | menu, botão do meio (entre INICIAR e RECORDES) / pausa, segundo botão | `COMO JOGAR` | 10 | redesenho de 28/11 (linhas do menu: CT-48, CT-55, MN-01, CT-64, MN-04, CT-47, CT-13); abre a cena como jogar. Substitui o antigo MN-03 |
 | CT-65 | painel do Top 10, título | `Top 10` | 6 | #197 |
 | CT-66 | painel do Top 10, vazio | `nenhum recorde ainda` / `vença uma partida` | 20 / 17 | #197; a segunda linha saiu em 28/11: substituída pela MN-07 |
 | MN-07 | painel do Top 10 aberto pelo RECORDES no menu, vazio (segunda linha; na Vitória o painel vazio mostra só a primeira linha) | `dê alta ao Léo para entrar aqui` | 31 | redesenho de 28/11 (MN-06); substitui a CT-66b; liga o recorde à alta do Léo |
-| CT-67 | painel do Top 10 no menu, rodapé | `enter ou esc fecha` | 18 | #197 |
+| CT-67 | painel do Top 10 no menu, rodapé | `[enter] ou [esc] fecha` | 18 | #197 |
 | CT-68 | vitória, entrada de nome | `novo recorde no Top 10!` | 23 | #81 |
-| CT-69 | vitória, entrada de nome | `digite seu nome e tecle enter` | 29 | #81 |
+| CT-69 | vitória, entrada de nome | `digite seu nome e tecle [enter]` | 29 | #81 |
 | CT-70 | vitória, depois do nome | `posição %d no Top 10` | 20 | #81 |
 | CT-71 | vitória, fora do Top 10 | `a pontuação não entrou no Top 10` | 32 | #79 |
 | CT-72 | vitória, gravação falhou | `não foi possível gravar o recorde` | 33 | #80 |
@@ -206,33 +206,33 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 
 ### Como jogar (cena `HOWTO`, redesenho de 28/11)
 
-Cena própria, aberta pelo botão COMO JOGAR (MN-01) do menu e da pausa; volta para a cena de origem. Título CT-01 em y 16; painel em y 104 com o título da página em `UI_AMBER` em x 120, o contador à direita (x 616) e até 6 linhas em `UI_TEXT` a partir de x 120, a cada 16 px (limite de 60 caracteres, 480 px). `{termo}` sai em âmbar (`draw_marked_text`). Rodapé centrado em y 336.
+Cena própria, aberta pelo botão COMO JOGAR (MN-01) do menu e da pausa; volta para a cena de origem. Título CT-01 em y 16; painel em y 104 com o título da página em `UI_AMBER` em x 120, o contador à direita (x 616) e até 6 linhas em `UI_TEXT` a partir de x 120, a cada 16 px (limite de 60 caracteres, 480 px). `{termo}` sai em âmbar e `[tecla]` em tampa de tecla (`draw_marked_text`, §2.1). Rodapé centrado em y 336.
 
 | ID | Local | Texto | Caracteres | Origem |
 |---|---|---|---|---|
 | HW-00a | painel, contador à direita | `%d/%d` (`1/4`) | 3 | redesenho de 28/11 |
-| HW-00b | rodapé, páginas 1 a 3 | `enter, espaço ou clique avança · setas trocam · esc volta` | 57 | redesenho de 28/11 |
-| HW-00c | rodapé, página 4 | `enter, espaço ou clique volta · setas trocam · esc volta` | 56 | redesenho de 28/11 |
+| HW-00b | rodapé, páginas 1 a 3 | `[enter], [espaço] ou [clique] avança · [setas] trocam · [esc] volta` | 57 | redesenho de 28/11 |
+| HW-00c | rodapé, página 4 | `[enter], [espaço] ou [clique] volta · [setas] trocam · [esc] volta` | 56 | redesenho de 28/11 |
 | HW-01 | página 1, título | `Mover e mirar` | 13 | redesenho de 28/11 |
-| HW-01a | página 1, linha 1 | `Setas ou WASD: mover o Nanobô.` | 30 | redesenho de 28/11 |
-| HW-01b | página 1, linha 2 | `Mouse: mirar. Botão esquerdo: disparar a arma.` | 46 | redesenho de 28/11 |
-| HW-01c | página 1, linha 3 | `Botão direito: escanear o alvo sob o cursor.` | 44 | redesenho de 28/11 |
-| HW-01d | página 1, linha 4 | `X: defesa por 2 s. Contato não fere; toxinas, vírus e` | 53 | redesenho de 28/11 |
+| HW-01a | página 1, linha 1 | `[Setas] ou [WASD]: mover o Nanobô.` | 30 | redesenho de 28/11 |
+| HW-01b | página 1, linha 2 | `[Mouse]: mirar. [Botão esquerdo]: disparar a arma.` | 46 | redesenho de 28/11 |
+| HW-01c | página 1, linha 3 | `[Botão direito]: escanear o alvo sob o cursor.` | 44 | redesenho de 28/11 |
+| HW-01d | página 1, linha 4 | `[X]: defesa por 2 s. Contato não fere; toxinas, vírus e` | 53 | redesenho de 28/11 |
 | HW-01e | página 1, linha 5 | `esporos em voo se desfazem. A hifa passa. Recarga: 3 s.` | 55 | redesenho de 28/11 |
-| HW-01f | página 1, linha 6 | `Esc: pausa. F11: tela cheia.` | 28 | redesenho de 28/11 |
+| HW-01f | página 1, linha 6 | `[Esc]: pausa. [F11]: tela cheia.` | 28 | redesenho de 28/11 |
 | HW-02 | página 2, título | `Ler com o scanner` | 17 | redesenho de 28/11 |
-| HW-02a | página 2, linha 1 | `Botão direito num agente: eu leio uma camada por vez.` | 53 | redesenho de 28/11 |
+| HW-02a | página 2, linha 1 | `[Botão direito] num agente: eu leio uma camada por vez.` | 53 | redesenho de 28/11 |
 | HW-02b | página 2, linha 2 | `Camada 1: a {forma}. Coco, bacilo, levedura, bolor...` | 51 | redesenho de 28/11; `forma` em âmbar |
 | HW-02c | página 2, linha 3 | `Camada 2: a {coloração de Gram} e o nome da espécie.` | 50 | redesenho de 28/11; `coloração de Gram` em âmbar |
 | HW-02d | página 2, linha 4 | `A forma não basta: existe coco Gram+ e coco Gram-.` | 50 | redesenho de 28/11 |
 | HW-02e | página 2, linha 5 | `Com as duas camadas lidas, o agente está identificado.` | 54 | redesenho de 28/11 |
 | HW-02f | página 2, linha 6 | `Identificar todos os agentes da fase vale +15 pontos.` | 53 | redesenho de 28/11; o 15 é o `IDENTIFICATION_BONUS` |
 | HW-03 | página 3, título | `Armas` | 5 | redesenho de 28/11 |
-| HW-03a | página 3, linha 1 | `1, 2, 3 ou roda do mouse: trocar de arma.` | 41 | redesenho de 28/11 |
-| HW-03b | página 3, linha 2 | `Fase 1: 1 Ruptura · 2 Dissolução · 3 Reserva (2 cargas)` | 55 | redesenho de 28/11 |
+| HW-03a | página 3, linha 1 | `[1], [2], [3] ou [roda do mouse]: trocar de arma.` | 41 | redesenho de 28/11 |
+| HW-03b | página 3, linha 2 | `Fase 1: [1] Ruptura · [2] Dissolução · [3] Reserva (2 cargas)` | 55 | redesenho de 28/11 |
 | HW-03c | página 3, linha 3 | `Cada bactéria pede 2 doses, a segunda em até 6 segundos.` | 56 | redesenho de 28/11 |
-| HW-03d | página 3, linha 4 | `Fase 2: 1 Neutralização (vírus livre) · 2 Ataque T` | 50 | redesenho de 28/11 |
-| HW-03e | página 3, linha 5 | `Fase 3: 1 Perfuração · 2 Ruptura (não age em fungo)` | 51 | redesenho de 28/11 |
+| HW-03d | página 3, linha 4 | `Fase 2: [1] Neutralização (vírus livre) · [2] Ataque T` | 50 | redesenho de 28/11 |
+| HW-03e | página 3, linha 5 | `Fase 3: [1] Perfuração · [2] Ruptura (não age em fungo)` | 51 | redesenho de 28/11 |
 | HW-03f | página 3, linha 6 | `Regra do jogo: as armas se inspiram em remédios reais.` | 54 | redesenho de 28/11 |
 | HW-04 | página 4, título | `As duas barras` | 14 | redesenho de 28/11 |
 | HW-04a | página 4, linha 1 | `Cabeça de robô: a minha {Integridade}. Ela cai quando` | 51 | redesenho de 28/11; `Integridade` em âmbar |
@@ -284,6 +284,7 @@ Regras que valem para todo texto novo:
 - Títulos e rótulos em **caixa de frase** (`Fase 1 concluída`, `Objetivo da missão`, `Identificação concluída`).
 - Caixa alta só em texto **sem acento** (`INICIAR`, `CONTINUAR`, `COMO JOGAR` quando não houver acento).
 - Nenhum texto desenhado pode ter maiúscula acentuada. `NANOBÔ` é exceção registrada: é o nome do jogo, desenhado em bitmap ampliado 3×, onde o glifo é legível mas não correto.
+- **Tecla em caixinha (27/11, decisão do dono):** o nome de tecla ou botão vem entre colchetes (`[enter]`, `[botão direito]`) e é desenhado como tampa de tecla: nome em `UI_KEY` numa caixa de 12 px de altura com borda `UI_KEY` e fundo `UI_INK`, 2 px de folga de cada lado. Os colchetes não aparecem nem contam nos caracteres (como as chaves do `{termo}`), mas cada tecla soma **+4 px** à largura da linha (`marked_text_width`). Só nomes de tecla/botão levam colchetes, nunca verbos.
 - Antes de commitar texto novo, rodar `python -c "print([c for c in 'TEXTO' if ord(c) > 0xFF])"` (codepoint fora de Latin-1 vira `^` na tela).
 
 ## 2.2 Relatório da fase (resultados, #210 e #223)

@@ -65,6 +65,10 @@ _Static_assert((HUD_LINES - 1) * HUD_LINE_H + HUD_FONT_H + 2 * HUD_MARGIN <= PAN
 #define UI_PURPLE    al_map_rgb(190, 110, 240) // #BE6EF0
 #define UI_RED       al_map_rgb(240, 90, 90)   // #F05A5A
 #define UI_PINK      al_map_rgb(240, 130, 165) // Gram-: rosa da safranina (#214)
+#define UI_KEY       al_map_rgb(125, 249, 255) // tampa de tecla: nome e borda
+
+// folga de cada lado do nome na tampa de tecla: [tecla] ocupa o texto + 4 px
+#define KEY_CAP_PAD 2
 
 // mapa recuado e silhueta neutra: os agentes precisam se destacar do vermelho (#220)
 #define MAP_TINT        al_map_rgb_f(0.68f, 0.62f, 0.66f)
@@ -320,6 +324,10 @@ bool ranking_panel_open = false;
 
 // o painel do Top 10 aparece no menu e na vitoria (#197)
 void draw_ranking_panel(float x, float y, float w, int highlight, bool in_menu);
+
+// linha marcada ([tecla] e {termo}): usada pelo menu e pela ficha antes de ser definida
+void draw_marked_text(float x, float y, ALLEGRO_COLOR base, const char* text);
+void draw_marked_text_aligned(float x, float y, ALLEGRO_COLOR base, int flags, const char* text);
 
 // overlay de depuracao da interface: F1 liga e desliga, so existe no Debug
 bool show_debug = false;
@@ -1397,8 +1405,8 @@ void draw_scan_card(int target, bool from_cursor, float card_y)
 
     if (agents[target].layers == 0)
     {
-        al_draw_text(font, UI_TEXT, (float)text_x, (float)row_info, 0,
-            "botão direito: escanear");
+        draw_marked_text((float)text_x, (float)row_info, UI_TEXT,
+            "[botão direito]: escanear");
         al_draw_text(font, UI_DIM, (float)text_x, (float)row_action, 0,
             "cada clique revela uma camada");
         return;
@@ -1409,10 +1417,10 @@ void draw_scan_card(int target, bool from_cursor, float card_y)
     {
         al_draw_text(font, UI_TEXT, (float)(text_x + 12), (float)row_info, 0,
             layer_one_text(target));
-        al_draw_text(font, UI_DIM, (float)text_x, (float)row_action, 0,
+        draw_marked_text((float)text_x, (float)row_action, UI_DIM,
             is_bacteria
-                ? "botão direito de novo: revela a coloração de Gram"
-                : "botão direito de novo: conclui a leitura");
+                ? "[botão direito] de novo: revela a coloração de Gram"
+                : "[botão direito] de novo: conclui a leitura");
         return;
     }
 
@@ -1504,14 +1512,8 @@ void draw_menu()
 
     draw_buttons(buttons, count);
 
-    al_draw_text(
-        font,
-        UI_DIM,
-        SCREEN_W / 2,
-        BUTTON_Y + 36,
-        ALLEGRO_ALIGN_CENTRE,
-        "setas escolhem · enter confirma"
-    );
+    draw_marked_text_aligned(SCREEN_W / 2, BUTTON_Y + 36, UI_DIM, ALLEGRO_ALIGN_CENTRE,
+        "[setas] escolhem · [enter] confirma");
 
     // o melhor do Top 10, com o nome (#34)
     if (ranking_count() > 0)
@@ -1524,14 +1526,8 @@ void draw_menu()
     }
     al_draw_text(font, UI_DIM, SCREEN_W / 2, BUTTON_Y + 52, ALLEGRO_ALIGN_CENTRE, record);
 
-    al_draw_text(
-        font,
-        UI_DIM,
-        SCREEN_W - HUD_MARGIN,
-        336,
-        ALLEGRO_ALIGN_RIGHT,
-        "F11 tela cheia"
-    );
+    draw_marked_text_aligned(SCREEN_W - HUD_MARGIN, 336, UI_DIM, ALLEGRO_ALIGN_RIGHT,
+        "[F11] tela cheia");
 
     // painel do Top 10 por cima do menu, aberto pelo RECORDES (#197)
     if (ranking_panel_open)
@@ -1540,7 +1536,7 @@ void draw_menu()
             al_map_rgba_f(0.0f, 0.0f, 0.0f, 0.85f));
         // painel de 184 px: termina em 244 e o rodape fica acima dos botoes (y 261)
         draw_ranking_panel(177.0f, 60.0f, 286.0f, -1, true);
-        al_draw_text(font, UI_DIM, SCREEN_W / 2, 250, ALLEGRO_ALIGN_CENTRE, "enter ou esc fecha");
+        draw_marked_text_aligned(SCREEN_W / 2, 250, UI_DIM, ALLEGRO_ALIGN_CENTRE, "[enter] ou [esc] fecha");
     }
 }
 
@@ -2206,7 +2202,7 @@ static const DialogEntry diary_entries[CARD_COUNT] =
 DialogState card_dialog;
 ConceptCard card_dialog_entry = CARD_NONE;
 
-// caracteres que aparecem na tela: conta por letra utf-8 e pula as chaves
+// caracteres que aparecem na tela: conta por letra utf-8 e pula chaves e colchetes
 int dialog_visible_chars(const char* line)
 {
     int count = 0;
@@ -2219,7 +2215,7 @@ int dialog_visible_chars(const char* line)
 
     for (; *c != '\0'; c++)
     {
-        if (*c != '{' && *c != '}' && (*c & 0xC0) != 0x80)
+        if (*c != '{' && *c != '}' && *c != '[' && *c != ']' && (*c & 0xC0) != 0x80)
         {
             count = count + 1;
         }
@@ -2305,13 +2301,28 @@ ALLEGRO_COLOR faded_color(ALLEGRO_COLOR color, float alpha)
     return al_map_rgba_f(r * alpha, g * alpha, b * alpha, a * alpha);
 }
 
+// tampa de tecla: nome em ciano numa caixa de 12 px com borda ciano e fundo
+// de tinta, 2 px de folga de cada lado; devolve a largura ocupada
+float draw_key_cap(float x, float y, const char* name, float alpha)
+{
+    float w = (float)(al_get_text_width(font, name) + 2 * KEY_CAP_PAD);
+
+    al_draw_filled_rectangle(x, y - 2.0f, x + w, y + 10.0f, faded_color(UI_INK, alpha));
+    al_draw_rectangle(x + 0.5f, y - 1.5f, x + w - 0.5f, y + 9.5f, faded_color(UI_KEY, alpha), 1.0f);
+    al_draw_text(font, faded_color(UI_KEY, alpha), x + (float)KEY_CAP_PAD, y, 0, name);
+
+    return w;
+}
+
 // uma linha com no maximo budget letras; o termo entre chaves sai em ambar,
-// com o mesmo alfa da cor base, e o resto na cor base
+// a tecla entre colchetes sai em tampa de tecla, os dois com o alfa da cor
+// base, e o resto na cor base
 int draw_dialog_line(const char* line, float x, float y, ALLEGRO_COLOR base, int budget)
 {
     char segment[192];
     int length = 0;
     bool term = false;
+    bool key = false;
     const char* c;
     float r, g, b, a;
     ALLEGRO_COLOR term_color;
@@ -2322,20 +2333,40 @@ int draw_dialog_line(const char* line, float x, float y, ALLEGRO_COLOR base, int
     for (c = line; *c != '\0'; c++)
     {
         bool lead = (*c & 0xC0) != 0x80;
+        bool mark = *c == '{' || *c == '}' || *c == '[' || *c == ']';
 
-        if (*c == '{' || *c == '}' || (lead && budget == 0))
+        if (mark || (lead && budget == 0))
         {
             segment[length] = '\0';
-            al_draw_text(font, term ? term_color : base, x, y, 0, segment);
-            x = x + (float)al_get_text_width(font, segment);
+
+            if (key)
+            {
+                // tecla pela metade na maquina de escrever: a caixa cresce com o texto
+                if (length > 0)
+                {
+                    x = x + draw_key_cap(x, y, segment, a);
+                }
+            }
+            else
+            {
+                al_draw_text(font, term ? term_color : base, x, y, 0, segment);
+                x = x + (float)al_get_text_width(font, segment);
+            }
             length = 0;
 
-            if (*c != '{' && *c != '}')
+            if (!mark)
             {
                 return 0;
             }
 
-            term = *c == '{';
+            if (*c == '{' || *c == '}')
+            {
+                term = *c == '{';
+            }
+            else
+            {
+                key = *c == '[';
+            }
             continue;
         }
 
@@ -2352,12 +2383,24 @@ int draw_dialog_line(const char* line, float x, float y, ALLEGRO_COLOR base, int
     }
 
     segment[length] = '\0';
-    al_draw_text(font, term ? term_color : base, x, y, 0, segment);
+
+    if (key)
+    {
+        if (length > 0)
+        {
+            draw_key_cap(x, y, segment, a);
+        }
+    }
+    else
+    {
+        al_draw_text(font, term ? term_color : base, x, y, 0, segment);
+    }
 
     return budget;
 }
 
-// linha inteira com {termo} em ambar fora da caixa (aviso de objetivo, como jogar)
+// linha inteira com {termo} em ambar e [tecla] em tampa fora da caixa
+// (aviso de objetivo, como jogar, rodapes)
 void draw_marked_text(float x, float y, ALLEGRO_COLOR base, const char* text)
 {
     if (text == NULL)
@@ -2368,11 +2411,12 @@ void draw_marked_text(float x, float y, ALLEGRO_COLOR base, const char* text)
     draw_dialog_line(text, x, y, base, dialog_visible_chars(text));
 }
 
-// largura em px da linha sem as chaves
+// largura em px da linha sem chaves e colchetes, com a folga de cada tampa de tecla
 int marked_text_width(const char* text)
 {
     char plain[192];
     int length = 0;
+    int caps = 0;
     const char* c;
 
     if (text == NULL)
@@ -2382,7 +2426,12 @@ int marked_text_width(const char* text)
 
     for (c = text; *c != '\0' && length < (int)sizeof(plain) - 1; c++)
     {
-        if (*c != '{' && *c != '}')
+        if (*c == '[')
+        {
+            caps = caps + 1;
+        }
+
+        if (*c != '{' && *c != '}' && *c != '[' && *c != ']')
         {
             plain[length] = *c;
             length = length + 1;
@@ -2390,7 +2439,24 @@ int marked_text_width(const char* text)
     }
 
     plain[length] = '\0';
-    return al_get_text_width(font, plain);
+    return al_get_text_width(font, plain) + caps * 2 * KEY_CAP_PAD;
+}
+
+// linha marcada alinhada como o al_draw_text (centro ou direita em x)
+void draw_marked_text_aligned(float x, float y, ALLEGRO_COLOR base, int flags, const char* text)
+{
+    float w = (float)marked_text_width(text);
+
+    if (flags & ALLEGRO_ALIGN_CENTRE)
+    {
+        x = floorf(x - w / 2.0f);
+    }
+    else if (flags & ALLEGRO_ALIGN_RIGHT)
+    {
+        x = x - w;
+    }
+
+    draw_marked_text(x, y, base, text);
 }
 
 // idade da pagina desde que ficou completa (natural ou por toque): o triangulo pisca daqui
@@ -2596,8 +2662,8 @@ void draw_briefing()
     }
     draw_dialog(&opening_entries[opening_entry], &opening_dialog);
 
-    al_draw_text(font, UI_DIM, SCREEN_W / 2, 24, ALLEGRO_ALIGN_CENTRE,
-        "enter ou clique avança · esc pula");
+    draw_marked_text_aligned(SCREEN_W / 2, 24, UI_DIM, ALLEGRO_ALIGN_CENTRE,
+        "[enter] ou [clique] avança · [esc] pula");
 }
 
 // moldura da barra de vida e os segmentos cheios tingidos (10 de 5x4)
@@ -3197,14 +3263,14 @@ void draw_game()
     // dica do tutorial presa ao agente: some no primeiro scan, volta no tiro sem leitura (#219)
     if (tutorial_hint_target() != -1)
     {
-        const char* hint = "botão direito: escanear";
-        int hint_w = al_get_text_width(font, hint);
+        const char* hint = "[botão direito]: escanear";
+        int hint_w = marked_text_width(hint);
         float hx = floorf(view_x(agents[tutorial_hint_target()].x) - (float)hint_w / 2.0f);
         float hy = view_y(agents[tutorial_hint_target()].y) - agent_radius(tutorial_hint_target()) - 20.0f;
 
         al_draw_filled_rectangle(hx - 4.0f, hy - 3.0f, hx + (float)hint_w + 4.0f, hy + 11.0f, UI_INK);
         al_draw_rectangle(hx - 3.5f, hy - 2.5f, hx + (float)hint_w + 3.5f, hy + 10.5f, UI_CYAN, 1.0f);
-        al_draw_text(font, UI_CYAN, hx, hy, 0, hint);
+        draw_marked_text(hx, hy, UI_CYAN, hint);
     }
 
     // a sombra do nanobo fica sob o anel magnetico, que flutua embaixo (#220, #240)
@@ -3456,11 +3522,11 @@ void draw_pause()
         al_draw_text(font, UI_TEXT, 96.0f, 124.0f + 16.0f * (float)i, 0, goals[phase][i]);
     }
 
-    al_draw_text(font, UI_DIM, 96.0f, 180.0f, 0, "WASD mover · clique dispara · botão direito lê");
-    al_draw_text(font, UI_DIM, 96.0f, 196.0f, 0, "X defesa · 1 2 3 ou roda: arma");
+    draw_marked_text(96.0f, 180.0f, UI_DIM, "[WASD] mover · [clique] dispara · [botão direito] lê");
+    draw_marked_text(96.0f, 196.0f, UI_DIM, "[X] defesa · [1] [2] [3] ou [roda]: arma");
 
     draw_buttons(buttons, count);
-    al_draw_text(font, UI_DIM, SCREEN_W / 2, 264, ALLEGRO_ALIGN_CENTRE, "esc continua");
+    draw_marked_text_aligned(SCREEN_W / 2, 264, UI_DIM, ALLEGRO_ALIGN_CENTRE, "[esc] continua");
 }
 
 // ---------------------------------------------------------------
@@ -3541,15 +3607,15 @@ void draw_howto()
     };
     static const char* lines[HOWTO_PAGES][HOWTO_LINES] = {
         {
-            "Setas ou WASD: mover o Nanobô.",
-            "Mouse: mirar. Botão esquerdo: disparar a arma.",
-            "Botão direito: escanear o alvo sob o cursor.",
-            "X: defesa por 2 s. Contato não fere; toxinas, vírus e",
+            "[Setas] ou [WASD]: mover o Nanobô.",
+            "[Mouse]: mirar. [Botão esquerdo]: disparar a arma.",
+            "[Botão direito]: escanear o alvo sob o cursor.",
+            "[X]: defesa por 2 s. Contato não fere; toxinas, vírus e",
             "esporos em voo se desfazem. A hifa passa. Recarga: 3 s.",
-            "Esc: pausa. F11: tela cheia."
+            "[Esc]: pausa. [F11]: tela cheia."
         },
         {
-            "Botão direito num agente: eu leio uma camada por vez.",
+            "[Botão direito] num agente: eu leio uma camada por vez.",
             "Camada 1: a {forma}. Coco, bacilo, levedura, bolor...",
             "Camada 2: a {coloração de Gram} e o nome da espécie.",
             "A forma não basta: existe coco Gram+ e coco Gram-.",
@@ -3557,11 +3623,11 @@ void draw_howto()
             "Identificar todos os agentes da fase vale +15 pontos."
         },
         {
-            "1, 2, 3 ou roda do mouse: trocar de arma.",
-            "Fase 1: 1 Ruptura · 2 Dissolução · 3 Reserva (2 cargas)",
+            "[1], [2], [3] ou [roda do mouse]: trocar de arma.",
+            "Fase 1: [1] Ruptura · [2] Dissolução · [3] Reserva (2 cargas)",
             "Cada bactéria pede 2 doses, a segunda em até 6 segundos.",
-            "Fase 2: 1 Neutralização (vírus livre) · 2 Ataque T",
-            "Fase 3: 1 Perfuração · 2 Ruptura (não age em fungo)",
+            "Fase 2: [1] Neutralização (vírus livre) · [2] Ataque T",
+            "Fase 3: [1] Perfuração · [2] Ruptura (não age em fungo)",
             "Regra do jogo: as armas se inspiram em remédios reais."
         },
         {
@@ -3605,10 +3671,10 @@ void draw_howto()
         draw_marked_text(HOWTO_TEXT_X, line_y + 16.0f * (float)i, UI_TEXT, lines[page][i]);
     }
 
-    al_draw_text(font, UI_DIM, SCREEN_W / 2, 336, ALLEGRO_ALIGN_CENTRE,
+    draw_marked_text_aligned(SCREEN_W / 2, 336, UI_DIM, ALLEGRO_ALIGN_CENTRE,
         page == HOWTO_PAGES - 1
-            ? "enter, espaço ou clique volta · setas trocam · esc volta"
-            : "enter, espaço ou clique avança · setas trocam · esc volta");
+            ? "[enter], [espaço] ou [clique] volta · [setas] trocam · [esc] volta"
+            : "[enter], [espaço] ou [clique] avança · [setas] trocam · [esc] volta");
 }
 
 // ---------------------------------------------------------------
@@ -3821,8 +3887,8 @@ void draw_results()
 
     draw_buttons(buttons, count);
 
-    al_draw_text(font, UI_DIM, SCREEN_W / 2, 296, ALLEGRO_ALIGN_CENTRE,
-        "enter também continua");
+    draw_marked_text_aligned(SCREEN_W / 2, 296, UI_DIM, ALLEGRO_ALIGN_CENTRE,
+        "[enter] também continua");
 
 #ifdef _DEBUG
     // contadores da #200 fora da interface normal: F1 liga e desliga (#202)
@@ -4004,7 +4070,7 @@ void draw_victory()
         bool blink = (int)(al_get_time() * 2.0) % 2 == 0;
 
         al_draw_text(font, UI_AMBER, 169.0f, 182.0f, ALLEGRO_ALIGN_CENTRE, "novo recorde no Top 10!");
-        al_draw_text(font, UI_DIM, 169.0f, 198.0f, ALLEGRO_ALIGN_CENTRE, "digite seu nome e tecle enter");
+        draw_marked_text_aligned(169.0f, 198.0f, UI_DIM, ALLEGRO_ALIGN_CENTRE, "digite seu nome e tecle [enter]");
         al_draw_filled_rectangle(tx, 214.0f, 298.0f, 232.0f, UI_PANEL);
         al_draw_rectangle(tx + 0.5f, 214.5f, 297.5f, 231.5f, UI_FRAME, 1.0f);
         al_draw_text(font, UI_TEXT, tx + 6.0f, 219.0f, 0, name_entry);
@@ -4015,7 +4081,7 @@ void draw_victory()
         }
 
         // o limite de 10 caracteres dito na tela
-        al_draw_text(font, UI_DIM, 169.0f, 240.0f, ALLEGRO_ALIGN_CENTRE, "até 10 letras · backspace apaga");
+        draw_marked_text_aligned(169.0f, 240.0f, UI_DIM, ALLEGRO_ALIGN_CENTRE, "até 10 letras · [backspace] apaga");
     }
     else if (ranking_highlight >= 0)
     {
@@ -4038,8 +4104,8 @@ void draw_victory()
     if (!name_entry_active)
     {
         draw_buttons(buttons, count);
-        al_draw_text(font, UI_DIM, SCREEN_W / 2, 312, ALLEGRO_ALIGN_CENTRE,
-            "enter também começa de novo");
+        draw_marked_text_aligned(SCREEN_W / 2, 312, UI_DIM, ALLEGRO_ALIGN_CENTRE,
+            "[enter] também começa de novo");
     }
 }
 
@@ -4089,8 +4155,8 @@ void draw_game_over()
 
     draw_buttons(buttons, count);
 
-    al_draw_text(font, UI_DIM, SCREEN_W / 2, 260, ALLEGRO_ALIGN_CENTRE,
-        "enter também reinicia");
+    draw_marked_text_aligned(SCREEN_W / 2, 260, UI_DIM, ALLEGRO_ALIGN_CENTRE,
+        "[enter] também reinicia");
 }
 
 // cada estado desenha so o que e dele, tudo no canvas logico
