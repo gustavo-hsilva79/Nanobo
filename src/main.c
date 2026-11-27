@@ -6,7 +6,6 @@
 #include <string.h>
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_font.h>
-#include <allegro5/allegro_ttf.h>
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_audio.h>
@@ -20,6 +19,9 @@
 // volume dos efeitos e da musica, de 0 a 1 (#31, #32)
 #define SFX_GAIN 0.55f
 #define MUSIC_GAIN 0.30f
+
+// atualizacoes no maximo entre dois desenhos, depois de um travamento
+#define MAX_CATCHUP_TICKS 4
 
 // recursos do jogo, carregados uma vez antes do loop
 ALLEGRO_FONT* font = NULL;
@@ -1452,12 +1454,6 @@ int main()
 		return 1;
 	}
 
-	if (!al_init_ttf_addon())
-	{
-		printf("couldn't initialize ttf addon\n");
-		return 1;
-	}
-
     if (!al_init_image_addon())
     {
         printf("couldn't initialize image addon\n");
@@ -1535,6 +1531,7 @@ int main()
     bool done = false;
     bool redraw = true;
     double tick_start = 0.0;
+    int ticks_since_draw = 0;
 
     ALLEGRO_EVENT event;
 
@@ -1553,6 +1550,15 @@ int main()
         switch (event.type)
         {
             case ALLEGRO_EVENT_TIMER:
+                // depois de um travamento, no maximo MAX_CATCHUP_TICKS atualizacoes
+                // por desenho: o resto do atraso e descartado, sem espiral (27/11)
+                if (ticks_since_draw >= MAX_CATCHUP_TICKS)
+                {
+                    redraw = true;
+                    break;
+                }
+
+                ticks_since_draw = ticks_since_draw + 1;
                 tick_start = al_get_time();
 
                 // a partida so atualiza no estado GAME
@@ -1664,6 +1670,7 @@ int main()
         {
             render();
             redraw = false;
+            ticks_since_draw = 0;
         }
     }
 
