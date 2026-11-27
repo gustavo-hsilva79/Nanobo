@@ -143,6 +143,8 @@ ALLEGRO_BITMAP* impacts_sheet = NULL;
 
 // mira: 3 quadros de 16x16 na ordem do AimFrame (#246)
 #define AIM_FRAME_SIZE 16
+// o desenho e simetrico em volta do pixel 7: e ele que fica sob o mouse
+#define AIM_CENTER 7
 
 // aviso de objetivo: placa de 16 px de altura e esmaecer no ultimo 0,5 s (#246)
 #define NOTICE_H 16
@@ -3475,8 +3477,8 @@ void draw_game()
         al_draw_tinted_bitmap_region(aim_sprite, laser_color(player.laser),
             (float)((int)aim_frame() * AIM_FRAME_SIZE), 0.0f,
             (float)AIM_FRAME_SIZE, (float)AIM_FRAME_SIZE,
-            floorf(aim_x) - (float)AIM_FRAME_SIZE / 2.0f,
-            floorf(aim_y) - (float)AIM_FRAME_SIZE / 2.0f, 0);
+            floorf(aim_x) - (float)AIM_CENTER,
+            floorf(aim_y) - (float)AIM_CENTER, 0);
     }
 
 #ifdef _DEBUG
