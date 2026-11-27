@@ -3634,7 +3634,9 @@ void lose_patient_cell(int index)
 }
 
 // divisao binaria: a filha nasce ao lado da mae, numa vaga nova do array, com a
-// resistencia e as camadas lidas dela, mas sem a dose que a mae recebeu (#217)
+// resistencia e as camadas lidas dela, mas sem a dose que a mae recebeu (#217);
+// a vaga de filha morta nao volta: sao 15 divisoes por fase, e a calibracao
+// da #238 conta com esse orcamento (dono, 27/11)
 static void divide_bacteria(int index)
 {
     int i;

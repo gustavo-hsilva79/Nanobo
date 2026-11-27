@@ -86,7 +86,7 @@ Este arquivo registra decisões já tomadas pela dupla. Quando uma decisão impo
 - **Reserva:** antibiótico de reserva com 2 cargas por fase; elimina a resistente.
 - **Substituições de regras antigas:** a perseguição por arma errada (RF-06, 04/11) é substituída pela resistência. Os 3 corações dão lugar à barra de vitais de 0 a 100, que passa entre as fases.
 - **Divisão binária (#217):**
-  - cada bactéria viva se divide em 12 s ± 3 s (era 22 ± 4; mudou na calibração da #238), com teto de 16 vivas;
+  - cada bactéria viva se divide em 12 s ± 3 s (era 22 ± 4; mudou na calibração da #238), com teto de 16 vivas e **orçamento de 15 divisões por fase**: a filha ocupa uma vaga nova do array e a vaga de filha morta não volta, então a divisão para de vez depois da 15ª filha. A revisão de 27/11 achou isso como bug, mas a calibração da #238 (leitor 63%) conta com esse limite; reaproveitar as vagas derrubava o leitor para 2%. O dono manteve o orçamento como regra (27/11);
   - a filha nasce ao lado da mãe numa vaga nova do array (`MAX_AGENTS` 24), então uma fase tem no máximo 15 nascimentos;
   - a filha herda a resistência e as camadas lidas, mas não a dose;
   - o bônus de identificação e o "identificados x/9" contam só os 9 agentes iniciais;
