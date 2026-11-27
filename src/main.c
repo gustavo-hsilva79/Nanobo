@@ -1210,7 +1210,7 @@ void draw_scan_swatch(Species species, float x, float y)
 {
     // célula e vírus não têm coloração de Gram: sem amostra (#M4)
     if (species == SPECIES_CELL || species == SPECIES_VIRUS
-        || species == SPECIES_YEAST || species == SPECIES_MOLD || species == SPECIES_SPORE)
+        || species_is_fungus(species))
     {
         return;
     }
@@ -1291,8 +1291,7 @@ void draw_scan_portrait(int target, float x, float y)
     {
         bmp = silhouette_sprite;
     }
-    else if (agents[target].species == SPECIES_GRAM_POSITIVE
-        || agents[target].species == SPECIES_GRAM_NEGATIVE)
+    else if (species_is_bacterium(agents[target].species))
     {
         bmp = bacteria_sprite(agents[target].shape, agents[target].variant);
 
@@ -1333,8 +1332,7 @@ void draw_scan_card(int target, bool from_cursor, float card_y)
     ALLEGRO_COLOR source_color;
     ALLEGRO_COLOR second_color;
     float marks_x;
-    bool is_bacteria = agents[target].species == SPECIES_GRAM_POSITIVE
-        || agents[target].species == SPECIES_GRAM_NEGATIVE;
+    bool is_bacteria = species_is_bacterium(agents[target].species);
 
     draw_panel(8.0f, card_y, (float)SCREEN_W - 16.0f, (float)CARD_H, UI_PANEL, UI_FRAME);
     draw_scan_portrait(target, 14.0f, card_y + 5.0f);
@@ -1373,8 +1371,7 @@ void draw_scan_card(int target, bool from_cursor, float card_y)
     {
         category = "vírus";
     }
-    else if (agents[target].species == SPECIES_YEAST || agents[target].species == SPECIES_MOLD
-        || agents[target].species == SPECIES_SPORE)
+    else if (species_is_fungus(agents[target].species))
     {
         category = "fungo";
     }
@@ -1558,7 +1555,7 @@ void draw_menu()
 ALLEGRO_BITMAP* species_sprite(Species species, int variant)
 {
     // bacteria: o sprite cinza da forma; quem desenha usa o bacteria_sprite (#214)
-    if (species == SPECIES_GRAM_POSITIVE || species == SPECIES_GRAM_NEGATIVE)
+    if (species_is_bacterium(species))
     {
         return coccus_grey[variant == 1 ? 1 : 0];
     }
@@ -3219,8 +3216,7 @@ void draw_game()
             continue;
         }
 
-        is_bacteria = agents[i].species == SPECIES_GRAM_POSITIVE
-            || agents[i].species == SPECIES_GRAM_NEGATIVE;
+        is_bacteria = species_is_bacterium(agents[i].species);
 
         // sombra de contato: o agente deixa de parecer colado no fundo (#220);
         // no tamanho de cada especie, do virus de 16 px a celula de 64 (#235)
@@ -3287,8 +3283,7 @@ void draw_game()
 
         // fungos: silhueta ate a 1a leitura, depois o sprite no tamanho dele
         // (levedura 40, colonia 48, esporo 8); a hifa acima aparece desde o inicio (#232)
-        if (agents[i].species == SPECIES_YEAST || agents[i].species == SPECIES_MOLD
-            || agents[i].species == SPECIES_SPORE)
+        if (species_is_fungus(agents[i].species))
         {
             if (agents[i].layers == 0)
             {
@@ -4578,30 +4573,7 @@ void handle_key_down(int key)
     // F forca a condicao real de conclusao para testar a transicao da #70
     else if (key == ALLEGRO_KEY_F)
     {
-        int i;
-
-        for (i = 0; i < agents_total(); i++)
-        {
-            if (agents[i].species != SPECIES_CELL)
-            {
-                // acertos validos ate o agente ficar inativo: a levedura tem 3 doses (#49)
-                int n;
-
-                for (n = 0; n < 8 && agents[i].active; n++)
-                {
-                    hit_agent(i);
-                }
-            }
-        }
-
-        // virus da rajada no ar seguraria a conclusao (#86)
-        for (i = 0; i < MAX_ENEMY_SHOTS; i++)
-        {
-            enemy_shots[i].active = false;
-        }
-
-        player.x = DESTINATION_X;
-        player.y = DESTINATION_Y;
+        debug_complete_phase(false);
     }
     // G forca Game Over; vida zerada continua sendo o caminho real
     else if (key == ALLEGRO_KEY_G)
@@ -4611,15 +4583,7 @@ void handle_key_down(int key)
     // L encurta o lisogenico de todo virus para 1 s, para testar o fim (#84)
     else if (key == ALLEGRO_KEY_L)
     {
-        int i;
-
-        for (i = 0; i < agents_total(); i++)
-        {
-            if (virus_is_lysogenic(i) && agents[i].lysogenic_timer > 1.0f)
-            {
-                agents[i].lysogenic_timer = 1.0f;
-            }
-        }
+        debug_short_lysogenic();
     }
     // K poe um biofilme e uma nuvem de endotoxina perto do nanobo (#237)
     else if (key == ALLEGRO_KEY_K)
@@ -4629,61 +4593,12 @@ void handle_key_down(int key)
     // J avanca uma camada do scan em todo agente, para conferir o desenho (#214)
     else if (key == ALLEGRO_KEY_J)
     {
-        int i;
-
-        for (i = 0; i < agents_total(); i++)
-        {
-            if (agents[i].active && agents[i].layers < MAX_LAYERS)
-            {
-                agents[i].layers = agents[i].layers + 1;
-
-                if (agents[i].layers == MAX_LAYERS && !agents[i].identified)
-                {
-                    agents[i].identified = true;
-
-                    // so os agentes iniciais contam, como no scan real (#217)
-                    if (i < agents_initial())
-                    {
-                        identified_count = identified_count + 1;
-                    }
-                }
-            }
-        }
+        debug_add_layer();
     }
     // H identifica os 9 e conclui, para testar o caminho do bonus (#67)
     else if (key == ALLEGRO_KEY_H)
     {
-        int i;
-
-        for (i = 0; i < agents_total(); i++)
-        {
-            agents[i].layers = MAX_LAYERS;
-            agents[i].identified = true;
-        }
-
-        identified_count = agents_initial();
-
-        for (i = 0; i < agents_total(); i++)
-        {
-            if (agents[i].species != SPECIES_CELL)
-            {
-                int n;
-
-                for (n = 0; n < 8 && agents[i].active; n++)
-                {
-                    hit_agent(i);
-                }
-            }
-        }
-
-        // virus da rajada ou esporo no ar seguraria a conclusao, como no F (#229)
-        for (i = 0; i < MAX_ENEMY_SHOTS; i++)
-        {
-            enemy_shots[i].active = false;
-        }
-
-        player.x = DESTINATION_X;
-        player.y = DESTINATION_Y;
+        debug_complete_phase(true);
     }
 #endif
 }

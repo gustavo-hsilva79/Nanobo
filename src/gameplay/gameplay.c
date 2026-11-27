@@ -143,6 +143,16 @@ static float squared_distance(float ax, float ay, float bx, float by)
     return dx * dx + dy * dy;
 }
 
+bool species_is_bacterium(Species species)
+{
+    return species == SPECIES_GRAM_POSITIVE || species == SPECIES_GRAM_NEGATIVE;
+}
+
+bool species_is_fungus(Species species)
+{
+    return species == SPECIES_YEAST || species == SPECIES_MOLD || species == SPECIES_SPORE;
+}
+
 // raio de colisao de cada especie, em escala biologica: virus < bacteria < celula (#235)
 float agent_radius(int index)
 {
@@ -458,7 +468,7 @@ const char* layer_two_reason(int index)
 {
     Species species = agents[index].species;
 
-    if (species == SPECIES_GRAM_POSITIVE || species == SPECIES_GRAM_NEGATIVE)
+    if (species_is_bacterium(species))
     {
         return "procarionte · sem núcleo: DNA solto no nucleoide";
     }
@@ -474,7 +484,7 @@ const char* layer_two_reason(int index)
     }
 
     // o fungo tambem e eucarionte, mas nao e celula do corpo (FB-08b)
-    if (species == SPECIES_YEAST || species == SPECIES_MOLD || species == SPECIES_SPORE)
+    if (species_is_fungus(species))
     {
         return "eucarionte: fungo, núcleo e parede de quitina";
     }
@@ -568,7 +578,7 @@ static bool weapon_affects(Laser laser, Species species)
     }
 
     // fungo: so a perfuracao age; a parede de quitina barra o antibiotico
-    if (species == SPECIES_YEAST || species == SPECIES_MOLD || species == SPECIES_SPORE)
+    if (species_is_fungus(species))
     {
         return laser == LASER_PERFORATE;
     }
@@ -605,7 +615,7 @@ bool hit_agent(int index)
 
     // dentro do biofilme a bacteria pede uma dose a mais, uma vez (#237);
     // a Reserva chega com a resistencia ja em 1 e nao passa por aqui
-    if ((agents[index].species == SPECIES_GRAM_POSITIVE || agents[index].species == SPECIES_GRAM_NEGATIVE)
+    if (species_is_bacterium(agents[index].species)
         && agents[index].resistance == BACTERIA_RESISTANCE && !agents[index].biofilm_extra
         && inside_hazard(HAZARD_BIOFILM, agents[index].x, agents[index].y))
     {
@@ -643,8 +653,7 @@ bool hit_agent(int index)
     }
 
     // primeira dose numa bacteria: liga o prazo da segunda (#215)
-    if (agents[index].species == SPECIES_GRAM_POSITIVE
-        || agents[index].species == SPECIES_GRAM_NEGATIVE)
+    if (species_is_bacterium(agents[index].species))
     {
         agents[index].dose_timer = (float)INCOMPLETE_TIME;
     }
@@ -1012,8 +1021,7 @@ static void hit_projectiles()
                 }
             }
             else if (projectiles[i].laser == LASER_RESERVE
-                && (agents[j].species == SPECIES_GRAM_POSITIVE
-                    || agents[j].species == SPECIES_GRAM_NEGATIVE))
+                && species_is_bacterium(agents[j].species))
             {
                 bool was_resistant = agents[j].resistant;
 
@@ -1139,8 +1147,7 @@ static void hit_projectiles()
                     set_feedback("antibiótico não age em vírus");
                 }
                 // antibiotico em fungo: a parede e de quitina, nao de peptideoglicano
-                else if (agents[j].species == SPECIES_YEAST || agents[j].species == SPECIES_MOLD
-                    || agents[j].species == SPECIES_SPORE)
+                else if (species_is_fungus(agents[j].species))
                 {
                     progress.antibiotic_on_fungus = progress.antibiotic_on_fungus + 1;
                     queue_card(CARD_FUNGUS);
@@ -1235,15 +1242,13 @@ static void reveal_layer(int index)
         agents[index].identified = true;
 
         // a primeira leitura completa de bacteria abre o card da coloracao (#222)
-        if (agents[index].species == SPECIES_GRAM_POSITIVE
-            || agents[index].species == SPECIES_GRAM_NEGATIVE)
+        if (species_is_bacterium(agents[index].species))
         {
             queue_card(CARD_GRAM);
         }
 
         // a primeira leitura completa de fungo abre o card do fungo (#232)
-        if (agents[index].species == SPECIES_YEAST || agents[index].species == SPECIES_MOLD
-            || agents[index].species == SPECIES_SPORE)
+        if (species_is_fungus(agents[index].species))
         {
             queue_card(CARD_FUNGUS);
         }
@@ -1752,8 +1757,7 @@ static void place_agents()
     {
         for (i = 0; i < agents_count; i++)
         {
-            if (agents[i].species == SPECIES_GRAM_POSITIVE
-                || agents[i].species == SPECIES_GRAM_NEGATIVE)
+            if (species_is_bacterium(agents[i].species))
             {
                 agents[i].x = player.x + TUTORIAL_OFFSET_X;
                 agents[i].y = player.y + TUTORIAL_OFFSET_Y;
@@ -3025,8 +3029,7 @@ bool phase_has_bacteria()
 
     for (i = 0; i < agents_count; i++)
     {
-        if (agents[i].species == SPECIES_GRAM_POSITIVE ||
-            agents[i].species == SPECIES_GRAM_NEGATIVE)
+        if (species_is_bacterium(agents[i].species))
         {
             return true;
         }
@@ -3649,8 +3652,7 @@ static void divide_bacteria(int index)
 
     for (i = 0; i < agents_count; i++)
     {
-        if (agents[i].active && (agents[i].species == SPECIES_GRAM_POSITIVE
-            || agents[i].species == SPECIES_GRAM_NEGATIVE))
+        if (agents[i].active && species_is_bacterium(agents[i].species))
         {
             alive = alive + 1;
         }
@@ -4573,8 +4575,7 @@ void update_match(double dt)
                 pick_new_direction(i);
             }
         }
-        else if (agents[i].species == SPECIES_GRAM_POSITIVE
-            || agents[i].species == SPECIES_GRAM_NEGATIVE)
+        else if (species_is_bacterium(agents[i].species))
         {
             move_speed = update_bacteria_ai(i, (float)dt);
         }
@@ -4742,3 +4743,81 @@ void update_match(double dt)
 
     conclude_phase_if_ready();
 }
+
+#ifdef _DEBUG
+void debug_complete_phase(bool identify)
+{
+    int i;
+
+    if (identify)
+    {
+        for (i = 0; i < agents_count; i++)
+        {
+            agents[i].layers = MAX_LAYERS;
+            agents[i].identified = true;
+        }
+
+        identified_count = agents_initial();
+    }
+
+    for (i = 0; i < agents_count; i++)
+    {
+        if (agents[i].species != SPECIES_CELL)
+        {
+            // acertos validos ate o agente ficar inativo: a levedura tem 3 doses (#49)
+            int n;
+
+            for (n = 0; n < 8 && agents[i].active; n++)
+            {
+                hit_agent(i);
+            }
+        }
+    }
+
+    // virus da rajada ou esporo no ar seguraria a conclusao (#86, #229)
+    for (i = 0; i < MAX_ENEMY_SHOTS; i++)
+    {
+        enemy_shots[i].active = false;
+    }
+
+    player.x = DESTINATION_X;
+    player.y = DESTINATION_Y;
+}
+
+void debug_add_layer(void)
+{
+    int i;
+
+    for (i = 0; i < agents_count; i++)
+    {
+        if (agents[i].active && agents[i].layers < MAX_LAYERS)
+        {
+            agents[i].layers = agents[i].layers + 1;
+
+            if (agents[i].layers == MAX_LAYERS && !agents[i].identified)
+            {
+                agents[i].identified = true;
+
+                // so os agentes iniciais contam, como no scan real (#217)
+                if (i < agents_initial())
+                {
+                    identified_count = identified_count + 1;
+                }
+            }
+        }
+    }
+}
+
+void debug_short_lysogenic(void)
+{
+    int i;
+
+    for (i = 0; i < agents_count; i++)
+    {
+        if (virus_is_lysogenic(i) && agents[i].lysogenic_timer > 1.0f)
+        {
+            agents[i].lysogenic_timer = 1.0f;
+        }
+    }
+}
+#endif

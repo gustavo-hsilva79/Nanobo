@@ -274,12 +274,26 @@ int tutorial_hint_target(void);
 // raio de colisao do agente pela especie (#235)
 float agent_radius(int index);
 
+// grupos de especie: bacteria e Gram+ ou Gram-; fungo e levedura, bolor ou esporo
+bool species_is_bacterium(Species species);
+bool species_is_fungus(Species species);
+
 // velocidade do nanobo agora: BIOFILM_SLOW dentro do biofilme, 1 fora (#237)
 float player_slow_factor(void);
 
 #ifdef _DEBUG
 // tecla de QA K: um biofilme e uma nuvem de endotoxina perto do nanobo (#237)
 void qa_spawn_hazards(void);
+
+// teclas de QA F e H: elimina toda ameaca e poe o nanobo no destino, para a
+// conclusao real disparar (#70); com identify, le os agentes antes (#67)
+void debug_complete_phase(bool identify);
+
+// tecla de QA J: uma camada a mais de scan em todo agente vivo (#214)
+void debug_add_layer(void);
+
+// tecla de QA L: lisogenico de todo virus encurtado para 1 s (#84)
+void debug_short_lysogenic(void);
 #endif
 
 // textos das camadas do scanner pelo indice do agente (#214)
