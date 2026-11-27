@@ -32,8 +32,8 @@ static void draw_cooldown_bar(float x, float y, float fraction)
 void draw_stat(float x, float y, float right, const char* label, const char* value,
     ALLEGRO_COLOR color)
 {
-    al_draw_text(font, UI_DIM, x, y, 0, label);
-    al_draw_text(font, color, right, y, ALLEGRO_ALIGN_RIGHT, value);
+    ui_text(UI_DIM, x, y, 0, label);
+    ui_text(color, right, y, ALLEGRO_ALIGN_RIGHT, value);
 }
 
 // ---------------------------------------------------------------
@@ -68,7 +68,7 @@ int scan_card_target(bool* from_cursor)
     // cursor sobre o painel do HUD nao tem alvo: o clique ali nao escaneia
     if (lx >= 0.0f && lx < (float)SCREEN_W && ly >= 0.0f && ly < (float)PLAY_H)
     {
-        target = pick_target_at(lx + camera.x, ly + camera.y);
+        target = pick_target_at(lx / WORLD_SCALE + camera.x, ly / WORLD_SCALE + camera.y);
 
         if (target != -1)
         {
@@ -99,7 +99,7 @@ int scan_card_target(bool* from_cursor)
 // de baixo, para nunca cobrir o agente que ela descreve (#243)
 float scan_card_y(int target)
 {
-    if (view_y(agents[target].y) > (float)PLAY_H / 2.0f)
+    if (view_y(agents[target].y) * WORLD_SCALE > (float)PLAY_H / 2.0f)
     {
         return (float)CARD_MARGIN;
     }
@@ -141,9 +141,9 @@ static void draw_scan_portrait(int target, float x, float y)
 static float draw_scan_marker(float x, float y, ALLEGRO_COLOR color, bool lit, const char* label)
 {
     al_draw_filled_rectangle(x, y + 1.0f, x + (float)CARD_MARK, y + 1.0f + (float)CARD_MARK, color);
-    al_draw_text(font, lit ? UI_TEXT : UI_DIM, x + (float)CARD_MARK + 4.0f, y, 0, label);
+    ui_text(lit ? UI_TEXT : UI_DIM, x + (float)CARD_MARK + 4.0f, y, 0, label);
 
-    return x + (float)CARD_MARK + 4.0f + (float)al_get_text_width(font, label);
+    return x + (float)CARD_MARK + 4.0f + (float)ui_text_width(label);
 }
 
 void draw_scan_card(int target, bool from_cursor, float card_y)
@@ -207,8 +207,8 @@ void draw_scan_card(int target, bool from_cursor, float card_y)
         category = "bactéria";
     }
 
-    al_draw_text(font, UI_AMBER, (float)text_x, (float)row_state, 0, state);
-    al_draw_text(font, source_color, (float)(text_x + al_get_text_width(font, state)),
+    ui_text(UI_AMBER, (float)text_x, (float)row_state, 0, state);
+    ui_text(source_color, (float)(text_x + ui_text_width(state)),
         (float)row_state, 0, source);
     // a categoria so aparece sem leitura: depois, as linhas 1 e 2 ja dizem o
     // tipo e a linha de estado precisa do espaco para os marcadores
@@ -216,9 +216,9 @@ void draw_scan_card(int target, bool from_cursor, float card_y)
 
     if (agents[target].layers == 0)
     {
-        al_draw_text(font, UI_TEXT, (float)(SCREEN_W - 16), (float)row_state,
+        ui_text(UI_TEXT, (float)(SCREEN_W - 16), (float)row_state,
             ALLEGRO_ALIGN_RIGHT, category);
-        marks_x = marks_x - (float)(al_get_text_width(font, category) + 8);
+        marks_x = marks_x - (float)(ui_text_width(category) + 8);
     }
 
     // marcadores das 2 camadas, encostados a direita: forma acende na 1a;
@@ -226,7 +226,7 @@ void draw_scan_card(int target, bool from_cursor, float card_y)
     second_label = is_bacteria ? "Gram e espécie" : "estrutura";
     marks_x = marks_x
         - (float)(2 * (CARD_MARK + 4) + 8)
-        - (float)al_get_text_width(font, "forma") - (float)al_get_text_width(font, second_label);
+        - (float)ui_text_width("forma") - (float)ui_text_width(second_label);
     second_color = UI_SLOT;
 
     if (agents[target].layers >= MAX_LAYERS)
@@ -243,7 +243,7 @@ void draw_scan_card(int target, bool from_cursor, float card_y)
     {
         draw_marked_text((float)text_x, (float)row_info, UI_TEXT,
             "[botão direito]: escanear");
-        al_draw_text(font, UI_DIM, (float)text_x, (float)row_action, 0,
+        ui_text(UI_DIM, (float)text_x, (float)row_action, 0,
             "cada clique revela uma camada");
         return;
     }
@@ -251,7 +251,7 @@ void draw_scan_card(int target, bool from_cursor, float card_y)
     // camada 1: so a forma, sem amostra de cor que entregue o grupo (#214)
     if (agents[target].layers < MAX_LAYERS)
     {
-        al_draw_text(font, UI_TEXT, (float)(text_x + 12), (float)row_info, 0,
+        ui_text(UI_TEXT, (float)(text_x + 12), (float)row_info, 0,
             layer_one_text(target));
         draw_marked_text((float)text_x, (float)row_action, UI_DIM,
             is_bacteria
@@ -264,7 +264,7 @@ void draw_scan_card(int target, bool from_cursor, float card_y)
     draw_scan_swatch(agents[target].species, (float)text_x, (float)row_info);
     draw_marked_text((float)(text_x + 12), (float)row_info, UI_WARM,
         layer_two_text(target));
-    al_draw_text(font, UI_WARM, (float)text_x, (float)row_action, 0,
+    ui_text(UI_WARM, (float)text_x, (float)row_action, 0,
         layer_two_reason(target));
 }
 
@@ -273,11 +273,11 @@ static void draw_life_bar(ALLEGRO_BITMAP* frame, float x, float y, int segments,
 {
     int i;
 
-    al_draw_bitmap(frame, x, y, 0);
+    ui_bitmap(frame, x, y, 0);
 
     for (i = 0; i < segments && i < LIFE_SEGMENTS; i++)
     {
-        al_draw_tinted_bitmap(bar_segment, color, x + 2.0f + 6.0f * (float)i, y + 2.0f, 0);
+        ui_tinted_bitmap(bar_segment, color, x + 2.0f + 6.0f * (float)i, y + 2.0f, 0);
     }
 }
 // icone de cada arma no HUD, ao lado do nome
@@ -351,7 +351,7 @@ void draw_hud()
 
     // coluna de vida: icone 16x16 centrado na linha + barra 64x8 em x 28
     // linha 0: integridade do nanobo, bateria em ciano
-    al_draw_bitmap(nanobo_icon, (float)HUD_MARGIN, (float)(hud_y(0) - 4), 0);
+    ui_bitmap(nanobo_icon, (float)HUD_MARGIN, (float)(hud_y(0) - 4), 0);
     draw_life_bar(battery_bar, 28.0f, (float)hud_y(0),
         life_segments(player.health, PLAYER_MAX_HEALTH), UI_CYAN);
 
@@ -381,7 +381,7 @@ void draw_hud()
     {
         heart_frame = 2;
     }
-    al_draw_bitmap_region(heart_pulse, (float)(heart_frame * 16), 0.0f, 16.0f, 16.0f,
+    ui_bitmap_region(heart_pulse, (float)(heart_frame * 16), 0.0f, 16.0f, 16.0f,
         (float)HUD_MARGIN, (float)(hud_y(1) - 4), 0);
     draw_life_bar(ecg_bar, 28.0f, (float)hud_y(1),
         life_segments(patient_vitals, PATIENT_VITALS_MAX), vitals_color);
@@ -391,11 +391,11 @@ void draw_hud()
     snprintf(timer_text, sizeof(timer_text), "%02d:%02d", total_seconds / 60, total_seconds % 60);
     snprintf(score_text, sizeof(score_text), "pontos %d", score);
     x = 100;
-    al_draw_text(font, UI_TEXT, (float)x, (float)hud_y(1), 0, score_text);
-    x += al_get_text_width(font, score_text) + 4;
-    al_draw_text(font, UI_DIM, (float)x, (float)hud_y(1), 0, "·");
-    x += al_get_text_width(font, "·") + 4;
-    al_draw_text(font, UI_DIM, (float)x, (float)hud_y(1), 0, timer_text);
+    ui_text(UI_TEXT, (float)x, (float)hud_y(1), 0, score_text);
+    x += ui_text_width(score_text) + 4;
+    ui_text(UI_DIM, (float)x, (float)hud_y(1), 0, "·");
+    x += ui_text_width("·") + 4;
+    ui_text(UI_DIM, (float)x, (float)hud_y(1), 0, timer_text);
 
     // linha 0, a direita: a ferramenta com o alvo dela, o icone e a recarga,
     // tudo medido da borda
@@ -433,25 +433,25 @@ void draw_hud()
         }
     }
 
-    x_word = SCREEN_W - HUD_MARGIN - al_get_text_width(font, state_text);
+    x_word = SCREEN_W - HUD_MARGIN - ui_text_width(state_text);
     x_bar = x_word - 6 - UI_BAR_W;
-    x_icon = x_bar - 4 - al_get_bitmap_width(laser_icon);
+    x_icon = x_bar - 4 - ui_bitmap_w(laser_icon);
     x_weapon = x_icon - 4 - marked_text_width(module_name);
 
     // o nome da arma sai na cor dela (<wX:...>)
     draw_marked_text((float)x_weapon, (float)hud_y(0), UI_TEXT, module_name);
 
-    al_draw_bitmap(laser_icon, (float)x_icon, (float)(hud_y(0) - 4), 0);
+    ui_bitmap(laser_icon, (float)x_icon, (float)(hud_y(0) - 4), 0);
     draw_cooldown_bar((float)x_bar, (float)(hud_y(0) + 1),
         fire_locked() ? fire_lock_left() : attack_cooldown_left());
-    al_draw_text(font, UI_DIM, (float)x_word, (float)hud_y(0), 0, state_text);
+    ui_text(UI_DIM, (float)x_word, (float)hud_y(0), 0, state_text);
 
     // linha 1, a direita: o objetivo saiu do HUD (vira o aviso de objetivo)
     // ameacas com contador e identificados, que e o progresso do bonus
     snprintf(line, sizeof(line), "ameaças %d/%d · identificados %d/%d",
         threats_total() - threats_left(), threats_total(),
         identified_count, identification_goal());
-    al_draw_text(font, UI_DIM, (float)(SCREEN_W - HUD_MARGIN), (float)hud_y(1),
+    ui_text(UI_DIM, (float)(SCREEN_W - HUD_MARGIN), (float)hud_y(1),
         ALLEGRO_ALIGN_RIGHT, line);
 
     // o quadro seguinte desenha o mundo no mesmo canvas: sem isso ele sai cortado

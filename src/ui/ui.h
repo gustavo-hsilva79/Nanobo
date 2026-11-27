@@ -32,6 +32,18 @@ typedef struct
 #define OPENING_ENTRIES 2
 
 // ui_kit.c
+// desenho da interface: texto e arte em 1x ampliados por UI_SCALE (27/11)
+void ui_text(ALLEGRO_COLOR color, float x, float y, int flags, const char* text);
+int ui_text_width(const char* text);
+int ui_line_height(void);
+void ui_bitmap(ALLEGRO_BITMAP* bitmap, float x, float y, int flags);
+void ui_tinted_bitmap(ALLEGRO_BITMAP* bitmap, ALLEGRO_COLOR tint, float x, float y, int flags);
+void ui_bitmap_region(ALLEGRO_BITMAP* bitmap, float sx, float sy, float sw, float sh,
+    float x, float y, int flags);
+void ui_tinted_bitmap_region(ALLEGRO_BITMAP* bitmap, ALLEGRO_COLOR tint,
+    float sx, float sy, float sw, float sh, float x, float y, int flags);
+int ui_bitmap_w(ALLEGRO_BITMAP* bitmap);
+int ui_bitmap_h(ALLEGRO_BITMAP* bitmap);
 float to_logical_x(float window_x);
 float to_logical_y(float window_y);
 void draw_panel(float x, float y, float w, float h, ALLEGRO_COLOR fill, ALLEGRO_COLOR border);

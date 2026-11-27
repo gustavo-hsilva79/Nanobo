@@ -22,6 +22,88 @@ float to_logical_y(float window_y)
     return (window_y - screen_off_y) / screen_scale;
 }
 
+// a fonte de 8 px e a arte em 1x saem UI_SCALE vezes maiores a partir de (x, y),
+// em pixels da tela; a transformacao em uso (o tremor) continua valendo
+static void ui_begin_scaled(float x, float y, ALLEGRO_TRANSFORM* saved)
+{
+    ALLEGRO_TRANSFORM scaled;
+
+    al_copy_transform(saved, al_get_current_transform());
+    al_identity_transform(&scaled);
+    al_scale_transform(&scaled, (float)UI_SCALE, (float)UI_SCALE);
+    al_translate_transform(&scaled, x, y);
+    al_compose_transform(&scaled, saved);
+    al_use_transform(&scaled);
+}
+
+void ui_text(ALLEGRO_COLOR color, float x, float y, int flags, const char* text)
+{
+    ALLEGRO_TRANSFORM saved;
+
+    ui_begin_scaled(x, y, &saved);
+    al_draw_text(font, color, 0.0f, 0.0f, flags, text);
+    al_use_transform(&saved);
+}
+
+int ui_text_width(const char* text)
+{
+    return al_get_text_width(font, text) * UI_SCALE;
+}
+
+int ui_line_height(void)
+{
+    return al_get_font_line_height(font) * UI_SCALE;
+}
+
+void ui_bitmap(ALLEGRO_BITMAP* bitmap, float x, float y, int flags)
+{
+    ALLEGRO_TRANSFORM saved;
+
+    ui_begin_scaled(x, y, &saved);
+    al_draw_bitmap(bitmap, 0.0f, 0.0f, flags);
+    al_use_transform(&saved);
+}
+
+void ui_tinted_bitmap(ALLEGRO_BITMAP* bitmap, ALLEGRO_COLOR tint, float x, float y, int flags)
+{
+    ALLEGRO_TRANSFORM saved;
+
+    ui_begin_scaled(x, y, &saved);
+    al_draw_tinted_bitmap(bitmap, tint, 0.0f, 0.0f, flags);
+    al_use_transform(&saved);
+}
+
+void ui_bitmap_region(ALLEGRO_BITMAP* bitmap, float sx, float sy, float sw, float sh,
+    float x, float y, int flags)
+{
+    ALLEGRO_TRANSFORM saved;
+
+    ui_begin_scaled(x, y, &saved);
+    al_draw_bitmap_region(bitmap, sx, sy, sw, sh, 0.0f, 0.0f, flags);
+    al_use_transform(&saved);
+}
+
+void ui_tinted_bitmap_region(ALLEGRO_BITMAP* bitmap, ALLEGRO_COLOR tint,
+    float sx, float sy, float sw, float sh, float x, float y, int flags)
+{
+    ALLEGRO_TRANSFORM saved;
+
+    ui_begin_scaled(x, y, &saved);
+    al_draw_tinted_bitmap_region(bitmap, tint, sx, sy, sw, sh, 0.0f, 0.0f, flags);
+    al_use_transform(&saved);
+}
+
+// largura e altura do bitmap como a interface desenha
+int ui_bitmap_w(ALLEGRO_BITMAP* bitmap)
+{
+    return al_get_bitmap_width(bitmap) * UI_SCALE;
+}
+
+int ui_bitmap_h(ALLEGRO_BITMAP* bitmap)
+{
+    return al_get_bitmap_height(bitmap) * UI_SCALE;
+}
+
 // painel: fundo chapado e moldura de 1 px alinhada ao pixel
 void draw_panel(float x, float y, float w, float h, ALLEGRO_COLOR fill, ALLEGRO_COLOR border)
 {
@@ -56,8 +138,8 @@ static void draw_button(const UiButton* button, int state)
 
     al_draw_rectangle(button->x + 0.5f, button->y + 0.5f,
         button->x + button->w - 0.5f, button->y + button->h - 0.5f, border, 1.0f);
-    al_draw_text(font, label, floorf(button->x + button->w / 2.0f),
-        floorf(button->y + (button->h - (float)al_get_font_line_height(font)) / 2.0f),
+    ui_text(label, floorf(button->x + button->w / 2.0f),
+        floorf(button->y + (button->h - (float)ui_line_height()) / 2.0f),
         ALLEGRO_ALIGN_CENTRE, button->label);
 }
 
@@ -685,12 +767,12 @@ ALLEGRO_COLOR faded_color(ALLEGRO_COLOR color, float alpha)
 // de tinta, KEY_CAP_PAD de folga de cada lado; devolve a largura ocupada
 static float draw_key_cap(float x, float y, const char* name, float alpha)
 {
-    float w = (float)(al_get_text_width(font, name) + 2 * KEY_CAP_PAD);
+    float w = (float)(ui_text_width(name) + 2 * KEY_CAP_PAD);
 
     // 14 px de altura: a borda nao encosta nas letras nem nos acentos e cedilhas
     al_draw_filled_rectangle(x, y - 3.0f, x + w, y + 11.0f, faded_color(UI_INK, alpha));
     al_draw_rectangle(x + 0.5f, y - 2.5f, x + w - 0.5f, y + 10.5f, faded_color(UI_KEY, alpha), 1.0f);
-    al_draw_text(font, faded_color(UI_KEY, alpha), x + (float)KEY_CAP_PAD, y, 0, name);
+    ui_text(faded_color(UI_KEY, alpha), x + (float)KEY_CAP_PAD, y, 0, name);
 
     return w;
 }
@@ -735,8 +817,8 @@ static int draw_dialog_line(const char* line, float x, float y, ALLEGRO_COLOR ba
             }
             else
             {
-                al_draw_text(font, term ? term_color : (span ? span_color : base), x, y, 0, segment);
-                x = x + (float)al_get_text_width(font, segment);
+                ui_text(term ? term_color : (span ? span_color : base), x, y, 0, segment);
+                x = x + (float)ui_text_width(segment);
             }
             length = 0;
 
@@ -790,7 +872,7 @@ static int draw_dialog_line(const char* line, float x, float y, ALLEGRO_COLOR ba
     }
     else
     {
-        al_draw_text(font, term ? term_color : (span ? span_color : base), x, y, 0, segment);
+        ui_text(term ? term_color : (span ? span_color : base), x, y, 0, segment);
     }
 
     return budget;
@@ -845,7 +927,7 @@ int marked_text_width(const char* text)
     }
 
     plain[length] = '\0';
-    return al_get_text_width(font, plain) + caps * 2 * KEY_CAP_PAD;
+    return ui_text_width(plain) + caps * 2 * KEY_CAP_PAD;
 }
 
 // linha marcada alinhada como o al_draw_text (centro ou direita em x)
@@ -910,11 +992,11 @@ void draw_dialog(const DialogEntry* e, const DialogState* d)
 
         draw_panel(px - 1.0f, py - 1.0f, (float)PLAYER_FRAME + 2.0f, (float)PLAYER_FRAME + 2.0f,
             UI_PANEL, UI_FRAME);
-        al_draw_bitmap_region(nanobo, 0.0f, (float)(PLAYER_FACING_DOWN * PLAYER_FRAME),
+        ui_bitmap_region(nanobo, 0.0f, (float)(PLAYER_FACING_DOWN * PLAYER_FRAME),
             (float)PLAYER_FRAME, (float)PLAYER_FRAME, px, py, 0);
     }
 
-    al_draw_text(font, UI_DIM, (float)DIALOG_TEXT_X, (float)(DIALOG_Y + DIALOG_PAD), 0, e->header);
+    ui_text(UI_DIM, (float)DIALOG_TEXT_X, (float)(DIALOG_Y + DIALOG_PAD), 0, e->header);
 
     for (line = 0; line < 3 && budget > 0; line++)
     {
@@ -930,7 +1012,7 @@ void draw_dialog(const DialogEntry* e, const DialogState* d)
     }
 
     snprintf(counter, sizeof(counter), "%d/%d", d->page + 1, d->pages);
-    al_draw_text(font, UI_DIM, right, footer_y, ALLEGRO_ALIGN_RIGHT, counter);
+    ui_text(UI_DIM, right, footer_y, ALLEGRO_ALIGN_RIGHT, counter);
 
     if (!dialog_page_complete(d))
     {
@@ -940,7 +1022,7 @@ void draw_dialog(const DialogEntry* e, const DialogState* d)
     // a ultima pagina fecha; as outras piscam o triangulo a cada 0,5 s
     if (dialog_last_page(d))
     {
-        al_draw_text(font, UI_AMBER, right - 32.0f, footer_y, ALLEGRO_ALIGN_RIGHT, "fechar");
+        ui_text(UI_AMBER, right - 32.0f, footer_y, ALLEGRO_ALIGN_RIGHT, "fechar");
     }
     else if (fmodf(dialog_complete_age(e, d), 1.0f) < 0.5f)
     {

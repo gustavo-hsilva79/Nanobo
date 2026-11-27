@@ -69,10 +69,10 @@ float view_y(float y)
 // top e bottom limitam a marca a parte livre da faixa, fora da ficha do scanner (#243)
 static void draw_destination_hint(float top, float bottom)
 {
-    float sx = view_x(DESTINATION_X);
-    float sy = view_y(DESTINATION_Y);
-    int label_w = al_get_text_width(font, "destino");
-    int label_h = al_get_font_line_height(font);
+    float sx = view_x(DESTINATION_X) * WORLD_SCALE;
+    float sy = view_y(DESTINATION_Y) * WORLD_SCALE;
+    int label_w = ui_text_width("destino");
+    int label_h = ui_line_height();
     float margin_x = (float)label_w / 2.0f + 2.0f;
     float margin_y = 10.0f + (float)label_h + 6.0f;
     float cx;
@@ -111,12 +111,12 @@ static void draw_destination_hint(float top, float bottom)
     // na metade de baixo o rotulo sobe, para nao encostar na linha do painel
     if (cy > (top + bottom) / 2.0f)
     {
-        al_draw_text(font, UI_AMBER, cx, cy - 10.0f - (float)label_h,
+        ui_text(UI_AMBER, cx, cy - 10.0f - (float)label_h,
             ALLEGRO_ALIGN_CENTRE, "destino");
     }
     else
     {
-        al_draw_text(font, UI_AMBER, cx, cy + 10.0f, ALLEGRO_ALIGN_CENTRE, "destino");
+        ui_text(UI_AMBER, cx, cy + 10.0f, ALLEGRO_ALIGN_CENTRE, "destino");
     }
 }
 
@@ -270,15 +270,24 @@ static void draw_objective_notice(int card_target, float card_y)
 }
 
 // mapa da fase atual com o tinte da fase e o veu azulado ate a altura h;
-// o jogo e os resultados desenham o mesmo fundo
+// o jogo e os resultados desenham o mesmo fundo; x e y em pixels do mundo
 void draw_phase_map(float x, float y, float h)
 {
     load_phase_map(current_phase());
 
     if (world_map)
     {
+        ALLEGRO_TRANSFORM saved;
+        ALLEGRO_TRANSFORM scaled;
+
+        al_copy_transform(&saved, al_get_current_transform());
+        al_identity_transform(&scaled);
+        al_scale_transform(&scaled, (float)WORLD_SCALE, (float)WORLD_SCALE);
+        al_compose_transform(&scaled, &saved);
+        al_use_transform(&scaled);
         al_draw_tinted_bitmap(world_map, phase_has_viruses() ? MAP_TINT_AIRWAY : MAP_TINT,
             x, y, 0);
+        al_use_transform(&saved);
     }
     al_draw_filled_rectangle(0.0f, 0.0f, (float)SCREEN_W, h, MAP_VEIL);
 }
@@ -288,6 +297,7 @@ void draw_game()
     int i;
     bool is_bacteria;
     ALLEGRO_TRANSFORM shake;
+    ALLEGRO_TRANSFORM world;
     ALLEGRO_COLOR nanobo_tint = al_map_rgb_f(1.0f, 1.0f, 1.0f);
     const char* message;
     float aim_x;
@@ -301,15 +311,22 @@ void draw_game()
     // o mundo para na faixa jogavel: sprite nenhum entra no painel
     al_set_clipping_rectangle(0, 0, SCREEN_W, PLAY_H);
 
-    // tremor so no desenho do mundo: a camera e a simulacao nao mudam (#221)
+    // tremor so no desenho do mundo: a camera e a simulacao nao mudam (#221);
+    // o tremor e medido em pixels do mundo
     al_identity_transform(&shake);
-    al_translate_transform(&shake, feel_offset_x(), feel_offset_y());
+    al_translate_transform(&shake, feel_offset_x() * WORLD_SCALE, feel_offset_y() * WORLD_SCALE);
     al_use_transform(&shake);
 
     // mapa do mundo deslocado pela camera, atras de destino, agentes e nanobo
     // recuado: escurecido e com um veu azulado, sem mudar o PNG (#220); a fase
     // nova troca o mapa no primeiro quadro dela (#89)
     draw_phase_map(-floorf(camera.x), -floorf(camera.y), (float)PLAY_H);
+
+    // daqui ate o fim do mundo tudo e desenhado em pixels do mundo, ampliado
+    al_identity_transform(&world);
+    al_scale_transform(&world, (float)WORLD_SCALE, (float)WORLD_SCALE);
+    al_compose_transform(&world, &shake);
+    al_use_transform(&world);
 
     // destino da fase: anel e rotulo visiveis desde o inicio (#26)
     al_draw_filled_circle(view_x(DESTINATION_X), view_y(DESTINATION_Y), DESTINATION_RADIUS,
@@ -534,13 +551,18 @@ void draw_game()
     {
         const char* hint = "[botão direito]: escanear";
         int hint_w = marked_text_width(hint);
-        float hx = floorf(view_x(agents[tutorial_hint_target()].x) - (float)hint_w / 2.0f);
-        float hy = view_y(agents[tutorial_hint_target()].y) - agent_radius(tutorial_hint_target()) - 20.0f;
+        float hx = floorf(view_x(agents[tutorial_hint_target()].x) * WORLD_SCALE - (float)hint_w / 2.0f);
+        float hy = (view_y(agents[tutorial_hint_target()].y) - agent_radius(tutorial_hint_target()))
+            * WORLD_SCALE - 20.0f;
+
+        // a placa e da interface: desenhada na tela, so com o tremor
+        al_use_transform(&shake);
 
         // a tampa de tecla de 14 px cabe com folga; a moldura neutra nao briga
         // com a borda ciano da tecla
         draw_panel(hx - 4.0f, hy - 6.0f, (float)hint_w + 8.0f, 20.0f, UI_INK, UI_FRAME);
         draw_marked_text(hx, hy, UI_CYAN, hint);
+        al_use_transform(&world);
     }
 
     // a sombra do nanobo fica sob o anel magnetico, que flutua embaixo (#220, #240)
@@ -701,11 +723,11 @@ void draw_game()
         && aim_x >= 0.0f && aim_x < (float)SCREEN_W
         && aim_y >= 0.0f && aim_y < (float)PLAY_H)
     {
-        al_draw_tinted_bitmap_region(aim_sprite, laser_color(player.laser),
+        ui_tinted_bitmap_region(aim_sprite, laser_color(player.laser),
             (float)((int)aim_frame() * AIM_FRAME_SIZE), 0.0f,
             (float)AIM_FRAME_SIZE, (float)AIM_FRAME_SIZE,
-            floorf(aim_x) - (float)AIM_CENTER,
-            floorf(aim_y) - (float)AIM_CENTER, 0);
+            floorf(aim_x) - (float)(AIM_CENTER * UI_SCALE),
+            floorf(aim_y) - (float)(AIM_CENTER * UI_SCALE), 0);
     }
 
 #ifdef _DEBUG
@@ -728,7 +750,7 @@ void draw_game()
                 agents[i].lysogenic_timer);
         }
 
-        al_draw_text(font, UI_DIM, 8, 8, 0, line);
+        ui_text(UI_DIM, 8, 8, 0, line);
     }
 #endif
 

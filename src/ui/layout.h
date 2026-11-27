@@ -9,8 +9,15 @@
 #define SCREEN_W 640
 #define SCREEN_H 360
 
+// pixels da tela por pixel do mundo: o mapa e os sprites sao desenhados
+// ampliados, com o mesmo enquadramento em qualquer resolucao (27/11)
+#define WORLD_SCALE 1
+
+// pixels da tela por pixel da fonte de 8 px e da arte em 1x na interface
+#define UI_SCALE 1
+
 // a faixa do mundo em pixels da tela
-#define PLAY_H VIEW_H
+#define PLAY_H (VIEW_H * WORLD_SCALE)
 
 // HUD no rodape da tela logica: duas linhas; a ficha do scanner flutua no mundo
 #define PANEL_H 40

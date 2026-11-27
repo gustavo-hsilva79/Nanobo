@@ -26,15 +26,15 @@ void draw_menu()
     /* Fundo: vaso sanguineo com hemacias deslizando para a esquerda */
     if (menu_background)
     {
-        al_draw_bitmap(menu_background, 0.0f, 0.0f, 0);
+        ui_bitmap(menu_background, 0.0f, 0.0f, 0);
     }
 
     if (menu_cells)
     {
         float offset = (float)fmod(now * 8.0, (double)SCREEN_W);
 
-        al_draw_bitmap(menu_cells, -offset, 0.0f, 0);
-        al_draw_bitmap(menu_cells, (float)SCREEN_W - offset, 0.0f, 0);
+        ui_bitmap(menu_cells, -offset, 0.0f, 0);
+        ui_bitmap(menu_cells, (float)SCREEN_W - offset, 0.0f, 0);
     }
 
     /* Titulo */
@@ -66,16 +66,14 @@ void draw_menu()
             int frame = (int)(now / 0.22) % 4;
             float float_y = 2.0f * (float)sin(2.0 * ALLEGRO_PI * now / 2.0);
 
-            al_draw_bitmap_region(nanobo, (float)(frame * PLAYER_FRAME),
+            ui_bitmap_region(nanobo, (float)(frame * PLAYER_FRAME),
                 (float)(PLAYER_FACING_DOWN * PLAYER_FRAME),
                 (float)PLAYER_FRAME, (float)PLAYER_FRAME,
                 title_right + 24.0f, 26.0f + float_y, 0);
         }
     }
 
-    al_draw_text(
-        font,
-        UI_DIM,
+    ui_text(UI_DIM,
         SCREEN_W / 2,
         52,
         ALLEGRO_ALIGN_CENTRE,
@@ -100,7 +98,7 @@ void draw_menu()
     {
         snprintf(record, sizeof(record), "nenhum recorde ainda");
     }
-    al_draw_text(font, UI_DIM, SCREEN_W / 2, BUTTON_Y + 52, ALLEGRO_ALIGN_CENTRE, record);
+    ui_text(UI_DIM, SCREEN_W / 2, BUTTON_Y + 52, ALLEGRO_ALIGN_CENTRE, record);
 
     draw_marked_text_aligned(SCREEN_W - HUD_MARGIN, 336, UI_DIM, ALLEGRO_ALIGN_RIGHT,
         "[F11] tela cheia");
@@ -199,7 +197,7 @@ void draw_briefing()
     // o quarto do Léo atrás da ficha; o véu de 60% vem do draw_dialog
     if (hospital_opening)
     {
-        al_draw_bitmap(hospital_opening, 0.0f, 0.0f, 0);
+        ui_bitmap(hospital_opening, 0.0f, 0.0f, 0);
     }
     draw_dialog(&opening_entries[opening_entry], &opening_dialog);
 
@@ -247,9 +245,9 @@ void draw_pause()
     al_draw_filled_rectangle(0.0f, 0.0f, (float)SCREEN_W, (float)SCREEN_H,
         UI_VEIL(210.0f / 255.0f));
     draw_panel(80.0f, 70.0f, 480.0f, 216.0f, UI_INK, UI_FRAME);
-    al_draw_text(font, UI_TEXT, SCREEN_W / 2, 82, ALLEGRO_ALIGN_CENTRE, "PAUSA");
+    ui_text(UI_TEXT, SCREEN_W / 2, 82, ALLEGRO_ALIGN_CENTRE, "PAUSA");
     draw_rule((float)SCREEN_W / 2, 96.0f, 200.0f, UI_FRAME);
-    al_draw_text(font, UI_AMBER, SCREEN_W / 2, 104, ALLEGRO_ALIGN_CENTRE, phase_names[phase]);
+    ui_text(UI_AMBER, SCREEN_W / 2, 104, ALLEGRO_ALIGN_CENTRE, phase_names[phase]);
 
     // texto de x 96 a 544: a maior linha tem 56 caracteres (448 px)
     for (i = 0; i < 3; i++)
@@ -300,7 +298,7 @@ static void draw_howto_icon(float x, float y)
     if (howto_page == 0)
     {
         // o Nanobo de frente, quadro parado 0
-        al_draw_bitmap_region(nanobo, 0.0f, (float)(PLAYER_FACING_DOWN * PLAYER_FRAME),
+        ui_bitmap_region(nanobo, 0.0f, (float)(PLAYER_FACING_DOWN * PLAYER_FRAME),
             (float)PLAYER_FRAME, (float)PLAYER_FRAME, x, y, 0);
     }
     else if (howto_page == 1)
@@ -314,13 +312,13 @@ static void draw_howto_icon(float x, float y)
     {
         // as 6 armas: fase 1 em cima, fases 2 e 3 embaixo
         row_y = y + 4.0f;
-        al_draw_bitmap(rupture_icon, x, row_y, 0);
-        al_draw_bitmap(dissolution_icon, x + 16.0f, row_y, 0);
-        al_draw_bitmap(reserve_icon, x + 32.0f, row_y, 0);
+        ui_bitmap(rupture_icon, x, row_y, 0);
+        ui_bitmap(dissolution_icon, x + 16.0f, row_y, 0);
+        ui_bitmap(reserve_icon, x + 32.0f, row_y, 0);
         row_y = y + 28.0f;
-        al_draw_bitmap(antibody_icon, x, row_y, 0);
-        al_draw_bitmap(lyse_icon, x + 16.0f, row_y, 0);
-        al_draw_bitmap(perforate_icon, x + 32.0f, row_y, 0);
+        ui_bitmap(antibody_icon, x, row_y, 0);
+        ui_bitmap(lyse_icon, x + 16.0f, row_y, 0);
+        ui_bitmap(perforate_icon, x + 32.0f, row_y, 0);
     }
     else
     {
@@ -387,17 +385,17 @@ void draw_howto()
 
     if (howto_background)
     {
-        al_draw_bitmap(howto_background, 0.0f, 0.0f, 0);
+        ui_bitmap(howto_background, 0.0f, 0.0f, 0);
     }
-    al_draw_text(font, UI_TEXT, SCREEN_W / 2, 16, ALLEGRO_ALIGN_CENTRE, "Como jogar");
+    ui_text(UI_TEXT, SCREEN_W / 2, 16, ALLEGRO_ALIGN_CENTRE, "Como jogar");
     draw_rule((float)SCREEN_W / 2, 30.0f, 200.0f, UI_FRAME);
 
     // painel central quase opaco (cor pre-multiplicada): o radar do fundo aparece de leve
     draw_panel(16.0f, HOWTO_PANEL_Y, (float)SCREEN_W - 32.0f, 144.0f,
         UI_VEIL(230.0f / 255.0f), UI_FRAME);
-    al_draw_text(font, UI_AMBER, HOWTO_TEXT_X, HOWTO_PANEL_Y + 12.0f, 0, titles[page]);
+    ui_text(UI_AMBER, HOWTO_TEXT_X, HOWTO_PANEL_Y + 12.0f, 0, titles[page]);
     snprintf(counter, sizeof(counter), "%d/%d", page + 1, HOWTO_PAGES);
-    al_draw_text(font, UI_DIM, (float)SCREEN_W - 24.0f, HOWTO_PANEL_Y + 12.0f, ALLEGRO_ALIGN_RIGHT, counter);
+    ui_text(UI_DIM, (float)SCREEN_W - 24.0f, HOWTO_PANEL_Y + 12.0f, ALLEGRO_ALIGN_RIGHT, counter);
 
     draw_howto_icon(HOWTO_ICON_X, line_y + 20.0f);
 
@@ -540,9 +538,9 @@ void draw_results()
 
     // fundo: o mapa da fase concluida onde a camera parou, na tela inteira
     // (sem passar da borda de baixo do PNG) e com um veu escuro por cima
-    if (world_map && map_y > (float)(al_get_bitmap_height(world_map) - SCREEN_H))
+    if (world_map && map_y > (float)(al_get_bitmap_height(world_map) - SCREEN_H / WORLD_SCALE))
     {
-        map_y = fmaxf(0.0f, (float)(al_get_bitmap_height(world_map) - SCREEN_H));
+        map_y = fmaxf(0.0f, (float)(al_get_bitmap_height(world_map) - SCREEN_H / WORLD_SCALE));
     }
 
     draw_phase_map(-floorf(camera.x), -floorf(map_y), (float)SCREEN_H);
@@ -550,7 +548,7 @@ void draw_results()
         UI_VEIL(160.0f / 255.0f));
 
     snprintf(line, sizeof(line), "Fase %d concluída", current_phase());
-    al_draw_text(font, UI_TEXT, SCREEN_W / 2, 24, ALLEGRO_ALIGN_CENTRE, line);
+    ui_text(UI_TEXT, SCREEN_W / 2, 24, ALLEGRO_ALIGN_CENTRE, line);
     draw_rule((float)SCREEN_W / 2, 38.0f, 200.0f, UI_FRAME);
 
     // interludio (#244): entre as fases, o estado do paciente e o proximo
@@ -562,7 +560,7 @@ void draw_results()
 
         snprintf(line, sizeof(line), "vitais do Léo: %s (%d) · a seguir: %s",
             state, vitals, current_phase() == 1 ? "vírus nas vias aéreas" : "fungos no pulmão");
-        al_draw_text(font, UI_DIM, SCREEN_W / 2, 46, ALLEGRO_ALIGN_CENTRE, line);
+        ui_text(UI_DIM, SCREEN_W / 2, 46, ALLEGRO_ALIGN_CENTRE, line);
     }
     else
     {
@@ -571,7 +569,7 @@ void draw_results()
         const char* state = vitals >= 70 ? "estável" : (vitals >= 40 ? "em observação" : "grave");
 
         snprintf(line, sizeof(line), "vitais do Léo: %s (%d)", state, vitals);
-        al_draw_text(font, UI_DIM, SCREEN_W / 2, 46, ALLEGRO_ALIGN_CENTRE, line);
+        ui_text(UI_DIM, SCREEN_W / 2, 46, ALLEGRO_ALIGN_CENTRE, line);
     }
 
     // resultado principal: pontos e ameacas, o que fecha a fase
@@ -610,7 +608,7 @@ void draw_results()
     // resumo educativo: so contadores da partida atual (#174, #202)
     draw_panel(140.0f, 162.0f, 360.0f, 92.0f, UI_INK, UI_FRAME);
 
-    al_draw_text(font, UI_AMBER, left, 170.0f, 0, "O que anotei nesta fase");
+    ui_text(UI_AMBER, left, 170.0f, 0, "O que anotei nesta fase");
 
 
     // relatorio da fase: cinco linhas com os numeros da partida (#223)
@@ -635,7 +633,7 @@ void draw_results()
         snprintf(line, sizeof(line), "QA scans %d/%d decisoes %d/%d celulas %d",
             progress.scans_gram_positive, progress.scans_gram_negative,
             progress.correct_decisions, progress.wrong_decisions, progress.cell_attacks);
-        al_draw_text(font, UI_DIM, SCREEN_W / 2, 340, ALLEGRO_ALIGN_CENTRE, line);
+        ui_text(UI_DIM, SCREEN_W / 2, 340, ALLEGRO_ALIGN_CENTRE, line);
     }
 #endif
 }
@@ -647,16 +645,16 @@ static void draw_ranking_panel(float x, float y, float w, int highlight, bool in
     int i;
 
     draw_panel(x, y, w, 184.0f, UI_INK, UI_FRAME);
-    al_draw_text(font, UI_AMBER, x + w / 2.0f, y + 8.0f, ALLEGRO_ALIGN_CENTRE, "Top 10");
+    ui_text(UI_AMBER, x + w / 2.0f, y + 8.0f, ALLEGRO_ALIGN_CENTRE, "Top 10");
 
     if (ranking_count() == 0)
     {
-        al_draw_text(font, UI_DIM, x + w / 2.0f, y + 86.0f, ALLEGRO_ALIGN_CENTRE,
+        ui_text(UI_DIM, x + w / 2.0f, y + 86.0f, ALLEGRO_ALIGN_CENTRE,
             "nenhum recorde ainda");
         // a dica so no menu: na vitoria o Leo ja deu alta
         if (in_menu)
         {
-            al_draw_text(font, UI_DIM, x + w / 2.0f, y + 102.0f, ALLEGRO_ALIGN_CENTRE,
+            ui_text(UI_DIM, x + w / 2.0f, y + 102.0f, ALLEGRO_ALIGN_CENTRE,
                 "dê alta ao Léo para entrar aqui");
         }
         return;
@@ -674,10 +672,10 @@ static void draw_ranking_panel(float x, float y, float w, int highlight, bool in
         }
 
         snprintf(line, sizeof(line), "%2d", i + 1);
-        al_draw_text(font, UI_DIM, x + 12.0f, row, 0, line);
-        al_draw_text(font, color, x + 40.0f, row, 0, e->name);
+        ui_text(UI_DIM, x + 12.0f, row, 0, line);
+        ui_text(color, x + 40.0f, row, 0, e->name);
         snprintf(line, sizeof(line), "%d", e->score);
-        al_draw_text(font, color, x + w - 12.0f, row, ALLEGRO_ALIGN_RIGHT, line);
+        ui_text(color, x + w - 12.0f, row, ALLEGRO_ALIGN_RIGHT, line);
     }
 }
 
@@ -694,16 +692,16 @@ void draw_victory()
     // o quarto de dia, leito arrumado: o Leo foi para casa; o veu segura o texto
     if (hospital_victory)
     {
-        al_draw_bitmap(hospital_victory, 0.0f, 0.0f, 0);
+        ui_bitmap(hospital_victory, 0.0f, 0.0f, 0);
     }
     al_draw_filled_rectangle(0.0f, 0.0f, (float)SCREEN_W, (float)SCREEN_H, UI_VEIL(150.0f / 255.0f));
 
-    al_draw_text(font, UI_TEXT, SCREEN_W / 2, 18, ALLEGRO_ALIGN_CENTRE, "Vitória");
+    ui_text(UI_TEXT, SCREEN_W / 2, 18, ALLEGRO_ALIGN_CENTRE, "Vitória");
     draw_rule((float)SCREEN_W / 2, 32.0f, 200.0f, UI_FRAME);
     // final da narrativa (#244): a alta do Leo e a linha do Nanobo
-    al_draw_text(font, UI_TEXT, SCREEN_W / 2, 38, ALLEGRO_ALIGN_CENTRE,
+    ui_text(UI_TEXT, SCREEN_W / 2, 38, ALLEGRO_ALIGN_CENTRE,
         "O Léo recebeu alta e vai para casa. Missão cumprida!");
-    al_draw_text(font, UI_CYAN, SCREEN_W / 2, 54, ALLEGRO_ALIGN_CENTRE,
+    ui_text(UI_CYAN, SCREEN_W / 2, 54, ALLEGRO_ALIGN_CENTRE,
         "Anotei tudo o que aprendi. Obrigado por me guiar!");
 
     // o resultado da run, a esquerda
@@ -733,15 +731,15 @@ void draw_victory()
         float tx = 40.0f;
         bool blink = (int)(al_get_time() * 2.0) % 2 == 0;
 
-        al_draw_text(font, UI_AMBER, 169.0f, 182.0f, ALLEGRO_ALIGN_CENTRE, "novo recorde no Top 10!");
+        ui_text(UI_AMBER, 169.0f, 182.0f, ALLEGRO_ALIGN_CENTRE, "novo recorde no Top 10!");
         draw_marked_text_aligned(169.0f, 198.0f, UI_DIM, ALLEGRO_ALIGN_CENTRE, "digite seu nome e tecle [enter]");
         al_draw_filled_rectangle(tx, 214.0f, 298.0f, 232.0f, UI_PANEL);
         al_draw_rectangle(tx + 0.5f, 214.5f, 297.5f, 231.5f, UI_FRAME, 1.0f);
-        al_draw_text(font, UI_TEXT, tx + 6.0f, 219.0f, 0, name_entry);
+        ui_text(UI_TEXT, tx + 6.0f, 219.0f, 0, name_entry);
 
         if (blink && name_entry_chars < RANKING_NAME_CHARS)
         {
-            al_draw_text(font, UI_CYAN, tx + 6.0f + (float)al_get_text_width(font, name_entry), 219.0f, 0, "_");
+            ui_text(UI_CYAN, tx + 6.0f + (float)ui_text_width(name_entry), 219.0f, 0, "_");
         }
 
         // o limite de 10 caracteres dito na tela
@@ -750,17 +748,17 @@ void draw_victory()
     else if (ranking_highlight >= 0)
     {
         snprintf(value, sizeof(value), "posição %d no Top 10", ranking_highlight + 1);
-        al_draw_text(font, UI_GREEN, 169.0f, 202.0f, ALLEGRO_ALIGN_CENTRE, value);
+        ui_text(UI_GREEN, 169.0f, 202.0f, ALLEGRO_ALIGN_CENTRE, value);
 
         if (ranking_save_failed)
         {
-            al_draw_text(font, UI_RED, 169.0f, 222.0f, ALLEGRO_ALIGN_CENTRE,
+            ui_text(UI_RED, 169.0f, 222.0f, ALLEGRO_ALIGN_CENTRE,
                 "não foi possível gravar o recorde");
         }
     }
     else
     {
-        al_draw_text(font, UI_DIM, 169.0f, 210.0f, ALLEGRO_ALIGN_CENTRE,
+        ui_text(UI_DIM, 169.0f, 210.0f, ALLEGRO_ALIGN_CENTRE,
             "a pontuação não entrou no Top 10");
     }
 
@@ -786,20 +784,20 @@ void draw_game_over()
     // o quarto em luz baixa, monitor estavel: o Leo segue internado
     if (hospital_game_over)
     {
-        al_draw_bitmap(hospital_game_over, 0.0f, 0.0f, 0);
+        ui_bitmap(hospital_game_over, 0.0f, 0.0f, 0);
     }
     al_draw_filled_rectangle(0.0f, 0.0f, (float)SCREEN_W, (float)SCREEN_H, UI_VEIL(100.0f / 255.0f));
 
-    al_draw_text(font, UI_RED, SCREEN_W / 2, 30, ALLEGRO_ALIGN_CENTRE, "GAME OVER");
+    ui_text(UI_RED, SCREEN_W / 2, 30, ALLEGRO_ALIGN_CENTRE, "GAME OVER");
     draw_rule((float)SCREEN_W / 2, 44.0f, 200.0f, UI_RED);
     // game over da narrativa (#244): a equipe retira o Nanobô e diz por que;
     // o Leo nao morre, segue no tratamento convencional
-    al_draw_text(font, UI_TEXT, SCREEN_W / 2, 52, ALLEGRO_ALIGN_CENTRE,
+    ui_text(UI_TEXT, SCREEN_W / 2, 52, ALLEGRO_ALIGN_CENTRE,
         game_over_patient ? "Os vitais do Léo caíram demais: a equipe retirou o Nanobô."
                           : "O Nanobô foi danificado: a equipe o retirou do corpo.");
-    al_draw_text(font, UI_TEXT, SCREEN_W / 2, 68, ALLEGRO_ALIGN_CENTRE,
+    ui_text(UI_TEXT, SCREEN_W / 2, 68, ALLEGRO_ALIGN_CENTRE,
         "O Léo segue no tratamento convencional do hospital.");
-    al_draw_text(font, UI_CYAN, SCREEN_W / 2, 84, ALLEGRO_ALIGN_CENTRE,
+    ui_text(UI_CYAN, SCREEN_W / 2, 84, ALLEGRO_ALIGN_CENTRE,
         "Anotei os meus erros. Vamos tentar de novo?");
 
     draw_panel(140.0f, 104.0f, 360.0f, 96.0f, UI_INK, UI_FRAME);

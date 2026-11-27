@@ -942,9 +942,9 @@ void draw_perf_readout()
     int w;
 
     snprintf(line, sizeof(line), "fps %d · quadro %.1f ms", perf_fps, perf_frame_ms);
-    w = al_get_text_width(font, line);
+    w = ui_text_width(line);
     al_draw_filled_rectangle((float)(SCREEN_W - w - 12), 2.0f, (float)(SCREEN_W - 2), 14.0f, UI_INK);
-    al_draw_text(font, UI_DIM, (float)(SCREEN_W - 7), 4.0f, ALLEGRO_ALIGN_RIGHT, line);
+    ui_text(UI_DIM, (float)(SCREEN_W - 7), 4.0f, ALLEGRO_ALIGN_RIGHT, line);
 }
 
 void render()
@@ -1295,8 +1295,8 @@ void handle_game_click(int button, float lx, float ly)
         return;
     }
 
-    wx = lx + camera.x;
-    wy = ly + camera.y;
+    wx = lx / WORLD_SCALE + camera.x;
+    wy = ly / WORLD_SCALE + camera.y;
 
     if (button == 1)
     {
