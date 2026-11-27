@@ -364,7 +364,7 @@ const char* layer_one_text(int index)
             return text;
         }
 
-        return "célula do paciente · eucarionte";
+        return "célula do Léo · eucarionte";
     }
 
     // o virus nao tem coloracao de Gram nem motor: a camada 1 diz o que ele e (#87)
@@ -420,7 +420,7 @@ const char* layer_two_text(int index)
 
     if (species == SPECIES_VIRUS)
     {
-        return "acelular: sem parede, ribossomos nem metabolismo";
+        return "acelular: sem parede, ribossomos nem metabolismo próprios";
     }
 
     // o esporo pousado le como a levedura; a colonia lembra onde mirar (#229)
@@ -465,7 +465,7 @@ const char* layer_two_reason(int index)
 
     if (species == SPECIES_VIRUS)
     {
-        return "só se multiplica dentro de uma célula do paciente";
+        return "só se multiplica dentro de uma célula do Léo";
     }
 
     if (cell_virus(index) != -1)
@@ -995,7 +995,15 @@ static void hit_projectiles()
                 progress.cell_attacks = progress.cell_attacks + 1;
                 patient_vitals = fmaxf(patient_vitals - CELL_SHOT_VITALS, 0.0f);
                 emit_sfx_at(SFX_EVENT_WRONG, agents[j].x, agents[j].y);
-                set_feedback("você feriu uma célula do paciente: ela tem núcleo, não é bactéria");
+                // na Fase 3 o fungo tambem tem nucleo: o contraste e outro (FB-08b)
+                if (phase_has_fungi())
+                {
+                    set_feedback("você feriu uma célula do Léo: é célula do corpo, não fungo");
+                }
+                else
+                {
+                    set_feedback("você feriu uma célula do Léo: ela tem núcleo, não é bactéria");
+                }
             }
             else if (projectiles[i].laser == LASER_RESERVE
                 && (agents[j].species == SPECIES_GRAM_POSITIVE
@@ -1081,11 +1089,11 @@ static void hit_projectiles()
                     // sem identificacao a ameaca sai da cena e o bonus de 9/9 fica impossivel
                     else if (agents[j].identified)
                     {
-                        set_feedback("ameaça neutralizada: +10 pontos");
+                        set_feedback("ameaça eliminada: +10 pontos");
                     }
                     else
                     {
-                        set_feedback("neutralizada sem identificar: o bônus de 9/9 se perdeu");
+                        set_feedback("eliminada sem identificar: o bônus de 9/9 se perdeu");
                     }
                 }
                 else
@@ -3578,7 +3586,7 @@ void lose_patient_cell(int index)
     agents[index].active = false;
     patient_vitals = fmaxf(patient_vitals - CELL_LOSS_VITALS, 0.0f);
     emit_sfx_at(SFX_EVENT_DAMAGE, agents[index].x, agents[index].y);
-    set_feedback("uma célula do paciente foi destruída: -20 vitais");
+    set_feedback("uma célula do Léo foi destruída: -20 vitais");
 }
 
 // divisao binaria: a filha nasce ao lado da mae, numa vaga nova do array, com a

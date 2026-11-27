@@ -37,6 +37,10 @@ _Static_assert((HUD_LINES - 1) * HUD_LINE_H + HUD_FONT_H + 2 * HUD_MARGIN <= PAN
 #define CARD_ROW_H 14
 #define CARD_H (3 * CARD_ROW_H + 8)
 #define CARD_MARGIN 8
+// retrato do agente a esquerda e o texto depois dele; marcador 6x6 por camada (SC-01)
+#define CARD_PORTRAIT 24
+#define CARD_TEXT_X 46
+#define CARD_MARK 6
 
 // medidas do kit de interface, todas derivadas do painel e da fonte
 #define UI_PAD 8
@@ -1160,6 +1164,10 @@ void draw_scan_swatch(Species species, float x, float y)
 // a ficha precisa do y do agente na tela, definido mais abaixo com a camera
 float view_y(float y);
 
+// sprites dos agentes, definidos mais abaixo junto do desenho do mundo
+ALLEGRO_BITMAP* species_sprite(Species species, int variant);
+ALLEGRO_BITMAP* bacteria_sprite(Shape shape, int variant);
+
 // alvo da ficha do scanner: o agente sob o cursor ou a ultima leitura, enquanto
 // ela segue ativa e ao alcance do scanner; sem alvo, a ficha some (#243)
 int scan_card_target(bool* from_cursor)
@@ -1214,19 +1222,64 @@ float scan_card_y(int target)
     return (float)(PLAY_H - CARD_MARGIN - CARD_H);
 }
 
+// retrato 24x24 da ficha: silhueta antes da 1a leitura, como no mundo; a
+// bacteria lida usa o sprite cinza da forma, tingido pelo Gram na 2a (SC-01)
+void draw_scan_portrait(int target, float x, float y)
+{
+    ALLEGRO_BITMAP* bmp;
+    ALLEGRO_COLOR tint = al_map_rgb_f(1.0f, 1.0f, 1.0f);
+
+    if (agents[target].layers == 0)
+    {
+        bmp = silhouette_sprite;
+    }
+    else if (agents[target].species == SPECIES_GRAM_POSITIVE
+        || agents[target].species == SPECIES_GRAM_NEGATIVE)
+    {
+        bmp = bacteria_sprite(agents[target].shape, agents[target].variant);
+
+        if (agents[target].layers >= MAX_LAYERS)
+        {
+            tint = agents[target].species == SPECIES_GRAM_POSITIVE ? GRAM_POS_TINT : GRAM_NEG_TINT;
+        }
+    }
+    else
+    {
+        bmp = species_sprite(agents[target].species, agents[target].variant);
+    }
+
+    al_draw_tinted_scaled_bitmap(bmp, tint, 0.0f, 0.0f,
+        (float)al_get_bitmap_width(bmp), (float)al_get_bitmap_height(bmp),
+        x, y, (float)CARD_PORTRAIT, (float)CARD_PORTRAIT, 0);
+}
+
+// um marcador de camada: quadrado 6x6 e o rotulo; devolve o x depois dele
+float draw_scan_marker(float x, float y, ALLEGRO_COLOR color, bool lit, const char* label)
+{
+    al_draw_filled_rectangle(x, y + 1.0f, x + (float)CARD_MARK, y + 1.0f + (float)CARD_MARK, color);
+    al_draw_text(font, lit ? UI_TEXT : UI_DIM, x + (float)CARD_MARK + 4.0f, y, 0, label);
+
+    return x + (float)CARD_MARK + 4.0f + (float)al_get_text_width(font, label);
+}
+
 void draw_scan_card(int target, bool from_cursor, float card_y)
 {
-    int text_x = 36;
+    int text_x = CARD_TEXT_X;
     int row_state = (int)card_y + 6;
     int row_info = row_state + CARD_ROW_H;
     int row_action = row_info + CARD_ROW_H;
     const char* state;
     const char* category;
     const char* source;
+    const char* second_label;
     ALLEGRO_COLOR source_color;
+    ALLEGRO_COLOR second_color;
+    float marks_x;
+    bool is_bacteria = agents[target].species == SPECIES_GRAM_POSITIVE
+        || agents[target].species == SPECIES_GRAM_NEGATIVE;
 
     draw_panel(8.0f, card_y, (float)SCREEN_W - 16.0f, (float)CARD_H, UI_PANEL, UI_FRAME);
-    al_draw_bitmap(scanner_icon, 14.0f, (float)(row_state - 4), 0);
+    draw_scan_portrait(target, 14.0f, card_y + 5.0f);
 
     // de onde vem a leitura: o cursor manda, a ultima leitura e o retorno (#199)
     if (from_cursor)
@@ -1246,7 +1299,7 @@ void draw_scan_card(int target, bool from_cursor, float card_y)
     }
     else if (agents[target].layers < MAX_LAYERS)
     {
-        state = "Leitura 1 de 2";
+        state = "Leitura incompleta";
     }
     else
     {
@@ -1278,12 +1331,30 @@ void draw_scan_card(int target, bool from_cursor, float card_y)
     al_draw_text(font, UI_TEXT, (float)(SCREEN_W - 16), (float)row_state,
         ALLEGRO_ALIGN_RIGHT, category);
 
+    // marcadores das 2 camadas, encostados na categoria: forma acende na 1a;
+    // o 2o acende na 2a e fica verde com a identificacao (SC-11 a SC-13)
+    second_label = is_bacteria ? "Gram e espécie" : "estrutura";
+    marks_x = (float)(SCREEN_W - 16 - al_get_text_width(font, category) - 8)
+        - (float)(2 * (CARD_MARK + 4) + 8)
+        - (float)al_get_text_width(font, "forma") - (float)al_get_text_width(font, second_label);
+    second_color = UI_SLOT;
+
+    if (agents[target].layers >= MAX_LAYERS)
+    {
+        second_color = agents[target].identified ? UI_GREEN : UI_AMBER;
+    }
+
+    marks_x = draw_scan_marker(marks_x, (float)row_state,
+        agents[target].layers >= 1 ? UI_AMBER : UI_SLOT, agents[target].layers >= 1, "forma");
+    draw_scan_marker(marks_x + 8.0f, (float)row_state, second_color,
+        agents[target].layers >= MAX_LAYERS, second_label);
+
     if (agents[target].layers == 0)
     {
         al_draw_text(font, UI_TEXT, (float)text_x, (float)row_info, 0,
-            "Clique com o botão direito para escanear.");
+            "botão direito: escanear");
         al_draw_text(font, UI_DIM, (float)text_x, (float)row_action, 0,
-            "o scan revela os dados do agente");
+            "cada clique revela uma camada");
         return;
     }
 
@@ -1293,10 +1364,9 @@ void draw_scan_card(int target, bool from_cursor, float card_y)
         al_draw_text(font, UI_TEXT, (float)(text_x + 12), (float)row_info, 0,
             layer_one_text(target));
         al_draw_text(font, UI_DIM, (float)text_x, (float)row_action, 0,
-            agents[target].species == SPECIES_GRAM_POSITIVE
-                || agents[target].species == SPECIES_GRAM_NEGATIVE
-                ? "clique de novo para revelar a coloração"
-                : "clique de novo para concluir a leitura");
+            is_bacteria
+                ? "botão direito de novo: revela a coloração de Gram"
+                : "botão direito de novo: conclui a leitura");
         return;
     }
 

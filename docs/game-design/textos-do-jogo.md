@@ -13,18 +13,19 @@
 | FB-01c | prazo da 2ª dose venceu, Gram- | `tratamento incompleto: resistente à Dissolução` | 46 | #215 (FB2-06) |
 | FB-02 | antibiótico do tratamento numa resistente, Gram+ | `resistente à Ruptura: use a Reserva` | 35 | #215 |
 | FB-02b | antibiótico do tratamento numa resistente, Gram- | `resistente à Dissolução: use a Reserva` | 38 | #215 |
-| FB-03 | acerto que neutraliza, agente identificado | `ameaça neutralizada: +10 pontos` | 31 | já existia (#66) |
-| FB-04 | acerto que neutraliza sem identificação | `neutralizada sem identificar: o bônus de 9/9 se perdeu` | 54 | já existia (#67) |
+| FB-03 | acerto que elimina, agente identificado | `ameaça eliminada: +10 pontos` | 28 | já existia (#66); "eliminada" no lugar de "neutralizada" no redesenho de 28/11 (verbo único, dono em 26/11) |
+| FB-04 | acerto que elimina sem identificação | `eliminada sem identificar: o bônus de 9/9 se perdeu` | 51 | já existia (#67); "eliminada" no redesenho de 28/11 |
 | FB-05 | antibiótico errado depois de ler só a forma (camada 1) | `a forma não define o grupo: veja a coloração` | 44 | #215 (FB2-02) |
 | FB-06 | Dissolução em Gram+ | `a Gram+ não tem membrana externa para a Dissolução` | 50 | #215 (FB2-04) |
 | FB-07 | Ruptura em Gram- | `a membrana externa barrou a Ruptura` | 35 | #215 (FB2-03) |
-| FB-08 | célula do paciente ferida por qualquer arma (-15 vitais) | `você feriu uma célula do paciente: ela tem núcleo, não é bactéria` | 65 | #218 (FB2-01); substitui as três versões por arma |
+| FB-08 | célula do Léo ferida por qualquer arma (-15 vitais), Fases 1 e 2 (na 2 não há caminho) | `você feriu uma célula do Léo: ela tem núcleo, não é bactéria` | 60 | #218 (FB2-01); "do Léo" no redesenho de 28/11 |
+| FB-08b | célula do Léo ferida na Fase 3 (Perfuração ou Ruptura), escolhida por `phase_has_fungi()` | `você feriu uma célula do Léo: é célula do corpo, não fungo` | 58 | redesenho de 28/11: o fungo também tem núcleo |
 | FB-11 | Reserva elimina uma resistente | `a Reserva eliminou a resistente: +10 pontos` | 43 | #216 |
 | FB-12 | Reserva gasta numa bactéria comum | `Reserva numa bactéria comum: guarde para a resistente` | 53 | #216 (uso racional) |
 | FB-13 | disparo da Reserva sem carga | `Reserva esgotada` | 16 | #216 (FB2-07) |
 | FB-14 | uma bactéria se dividiu | `uma bactéria se dividiu em duas` | 31 | #217 (FB2-13) |
 | FB-10 | contato com invasor (bactéria ou vírus) | `contato com invasor: -10 de integridade` | 39 | #11; #218; #234 (duas barras) |
-| FB-15 | célula do paciente perdida (colonizada ou rompida) | `uma célula do paciente foi destruída: -20 vitais` | 47 | #234 |
+| FB-15 | célula do Léo perdida (colonizada ou rompida) | `uma célula do Léo foi destruída: -20 vitais` | 43 | #234; "do Léo" no redesenho de 28/11 |
 | FB-16 | toxina do coco acerta o Nanobô | `toxina do coco: -8 de integridade` | 33 | #236 |
 | FB-17 | a defesa destrói um projétil inimigo | `a defesa destruiu a toxina` | 26 | #236 |
 | FB-18 | primeira dose numa bactéria dentro do biofilme | `o biofilme protege a bactéria: ela pede mais uma dose` | 53 | #237 |
@@ -108,10 +109,10 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 | CT-17 | HUD, linha 0 | `pronto` / `recarga` / `travado` / `defesa` / `esgotada` | 6 / 7 / 7 / 6 / 8 | #199; #215 (trava); #216 (Reserva sem carga) |
 | CT-18 a CT-21 | — | `Nenhum alvo`, `Aproxime-se de um agente para escanear.`, `botão direito sobre o agente`, `Alvo neutralizado`, `Chegue perto de outro agente.` | — | saíram em 15/11 (#243): sem alvo, a ficha do scanner some; a dica do tutorial no mundo ensina o botão direito |
 | CT-22 | scanner, alvo no alcance | `Alvo detectado` | 14 | #199 |
-| CT-23 | scanner, alvo no alcance | `Clique com o botão direito para escanear.` | 41 | #199 |
-| CT-24 | scanner, alvo no alcance | `o scan revela os dados do agente` | 32 | #199, texto de 04/11 |
-| CT-25 | scanner, 1 camada | `Leitura 1 de 2` | 14 | #199 |
-| CT-26 | scanner, 1 camada, bactéria | `clique de novo para revelar a coloração` | 39 | #214 |
+| SC-03 | scanner, alvo no alcance, linha 1 | `botão direito: escanear` | 23 | redesenho de 28/11; substitui a CT-23 |
+| SC-04 | scanner, alvo no alcance, linha 2 | `cada clique revela uma camada` | 29 | redesenho de 28/11; substitui a CT-24 |
+| SC-02 | scanner, 1 camada | `Leitura incompleta` | 18 | redesenho de 28/11; substitui a CT-25 (os marcadores mostram o que falta) |
+| SC-05 | scanner, 1 camada, bactéria | `botão direito de novo: revela a coloração de Gram` | 49 | redesenho de 28/11; substitui a CT-26 |
 | CT-27 | scanner, identificado | `Identificação concluída` | 23 | #199 |
 | CT-29 | scanner, cabeçalho | `célula` / `bactéria` | 6 / 7 | #199 |
 | CT-30 | resultados | `resumo da fase` | 14 | #202 |
@@ -127,7 +128,10 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 | CT-38 a CT-41 | — | contadores e frase de revisão do painel de 04/11 | — | saíram com o relatório por objetivo (#210, #223); os textos atuais são as RR-01 a RR-10 da §2.2 |
 | CT-42 | — | `neutralize os vírus e vá ao destino` | — | Fase 2 mínima (04/11); encurtada em 15/11 (#243); saiu do HUD em 28/11 (HD-01): vira uma variante do aviso de objetivo OB-01 |
 | CT-42b | — | `elimine os fungos e vá ao destino` | — | #227; saiu do HUD em 28/11 (HD-01): vira uma variante do aviso de objetivo OB-01 |
-| CT-43 | scanner, camada 1, vírus | `clique de novo para concluir a leitura` | 38 | Fase 2 mínima (04/11) |
+| SC-06 | scanner, camada 1, vírus, célula e fungo | `botão direito de novo: conclui a leitura` | 40 | redesenho de 28/11; substitui a CT-43 |
+| SC-11 | scanner, marcador da camada 1 (linha de estado, à direita) | `forma` | 5 | redesenho de 28/11; quadrado 6×6 apagado `UI_SLOT`, aceso `UI_AMBER` |
+| SC-12 | scanner, marcador da camada 2, bactéria | `Gram e espécie` | 14 | redesenho de 28/11; aceso `UI_AMBER`, verde com a identificação |
+| SC-13 | scanner, marcador da camada 2, vírus, célula e fungo | `estrutura` | 9 | redesenho de 28/11; aceso `UI_AMBER`, verde com a identificação |
 | CT-44 | scanner, categoria | `vírus` / `célula infectada` (depois da leitura) | 5 / 16 | Fase 2 mínima (04/11); #87 |
 | CT-44b | scanner, categoria, fungo (levedura, bolor e esporo pousado) | `fungo` | 5 | #228 |
 | CT-45 | resultados, título | `Fase %d concluída` | 17 | Fase 2 mínima (04/11) |
@@ -175,7 +179,7 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 |---|---|---|---|---|
 | RT-01 | scanner, camada 1, coco | `forma: coco (esférica)` (sem amostra de cor) | 22 | #214, design 2.0 |
 | RT-02 | scanner, camada 1, bacilo | `forma: bacilo (bastão)` (sem amostra de cor) | 22 | #214, design 2.0 |
-| RT-03 | scanner, camada 1, célula | `célula do paciente · eucarionte` (sem amostra de cor) | 31 | #214, design 2.0 |
+| SC-08 | scanner, camada 1, célula | `célula do Léo · eucarionte` (sem amostra de cor) | 26 | #214; redesenho de 28/11; substitui a RT-03 |
 | RT-04 | scanner, camada 2, Gram+ (amostra roxa) | `Gram+ · parede grossa, sem membrana externa · %s` (`... · Streptococcus pyogenes`) | 46 + nome (até 68) | #214, design 2.0 |
 | RT-05 | scanner, camada 2, Gram- (amostra rosa) | `Gram- · parede fina sob membrana externa · %s` (`... · Pseudomonas aeruginosa`) | 43 + nome (até 65) | #214, design 2.0 |
 | RT-05c | scanner, camada 2, o `%s` da RT-04 e da RT-05 (`phases[]` em `src/entities/entities.c`) | Gram+: `Staphylococcus aureus` / `Streptococcus pyogenes` / `Clostridium tetani`; Gram-: `Moraxella catarrhalis` / `Escherichia coli` / `Pseudomonas aeruginosa` | 21 / 22 / 18; 21 / 16 / 22 | #214; registrado na #212 |
@@ -184,8 +188,8 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 | RT-07 | scanner, camada 2, revisão bactéria (Gram+ e Gram-) | `procarionte · sem núcleo: DNA solto no nucleoide` | 48 | #214, OA1 |
 | RT-08b | scanner, camada 2, revisão célula | `eucarionte: tem núcleo, como as células do corpo` | 48 | #214, OA1 |
 | RT-09 | scanner, camada 1, vírus livre | `vírus livre · deriva no muco` | 28 | #87 |
-| RT-10 | scanner, camada 2, vírus livre | `acelular: sem parede, ribossomos nem metabolismo` | 48 | #87 (OA6) |
-| RT-11 | scanner, camada 2, revisão, vírus livre | `só se multiplica dentro de uma célula do paciente` | 49 | #87 |
+| SC-09 | scanner, camada 2, vírus livre | `acelular: sem parede, ribossomos nem metabolismo próprios` | 57 | #87 (OA6); redesenho de 28/11 (decisão 6 de 25/11); substitui a RT-10 |
+| SC-10 | scanner, camada 2, revisão, vírus livre | `só se multiplica dentro de uma célula do Léo` | 44 | #87; redesenho de 28/11; substitui a RT-11 |
 | RT-12 | scanner, camada 1, célula infectada | `célula infectada · vírus lisogênico · %d s` (`... · 10 s`) / `célula infectada · eclipse: vai romper` | 42 / 38 | #87 |
 | RT-13 | scanner, camada 2, célula infectada | `lisogênico · %d s · o vírus espera dentro da célula` / `eclipse · o vírus fez cópias dentro da célula` | 51 / 45 | #87 (OA7) |
 | RT-14 | scanner, camada 2, revisão, célula infectada | `no lítico a célula se rompe e solta novos vírus` | 47 | #87 |
