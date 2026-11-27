@@ -137,6 +137,13 @@ ALLEGRO_BITMAP* impacts_sheet = NULL;
 #define SHOT_FRAME 12
 #define IMPACT_FRAME 24
 
+// mira: 3 quadros de 16x16 na ordem do AimFrame (#246)
+#define AIM_FRAME_SIZE 16
+
+// aviso de objetivo: placa de 16 px de altura e esmaecer no ultimo 0,5 s (#246)
+#define NOTICE_H 16
+#define NOTICE_FADE_TIME 0.5f
+
 // titulo do menu montado a partir da fonte, desenhado ampliado
 ALLEGRO_BITMAP* title_bitmap = NULL;
 
@@ -2326,13 +2333,28 @@ void skip_card_dialog()
     sync_card_dialog();
 }
 
-// uma linha com no maximo budget letras; o termo entre chaves sai em ambar
-int draw_dialog_line(const char* line, float x, float y, int budget)
+// cor com o alfa multiplicado (o blender do allegro usa alfa pre-multiplicado)
+ALLEGRO_COLOR faded_color(ALLEGRO_COLOR color, float alpha)
+{
+    float r, g, b, a;
+
+    al_unmap_rgba_f(color, &r, &g, &b, &a);
+    return al_map_rgba_f(r * alpha, g * alpha, b * alpha, a * alpha);
+}
+
+// uma linha com no maximo budget letras; o termo entre chaves sai em ambar,
+// com o mesmo alfa da cor base, e o resto na cor base
+int draw_dialog_line(const char* line, float x, float y, ALLEGRO_COLOR base, int budget)
 {
     char segment[192];
     int length = 0;
     bool term = false;
     const char* c;
+    float r, g, b, a;
+    ALLEGRO_COLOR term_color;
+
+    al_unmap_rgba_f(base, &r, &g, &b, &a);
+    term_color = faded_color(UI_AMBER, a);
 
     for (c = line; *c != '\0'; c++)
     {
@@ -2341,7 +2363,7 @@ int draw_dialog_line(const char* line, float x, float y, int budget)
         if (*c == '{' || *c == '}' || (lead && budget == 0))
         {
             segment[length] = '\0';
-            al_draw_text(font, term ? UI_AMBER : UI_TEXT, x, y, 0, segment);
+            al_draw_text(font, term ? term_color : base, x, y, 0, segment);
             x = x + (float)al_get_text_width(font, segment);
             length = 0;
 
@@ -2367,9 +2389,45 @@ int draw_dialog_line(const char* line, float x, float y, int budget)
     }
 
     segment[length] = '\0';
-    al_draw_text(font, term ? UI_AMBER : UI_TEXT, x, y, 0, segment);
+    al_draw_text(font, term ? term_color : base, x, y, 0, segment);
 
     return budget;
+}
+
+// linha inteira com {termo} em ambar fora da caixa (aviso de objetivo, como jogar)
+void draw_marked_text(float x, float y, ALLEGRO_COLOR base, const char* text)
+{
+    if (text == NULL)
+    {
+        return;
+    }
+
+    draw_dialog_line(text, x, y, base, dialog_visible_chars(text));
+}
+
+// largura em px da linha sem as chaves
+int marked_text_width(const char* text)
+{
+    char plain[192];
+    int length = 0;
+    const char* c;
+
+    if (text == NULL)
+    {
+        return 0;
+    }
+
+    for (c = text; *c != '\0' && length < (int)sizeof(plain) - 1; c++)
+    {
+        if (*c != '{' && *c != '}')
+        {
+            plain[length] = *c;
+            length = length + 1;
+        }
+    }
+
+    plain[length] = '\0';
+    return al_get_text_width(font, plain);
 }
 
 // idade da pagina desde que ficou completa (natural ou por toque): o triangulo pisca daqui
@@ -2433,7 +2491,7 @@ void draw_dialog(const DialogEntry* e, const DialogState* d)
         }
 
         budget = draw_dialog_line(text, (float)DIALOG_TEXT_X,
-            (float)(DIALOG_Y + DIALOG_PAD + DIALOG_LINE_H * (line + 1)), budget);
+            (float)(DIALOG_Y + DIALOG_PAD + DIALOG_LINE_H * (line + 1)), UI_TEXT, budget);
     }
 
     snprintf(counter, sizeof(counter), "%d/%d", d->page + 1, d->pages);
@@ -2828,6 +2886,82 @@ void draw_fungus_marks(int index)
     }
 
     draw_treatment_marks(index);
+}
+
+// cor de cada arma na mira, na ordem do Laser (#246)
+ALLEGRO_COLOR laser_color(Laser laser)
+{
+    switch (laser)
+    {
+    case LASER_GRAM_POSITIVE:
+        return UI_PURPLE;
+    case LASER_GRAM_NEGATIVE:
+        return UI_PINK;
+    case LASER_RESERVE:
+        return UI_AMBER;
+    case LASER_NEUTRALIZE:
+        return UI_CYAN;
+    case LASER_LYSE:
+        return UI_GREEN;
+    case LASER_PERFORATE:
+    default:
+        return UI_WARM;
+    }
+}
+
+// aviso de objetivo (OB-01..OB-04): placa no topo do mundo, esmaece no ultimo
+// 0,5 s; com a ficha do scanner em cima, desce para logo abaixo dela
+void draw_objective_notice(int card_target, float card_y)
+{
+    static const char* phase_goals[] = {
+        "Objetivo: elimine as bactérias e chegue ao {destino}",
+        "Objetivo: elimine os vírus e chegue ao {destino}",
+        "Objetivo: elimine os fungos e chegue ao {destino}"
+    };
+    float left = objective_notice_left();
+    float alpha = 1.0f;
+    int phase = current_phase() - 1;
+    const char* text;
+    int text_w;
+    float box_x;
+    float box_y = 8.0f;
+
+    // com a caixa do diario aberta o aviso espera ela fechar
+    if (left <= 0.0f || pending_card() != CARD_NONE)
+    {
+        return;
+    }
+
+    if (objective_notice_goal() == GOAL_DESTINATION)
+    {
+        text = "Ameaças eliminadas! Agora vá ao {destino}";
+    }
+    else if (phase >= 0 && phase < (int)(sizeof(phase_goals) / sizeof(phase_goals[0])))
+    {
+        text = phase_goals[phase];
+    }
+    else
+    {
+        return;
+    }
+
+    if (left < NOTICE_FADE_TIME)
+    {
+        alpha = left / NOTICE_FADE_TIME;
+    }
+
+    if (card_target != -1 && card_y < (float)PLAY_H / 2.0f)
+    {
+        box_y = card_y + (float)CARD_H + 8.0f;
+    }
+
+    text_w = marked_text_width(text);
+    box_x = floorf(((float)SCREEN_W - (float)text_w) / 2.0f);
+
+    draw_panel(box_x - UI_PAD, box_y, (float)text_w + 2.0f * UI_PAD, (float)NOTICE_H,
+        faded_color(UI_INK, alpha), faded_color(UI_AMBER, alpha));
+    draw_marked_text(box_x, box_y + (float)(NOTICE_H - HUD_FONT_H) / 2.0f,
+        faded_color(UI_WARM, alpha), text);
 }
 
 void draw_game()
@@ -3226,6 +3360,9 @@ void draw_game()
         al_draw_text(font, UI_WARM, box_x, box_y, 0, message);
     }
 
+    // o aviso de objetivo fica no topo; o feedback continua embaixo (#246)
+    draw_objective_notice(card_target, card_y);
+
     // marca o destino quando ele esta fora da faixa visivel (#19), sem passar
     // por baixo da ficha do scanner
     if (card_target == -1)
@@ -3247,18 +3384,21 @@ void draw_game()
         draw_scan_card(card_target, card_from_cursor, card_y);
     }
 
-    // mira livre: o cursor do sistema some na fase e vira esta marca (#198)
+    // mira livre: o cursor do sistema some na fase e vira esta marca (#198);
+    // o quadro diz se o tiro sai agora e a cor e a da arma (#246); com a caixa
+    // do diario aberta ela some
     aim_x = to_logical_x(mouse_x);
     aim_y = to_logical_y(mouse_y);
 
-    if (game_get_scene() == GAME_SCENE_GAME && aim_x >= 0.0f && aim_x < (float)SCREEN_W
+    if (game_get_scene() == GAME_SCENE_GAME && pending_card() == CARD_NONE
+        && aim_x >= 0.0f && aim_x < (float)SCREEN_W
         && aim_y >= 0.0f && aim_y < (float)PLAY_H)
     {
-        al_draw_circle(aim_x, aim_y, 5.0f, UI_CYAN, 1.0f);
-        al_draw_line(aim_x - 9.0f, aim_y + 0.5f, aim_x - 3.0f, aim_y + 0.5f, UI_CYAN, 1.0f);
-        al_draw_line(aim_x + 3.0f, aim_y + 0.5f, aim_x + 9.0f, aim_y + 0.5f, UI_CYAN, 1.0f);
-        al_draw_line(aim_x + 0.5f, aim_y - 9.0f, aim_x + 0.5f, aim_y - 3.0f, UI_CYAN, 1.0f);
-        al_draw_line(aim_x + 0.5f, aim_y + 3.0f, aim_x + 0.5f, aim_y + 9.0f, UI_CYAN, 1.0f);
+        al_draw_tinted_bitmap_region(aim_sprite, laser_color(player.laser),
+            (float)((int)aim_frame() * AIM_FRAME_SIZE), 0.0f,
+            (float)AIM_FRAME_SIZE, (float)AIM_FRAME_SIZE,
+            floorf(aim_x) - (float)AIM_FRAME_SIZE / 2.0f,
+            floorf(aim_y) - (float)AIM_FRAME_SIZE / 2.0f, 0);
     }
 
 #ifdef _DEBUG

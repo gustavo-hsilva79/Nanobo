@@ -138,6 +138,10 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 | CT-50 | — | `neutralize as bactérias e vá ao destino` | — | varredura de 05/11; encurtada em 15/11 (#243); saiu do HUD em 28/11 (HD-01): vira uma variante do aviso de objetivo OB-01 |
 | CT-51 | — | `vá ao destino` | — | varredura de 05/11; #243; saiu do HUD em 28/11 (HD-01): vira uma variante do aviso de objetivo OB-01 |
 | CT-52 | mundo / marca de destino | `destino` | 7 | varredura de 05/11 |
+| OB-01 | aviso de objetivo, topo do mundo (Fase 1) | `Objetivo: elimine as bactérias e chegue ao {destino}` | 50 | redesenho de 28/11; substitui a CT-50; `destino` em âmbar |
+| OB-02 | aviso de objetivo, topo do mundo (Fase 2) | `Objetivo: elimine os vírus e chegue ao {destino}` | 46 | redesenho de 28/11; substitui a CT-42; `destino` em âmbar |
+| OB-03 | aviso de objetivo, topo do mundo (Fase 3) | `Objetivo: elimine os fungos e chegue ao {destino}` | 47 | redesenho de 28/11; substitui a CT-42b; `destino` em âmbar |
+| OB-04 | aviso de objetivo, ameaças zeradas | `Ameaças eliminadas! Agora vá ao {destino}` | 39 | redesenho de 28/11; substitui a CT-51; `destino` em âmbar |
 | CT-53 | pausa, título | `PAUSE` | 5 | varredura de 05/11 |
 | CT-54 | pausa, rodapé | `esc para voltar` | 15 | varredura de 05/11 |
 | CT-55 | menu, botão | `INICIAR` | 7 | varredura de 05/11 |
