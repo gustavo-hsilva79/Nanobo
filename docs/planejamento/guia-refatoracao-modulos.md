@@ -7,6 +7,8 @@
 
 > **Nota de 06/11/2026:** a estrutura-alvo aprovada é a enxuta — as cinco casas continuam e a Wave 2 acrescenta só `src/ui/` e `src/render/`. A divisão do `gameplay.c` em quatro módulos e o `GameState` foram descartados; ver `docs/game-design/decisoes.md`, seção "Refatoração pós-entrega".
 
+> **Nota de 27/11/2026:** a estrutura de 06/11 foi revista e executada. O `main.c` ficou com o loop, a janela e o canvas, os recursos, a entrada, o áudio e o `render()`. O desenho saiu para `src/render/` (`world.c`, `feel.c` e `render.h`), e a interface para `src/ui/` (`layout.h`, `ui_kit.c`, `hud.c`, `screens.c` e `ui.h`). O ranking (arquivo) saiu de `gameplay.c` para `src/gameplay/ranking.c`. O tamanho da tela mora em `src/ui/layout.h`; `gameplay.h` só conhece a faixa do mundo (`VIEW_W`/`VIEW_H`). Ver `docs/game-design/decisoes.md`, seção "Resolução 1280×720 e módulos". A tabela abaixo descreve a divisão de outubro.
+
 ## Regra de ouro
 
 Cada coisa tem **uma casa só**:
@@ -133,7 +135,7 @@ Rode exatamente o que está em [qa-poc.md](qa-poc.md) e confira: `↑` `↓` `�
 
 Os arquivos `.c`/`.h` do projeto são **UTF-8**, e o build entrega essa codificação ao compilador: o `ItemDefinitionGroup` da plataforma x64 no `Nanobo.vcxproj` liga `/utf-8` ao lado do `/std:c11`. Sem a flag o MSVC lê o arquivo na codepage do sistema e cada acento chega à tela como dois caracteres (`cÃ©lula`), sem nenhum aviso de compilação.
 
-- Escreva os textos da interface em português correto, com acento: `bactéria`, `ameaça`, `VITÓRIA`, `NANOBÔ`.
+- Escreva os textos da interface em português correto, com acento: `bactéria`, `ameaça`, `Vitória`, `NANOBÔ` (maiúscula acentuada só no título em bitmap; ver as armadilhas do AGENTS.md).
 - Nenhum arquivo salvo em cp1252/ANSI: o sintoma é mojibake na tela.
 - A fonte embutida do Allegro desenha UTF-8 e conta a largura por caractere, então acentuar o texto não muda o layout.
 - A configuração `Release|Win32` legada não recebe a flag e não é usada.
