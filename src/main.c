@@ -56,16 +56,19 @@ _Static_assert((HUD_LINES - 1) * HUD_LINE_H + HUD_FONT_H + 2 * HUD_MARGIN <= PAN
 #define VITALS_LOW 30.0f
 #define TITLE_SCALE 3
 
-// paleta da interface: os mesmos hex do catalogo de recursos
-#define UI_INK       al_map_rgb(18, 26, 36)    // #121A24
-#define UI_PANEL     al_map_rgb(26, 38, 52)    // #1A2634
-#define UI_TEXT      al_map_rgb(242, 245, 247) // #F2F5F7
-#define UI_DIM       al_map_rgb(168, 184, 200) // #A8B8C8
-#define UI_AMBER     al_map_rgb(255, 210, 63)  // #FFD23F
+// paleta clinica em azul-petroleo (decisao do dono, 27/11): os hex de decisoes.md
+#define UI_INK       al_map_rgb(15, 25, 34)    // #0F1922
+#define UI_PANEL     al_map_rgb(22, 36, 47)    // #16242F
+#define UI_TEXT      al_map_rgb(238, 243, 246) // #EEF3F6
+#define UI_DIM       al_map_rgb(157, 178, 194) // #9DB2C2
+#define UI_AMBER     al_map_rgb(255, 201, 74)  // #FFC94A
 #define UI_PURPLE    al_map_rgb(190, 110, 240) // #BE6EF0
-#define UI_RED       al_map_rgb(240, 90, 90)   // #F05A5A
+#define UI_RED       al_map_rgb(255, 107, 107) // #FF6B6B
 #define UI_PINK      al_map_rgb(240, 130, 165) // Gram-: rosa da safranina (#214)
-#define UI_KEY       al_map_rgb(125, 249, 255) // tampa de tecla: nome e borda
+#define UI_KEY       al_map_rgb(111, 231, 242) // #6FE7F2, tampa de tecla: nome e borda
+
+// veu de tinta com alfa a (pre-multiplicado): escurece o fundo puxando para o petroleo
+#define UI_VEIL(a)   al_map_rgba_f(0.059f * (a), 0.098f * (a), 0.133f * (a), (a))
 
 // folga de cada lado do nome na tampa de tecla: [tecla] ocupa o texto + 4 px
 #define KEY_CAP_PAD 2
@@ -82,13 +85,13 @@ _Static_assert((HUD_LINES - 1) * HUD_LINE_H + HUD_FONT_H + 2 * HUD_MARGIN <= PAN
 // tingimento do sprite cinza da bacteria depois da camada 2 (#214)
 #define GRAM_POS_TINT   al_map_rgb_f(0.85f, 0.55f, 1.0f)
 #define GRAM_NEG_TINT   al_map_rgb_f(1.0f, 0.62f, 0.74f)
-#define UI_CYAN      al_map_rgb(125, 249, 255) // #7DF9FF
-#define UI_GREEN     al_map_rgb(110, 220, 120) // #6EDC78
-#define UI_WARM      al_map_rgb(255, 232, 148) // #FFE894
-#define UI_SLOT      al_map_rgb(52, 64, 78)    // slot vazio, sem brilho
-#define UI_HOVER     al_map_rgb(56, 46, 16)    // fundo do botao sob o cursor
-#define UI_LINE      al_map_rgb(48, 60, 74)    // separador e molduras discretas
-#define UI_FRAME     al_map_rgb(76, 92, 108)   // moldura de painel
+#define UI_CYAN      al_map_rgb(111, 231, 242) // #6FE7F2, o mesmo da UI_KEY
+#define UI_GREEN     al_map_rgb(95, 214, 160)  // #5FD6A0
+#define UI_WARM      al_map_rgb(255, 231, 168) // #FFE7A8
+#define UI_SLOT      al_map_rgb(37, 57, 74)    // #25394A, slot vazio, sem brilho
+#define UI_HOVER     al_map_rgb(58, 50, 24)    // #3A3218, fundo do botao sob o cursor
+#define UI_LINE      al_map_rgb(34, 52, 63)    // #22343F, separador e molduras discretas
+#define UI_FRAME     al_map_rgb(58, 85, 102)   // #3A5566, moldura de painel
 
 // volume dos efeitos e da musica, de 0 a 1 (#31, #32)
 #define SFX_GAIN 0.55f
@@ -1533,7 +1536,7 @@ void draw_menu()
     if (ranking_panel_open)
     {
         al_draw_filled_rectangle(0.0f, 0.0f, (float)SCREEN_W, (float)SCREEN_H,
-            al_map_rgba_f(0.0f, 0.0f, 0.0f, 0.85f));
+            UI_VEIL(0.85f));
         // painel de 184 px: termina em 244 e o rodape fica acima dos botoes (y 261)
         draw_ranking_panel(177.0f, 60.0f, 286.0f, -1, true);
         draw_marked_text_aligned(SCREEN_W / 2, 250, UI_DIM, ALLEGRO_ALIGN_CENTRE, "[enter] ou [esc] fecha");
@@ -1860,7 +1863,7 @@ void draw_feel_world()
         float r = (float)PLAYER_RADIUS + t * ((float)SCAN_RANGE - (float)PLAYER_RADIUS);
 
         al_draw_circle(view_x(feel_ring_x), view_y(feel_ring_y), r,
-            al_map_rgba_f(0.49f * a, 0.98f * a, 1.0f * a, a), 2.0f);
+            al_map_rgba_f(0.435f * a, 0.906f * a, 0.949f * a, a), 2.0f);
     }
 
     // impacto do resultado: dose certa, sem efeito ou eliminado, 4 quadros (#242)
@@ -1891,7 +1894,7 @@ void draw_feel_world()
         a = feel_particles[i].life / FEEL_PARTICLE_TIME;
         al_draw_filled_rectangle(view_x(feel_particles[i].x) - 1.0f, view_y(feel_particles[i].y) - 1.0f,
             view_x(feel_particles[i].x) + 1.0f, view_y(feel_particles[i].y) + 1.0f,
-            al_map_rgba_f(1.0f * a, 0.91f * a, 0.58f * a, a));
+            al_map_rgba_f(1.0f * a, 0.906f * a, 0.659f * a, a));
     }
 
     if (feel_pop_time > 0.0f)
@@ -1900,7 +1903,7 @@ void draw_feel_world()
         float rise = (1.0f - a) * 24.0f;
 
         snprintf(pop, sizeof(pop), "+%d", SCORE_PER_THREAT);
-        al_draw_text(font, al_map_rgba_f(0.43f * a, 0.86f * a, 0.47f * a, a),
+        al_draw_text(font, al_map_rgba_f(0.373f * a, 0.839f * a, 0.627f * a, a),
             view_x(feel_pop_x), view_y(feel_pop_y) - (float)AGENT_RADIUS - 12.0f - rise,
             ALLEGRO_ALIGN_CENTRE, pop);
     }
@@ -2493,7 +2496,7 @@ void draw_dialog(const DialogEntry* e, const DialogState* d)
     float footer_y = (float)(DIALOG_Y + DIALOG_H - DIALOG_PAD - 8);
 
     al_draw_filled_rectangle(0.0f, 0.0f, (float)SCREEN_W, (float)SCREEN_H,
-        al_map_rgba_f(0.0f, 0.0f, 0.0f, 0.6f));
+        UI_VEIL(0.6f));
     draw_panel((float)DIALOG_X, (float)DIALOG_Y, (float)DIALOG_W, (float)DIALOG_H, UI_INK, UI_AMBER);
 
     // retrato: linha de frente do spritesheet, quadro ocioso 0
@@ -3268,8 +3271,9 @@ void draw_game()
         float hx = floorf(view_x(agents[tutorial_hint_target()].x) - (float)hint_w / 2.0f);
         float hy = view_y(agents[tutorial_hint_target()].y) - agent_radius(tutorial_hint_target()) - 20.0f;
 
-        al_draw_filled_rectangle(hx - 4.0f, hy - 3.0f, hx + (float)hint_w + 4.0f, hy + 11.0f, UI_INK);
-        al_draw_rectangle(hx - 3.5f, hy - 2.5f, hx + (float)hint_w + 3.5f, hy + 10.5f, UI_CYAN, 1.0f);
+        // 2 px a mais em cima e embaixo: a tampa de tecla de 12 px nao encosta na borda
+        al_draw_filled_rectangle(hx - 4.0f, hy - 5.0f, hx + (float)hint_w + 4.0f, hy + 13.0f, UI_INK);
+        al_draw_rectangle(hx - 3.5f, hy - 4.5f, hx + (float)hint_w + 3.5f, hy + 12.5f, UI_CYAN, 1.0f);
         draw_marked_text(hx, hy, UI_CYAN, hint);
     }
 
@@ -3397,7 +3401,7 @@ void draw_game()
             box_y + 12.0f, UI_INK);
         al_draw_rectangle(box_x - UI_PAD + 0.5f, box_y - 4.0f + 0.5f,
             box_x + (float)text_w + UI_PAD - 0.5f, box_y + 12.0f - 0.5f,
-            al_map_rgb(120, 100, 60), 1.0f);
+            UI_FRAME, 1.0f);
         al_draw_text(font, UI_WARM, box_x, box_y, 0, message);
     }
 
@@ -3510,7 +3514,7 @@ void draw_pause()
 
     // veu mais escuro que o antigo: o painel maior precisa de contraste
     al_draw_filled_rectangle(0.0f, 0.0f, (float)SCREEN_W, (float)SCREEN_H,
-        al_map_rgba(0, 0, 0, 210));
+        UI_VEIL(210.0f / 255.0f));
     draw_panel(80.0f, 70.0f, 480.0f, 216.0f, UI_INK, UI_FRAME);
     al_draw_text(font, UI_TEXT, SCREEN_W / 2, 82, ALLEGRO_ALIGN_CENTRE, "PAUSA");
     draw_rule((float)SCREEN_W / 2, 96.0f, 200.0f, UI_FRAME);
@@ -3659,7 +3663,7 @@ void draw_howto()
 
     // painel central quase opaco (cor pre-multiplicada): o radar do fundo aparece de leve
     draw_panel(16.0f, HOWTO_PANEL_Y, (float)SCREEN_W - 32.0f, 144.0f,
-        al_map_rgba(16, 23, 32, 230), UI_FRAME);
+        UI_VEIL(230.0f / 255.0f), UI_FRAME);
     al_draw_text(font, UI_AMBER, HOWTO_TEXT_X, HOWTO_PANEL_Y + 12.0f, 0, titles[page]);
     snprintf(counter, sizeof(counter), "%d/%d", page + 1, HOWTO_PAGES);
     al_draw_text(font, UI_DIM, (float)SCREEN_W - 24.0f, HOWTO_PANEL_Y + 12.0f, ALLEGRO_ALIGN_RIGHT, counter);
@@ -3809,7 +3813,7 @@ void draw_results()
 
     draw_phase_map(-floorf(camera.x), -floorf(map_y), (float)SCREEN_H);
     al_draw_filled_rectangle(0.0f, 0.0f, (float)SCREEN_W, (float)SCREEN_H,
-        al_map_rgba(0, 0, 0, 160));
+        UI_VEIL(160.0f / 255.0f));
 
     snprintf(line, sizeof(line), "Fase %d concluída", current_phase());
     al_draw_text(font, UI_TEXT, SCREEN_W / 2, 24, ALLEGRO_ALIGN_CENTRE, line);
@@ -4032,7 +4036,7 @@ void draw_victory()
     {
         al_draw_bitmap(hospital_victory, 0.0f, 0.0f, 0);
     }
-    al_draw_filled_rectangle(0.0f, 0.0f, (float)SCREEN_W, (float)SCREEN_H, al_map_rgba(0, 0, 0, 150));
+    al_draw_filled_rectangle(0.0f, 0.0f, (float)SCREEN_W, (float)SCREEN_H, UI_VEIL(150.0f / 255.0f));
 
     al_draw_text(font, UI_TEXT, SCREEN_W / 2, 18, ALLEGRO_ALIGN_CENTRE, "Vitória");
     draw_rule((float)SCREEN_W / 2, 32.0f, 200.0f, UI_FRAME);
@@ -4124,10 +4128,10 @@ void draw_game_over()
     {
         al_draw_bitmap(hospital_game_over, 0.0f, 0.0f, 0);
     }
-    al_draw_filled_rectangle(0.0f, 0.0f, (float)SCREEN_W, (float)SCREEN_H, al_map_rgba(0, 0, 0, 100));
+    al_draw_filled_rectangle(0.0f, 0.0f, (float)SCREEN_W, (float)SCREEN_H, UI_VEIL(100.0f / 255.0f));
 
     al_draw_text(font, UI_RED, SCREEN_W / 2, 30, ALLEGRO_ALIGN_CENTRE, "GAME OVER");
-    draw_rule((float)SCREEN_W / 2, 44.0f, 200.0f, al_map_rgb(150, 60, 60));
+    draw_rule((float)SCREEN_W / 2, 44.0f, 200.0f, UI_RED);
     // game over da narrativa (#244): a equipe retira o Nanobô e diz por que;
     // o Leo nao morre, segue no tratamento convencional
     al_draw_text(font, UI_TEXT, SCREEN_W / 2, 52, ALLEGRO_ALIGN_CENTRE,
