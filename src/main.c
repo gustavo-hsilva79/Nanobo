@@ -228,6 +228,55 @@ bool load_phase_map(int phase)
     return true;
 }
 
+// fundos de tela de 640x360: so o conjunto da cena atual fica na memoria,
+// como o mapa da fase (cada um custa muito mais que a textura bruta)
+static const char* const BG_MENU = "assets/backgrounds/fundo_menu.png";
+static const char* const BG_CELLS = "assets/backgrounds/hemacias_deriva.png";
+static const char* const BG_HOWTO = "assets/backgrounds/fundo_como_jogar.png";
+static const char* const BG_OPENING = "assets/backgrounds/hospital_abertura.png";
+static const char* const BG_VICTORY = "assets/backgrounds/hospital_vitoria.png";
+static const char* const BG_GAME_OVER = "assets/backgrounds/hospital_gameover.png";
+
+// na carga so confere que os seis arquivos existem; faltar um continua fatal
+bool screen_backgrounds_exist(void)
+{
+    return al_filename_exists(BG_MENU) && al_filename_exists(BG_CELLS)
+        && al_filename_exists(BG_HOWTO) && al_filename_exists(BG_OPENING)
+        && al_filename_exists(BG_VICTORY) && al_filename_exists(BG_GAME_OVER);
+}
+
+// libera o fundo que a cena nao quer (fase 0) ou abre o que ela quer (fase 1)
+static void sync_one_background(ALLEGRO_BITMAP** slot, const char* path, bool wanted, bool loading)
+{
+    if (!loading && !wanted && *slot)
+    {
+        al_destroy_bitmap(*slot);
+        *slot = NULL;
+    }
+    else if (loading && wanted && !*slot)
+    {
+        *slot = al_load_bitmap(path);
+    }
+}
+
+// libera primeiro o que sai e so depois abre o que entra (um conjunto por vez)
+void sync_screen_backgrounds(GameScene scene)
+{
+    int pass;
+
+    for (pass = 0; pass < 2; pass++)
+    {
+        bool loading = (pass == 1);
+
+        sync_one_background(&menu_background, BG_MENU, scene == GAME_SCENE_MENU, loading);
+        sync_one_background(&menu_cells, BG_CELLS, scene == GAME_SCENE_MENU, loading);
+        sync_one_background(&howto_background, BG_HOWTO, scene == GAME_SCENE_HOWTO, loading);
+        sync_one_background(&hospital_opening, BG_OPENING, scene == GAME_SCENE_BRIEFING, loading);
+        sync_one_background(&hospital_victory, BG_VICTORY, scene == GAME_SCENE_VICTORY, loading);
+        sync_one_background(&hospital_game_over, BG_GAME_OVER, scene == GAME_SCENE_GAME_OVER, loading);
+    }
+}
+
 // audio: opcional, o jogo abre mudo quando nao ha placa de som (#31)
 bool audio_ready = false;
 ALLEGRO_SAMPLE* sfx_scan = NULL;
@@ -555,13 +604,7 @@ bool load_resources()
     ecg_bar = al_load_bitmap("assets/sprites/barra_ecg.png");
     bar_segment = al_load_bitmap("assets/sprites/segmento.png");
     aim_sprite = al_load_bitmap("assets/sprites/mira.png");
-    menu_background = al_load_bitmap("assets/backgrounds/fundo_menu.png");
-    menu_cells = al_load_bitmap("assets/backgrounds/hemacias_deriva.png");
-    howto_background = al_load_bitmap("assets/backgrounds/fundo_como_jogar.png");
-    hospital_opening = al_load_bitmap("assets/backgrounds/hospital_abertura.png");
-    hospital_victory = al_load_bitmap("assets/backgrounds/hospital_vitoria.png");
-    hospital_game_over = al_load_bitmap("assets/backgrounds/hospital_gameover.png");
-    if (!nanobo_icon || !heart_pulse || !battery_bar || !ecg_bar || !bar_segment || !aim_sprite || !menu_background || !menu_cells || !howto_background || !hospital_opening || !hospital_victory || !hospital_game_over)
+    if (!nanobo_icon || !heart_pulse || !battery_bar || !ecg_bar || !bar_segment || !aim_sprite || !screen_backgrounds_exist())
     {
         printf("couldn't load interface art\n");
         return false;
@@ -2577,7 +2620,10 @@ void press_opening()
 void draw_briefing()
 {
     // o quarto do Léo atrás da ficha; o véu de 60% vem do draw_dialog
-    al_draw_bitmap(hospital_opening, 0.0f, 0.0f, 0);
+    if (hospital_opening)
+    {
+        al_draw_bitmap(hospital_opening, 0.0f, 0.0f, 0);
+    }
     draw_dialog(&opening_entries[opening_entry], &opening_dialog);
 
     al_draw_text(font, UI_DIM, SCREEN_W / 2, 24, ALLEGRO_ALIGN_CENTRE,
@@ -3568,7 +3614,10 @@ void draw_howto()
         howto_page = 0;
     }
 
-    al_draw_bitmap(howto_background, 0.0f, 0.0f, 0);
+    if (howto_background)
+    {
+        al_draw_bitmap(howto_background, 0.0f, 0.0f, 0);
+    }
     al_draw_text(font, UI_TEXT, SCREEN_W / 2, 16, ALLEGRO_ALIGN_CENTRE, "Como jogar");
     draw_rule((float)SCREEN_W / 2, 30.0f, 200.0f, UI_FRAME);
 
@@ -3943,7 +3992,10 @@ void draw_victory()
     float right = 302.0f;
 
     // o quarto de dia, leito arrumado: o Leo foi para casa; o veu segura o texto
-    al_draw_bitmap(hospital_victory, 0.0f, 0.0f, 0);
+    if (hospital_victory)
+    {
+        al_draw_bitmap(hospital_victory, 0.0f, 0.0f, 0);
+    }
     al_draw_filled_rectangle(0.0f, 0.0f, (float)SCREEN_W, (float)SCREEN_H, al_map_rgba(0, 0, 0, 150));
 
     al_draw_text(font, UI_TEXT, SCREEN_W / 2, 18, ALLEGRO_ALIGN_CENTRE, "Vitória");
@@ -4032,7 +4084,10 @@ void draw_game_over()
     float right = (float)SCREEN_W - 152.0f;
 
     // o quarto em luz baixa, monitor estavel: o Leo segue internado
-    al_draw_bitmap(hospital_game_over, 0.0f, 0.0f, 0);
+    if (hospital_game_over)
+    {
+        al_draw_bitmap(hospital_game_over, 0.0f, 0.0f, 0);
+    }
     al_draw_filled_rectangle(0.0f, 0.0f, (float)SCREEN_W, (float)SCREEN_H, al_map_rgba(0, 0, 0, 100));
 
     al_draw_text(font, UI_RED, SCREEN_W / 2, 30, ALLEGRO_ALIGN_CENTRE, "GAME OVER");
@@ -4092,6 +4147,7 @@ void render()
     }
 
     update_screen_fit();
+    sync_screen_backgrounds(scene);
     al_set_target_bitmap(canvas);
     al_clear_to_color(al_map_rgb(0, 0, 0));
 
