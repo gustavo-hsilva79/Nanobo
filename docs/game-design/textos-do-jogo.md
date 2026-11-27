@@ -84,7 +84,7 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 
 | ID | Local | Texto | Caracteres | Origem |
 |---|---|---|---|---|
-| CT-01 | menu, título do painel | `Como jogar` | 10 | #201 |
+| CT-01 | menu, título do painel; título da cena como jogar (HW-00, y 16) | `Como jogar` | 10 | #201; cena própria em 28/11 |
 | CT-02 | menu, grupo 1 | `Movimentação` | 12 | #201 |
 | CT-03 | menu, grupo 1 | `setas ou WASD mover · cursor mirar` | 34 | #201 |
 | CT-04 | menu, grupo 2 | `Combate` | 7 | #201 |
@@ -158,6 +158,7 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 | CT-62 | game over, subtítulo | `os sinais vitais caíram demais: a equipe retirou o Nanobô` (vitais em 0) / `o Nanobô foi danificado: a equipe o retirou do corpo` (integridade em 0) | 57 / 52 | #218; #234; #244 |
 | CT-63 | game over, rodapé | `enter também reinicia` | 21 | varredura de 05/11 |
 | CT-64 | menu, botão | `RECORDES` | 8 | #197 |
+| MN-03 | menu, botão do meio (entre INICIAR e RECORDES) / pausa, segundo botão | `COMO JOGAR` | 10 | redesenho de 28/11 (MN-01); abre a cena como jogar |
 | CT-65 | painel do Top 10, título | `Top 10` | 6 | #197 |
 | CT-66 | painel do Top 10, vazio | `nenhum recorde ainda` / `vença uma partida` | 20 / 17 | #197 |
 | CT-67 | painel do Top 10 no menu, rodapé | `enter ou esc fecha` | 18 | #197 |
@@ -172,6 +173,44 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 - **Resultado esperado:** `0 literais sem linha no registro, 0 linhas sem texto no codigo`, com código de saída 0.
 - **Fica de fora:** o que não é desenhado (mensagens de `_Static_assert`, `printf` de erro, caminhos e o formato do arquivo do ranking) e as linhas de QA sob `#ifdef _DEBUG`. O título `NANOBÔ` é o caso especial da §2.1, um bitmap montado por `make_text_bitmap`.
 - **Histórico:** a varredura de 05/11 foi manual e trouxe a CT-48 a CT-63. A de 15/11 tirou a CT-38 a CT-41, que tinham saído do código, e registrou os nomes das bactérias (RT-05c).
+
+### Como jogar (cena `HOWTO`, redesenho de 28/11)
+
+Cena própria, aberta pelo botão COMO JOGAR (MN-03) do menu e da pausa; volta para a cena de origem. Título CT-01 em y 16; painel em y 104 com o título da página em `UI_AMBER` em x 120, o contador à direita (x 616) e até 6 linhas em `UI_TEXT` a partir de x 120, a cada 16 px (limite de 60 caracteres, 480 px). `{termo}` sai em âmbar (`draw_marked_text`). Rodapé centrado em y 336.
+
+| ID | Local | Texto | Caracteres | Origem |
+|---|---|---|---|---|
+| HW-00a | painel, contador à direita | `%d/%d` (`1/4`) | 3 | redesenho de 28/11 |
+| HW-00b | rodapé, páginas 1 a 3 | `enter, espaço ou clique avança · setas trocam · esc volta` | 57 | redesenho de 28/11 |
+| HW-00c | rodapé, página 4 | `enter, espaço ou clique volta · setas trocam · esc volta` | 56 | redesenho de 28/11 |
+| HW-01 | página 1, título | `Mover e mirar` | 13 | redesenho de 28/11 |
+| HW-01a | página 1, linha 1 | `Setas ou WASD: mover o Nanobô.` | 30 | redesenho de 28/11 |
+| HW-01b | página 1, linha 2 | `Mouse: mirar. Botão esquerdo: disparar a arma.` | 46 | redesenho de 28/11 |
+| HW-01c | página 1, linha 3 | `Botão direito: escanear o alvo sob o cursor.` | 44 | redesenho de 28/11 |
+| HW-01d | página 1, linha 4 | `X: defesa por 2 s. Contato não fere; toxinas, vírus e` | 53 | redesenho de 28/11 |
+| HW-01e | página 1, linha 5 | `esporos em voo se desfazem. A hifa passa. Recarga: 3 s.` | 55 | redesenho de 28/11 |
+| HW-01f | página 1, linha 6 | `Esc: pausa. F11: tela cheia.` | 28 | redesenho de 28/11 |
+| HW-02 | página 2, título | `Ler com o scanner` | 17 | redesenho de 28/11 |
+| HW-02a | página 2, linha 1 | `Botão direito num agente: eu leio uma camada por vez.` | 53 | redesenho de 28/11 |
+| HW-02b | página 2, linha 2 | `Camada 1: a {forma}. Coco, bacilo, levedura, bolor...` | 51 | redesenho de 28/11; `forma` em âmbar |
+| HW-02c | página 2, linha 3 | `Camada 2: a {coloração de Gram} e o nome da espécie.` | 50 | redesenho de 28/11; `coloração de Gram` em âmbar |
+| HW-02d | página 2, linha 4 | `A forma não basta: existe coco Gram+ e coco Gram-.` | 50 | redesenho de 28/11 |
+| HW-02e | página 2, linha 5 | `Com as duas camadas lidas, o agente está identificado.` | 54 | redesenho de 28/11 |
+| HW-02f | página 2, linha 6 | `Identificar todos os agentes da fase vale +15 pontos.` | 53 | redesenho de 28/11; o 15 é o `IDENTIFICATION_BONUS` |
+| HW-03 | página 3, título | `Armas` | 5 | redesenho de 28/11 |
+| HW-03a | página 3, linha 1 | `1, 2, 3 ou roda do mouse: trocar de arma.` | 41 | redesenho de 28/11 |
+| HW-03b | página 3, linha 2 | `Fase 1: 1 Ruptura · 2 Dissolução · 3 Reserva (2 cargas)` | 55 | redesenho de 28/11 |
+| HW-03c | página 3, linha 3 | `Cada bactéria pede 2 doses, a segunda em até 6 segundos.` | 56 | redesenho de 28/11 |
+| HW-03d | página 3, linha 4 | `Fase 2: 1 Neutralização (vírus livre) · 2 Ataque T` | 50 | redesenho de 28/11 |
+| HW-03e | página 3, linha 5 | `Fase 3: 1 Perfuração · 2 Ruptura (não age em fungo)` | 51 | redesenho de 28/11 |
+| HW-03f | página 3, linha 6 | `Regra do jogo: as armas se inspiram em remédios reais.` | 54 | redesenho de 28/11 |
+| HW-04 | página 4, título | `As duas barras` | 14 | redesenho de 28/11 |
+| HW-04a | página 4, linha 1 | `Cabeça de robô: a minha {Integridade}. Ela cai quando` | 51 | redesenho de 28/11; `Integridade` em âmbar |
+| HW-04b | página 4, linha 2 | `um invasor, uma toxina, a hifa ou a nuvem me acertam.` | 53 | redesenho de 28/11 |
+| HW-04c | página 4, linha 3 | `Coração: os {Vitais} do Léo. Caem quando uma célula dele` | 54 | redesenho de 28/11; `Vitais` em âmbar |
+| HW-04d | página 4, linha 4 | `é destruída ou atingida por engano, e no Ataque T.` | 50 | redesenho de 28/11 |
+| HW-04e | página 4, linha 5 | `Se uma das barras zera, a equipe me retira do corpo.` | 52 | redesenho de 28/11 |
+| HW-04f | página 4, linha 6 | `Nova fase: Integridade cheia e Vitais de no mínimo 60.` | 54 | redesenho de 28/11 |
 
 ### Textos do scanner (`src/main.c` + `src/gameplay/gameplay.c`)
 

@@ -260,6 +260,10 @@ float mouse_y = 0.0f;
 int ui_focus = 0;
 void start_opening(void);
 
+// como jogar: pagina atual (0 a 3), zerada a cada entrada na cena
+#define HOWTO_PAGES 4
+int howto_page = 0;
+
 // Top 10 na interface (#81, #197): entrada de nome na Vitoria, painel do
 // ranking no menu e destaque do registro novo; nenhuma cena nova
 bool name_entry_active = false;
@@ -979,11 +983,13 @@ int button_hit(const UiButton* button, float x, float y)
 const UiButton* screen_buttons(int* count)
 {
     static const UiButton menu_items[] = {
-        { (float)BUTTON_X - 90.0f, (float)BUTTON_Y, (float)BUTTON_W, (float)BUTTON_H, "INICIAR" },
-        { (float)BUTTON_X + 90.0f, (float)BUTTON_Y, (float)BUTTON_W, (float)BUTTON_H, "RECORDES" }
+        { (float)BUTTON_X - 180.0f, (float)BUTTON_Y, (float)BUTTON_W, (float)BUTTON_H, "INICIAR" },
+        { (float)BUTTON_X, (float)BUTTON_Y, (float)BUTTON_W, (float)BUTTON_H, "COMO JOGAR" },
+        { (float)BUTTON_X + 180.0f, (float)BUTTON_Y, (float)BUTTON_W, (float)BUTTON_H, "RECORDES" }
     };
     static const UiButton pause_items[] = {
-        { 240.0f, 170.0f, 160.0f, 28.0f, "CONTINUAR" }
+        { 240.0f, 152.0f, 160.0f, 28.0f, "CONTINUAR" },
+        { 240.0f, 188.0f, 160.0f, 28.0f, "COMO JOGAR" }
     };
     static const UiButton results_items[] = {
         { 240.0f, 256.0f, 160.0f, 28.0f, "CONTINUAR" }
@@ -1000,10 +1006,11 @@ const UiButton* screen_buttons(int* count)
     switch (game_get_scene())
     {
         case GAME_SCENE_MENU:
-            *count = 2;
+            *count = 3;
             return menu_items;
 
         case GAME_SCENE_PAUSE:
+            *count = 2;
             return pause_items;
 
         case GAME_SCENE_RESULTS:
@@ -1074,8 +1081,16 @@ void activate_button(int index)
     switch (game_get_scene())
     {
         case GAME_SCENE_MENU:
-            // RECORDES abre o painel do Top 10 por cima do menu (#197)
+            // COMO JOGAR abre a cena propria, sempre na primeira pagina
             if (index == 1)
+            {
+                howto_page = 0;
+                game_set_scene(GAME_SCENE_HOWTO);
+                break;
+            }
+
+            // RECORDES abre o painel do Top 10 por cima do menu (#197)
+            if (index == 2)
             {
                 ranking_panel_open = true;
                 break;
@@ -1087,6 +1102,14 @@ void activate_button(int index)
             break;
 
         case GAME_SCENE_PAUSE:
+            // COMO JOGAR: a partida fica parada e a volta cai na pausa
+            if (index == 1)
+            {
+                howto_page = 0;
+                game_set_scene(GAME_SCENE_HOWTO);
+                break;
+            }
+
             game_set_scene(GAME_SCENE_GAME);
             break;
 
@@ -3519,10 +3542,155 @@ void draw_pause()
 
     al_draw_filled_rectangle(0.0f, 0.0f, (float)SCREEN_W, (float)SCREEN_H,
         al_map_rgba(0, 0, 0, 180));
-    draw_panel(190.0f, 130.0f, 260.0f, 100.0f, UI_INK, UI_FRAME);
-    al_draw_text(font, UI_TEXT, SCREEN_W / 2, 142, ALLEGRO_ALIGN_CENTRE, "PAUSE");
+    draw_panel(190.0f, 120.0f, 260.0f, 132.0f, UI_INK, UI_FRAME);
+    al_draw_text(font, UI_TEXT, SCREEN_W / 2, 132, ALLEGRO_ALIGN_CENTRE, "PAUSE");
     draw_buttons(buttons, count);
-    al_draw_text(font, UI_DIM, SCREEN_W / 2, 208, ALLEGRO_ALIGN_CENTRE, "esc para voltar");
+    al_draw_text(font, UI_DIM, SCREEN_W / 2, 230, ALLEGRO_ALIGN_CENTRE, "esc para voltar");
+}
+
+// ---------------------------------------------------------------
+// como jogar: 4 paginas, abre do menu e da pausa
+// ---------------------------------------------------------------
+
+#define HOWTO_PANEL_Y 104.0f
+#define HOWTO_ICON_X  40.0f   // coluna de icone 48x48 entre x 24 e 104
+#define HOWTO_TEXT_X  120.0f
+#define HOWTO_LINES   6
+
+// volta para a cena de onde o como jogar abriu (menu ou pausa)
+void howto_return()
+{
+    game_set_scene(game_howto_origin());
+}
+
+// enter, espaco ou clique: avanca; na ultima pagina, volta
+void howto_advance()
+{
+    if (howto_page >= HOWTO_PAGES - 1)
+    {
+        howto_return();
+        return;
+    }
+
+    howto_page++;
+}
+
+// coluna de icone da pagina, em 48x48
+void draw_howto_icon(float x, float y)
+{
+    float row_y;
+    int frame;
+
+    if (howto_page == 0)
+    {
+        // o Nanobo de frente, quadro parado 0
+        al_draw_bitmap_region(nanobo, 0.0f, (float)(PLAYER_FACING_DOWN * PLAYER_FRAME),
+            (float)PLAYER_FRAME, (float)PLAYER_FRAME, x, y, 0);
+    }
+    else if (howto_page == 1)
+    {
+        // scanner x2 e os dois marcadores da ficha: camada 1 lida, camada 2 vazia
+        al_draw_scaled_bitmap(scanner_icon, 0.0f, 0.0f, 16.0f, 16.0f, x + 8.0f, y, 32.0f, 32.0f, 0);
+        al_draw_filled_rectangle(x + 15.0f, y + 38.0f, x + 15.0f + (float)CARD_MARK, y + 38.0f + (float)CARD_MARK, UI_AMBER);
+        al_draw_filled_rectangle(x + 27.0f, y + 38.0f, x + 27.0f + (float)CARD_MARK, y + 38.0f + (float)CARD_MARK, UI_SLOT);
+    }
+    else if (howto_page == 2)
+    {
+        // as 6 armas: fase 1 em cima, fases 2 e 3 embaixo
+        row_y = y + 4.0f;
+        al_draw_bitmap(ruptura_icon, x, row_y, 0);
+        al_draw_bitmap(dissolucao_icon, x + 16.0f, row_y, 0);
+        al_draw_bitmap(reserve_icon, x + 32.0f, row_y, 0);
+        row_y = y + 28.0f;
+        al_draw_bitmap(antibody_icon, x, row_y, 0);
+        al_draw_bitmap(lyse_icon, x + 16.0f, row_y, 0);
+        al_draw_bitmap(perforate_icon, x + 32.0f, row_y, 0);
+    }
+    else
+    {
+        // cabeca do robo ao lado das linhas da integridade, coracao ao lado dos vitais
+        frame = (int)fmod(al_get_time() / 0.25, 3.0);
+        al_draw_scaled_bitmap(nanobo_icon, 0.0f, 0.0f, 16.0f, 16.0f, x + 8.0f, y - 24.0f, 32.0f, 32.0f, 0);
+        al_draw_scaled_bitmap(heart_pulse, (float)(frame * 16), 0.0f, 16.0f, 16.0f,
+            x + 8.0f, y + 8.0f, 32.0f, 32.0f, 0);
+    }
+}
+
+void draw_howto()
+{
+    static const char* titles[HOWTO_PAGES] = {
+        "Mover e mirar",
+        "Ler com o scanner",
+        "Armas",
+        "As duas barras"
+    };
+    static const char* lines[HOWTO_PAGES][HOWTO_LINES] = {
+        {
+            "Setas ou WASD: mover o Nanobô.",
+            "Mouse: mirar. Botão esquerdo: disparar a arma.",
+            "Botão direito: escanear o alvo sob o cursor.",
+            "X: defesa por 2 s. Contato não fere; toxinas, vírus e",
+            "esporos em voo se desfazem. A hifa passa. Recarga: 3 s.",
+            "Esc: pausa. F11: tela cheia."
+        },
+        {
+            "Botão direito num agente: eu leio uma camada por vez.",
+            "Camada 1: a {forma}. Coco, bacilo, levedura, bolor...",
+            "Camada 2: a {coloração de Gram} e o nome da espécie.",
+            "A forma não basta: existe coco Gram+ e coco Gram-.",
+            "Com as duas camadas lidas, o agente está identificado.",
+            "Identificar todos os agentes da fase vale +15 pontos."
+        },
+        {
+            "1, 2, 3 ou roda do mouse: trocar de arma.",
+            "Fase 1: 1 Ruptura · 2 Dissolução · 3 Reserva (2 cargas)",
+            "Cada bactéria pede 2 doses, a segunda em até 6 segundos.",
+            "Fase 2: 1 Neutralização (vírus livre) · 2 Ataque T",
+            "Fase 3: 1 Perfuração · 2 Ruptura (não age em fungo)",
+            "Regra do jogo: as armas se inspiram em remédios reais."
+        },
+        {
+            "Cabeça de robô: a minha {Integridade}. Ela cai quando",
+            "um invasor, uma toxina, a hifa ou a nuvem me acertam.",
+            "Coração: os {Vitais} do Léo. Caem quando uma célula dele",
+            "é destruída ou atingida por engano, e no Ataque T.",
+            "Se uma das barras zera, a equipe me retira do corpo.",
+            "Nova fase: Integridade cheia e Vitais de no mínimo 60."
+        }
+    };
+    char counter[16];
+    float line_y = HOWTO_PANEL_Y + 36.0f;
+    int page = howto_page;
+    int i;
+
+    if (page < 0 || page >= HOWTO_PAGES)
+    {
+        page = 0;
+        howto_page = 0;
+    }
+
+    al_draw_bitmap(howto_background, 0.0f, 0.0f, 0);
+    al_draw_text(font, UI_TEXT, SCREEN_W / 2, 16, ALLEGRO_ALIGN_CENTRE, "Como jogar");
+    draw_rule((float)SCREEN_W / 2, 30.0f, 200.0f, UI_FRAME);
+
+    // painel central quase opaco (cor pre-multiplicada): o radar do fundo aparece de leve
+    draw_panel(16.0f, HOWTO_PANEL_Y, (float)SCREEN_W - 32.0f, 144.0f,
+        al_map_rgba(16, 23, 32, 230), UI_FRAME);
+    al_draw_text(font, UI_AMBER, HOWTO_TEXT_X, HOWTO_PANEL_Y + 12.0f, 0, titles[page]);
+    snprintf(counter, sizeof(counter), "%d/%d", page + 1, HOWTO_PAGES);
+    al_draw_text(font, UI_DIM, (float)SCREEN_W - 24.0f, HOWTO_PANEL_Y + 12.0f, ALLEGRO_ALIGN_RIGHT, counter);
+
+    draw_howto_icon(HOWTO_ICON_X, line_y + 20.0f);
+
+    for (i = 0; i < HOWTO_LINES; i++)
+    {
+        draw_marked_text(HOWTO_TEXT_X, line_y + 16.0f * (float)i, UI_TEXT, lines[page][i]);
+    }
+
+    al_draw_text(font, UI_DIM, SCREEN_W / 2, 336, ALLEGRO_ALIGN_CENTRE,
+        page == HOWTO_PAGES - 1
+            ? "enter, espaço ou clique volta · setas trocam · esc volta"
+            : "enter, espaço ou clique avança · setas trocam · esc volta");
 }
 
 // ---------------------------------------------------------------
@@ -4019,6 +4187,10 @@ void render()
     {
         draw_game_over();
     }
+    else if (scene == GAME_SCENE_HOWTO)
+    {
+        draw_howto();
+    }
 
     // o canvas vai para a janela com escala inteira e barras pretas
     al_set_target_backbuffer(display);
@@ -4068,6 +4240,29 @@ void handle_key_down(int key)
             if (key == ALLEGRO_KEY_ENTER || key == ALLEGRO_KEY_ESCAPE)
             {
                 ranking_panel_open = false;
+            }
+
+            return;
+        }
+
+        // como jogar: enter, espaco avancam; setas trocam a pagina; esc volta a origem
+        if (scene == GAME_SCENE_HOWTO)
+        {
+            if (key == ALLEGRO_KEY_ENTER || key == ALLEGRO_KEY_PAD_ENTER || key == ALLEGRO_KEY_SPACE)
+            {
+                howto_advance();
+            }
+            else if (key == ALLEGRO_KEY_LEFT && howto_page > 0)
+            {
+                howto_page--;
+            }
+            else if (key == ALLEGRO_KEY_RIGHT && howto_page < HOWTO_PAGES - 1)
+            {
+                howto_page++;
+            }
+            else if (key == ALLEGRO_KEY_ESCAPE)
+            {
+                howto_return();
             }
 
             return;
@@ -4395,6 +4590,17 @@ void handle_mouse_click(int button, float x, float y)
         return;
     }
 
+    // como jogar: o clique esquerdo avanca a pagina (na ultima, volta)
+    if (game_get_scene() == GAME_SCENE_HOWTO)
+    {
+        if (button == 1)
+        {
+            howto_advance();
+        }
+
+        return;
+    }
+
     // abertura: o clique esquerdo avanca a caixa
     if (game_get_scene() == GAME_SCENE_BRIEFING)
     {
@@ -4465,7 +4671,10 @@ void play_pending_sfx()
 // a musica para na pausa e volta ao sair dela (#32)
 void sync_music()
 {
-    bool want = audio_ready && music != NULL && game_get_scene() != GAME_SCENE_PAUSE;
+    // o como jogar aberto pela pausa continua sem musica
+    bool paused = game_get_scene() == GAME_SCENE_PAUSE
+        || (game_get_scene() == GAME_SCENE_HOWTO && game_howto_origin() == GAME_SCENE_PAUSE);
+    bool want = audio_ready && music != NULL && !paused;
 
     if (want && !music_playing)
     {
@@ -4637,8 +4846,8 @@ int main()
 
                 feel_trigger();
 
-                // na pausa os efeitos ficam parados junto com o jogo
-                if (game_get_scene() != GAME_SCENE_PAUSE)
+                // na pausa (e no como jogar) os efeitos ficam parados junto com o jogo
+                if (game_get_scene() != GAME_SCENE_PAUSE && game_get_scene() != GAME_SCENE_HOWTO)
                 {
                     feel_update((float)deltaTime);
                 }

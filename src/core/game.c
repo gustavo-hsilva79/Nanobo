@@ -1,16 +1,23 @@
 #include "game.h"
 
 static GameScene currentScene = GAME_SCENE_MENU;
+// origem do "como jogar", gravada ao entrar: a volta so vale para ela
+static GameScene howtoOrigin = GAME_SCENE_MENU;
 
 GameScene game_get_scene(void)
 {
     return currentScene;
 }
 
+GameScene game_howto_origin(void)
+{
+    return howtoOrigin;
+}
+
 // troca a cena atual, mas so se a transicao existir no fluxo
 void game_set_scene(GameScene scene)
 {
-    if (scene < GAME_SCENE_MENU || scene > GAME_SCENE_GAME_OVER)
+    if (scene < GAME_SCENE_MENU || scene > GAME_SCENE_HOWTO)
     {
         return;
     }
@@ -25,6 +32,11 @@ void game_set_scene(GameScene scene)
         case GAME_SCENE_MENU:
             if (scene == GAME_SCENE_BRIEFING)
             {
+                currentScene = scene;
+            }
+            else if (scene == GAME_SCENE_HOWTO)
+            {
+                howtoOrigin = GAME_SCENE_MENU;
                 currentScene = scene;
             }
             break;
@@ -45,6 +57,19 @@ void game_set_scene(GameScene scene)
 
         case GAME_SCENE_PAUSE:
             if (scene == GAME_SCENE_GAME)
+            {
+                currentScene = scene;
+            }
+            else if (scene == GAME_SCENE_HOWTO)
+            {
+                howtoOrigin = GAME_SCENE_PAUSE;
+                currentScene = scene;
+            }
+            break;
+
+        case GAME_SCENE_HOWTO:
+            // a volta so vale para a cena de onde ele abriu
+            if (scene == howtoOrigin)
             {
                 currentScene = scene;
             }

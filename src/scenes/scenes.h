@@ -11,6 +11,7 @@ typedef enum GameScene
     GAME_SCENE_RESULTS,
     GAME_SCENE_VICTORY,
     GAME_SCENE_GAME_OVER,
+    GAME_SCENE_HOWTO,
     GAME_SCENE_EXIT
 
 } GameScene;

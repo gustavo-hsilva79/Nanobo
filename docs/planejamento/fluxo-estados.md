@@ -6,10 +6,11 @@ Este documento define o fluxo geral da máquina de estados previsto em #7/#98. A
 
 | Estado | Entrada | Saída permitida |
 |---|---|---|
-| `MENU` | Inicialização do jogo ou retorno por reinício, quando essa opção for integrada | Iniciar uma nova partida → `BRIEFING` |
+| `MENU` | Inicialização do jogo, retorno por reinício, quando essa opção for integrada, ou volta do `HOWTO` aberto pelo menu | Iniciar uma nova partida → `BRIEFING`; COMO JOGAR → `HOWTO` |
 | `BRIEFING` | Início de partida vindo de `MENU`, `VICTORY` ou `GAME OVER` (**M4, #103/#106**) | Pular ou terminar os 3 cartões → `GAME` |
 | `GAME` | Fim do briefing, retomada de `PAUSE` ou avanço vindo de `RESULTS` | Solicitar pausa → `PAUSE`; concluir fase → `RESULTS`; perder toda a vida → `GAME OVER` |
-| `PAUSE` | Solicitação de pausa durante `GAME` | Retomar → `GAME` |
+| `PAUSE` | Solicitação de pausa durante `GAME` ou volta do `HOWTO` aberto pela pausa | Retomar → `GAME`; COMO JOGAR → `HOWTO` |
+| `HOWTO` | COMO JOGAR no `MENU` ou na `PAUSE` (redesenho de 28/11); a cena grava a origem ao entrar | Voltar (`ESC`, ou avançar na última página) → a origem: `MENU` ou `PAUSE`, nunca a outra |
 | `RESULTS` | Conclusão de uma fase em `GAME` | Há próxima fase (Fases 1 e 2) → `GAME`; última fase (a 3) concluída → `VICTORY` |
 | `VICTORY` | Conclusão da última fase em `RESULTS` | Iniciar nova partida → `BRIEFING` |
 | `GAME OVER` | Condição de derrota durante `GAME` | Iniciar nova partida → `BRIEFING` |
@@ -26,7 +27,7 @@ Este documento define o fluxo geral da máquina de estados previsto em #7/#98. A
 
 ## Implementação atual (04/11/2026)
 
-`src/core/game.c` implementa as transições da tabela, `BRIEFING` incluído. O enum `GameScene` (`src/scenes/scenes.h`) tem `MENU`, `BRIEFING`, `GAME`, `PAUSE`, `RESULTS`, `VICTORY`, `GAME_OVER` e `EXIT`, e qualquer par fora da tabela é ignorado pela máquina de estados. `EXIT` existe no enum, mas `game_set_scene()` só aceita cenas até `GAME_OVER`; fechar a janela encerra o processo.
+`src/core/game.c` implementa as transições da tabela, `BRIEFING` incluído. O enum `GameScene` (`src/scenes/scenes.h`) tem `MENU`, `BRIEFING`, `GAME`, `PAUSE`, `RESULTS`, `VICTORY`, `GAME_OVER`, `HOWTO` (28/11) e `EXIT`, e qualquer par fora da tabela é ignorado pela máquina de estados. `EXIT` existe no enum, mas `game_set_scene()` só aceita cenas até `HOWTO`; fechar a janela encerra o processo.
 
 - `MENU → BRIEFING → GAME` é o caminho de toda partida; `VICTORY → BRIEFING` e `GAME OVER → BRIEFING` fazem a partida nova passar pelo briefing outra vez.
 - No briefing, `ENTER`, `→` ou clique avançam o cartão; no terceiro, `SEGUIR` entra na fase. `ESC` e `PULAR` vão direto para `GAME`. O cartão corrente volta a zero a cada entrada na cena.
@@ -39,6 +40,7 @@ Este documento define o fluxo geral da máquina de estados previsto em #7/#98. A
 - Perder o foco da janela durante `GAME` entra em `PAUSE`; retomar é `ESC`.
 - Não existe caminho de volta para `MENU`; nova partida em `VICTORY`/`GAME OVER` vai para `BRIEFING` e depois `GAME`.
 - `PAUSE` congela os timers porque `update_match()` só roda em `GAME`.
+- **Como jogar (28/11):** `HOWTO` fica entre `GAME_OVER` e `EXIT` no enum, e `game_set_scene()` passa a aceitar cenas até `HOWTO`. As transições novas são `MENU → HOWTO`, `PAUSE → HOWTO`, `HOWTO → MENU` e `HOWTO → PAUSE`; `game.c` grava a origem ao entrar (`game_howto_origin()`) e só aceita a volta para ela. `GAME → HOWTO` não existe: na fase, o caminho é pela pausa. Aberto pela pausa, a partida continua parada (só `GAME` avança a lógica), a música e os efeitos também, e a volta cai na pausa. A página volta à 1 a cada entrada.
 
 ## Fora desta definição
 
