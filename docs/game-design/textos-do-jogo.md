@@ -256,6 +256,7 @@ Cena própria, aberta pelo botão COMO JOGAR (MN-01) do menu e da pausa; volta p
 | RT-06 | scanner, linha de estado | ` · alvo sob o cursor` (ciano) / ` · última leitura` (apagado) | 20 / 17 | #199, build de 04/11 |
 | RT-07 | scanner, camada 2, revisão bactéria (Gram+ e Gram-) | `procarionte · sem núcleo: DNA solto no nucleoide` | 48 | #214, OA1 |
 | RT-08b | scanner, camada 2, revisão célula | `eucarionte: tem núcleo, como as células do corpo` | 48 | #214, OA1 |
+| RT-08c | scanner, camada 2, revisão fungo (levedura, bolor e esporo) | `eucarionte: fungo, núcleo e parede de quitina` | 45 | revisão de 27/11: o fungo caía na RT-08b, que o chama de célula do corpo |
 | RT-09 | scanner, camada 1, vírus livre | `vírus livre · deriva no muco` | 28 | #87 |
 | SC-09 | scanner, camada 2, vírus livre | `acelular: sem parede, ribossomos nem metabolismo próprios` | 57 | #87 (OA6); redesenho de 28/11 (decisão 6 de 25/11); substitui a RT-10 |
 | SC-10 | scanner, camada 2, revisão, vírus livre | `só se multiplica dentro de uma célula do Léo` | 44 | #87; redesenho de 28/11; substitui a RT-11 |

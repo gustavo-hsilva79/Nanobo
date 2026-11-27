@@ -473,6 +473,12 @@ const char* layer_two_reason(int index)
         return "no lítico a célula se rompe e solta novos vírus";
     }
 
+    // o fungo tambem e eucarionte, mas nao e celula do corpo (FB-08b)
+    if (species == SPECIES_YEAST || species == SPECIES_MOLD || species == SPECIES_SPORE)
+    {
+        return "eucarionte: fungo, núcleo e parede de quitina";
+    }
+
     return "eucarionte: tem núcleo, como as células do corpo";
 }
 
