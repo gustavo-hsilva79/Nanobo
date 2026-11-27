@@ -2636,38 +2636,68 @@ int spore_load_current(void)
     return spore_load_applied;
 }
 
-// poe n esporos no chao, cada um num ponto valido livre da tabela (#231)
+// pontos de pouso so dos esporos, na faixa do meio, longe do inicio (960, 256)
+// e do destino: os 9 agentes da Fase 3 ocupam 9 dos 12 pontos validos, e sem
+// estes a carga nunca passava de 3 (revisao de 27/11)
+#define NUM_SPORE_POINTS 4
+
+static const float spore_points[][2] =
+{
+    {  320, 256 }, {  640, 256 }, { 1280, 256 }, { 1600, 256 }
+};
+
+_Static_assert(sizeof(spore_points) / sizeof(spore_points[0]) == NUM_SPORE_POINTS,
+    "spore_points precisa ter NUM_SPORE_POINTS linhas");
+_Static_assert(NUM_SPORE_POINTS >= SPORE_LOAD_MAX, "faltam pontos para a carga maxima de esporos");
+
+// pousa um esporo no ponto se ele estiver livre: longe de todo agente vivo e do nanobo
+static bool seed_spore_at(float px, float py)
+{
+    int i;
+
+    for (i = 0; i < agents_count; i++)
+    {
+        if (agents[i].active
+            && fabsf(agents[i].x - px) < SPORE_CLEARANCE
+            && fabsf(agents[i].y - py) < SPORE_CLEARANCE)
+        {
+            return false;
+        }
+    }
+
+    if (fabsf(player.x - px) < SPORE_CLEARANCE && fabsf(player.y - py) < SPORE_CLEARANCE)
+    {
+        return false;
+    }
+
+    return spawn_ground_spore(px, py) != -1;
+}
+
+// poe n esporos no chao: primeiro nos pontos proprios, depois nos pontos
+// validos que sobraram livres (#231)
 static void spore_seed_ground(int n)
 {
     int placed = 0;
-    int start = rand() % NUM_VALID_POINTS;
+    int start = rand() % NUM_SPORE_POINTS;
     int k;
+
+    for (k = 0; k < NUM_SPORE_POINTS && placed < n; k++)
+    {
+        int p = (start + k) % NUM_SPORE_POINTS;
+
+        if (seed_spore_at(spore_points[p][0], spore_points[p][1]))
+        {
+            placed = placed + 1;
+        }
+    }
+
+    start = rand() % NUM_VALID_POINTS;
 
     for (k = 0; k < NUM_VALID_POINTS && placed < n; k++)
     {
         int p = (start + k) % NUM_VALID_POINTS;
-        float px = valid_points[p][0];
-        float py = valid_points[p][1];
-        bool free_point = true;
-        int i;
 
-        // livre: longe de todo agente vivo e do nanobo
-        for (i = 0; i < agents_count; i++)
-        {
-            if (agents[i].active
-                && fabsf(agents[i].x - px) < SPORE_CLEARANCE
-                && fabsf(agents[i].y - py) < SPORE_CLEARANCE)
-            {
-                free_point = false;
-            }
-        }
-
-        if (fabsf(player.x - px) < SPORE_CLEARANCE && fabsf(player.y - py) < SPORE_CLEARANCE)
-        {
-            free_point = false;
-        }
-
-        if (free_point && spawn_ground_spore(px, py) != -1)
+        if (seed_spore_at(valid_points[p][0], valid_points[p][1]))
         {
             placed = placed + 1;
         }

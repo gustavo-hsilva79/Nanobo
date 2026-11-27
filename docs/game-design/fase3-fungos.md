@@ -80,7 +80,7 @@
 | 30 | 2 | 4 (teto) |
 | 100 | 1 | 1 |
 
-- Cada extra nasce como **esporo no chão** num ponto válido de `valid_points[]`, a pelo menos `SPORE_CLEARANCE` (48 px, por eixo) de agentes ativos e do Nanobô, com o tempo de germinação cheio. `spore_load_current()` devolve quantos foram colocados de fato (alimenta o relatório).
+- Cada extra nasce como **esporo no chão**, primeiro num dos 4 pontos próprios de esporo (`spore_points[]`, na faixa do meio: x 320, 640, 1280 e 1600, y 256) e, se faltar, num ponto válido de `valid_points[]` que sobrou, a pelo menos `SPORE_CLEARANCE` (48 px, por eixo) de agentes ativos e do Nanobô, com o tempo de germinação cheio. `spore_load_current()` devolve quantos foram colocados de fato (alimenta o relatório).
 - O valor guardado é zerado em `reset_match`.
 
 ## Cards, silhueta e relatório (#232, D7)
@@ -152,7 +152,7 @@ Gerada por script Lua no Aseprite, no estilo aprovado em 14/11, com os scripts e
 - **Partida e destino próprios** (R1): a Fase 3 usa os globais, como a Fase 2. A #227 pedia pontos próprios.
 - **Sem bots de calibração** (R6): a dificuldade da Fase 3 não foi medida.
 - **Vagas cheias:** com `MAX_AGENTS` cheio, um esporo some sem aviso, e esporos e brotos de levedura disputam as mesmas vagas livres (≥ `agents_initial()`).
-- **Esporos iniciais** ignoram os segmentos de hifa ao escolher o ponto e podem colocar menos esporos que a carga, se não houver ponto válido livre (o relatório registra o número colocado).
+- **Esporos iniciais** ignoram os segmentos de hifa ao escolher o ponto e podem colocar menos esporos que a carga, se não houver ponto livre (o relatório registra o número colocado). Até 27/11 isso acontecia sempre com a carga 4: os 9 agentes ocupavam 9 dos 12 pontos válidos e só sobravam 3; os pontos próprios de esporo resolveram.
 - **Broto na borda do mundo** pode nascer sobreposto ao pai; a colisão o separa no quadro seguinte.
 - **Tecla F (Debug)** não soma nos contadores do relatório da Fase 3.
 - **Mapa** procedural e uniforme, sem marco no meio; aprovado assim pelo dono.
