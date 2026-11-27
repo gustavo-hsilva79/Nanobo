@@ -539,8 +539,7 @@ void draw_game()
 
         // a tampa de tecla de 14 px cabe com folga; a moldura neutra nao briga
         // com a borda ciano da tecla
-        al_draw_filled_rectangle(hx - 4.0f, hy - 6.0f, hx + (float)hint_w + 4.0f, hy + 14.0f, UI_INK);
-        al_draw_rectangle(hx - 3.5f, hy - 5.5f, hx + (float)hint_w + 3.5f, hy + 13.5f, UI_FRAME, 1.0f);
+        draw_panel(hx - 4.0f, hy - 6.0f, (float)hint_w + 8.0f, 20.0f, UI_INK, UI_FRAME);
         draw_marked_text(hx, hy, UI_CYAN, hint);
     }
 
@@ -664,11 +663,7 @@ void draw_game()
             box_y = card_y - 22.0f;
         }
 
-        al_draw_filled_rectangle(box_x - UI_PAD, box_y - 4.0f, box_x + (float)text_w + UI_PAD,
-            box_y + 12.0f, UI_INK);
-        al_draw_rectangle(box_x - UI_PAD + 0.5f, box_y - 4.0f + 0.5f,
-            box_x + (float)text_w + UI_PAD - 0.5f, box_y + 12.0f - 0.5f,
-            UI_FRAME, 1.0f);
+        draw_panel(box_x - UI_PAD, box_y - 4.0f, (float)text_w + 2.0f * UI_PAD, 16.0f, UI_INK, UI_FRAME);
         draw_marked_text(box_x, box_y, UI_WARM, message);
     }
 

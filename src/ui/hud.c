@@ -280,6 +280,47 @@ static void draw_life_bar(ALLEGRO_BITMAP* frame, float x, float y, int segments,
         al_draw_tinted_bitmap(bar_segment, color, x + 2.0f + 6.0f * (float)i, y + 2.0f, 0);
     }
 }
+// icone de cada arma no HUD, ao lado do nome
+static ALLEGRO_BITMAP* weapon_icon(Laser laser)
+{
+    switch (laser)
+    {
+    case LASER_GRAM_POSITIVE:
+        return rupture_icon;
+    case LASER_RESERVE:
+        return reserve_icon;
+    case LASER_NEUTRALIZE:
+        return antibody_icon;
+    case LASER_LYSE:
+        return lyse_icon;
+    case LASER_PERFORATE:
+        return perforate_icon;
+    case LASER_GRAM_NEGATIVE:
+    default:
+        return dissolution_icon;
+    }
+}
+
+// nome da arma e o que ela atinge, na cor dela (<wX:...>); a Reserva monta o
+// proprio texto com as cargas no draw_hud
+static const char* weapon_label(Laser laser)
+{
+    switch (laser)
+    {
+    case LASER_GRAM_POSITIVE:
+        return "<wR:Ruptura> · parede";
+    case LASER_NEUTRALIZE:
+        return "<wN:Neutralização> · vírus livre";
+    case LASER_LYSE:
+        return "<wT:Ataque T> · célula infectada";
+    case LASER_PERFORATE:
+        return "<wF:Perfuração> · antifúngico";
+    case LASER_GRAM_NEGATIVE:
+    case LASER_RESERVE:
+    default:
+        return "<wD:Dissolução> · membrana";
+    }
+}
 
 void draw_hud()
 {
@@ -375,24 +416,9 @@ void draw_hud()
         state_text = "recarga";
     }
 
-    laser_icon = player.laser == LASER_GRAM_POSITIVE ? rupture_icon : dissolution_icon;
-
-    // o HUD diz a ferramenta pelo nome e o que ela atinge (#199, #243)
-    module_name = player.laser == LASER_GRAM_POSITIVE ? "<wR:Ruptura> · parede" : "<wD:Dissolução> · membrana";
-
-    // Fase 2: anticorpos e Lise (#88)
-    if (player.laser == LASER_NEUTRALIZE)
-    {
-        module_name = "<wN:Neutralização> · vírus livre";
-    }
-    else if (player.laser == LASER_LYSE)
-    {
-        module_name = "<wT:Ataque T> · célula infectada";
-    }
-    else if (player.laser == LASER_PERFORATE)
-    {
-        module_name = "<wF:Perfuração> · antifúngico";
-    }
+    // o HUD diz a arma pelo nome e o que ela atinge (#199, #243)
+    laser_icon = weapon_icon(player.laser);
+    module_name = weapon_label(player.laser);
 
     // Reserva: nome com as cargas e a palavra de estado quando acabam (#216)
     if (player.laser == LASER_RESERVE)
@@ -415,27 +441,7 @@ void draw_hud()
     // o nome da arma sai na cor dela (<wX:...>)
     draw_marked_text((float)x_weapon, (float)hud_y(0), UI_TEXT, module_name);
 
-    // cada arma desenha o proprio icone ao lado do nome
-    if (player.laser == LASER_RESERVE)
-    {
-        al_draw_bitmap(reserve_icon, (float)x_icon, (float)(hud_y(0) - 4), 0);
-    }
-    else if (player.laser == LASER_NEUTRALIZE)
-    {
-        al_draw_bitmap(antibody_icon, (float)x_icon, (float)(hud_y(0) - 4), 0);
-    }
-    else if (player.laser == LASER_LYSE)
-    {
-        al_draw_bitmap(lyse_icon, (float)x_icon, (float)(hud_y(0) - 4), 0);
-    }
-    else if (player.laser == LASER_PERFORATE)
-    {
-        al_draw_bitmap(perforate_icon, (float)x_icon, (float)(hud_y(0) - 4), 0);
-    }
-    else
-    {
-        al_draw_bitmap(laser_icon, (float)x_icon, (float)(hud_y(0) - 4), 0);
-    }
+    al_draw_bitmap(laser_icon, (float)x_icon, (float)(hud_y(0) - 4), 0);
     draw_cooldown_bar((float)x_bar, (float)(hud_y(0) + 1),
         fire_locked() ? fire_lock_left() : attack_cooldown_left());
     al_draw_text(font, UI_DIM, (float)x_word, (float)hud_y(0), 0, state_text);

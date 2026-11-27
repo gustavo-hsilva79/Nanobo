@@ -505,6 +505,13 @@ static const DialogEntry diary_entries[CARD_COUNT] =
 // estado da caixa da fila de cards e a entrada que ela mostra
 DialogState card_dialog;
 ConceptCard card_dialog_entry = CARD_NONE;
+// caractere que so marca o texto e nao e desenhado: {termo}, [tecla] e o fim
+// da marca de cor <c:...>
+static bool is_mark_char(char c)
+{
+    return c == '{' || c == '}' || c == '[' || c == ']' || c == '>';
+}
+
 
 // marca de cor <c:texto> (27/11): devolve os bytes de "<c:" (codigo de 1 ou
 // 2 letras) ou 0 se ali nao comeca uma marca
@@ -588,7 +595,7 @@ static int dialog_visible_chars(const char* line)
             continue;
         }
 
-        if (*c != '{' && *c != '}' && *c != '[' && *c != ']' && *c != '>' && (*c & 0xC0) != 0x80)
+        if (!is_mark_char(*c) && (*c & 0xC0) != 0x80)
         {
             count = count + 1;
         }
@@ -712,7 +719,7 @@ static int draw_dialog_line(const char* line, float x, float y, ALLEGRO_COLOR ba
     {
         bool lead = (*c & 0xC0) != 0x80;
         int color_mark = color_mark_length(c);
-        bool mark = *c == '{' || *c == '}' || *c == '[' || *c == ']' || *c == '>' || color_mark > 0;
+        bool mark = is_mark_char(*c) || color_mark > 0;
 
         if (mark || (lead && budget == 0))
         {
@@ -830,7 +837,7 @@ int marked_text_width(const char* text)
             caps = caps + 1;
         }
 
-        if (*c != '{' && *c != '}' && *c != '[' && *c != ']' && *c != '>')
+        if (!is_mark_char(*c))
         {
             plain[length] = *c;
             length = length + 1;
