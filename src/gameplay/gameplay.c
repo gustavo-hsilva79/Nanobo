@@ -406,14 +406,14 @@ const char* layer_two_text(int index)
 
     if (species == SPECIES_GRAM_POSITIVE)
     {
-        snprintf(text, sizeof(text), "Gram+ · parede grossa, sem membrana externa · %s",
+        snprintf(text, sizeof(text), "<p:Gram+> · parede grossa, sem membrana externa · %s",
             agents[index].name);
         return text;
     }
 
     if (species == SPECIES_GRAM_NEGATIVE)
     {
-        snprintf(text, sizeof(text), "Gram- · parede fina sob membrana externa · %s",
+        snprintf(text, sizeof(text), "<r:Gram-> · parede fina sob membrana externa · %s",
             agents[index].name);
         return text;
     }
@@ -843,7 +843,7 @@ static void lyse_cell(int cell, int v)
     progress.correct_decisions = progress.correct_decisions + 1;
     progress.cells_lysed = progress.cells_lysed + 1;
     emit_sfx_at(SFX_EVENT_NEUTRALIZED, agents[cell].x, agents[cell].y);
-    set_feedback("Ataque T: a célula infectada saiu sem romper: -5 vitais");
+    set_feedback("<wT:Ataque T>: a célula infectada saiu sem romper: <x:-5 vitais>");
 }
 
 // anticorpos e Lise (#88): a Neutralizacao prende o virus livre e nao fere a
@@ -861,13 +861,13 @@ static void virus_tool_hit(Laser laser, int j)
             hit_agent(j);
             queue_card(CARD_VIRUS);
             emit_sfx_at(SFX_EVENT_NEUTRALIZED, agents[j].x, agents[j].y);
-            set_feedback("anticorpos prenderam o vírus: +10 pontos");
+            set_feedback("anticorpos prenderam o vírus: <g:+10 pontos>");
         }
         else if (v != -1)
         {
             progress.wrong_decisions = progress.wrong_decisions + 1;
             emit_sfx_at(SFX_EVENT_WRONG, agents[j].x, agents[j].y);
-            set_feedback("o vírus está dentro da célula: use o Ataque T");
+            set_feedback("o vírus está dentro da célula: use o <wT:Ataque T>");
         }
         else
         {
@@ -888,16 +888,16 @@ static void virus_tool_hit(Laser laser, int j)
 
     if (v != -1)
     {
-        set_feedback("leia a célula antes do Ataque T");
+        set_feedback("leia a célula antes do <wT:Ataque T>");
     }
     else if (agents[j].species == SPECIES_VIRUS)
     {
         progress.wrong_decisions = progress.wrong_decisions + 1;
-        set_feedback("o Ataque T age na célula infectada, não no vírus livre");
+        set_feedback("o <wT:Ataque T> age na célula infectada, não no vírus livre");
     }
     else
     {
-        set_feedback("o Ataque T só age em célula infectada");
+        set_feedback("o <wT:Ataque T> só age em célula infectada");
     }
 }
 
@@ -998,11 +998,11 @@ static void hit_projectiles()
                 // na Fase 3 o fungo tambem tem nucleo: o contraste e outro (FB-08b)
                 if (phase_has_fungi())
                 {
-                    set_feedback("você feriu uma célula do Léo: é célula do corpo, não fungo");
+                    set_feedback("você <x:feriu> uma célula do Léo: é célula do corpo, não fungo");
                 }
                 else
                 {
-                    set_feedback("você feriu uma célula do Léo: ela tem núcleo, não é bactéria");
+                    set_feedback("você <x:feriu> uma célula do Léo: ela tem núcleo, não é bactéria");
                 }
             }
             else if (projectiles[i].laser == LASER_RESERVE
@@ -1030,11 +1030,11 @@ static void hit_projectiles()
 
                 if (was_resistant)
                 {
-                    set_feedback("a Reserva eliminou a resistente: +10 pontos");
+                    set_feedback("a <wS:Reserva> eliminou a resistente: <g:+10 pontos>");
                 }
                 else
                 {
-                    set_feedback("Reserva numa bactéria comum: guarde para a resistente");
+                    set_feedback("<wS:Reserva> numa bactéria comum: guarde para a resistente");
                 }
             }
             else if (weapon_affects(projectiles[i].laser, agents[j].species)
@@ -1045,11 +1045,11 @@ static void hit_projectiles()
 
                 if (agents[j].species == SPECIES_GRAM_POSITIVE)
                 {
-                    set_feedback("resistente à Ruptura: use a Reserva");
+                    set_feedback("<x:resistente> à <wR:Ruptura>: use a <wS:Reserva>");
                 }
                 else
                 {
-                    set_feedback("resistente à Dissolução: use a Reserva");
+                    set_feedback("<x:resistente> à <wD:Dissolução>: use a <wS:Reserva>");
                 }
             }
             else if (weapon_affects(projectiles[i].laser, agents[j].species))
@@ -1089,11 +1089,11 @@ static void hit_projectiles()
                     // sem identificacao a ameaca sai da cena e o bonus de 9/9 fica impossivel
                     else if (agents[j].identified)
                     {
-                        set_feedback("ameaça eliminada: +10 pontos");
+                        set_feedback("ameaça <g:eliminada>: <g:+10 pontos>");
                     }
                     else
                     {
-                        set_feedback("eliminada sem identificar: o bônus de 9/9 se perdeu");
+                        set_feedback("<g:eliminada> sem identificar: o bônus de 9/9 se perdeu");
                     }
                 }
                 else
@@ -1147,11 +1147,11 @@ static void hit_projectiles()
                 }
                 else if (agents[j].species == SPECIES_GRAM_NEGATIVE)
                 {
-                    set_feedback("a membrana externa barrou a Ruptura");
+                    set_feedback("a membrana externa barrou a <wR:Ruptura>");
                 }
                 else
                 {
-                    set_feedback("a Gram+ não tem membrana externa para a Dissolução");
+                    set_feedback("a <p:Gram+> não tem membrana externa para a <wD:Dissolução>");
                 }
             }
 
@@ -1476,7 +1476,7 @@ static void fire(float dx, float dy)
     // Reserva sem carga nao dispara: avisa e nao gasta a recarga (#216)
     if (player.laser == LASER_RESERVE && reserve_left <= 0)
     {
-        set_feedback("Reserva esgotada");
+        set_feedback("<wS:Reserva> esgotada");
         emit_sfx(SFX_EVENT_WRONG);
         return;
     }
@@ -1490,14 +1490,14 @@ static void fire(float dx, float dy)
 
         if (v == -1)
         {
-            set_feedback("o Ataque T só age em célula infectada");
+            set_feedback("o <wT:Ataque T> só age em célula infectada");
             emit_sfx(SFX_EVENT_WRONG);
             return;
         }
 
         if (agents[first].layers == 0)
         {
-            set_feedback("leia a célula antes do Ataque T");
+            set_feedback("leia a célula antes do <wT:Ataque T>");
             emit_sfx(SFX_EVENT_WRONG);
             return;
         }
@@ -2320,11 +2320,11 @@ static void update_dose(int index, double dt)
 
     if (agents[index].species == SPECIES_GRAM_POSITIVE)
     {
-        set_feedback("tratamento incompleto: resistente à Ruptura");
+        set_feedback("tratamento incompleto: <x:resistente> à <wR:Ruptura>");
     }
     else
     {
-        set_feedback("tratamento incompleto: resistente à Dissolução");
+        set_feedback("tratamento incompleto: <x:resistente> à <wD:Dissolução>");
     }
 }
 
@@ -3586,7 +3586,7 @@ void lose_patient_cell(int index)
     agents[index].active = false;
     patient_vitals = fmaxf(patient_vitals - CELL_LOSS_VITALS, 0.0f);
     emit_sfx_at(SFX_EVENT_DAMAGE, agents[index].x, agents[index].y);
-    set_feedback("uma célula do Léo foi destruída: -20 vitais");
+    set_feedback("uma célula do Léo foi <x:destruída>: <x:-20 vitais>");
 }
 
 // divisao binaria: a filha nasce ao lado da mae, numa vaga nova do array, com a
@@ -3828,7 +3828,7 @@ static void update_hazards(double dt)
         {
             endotoxin_feedback_timer = 0.5;
             emit_sfx(SFX_EVENT_DAMAGE);
-            set_feedback("endotoxina da Gram-: saia da nuvem");
+            set_feedback("endotoxina da <r:Gram->: saia da nuvem");
         }
     }
     else
@@ -4219,15 +4219,15 @@ static void update_enemy_shots(double dt)
             {
                 if (enemy_shots[i].kind == SHOT_VIRION)
                 {
-                    set_feedback("vírus da rajada: -6 de integridade");
+                    set_feedback("vírus da rajada: <x:-6 de integridade>");
                 }
                 else if (enemy_shots[i].kind == SHOT_SPORE)
                 {
-                    set_feedback("esporo do bolor: -8 de integridade");
+                    set_feedback("esporo do bolor: <x:-8 de integridade>");
                 }
                 else
                 {
-                    set_feedback("toxina do coco: -8 de integridade");
+                    set_feedback("toxina do coco: <x:-8 de integridade>");
                 }
             }
 
@@ -4675,7 +4675,7 @@ void update_match(double dt)
         // contato a cada quadro nao pode reescrever a mensagem sem dano novo (#178)
         if (damage_player(CONTACT_DAMAGE))
         {
-            set_feedback("contato com invasor: -10 de integridade");
+            set_feedback("contato com invasor: <x:-10 de integridade>");
         }
     }
 
@@ -4686,7 +4686,7 @@ void update_match(double dt)
         if (hypha_touching(player.x, player.y, (float)PLAYER_RADIUS, &seg) != -1
             && damage_player(HYPHA_DAMAGE))
         {
-            set_feedback("hifa: -10 de integridade");
+            set_feedback("hifa: <x:-10 de integridade>");
         }
     }
 

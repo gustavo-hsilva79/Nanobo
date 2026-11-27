@@ -9,46 +9,46 @@
 | ID | Situação | Texto | Caracteres | Origem |
 |---|---|---|---|---|
 | FB-01 | primeira dose do antibiótico certo (Gram+ ou Gram-) | `primeira dose: complete o tratamento` | 36 | #215 (FB2-05) |
-| FB-01b | prazo da 2ª dose venceu, Gram+ | `tratamento incompleto: resistente à Ruptura` | 43 | #215 (FB2-06) |
-| FB-01c | prazo da 2ª dose venceu, Gram- | `tratamento incompleto: resistente à Dissolução` | 46 | #215 (FB2-06) |
-| FB-02 | antibiótico do tratamento numa resistente, Gram+ | `resistente à Ruptura: use a Reserva` | 35 | #215 |
-| FB-02b | antibiótico do tratamento numa resistente, Gram- | `resistente à Dissolução: use a Reserva` | 38 | #215 |
-| FB-03 | acerto que elimina, agente identificado | `ameaça eliminada: +10 pontos` | 28 | já existia (#66); "eliminada" no lugar de "neutralizada" no redesenho de 28/11 (verbo único, dono em 26/11) |
-| FB-04 | acerto que elimina sem identificação | `eliminada sem identificar: o bônus de 9/9 se perdeu` | 51 | já existia (#67); "eliminada" no redesenho de 28/11 |
+| FB-01b | prazo da 2ª dose venceu, Gram+ | `tratamento incompleto: <x:resistente> à <wR:Ruptura>` | 43 | #215 (FB2-06) |
+| FB-01c | prazo da 2ª dose venceu, Gram- | `tratamento incompleto: <x:resistente> à <wD:Dissolução>` | 46 | #215 (FB2-06) |
+| FB-02 | antibiótico do tratamento numa resistente, Gram+ | `<x:resistente> à <wR:Ruptura>: use a <wS:Reserva>` | 35 | #215 |
+| FB-02b | antibiótico do tratamento numa resistente, Gram- | `<x:resistente> à <wD:Dissolução>: use a <wS:Reserva>` | 38 | #215 |
+| FB-03 | acerto que elimina, agente identificado | `ameaça <g:eliminada>: <g:+10 pontos>` | 28 | já existia (#66); "eliminada" no lugar de "neutralizada" no redesenho de 28/11 (verbo único, dono em 26/11) |
+| FB-04 | acerto que elimina sem identificação | `<g:eliminada> sem identificar: o bônus de 9/9 se perdeu` | 51 | já existia (#67); "eliminada" no redesenho de 28/11 |
 | FB-05 | antibiótico errado depois de ler só a forma (camada 1) | `a forma não define o grupo: veja a coloração` | 44 | #215 (FB2-02) |
-| FB-06 | Dissolução em Gram+ | `a Gram+ não tem membrana externa para a Dissolução` | 50 | #215 (FB2-04) |
-| FB-07 | Ruptura em Gram- | `a membrana externa barrou a Ruptura` | 35 | #215 (FB2-03) |
-| FB-08 | célula do Léo ferida por qualquer arma (-15 vitais), Fases 1 e 2 (na 2 não há caminho) | `você feriu uma célula do Léo: ela tem núcleo, não é bactéria` | 60 | #218 (FB2-01); "do Léo" no redesenho de 28/11 |
-| FB-08b | célula do Léo ferida na Fase 3 (Perfuração ou Ruptura), escolhida por `phase_has_fungi()` | `você feriu uma célula do Léo: é célula do corpo, não fungo` | 58 | redesenho de 28/11: o fungo também tem núcleo |
-| FB-11 | Reserva elimina uma resistente | `a Reserva eliminou a resistente: +10 pontos` | 43 | #216 |
-| FB-12 | Reserva gasta numa bactéria comum | `Reserva numa bactéria comum: guarde para a resistente` | 53 | #216 (uso racional) |
-| FB-13 | disparo da Reserva sem carga | `Reserva esgotada` | 16 | #216 (FB2-07) |
+| FB-06 | Dissolução em Gram+ | `a <p:Gram+> não tem membrana externa para a <wD:Dissolução>` | 50 | #215 (FB2-04) |
+| FB-07 | Ruptura em Gram- | `a membrana externa barrou a <wR:Ruptura>` | 35 | #215 (FB2-03) |
+| FB-08 | célula do Léo ferida por qualquer arma (-15 vitais), Fases 1 e 2 (na 2 não há caminho) | `você <x:feriu> uma célula do Léo: ela tem núcleo, não é bactéria` | 60 | #218 (FB2-01); "do Léo" no redesenho de 28/11 |
+| FB-08b | célula do Léo ferida na Fase 3 (Perfuração ou Ruptura), escolhida por `phase_has_fungi()` | `você <x:feriu> uma célula do Léo: é célula do corpo, não fungo` | 58 | redesenho de 28/11: o fungo também tem núcleo |
+| FB-11 | Reserva elimina uma resistente | `a <wS:Reserva> eliminou a resistente: <g:+10 pontos>` | 43 | #216 |
+| FB-12 | Reserva gasta numa bactéria comum | `<wS:Reserva> numa bactéria comum: guarde para a resistente` | 53 | #216 (uso racional) |
+| FB-13 | disparo da Reserva sem carga | `<wS:Reserva> esgotada` | 16 | #216 (FB2-07) |
 | FB-14 | uma bactéria se dividiu | `uma bactéria se dividiu em duas` | 31 | #217 (FB2-13) |
-| FB-10 | contato com invasor (bactéria ou vírus) | `contato com invasor: -10 de integridade` | 39 | #11; #218; #234 (duas barras) |
-| FB-15 | célula do Léo perdida (colonizada ou rompida) | `uma célula do Léo foi destruída: -20 vitais` | 43 | #234; "do Léo" no redesenho de 28/11 |
-| FB-16 | toxina do coco acerta o Nanobô | `toxina do coco: -8 de integridade` | 33 | #236 |
+| FB-10 | contato com invasor (bactéria ou vírus) | `contato com invasor: <x:-10 de integridade>` | 39 | #11; #218; #234 (duas barras) |
+| FB-15 | célula do Léo perdida (colonizada ou rompida) | `uma célula do Léo foi <x:destruída>: <x:-20 vitais>` | 43 | #234; "do Léo" no redesenho de 28/11 |
+| FB-16 | toxina do coco acerta o Nanobô | `toxina do coco: <x:-8 de integridade>` | 33 | #236 |
 | FB-17 | a defesa destrói um projétil inimigo | `a defesa destruiu a toxina` | 26 | #236 |
 | FB-18 | primeira dose numa bactéria dentro do biofilme | `o biofilme protege a bactéria: ela pede mais uma dose` | 53 | #237 |
-| FB-19 | o Nanobô dentro da nuvem de endotoxina | `endotoxina da Gram-: saia da nuvem` | 34 | #237 |
-| FB-20 | Neutralização prende um vírus livre | `anticorpos prenderam o vírus: +10 pontos` | 40 | #88 |
-| FB-21 | Neutralização numa célula infectada | `o vírus está dentro da célula: use o Ataque T` | 45 | #88 (FB2-09) |
+| FB-19 | o Nanobô dentro da nuvem de endotoxina | `endotoxina da <r:Gram->: saia da nuvem` | 34 | #237 |
+| FB-20 | Neutralização prende um vírus livre | `anticorpos prenderam o vírus: <g:+10 pontos>` | 40 | #88 |
+| FB-21 | Neutralização numa célula infectada | `o vírus está dentro da célula: use o <wT:Ataque T>` | 45 | #88 (FB2-09) |
 | FB-22 | Neutralização numa célula saudável (sem custo) | `anticorpos não se prendem à célula do paciente` | 46 | #88 |
-| FB-23 | Ataque T numa célula infectada ainda não lida (não dispara) | `leia a célula antes do Ataque T` | 31 | #88 |
-| FB-24 | Ataque T sem célula infectada no caminho (não dispara) | `o Ataque T só age em célula infectada` | 37 | #88 |
-| FB-25 | projétil do Ataque T acerta um vírus livre | `o Ataque T age na célula infectada, não no vírus livre` | 54 | #88 |
-| FB-26 | Ataque T tira a célula infectada | `Ataque T: a célula infectada saiu sem romper: -5 vitais` | 55 | #88 |
+| FB-23 | Ataque T numa célula infectada ainda não lida (não dispara) | `leia a célula antes do <wT:Ataque T>` | 31 | #88 |
+| FB-24 | Ataque T sem célula infectada no caminho (não dispara) | `o <wT:Ataque T> só age em célula infectada` | 37 | #88 |
+| FB-25 | projétil do Ataque T acerta um vírus livre | `o <wT:Ataque T> age na célula infectada, não no vírus livre` | 54 | #88 |
+| FB-26 | Ataque T tira a célula infectada | `<wT:Ataque T>: a célula infectada saiu sem romper: <x:-5 vitais>` | 55 | #88 |
 | FB-27 | antibiótico num vírus | `antibiótico não age em vírus` | 28 | #88 (FB2-08) |
 | FB-28 | vírus livre infecta uma célula | `um vírus entrou numa célula: ela está infectada` | 47 | #85 |
 | FB-29 | a célula infectada rompe no fim do eclipse | `a célula se rompeu: 6 vírus livres (ciclo lítico)` | 49 | #86 (FB2-10, com os 6 de 14/11) |
 | FB-30 | a defesa destrói um vírus da rajada | `a defesa destruiu o vírus da rajada` | 35 | #86 |
-| FB-31 | vírus da rajada acerta o Nanobô | `vírus da rajada: -6 de integridade` | 34 | #86 |
+| FB-31 | vírus da rajada acerta o Nanobô | `vírus da rajada: <x:-6 de integridade>` | 34 | #86 |
 | FB-32 | antibiótico (Ruptura ou Dissolução) num fungo, na hifa ou no esporo pousado; trava o disparo | `a parede do fungo é de quitina: antibiótico não age` | 51 | #230 (FB2-11) |
 | FB-33 | 1ª dose de Perfuração na levedura: sobram 2 de resistência | `cápsula enfraquecida: faltam 2 doses` | 36 | #230; contagem certa desde a revisão final de 25/11 (era `mais uma dose`) |
 | FB-33b | 2ª dose de Perfuração na levedura: sobra 1 de resistência | `cápsula enfraquecida: falta 1 dose` | 34 | revisão final de 25/11 |
 | FB-34 | a levedura brota e nasce outra (só se não houver feedback no quadro) | `a levedura brotou: nasceu outra` | 31 | #228 (FB2-14) |
-| FB-35 | o Nanobô toca um segmento da hifa (a defesa não protege) | `hifa: -10 de integridade` | 24 | #229 |
+| FB-35 | o Nanobô toca um segmento da hifa (a defesa não protege) | `hifa: <x:-10 de integridade>` | 24 | #229 |
 | FB-36 | Perfuração na hifa, não na base: corta o segmento da ponta, sem pontos | `corte a base da colônia` | 23 | #229 (FB2-12) |
-| FB-37 | esporo do bolor acerta o Nanobô (some sem pousar) | `esporo do bolor: -8 de integridade` | 34 | #229 |
+| FB-37 | esporo do bolor acerta o Nanobô (some sem pousar) | `esporo do bolor: <x:-8 de integridade>` | 34 | #229 |
 | FB-38 | a defesa destrói um esporo em voo | `a defesa destruiu o esporo` | 26 | #229 |
 | FB-39 | Perfuração elimina um esporo pousado: ameaça a menos, sem pontos (decisão do dono, 25/11) | `esporo destruído` | 16 | #229 |
 | FB-40 | Perfuração elimina uma colônia que germinou de esporo: ameaça a menos, sem pontos (decisão do dono, 25/11) | `colônia germinada destruída: sem pontos` | 39 | revisão final de 25/11 |
@@ -126,9 +126,9 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 | CT-33 | resultados | `não obtido` | 10 | #202 |
 | CT-34 | resultados | `[enter] também continua` | 21 | #202 |
 | CT-35 | vitória | `Vitória` | 7 | #202 |
-| CT-36 | HUD, linha 0, à direita | `Ruptura · parede` / `Dissolução · membrana` / `Reserva %d/%d · resistente` (`Reserva 2/2 · resistente`) | 16 / 21 / 24 | decisão 03/11 (noite); #216; a arma com o alvo dela em 15/11 (#243) |
-| CT-36b | HUD, linha 0, Fase 2 | `Neutralização · vírus livre` / `Ataque T · célula infectada` | 27 / 27 | #88; #243 |
-| CT-36c | HUD, linha 0, Fase 3 | `Perfuração · antifúngico` | 24 | #230 |
+| CT-36 | HUD, linha 0, à direita | `<wR:Ruptura> · parede` / `<wD:Dissolução> · membrana` / `<wS:Reserva> %d/%d · resistente` (`Reserva 2/2 · resistente`) | 16 / 21 / 24 | decisão 03/11 (noite); #216; a arma com o alvo dela em 15/11 (#243) |
+| CT-36b | HUD, linha 0, Fase 2 | `<wN:Neutralização> · vírus livre` / `<wT:Ataque T> · célula infectada` | 27 / 27 | #88; #243 |
+| CT-36c | HUD, linha 0, Fase 3 | `<wF:Perfuração> · antifúngico` | 24 | #230 |
 | CT-37 | resultados, título do painel do relatório | `O que anotei nesta fase` | 23 | #202, build de 04/11; voz do Diário desde 26/11 |
 | CT-38 a CT-41 | — | contadores e frase de revisão do painel de 04/11 | — | saíram com o relatório por objetivo (#210, #223); os textos atuais são as RR-01 a RR-10 da §2.2 |
 | CT-42 | — | `neutralize os vírus e vá ao destino` | — | Fase 2 mínima (04/11); encurtada em 15/11 (#243); saiu do HUD em 28/11 (HD-01): vira uma variante do aviso de objetivo OB-01 |
@@ -158,13 +158,13 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 | PA-02b | pausa, linha da fase (Fase 2) | `Fase 2 · vírus nas vias aéreas` | 30 | redesenho de 28/11 |
 | PA-02c | pausa, linha da fase (Fase 3) | `Fase 3 · fungos no pulmão` | 25 | redesenho de 28/11 |
 | PA-03a | pausa, objetivo da Fase 1, linha 1 (y 124) | `Elimine as bactérias do sangue do Léo e vá ao destino.` | 54 | redesenho de 28/11 |
-| PA-03b | pausa, objetivo da Fase 1, linha 2 (y 140) | `Gram+: Ruptura. Gram-: Dissolução. Resistente: Reserva.` | 55 | redesenho de 28/11; mapeamento de arma do glossário (regra do jogo) |
-| PA-03c | pausa, objetivo da Fase 1, linha 3 (y 156) | `Leia antes de disparar. Ler todos vale +15 pontos.` | 50 | redesenho de 28/11; o 15 é o `IDENTIFICATION_BONUS` |
+| PA-03b | pausa, objetivo da Fase 1, linha 2 (y 140) | `<p:Gram+>: <wR:Ruptura>. <r:Gram->: <wD:Dissolução>. Resistente: <wS:Reserva>.` | 55 | redesenho de 28/11; mapeamento de arma do glossário (regra do jogo) |
+| PA-03c | pausa, objetivo da Fase 1, linha 3 (y 156) | `Leia antes de disparar. Ler todos vale <g:+15 pontos>.` | 50 | redesenho de 28/11; o 15 é o `IDENTIFICATION_BONUS` |
 | PA-03d | pausa, objetivo da Fase 2, linha 1 | `Elimine os vírus nas vias aéreas do Léo e vá ao destino.` | 56 | redesenho de 28/11 |
-| PA-03e | pausa, objetivo da Fase 2, linha 2 | `Vírus livre: Neutralização. Célula infectada: Ataque T.` | 55 | redesenho de 28/11 |
-| PA-03f | pausa, objetivo da Fase 2, linha 3 | `Leia a célula antes: o Ataque T custa vitais do Léo.` | 52 | redesenho de 28/11; `LYSE_VITALS` 5 |
+| PA-03e | pausa, objetivo da Fase 2, linha 2 | `Vírus livre: <wN:Neutralização>. Célula infectada: <wT:Ataque T>.` | 55 | redesenho de 28/11 |
+| PA-03f | pausa, objetivo da Fase 2, linha 3 | `Leia a célula antes: o <wT:Ataque T> custa vitais do Léo.` | 52 | redesenho de 28/11; `LYSE_VITALS` 5 |
 | PA-03g | pausa, objetivo da Fase 3, linha 1 | `Elimine os fungos no pulmão do Léo e vá ao destino.` | 51 | redesenho de 28/11 |
-| PA-03h | pausa, objetivo da Fase 3, linha 2 | `Antibiótico não tem alvo no fungo: use a Perfuração.` | 52 | redesenho de 28/11 |
+| PA-03h | pausa, objetivo da Fase 3, linha 2 | `Antibiótico não tem alvo no fungo: use a <wF:Perfuração>.` | 52 | redesenho de 28/11 |
 | PA-03i | pausa, objetivo da Fase 3, linha 3 | `No bolor, mire na base da colônia, não na hifa.` | 47 | redesenho de 28/11; RT-18 |
 | PA-04a | pausa, lembrete de teclas, linha 1 (`UI_DIM`, y 180) | `[WASD] mover · [clique] dispara · [botão direito] lê` | 46 | redesenho de 28/11 |
 | PA-04b | pausa, lembrete de teclas, linha 2 (y 196) | `[X] defesa · [1] [2] [3] ou [roda]: arma` | 30 | redesenho de 28/11 |
@@ -224,21 +224,21 @@ Cena própria, aberta pelo botão COMO JOGAR (MN-01) do menu e da pausa; volta p
 | HW-02a | página 2, linha 1 | `[Botão direito] num agente: eu leio uma camada por vez.` | 53 | redesenho de 28/11 |
 | HW-02b | página 2, linha 2 | `Camada 1: a {forma}. Coco, bacilo, levedura, bolor...` | 51 | redesenho de 28/11; `forma` em âmbar |
 | HW-02c | página 2, linha 3 | `Camada 2: a {coloração de Gram} e o nome da espécie.` | 50 | redesenho de 28/11; `coloração de Gram` em âmbar |
-| HW-02d | página 2, linha 4 | `A forma não basta: existe coco Gram+ e coco Gram-.` | 50 | redesenho de 28/11 |
+| HW-02d | página 2, linha 4 | `A forma não basta: existe coco <p:Gram+> e coco <r:Gram->.` | 50 | redesenho de 28/11 |
 | HW-02e | página 2, linha 5 | `Com as duas camadas lidas, o agente está identificado.` | 54 | redesenho de 28/11 |
-| HW-02f | página 2, linha 6 | `Identificar todos os agentes da fase vale +15 pontos.` | 53 | redesenho de 28/11; o 15 é o `IDENTIFICATION_BONUS` |
+| HW-02f | página 2, linha 6 | `Identificar todos os agentes da fase vale <g:+15 pontos>.` | 53 | redesenho de 28/11; o 15 é o `IDENTIFICATION_BONUS` |
 | HW-03 | página 3, título | `Armas` | 5 | redesenho de 28/11 |
 | HW-03a | página 3, linha 1 | `[1], [2], [3] ou [roda do mouse]: trocar de arma.` | 41 | redesenho de 28/11 |
-| HW-03b | página 3, linha 2 | `Fase 1: [1] Ruptura · [2] Dissolução · [3] Reserva (2 cargas)` | 55 | redesenho de 28/11 |
+| HW-03b | página 3, linha 2 | `Fase 1: [1] <wR:Ruptura> · [2] <wD:Dissolução> · [3] <wS:Reserva> (2 cargas)` | 55 | redesenho de 28/11 |
 | HW-03c | página 3, linha 3 | `Cada bactéria pede 2 doses, a segunda em até 6 segundos.` | 56 | redesenho de 28/11 |
-| HW-03d | página 3, linha 4 | `Fase 2: [1] Neutralização (vírus livre) · [2] Ataque T` | 50 | redesenho de 28/11 |
-| HW-03e | página 3, linha 5 | `Fase 3: [1] Perfuração · [2] Ruptura (não age em fungo)` | 51 | redesenho de 28/11 |
+| HW-03d | página 3, linha 4 | `Fase 2: [1] <wN:Neutralização> (vírus livre) · [2] <wT:Ataque T>` | 50 | redesenho de 28/11 |
+| HW-03e | página 3, linha 5 | `Fase 3: [1] <wF:Perfuração> · [2] <wR:Ruptura> (não age em fungo)` | 51 | redesenho de 28/11 |
 | HW-03f | página 3, linha 6 | `Regra do jogo: as armas se inspiram em remédios reais.` | 54 | redesenho de 28/11 |
 | HW-04 | página 4, título | `As duas barras` | 14 | redesenho de 28/11 |
 | HW-04a | página 4, linha 1 | `Cabeça de robô: a minha {Integridade}. Ela cai quando` | 51 | redesenho de 28/11; `Integridade` em âmbar |
 | HW-04b | página 4, linha 2 | `um invasor, uma toxina, a hifa ou a nuvem me acertam.` | 53 | redesenho de 28/11 |
 | HW-04c | página 4, linha 3 | `Coração: os {Vitais} do Léo. Caem quando uma célula dele` | 54 | redesenho de 28/11; `Vitais` em âmbar |
-| HW-04d | página 4, linha 4 | `é destruída ou atingida por engano, e no Ataque T.` | 50 | redesenho de 28/11 |
+| HW-04d | página 4, linha 4 | `é destruída ou atingida por engano, e no <wT:Ataque T>.` | 50 | redesenho de 28/11 |
 | HW-04e | página 4, linha 5 | `Se uma das barras zera, a equipe me retira do corpo.` | 52 | redesenho de 28/11 |
 | HW-04f | página 4, linha 6 | `Nova fase: Integridade cheia e Vitais de no mínimo 60.` | 54 | redesenho de 28/11 |
 
@@ -249,8 +249,8 @@ Cena própria, aberta pelo botão COMO JOGAR (MN-01) do menu e da pausa; volta p
 | RT-01 | scanner, camada 1, coco | `forma: coco (esférica)` (sem amostra de cor) | 22 | #214, design 2.0 |
 | RT-02 | scanner, camada 1, bacilo | `forma: bacilo (bastão)` (sem amostra de cor) | 22 | #214, design 2.0 |
 | SC-08 | scanner, camada 1, célula | `célula do Léo · eucarionte` (sem amostra de cor) | 26 | #214; redesenho de 28/11; substitui a RT-03 |
-| RT-04 | scanner, camada 2, Gram+ (amostra roxa) | `Gram+ · parede grossa, sem membrana externa · %s` (`... · Streptococcus pyogenes`) | 46 + nome (até 68) | #214, design 2.0 |
-| RT-05 | scanner, camada 2, Gram- (amostra rosa) | `Gram- · parede fina sob membrana externa · %s` (`... · Pseudomonas aeruginosa`) | 43 + nome (até 65) | #214, design 2.0 |
+| RT-04 | scanner, camada 2, Gram+ (amostra roxa) | `<p:Gram+> · parede grossa, sem membrana externa · %s` (`... · Streptococcus pyogenes`) | 46 + nome (até 68) | #214, design 2.0 |
+| RT-05 | scanner, camada 2, Gram- (amostra rosa) | `<r:Gram-> · parede fina sob membrana externa · %s` (`... · Pseudomonas aeruginosa`) | 43 + nome (até 65) | #214, design 2.0 |
 | RT-05c | scanner, camada 2, o `%s` da RT-04 e da RT-05 (`phases[]` em `src/entities/entities.c`) | Gram+: `Staphylococcus aureus` / `Streptococcus pyogenes` / `Clostridium tetani`; Gram-: `Moraxella catarrhalis` / `Escherichia coli` / `Pseudomonas aeruginosa` | 21 / 22 / 18; 21 / 16 / 22 | #214; registrado na #212 |
 | RT-05b | scanner, camada 2, célula | `núcleo guarda o DNA · mitocôndrias · não atacar` | 47 | #214, design 2.0 |
 | RT-06 | scanner, linha de estado | ` · alvo sob o cursor` (ciano) / ` · última leitura` (apagado) | 20 / 17 | #199, build de 04/11 |
@@ -285,6 +285,18 @@ Regras que valem para todo texto novo:
 - Caixa alta só em texto **sem acento** (`INICIAR`, `CONTINUAR`, `COMO JOGAR` quando não houver acento).
 - Nenhum texto desenhado pode ter maiúscula acentuada. `NANOBÔ` é exceção registrada: é o nome do jogo, desenhado em bitmap ampliado 3×, onde o glifo é legível mas não correto.
 - **Tecla em caixinha (27/11, decisão do dono):** o nome de tecla ou botão vem entre colchetes (`[enter]`, `[botão direito]`) e é desenhado como tampa de tecla: nome em `UI_KEY` numa caixa de 14 px de altura com borda `UI_KEY` e fundo `UI_INK`, 3 px de folga de cada lado. Os colchetes não aparecem nem contam nos caracteres (como as chaves do `{termo}`), mas cada tecla soma **+6 px** à largura da linha (`marked_text_width`). Só nomes de tecla/botão levam colchetes, nunca verbos.
+- **Cor por marca (27/11, decisão do dono):** `<c:texto>` pinta só o trecho entre `<c:` e `>` com a cor do código, no alfa da cor base (como o `{termo}`); as marcas não aparecem nem contam nos caracteres nem na largura, e não se aninham (nada de marca dentro de `{termo}` ou de outra marca). Mesmo parser do `{termo}` e da `[tecla]` (`draw_dialog_line`, `draw_marked_text`, `draw_marked_text_aligned`, `marked_text_width`, `dialog_visible_chars`). Códigos:
+
+  | Código | Uso | Cor |
+  |---|---|---|
+  | `p` | `Gram+` | `UI_PURPLE` (roxo do cristal violeta) |
+  | `r` | `Gram-` | `UI_PINK` (rosa da safranina) |
+  | `g` | ganho: `+N pontos`, `eliminada` como resultado da ação | `UI_GREEN` |
+  | `x` | perda: `-N vitais`, `-N de integridade`, `resistente`/`resistiram` como consequência, `errei`, `feriu`, `destruída` | `UI_RED` |
+  | `wR` `wD` `wS` | Ruptura, Dissolução, Reserva | `laser_color()`: `UI_PURPLE`, `UI_PINK`, `UI_AMBER` |
+  | `wN` `wT` `wF` | Neutralização, Ataque T, Perfuração | `laser_color()`: `UI_CYAN`, `UI_GREEN`, `UI_WARM` |
+
+  A arma sai na mesma cor da mira e do tiro. `Reserva` só leva `wS` quando é a arma; `resistente` que nomeia o alvo (`Reserva %d/%d · resistente`, `Resistente: Reserva.`) fica sem cor. Ex.: `<p:Gram+>: <wR:Ruptura>.`, `anticorpos prenderam o vírus: <g:+10 pontos>`.
 - Antes de commitar texto novo, rodar `python -c "print([c for c in 'TEXTO' if ord(c) > 0xFF])"` (codepoint fora de Latin-1 vira `^` na tela).
 
 ## 2.2 Relatório da fase (resultados, #210 e #223)
@@ -293,13 +305,13 @@ Desde 26/11 o painel se chama `O que anotei nesta fase` (23 caracteres) e as lin
 
 | ID | Linha | Texto | Caracteres | Contador |
 |---|---|---|---:|---|
-| RR-01 | 1, fase com bactéria | `li %d Gram+ e %d Gram- até a coloração` | 37 | `scans_gram_positive`, `scans_gram_negative` |
-| RR-02 | 2, fase com bactéria | `tratei %d até o fim; %d resistiram` | 33 | `treatments_completed`, `resistances` |
-| RR-03 | 3, fase com bactéria | `não errei nenhum antibiótico` / `errei %d antibióticos (%d pela forma)` | 28 / 37 | `wrong_decisions`, `shape_guesses` |
-| RR-04 | 4, fase com bactéria | `guardei a Reserva: nenhuma carga gasta` / `Reserva: %d na resistente, %d na comum` | 38 / 36 | `reserve_on_resistant`, `reserve_on_common` |
+| RR-01 | 1, fase com bactéria | `li %d <p:Gram+> e %d <r:Gram-> até a coloração` | 37 | `scans_gram_positive`, `scans_gram_negative` |
+| RR-02 | 2, fase com bactéria | `tratei %d até o fim; <x:%d resistiram>` / sem resistência `tratei %d até o fim; %d resistiram` | 33 / 33 | `treatments_completed`, `resistances`; o zero fica sem o coral (não é perda) |
+| RR-03 | 3, fase com bactéria | `não errei nenhum antibiótico` / `<x:errei %d antibióticos> (%d pela forma)` | 28 / 37 | `wrong_decisions`, `shape_guesses` |
+| RR-04 | 4, fase com bactéria | `guardei a <wS:Reserva>: nenhuma carga gasta` / `<wS:Reserva>: %d na resistente, %d na comum` | 38 / 36 | `reserve_on_resistant`, `reserve_on_common` |
 | RR-05 | 5, fase com bactéria | `acertei %d células do Léo por engano` | 35 | `cell_attacks` |
 | RR-06 | 1, fase de vírus | `prendi %d vírus livres com anticorpos` | 36 | `viruses_neutralized` (#88) |
-| RR-07 | 2, fase de vírus | `Ataque T: contive %d células a tempo` | 35 | `cells_lysed` (#88) |
+| RR-07 | 2, fase de vírus | `<wT:Ataque T>: contive %d células a tempo` | 35 | `cells_lysed` (#88) |
 | RR-08 | 3, fase de vírus | `%d células romperam no ciclo lítico` | 35 | `cells_burst` (#86) |
 | RR-09 | 4, fase de vírus | `eliminei %d de %d ameaças` | 24 | ameaças da fase, com os vírus da rajada |
 | RR-10 | 5, fase de vírus | `anotei: vírus sem parede nem ribossomos` | 39 | — (OA6) |
@@ -334,11 +346,11 @@ Desde 26/11 o painel se chama `O que anotei nesta fase` (23 caracteres) e as lin
 | ID | Card / quando aparece | Linha | Car. |
 |---|---|---|---:|
 | CC-01a | Nanobô · Anotação 1 · Coloração de Gram · 1ª leitura completa de bactéria · página 1 de 4 | Li uma bactéria até o fim! A forma não basta: | 45 |
-| CC-01b |  | existe coco Gram+ e coco Gram-. Quem mostra o grupo | 51 |
+| CC-01b |  | existe coco <p:Gram+> e coco <r:Gram->. Quem mostra o grupo | 51 |
 | CC-01c |  | é a {coloração de Gram}, um corante de laboratório. | 49 |
 | CC-01d | página 2 de 4 | O corante roxo fica preso ou sai conforme a parede. | 51 |
-| CC-01e |  | Gram+: parede grossa de {peptidoglicano}, o roxo fica. | 52 |
-| CC-01f |  | Gram-: parede fina e membrana externa; perde o roxo, fica rosa. | 63 |
+| CC-01e |  | <p:Gram+>: parede grossa de {peptidoglicano}, o roxo fica. | 52 |
+| CC-01f |  | <r:Gram->: parede fina e membrana externa; perde o roxo, fica rosa. | 63 |
 | CC-01g | página 3 de 4 | Anotado: no jogo, todas aparecem juntas no sangue para | 54 |
 | CC-01h |  | {simplificar}. A Moraxella vive nas vias respiratórias, | 53 |
 | CC-01i |  | e o Clostridium tetani entra por ferimentos. | 44 |
@@ -363,7 +375,7 @@ Desde 26/11 o painel se chama `O que anotei nesta fase` (23 caracteres) e as lin
 | CC-03d |  | usando os ribossomos dela. | 26 |
 | CC-03e | página 3 de 4 | {Antibiótico} não age nele: não trata gripe nem resfriado. | 56 |
 | CC-03f |  | Se gastei um tiro de antibiótico aqui, errei... anotado! | 56 |
-| CC-03g | página 4 de 4 | A Neutralização leva {anticorpos}: eles se prendem ao vírus | 57 |
+| CC-03g | página 4 de 4 | A <wN:Neutralização> leva {anticorpos}: eles se prendem ao vírus | 57 |
 | CC-03h |  | livre e o impedem de entrar nas células. | 40 |
 | CC-03i |  | No corpo, quem faz anticorpos são os linfócitos B. | 50 |
 | CC-04a | Nanobô · Anotação 7 · Lisogênico e lítico · 1ª leitura de célula infectada · página 1 de 4 | Esta célula do Léo tem um vírus escondido dentro! | 49 |
@@ -405,9 +417,9 @@ Desde 26/11 o painel se chama `O que anotei nesta fase` (23 caracteres) e as lin
 | CC-08d |  | e as bactérias de dentro funcionam mais devagar. | 48 |
 | CC-08e | página 3 de 3 | Regra do jogo: no biofilme a bactéria pede uma {dose} a mais, | 59 |
 | CC-08f |  | e eu ando devagar. | 18 |
-| CC-09a | Nanobô · Anotação 5 · Endotoxina · 1º contato do Nanobô com uma nuvem (14/11; no código desde a #237) · página 1 de 3 | Ai, esta nuvem me fere! Ela veio de uma Gram- eliminada. | 56 |
-| CC-09b |  | A membrana externa da Gram- guarda uma {toxina}. | 46 |
-| CC-09c | página 2 de 3 | Quando a Gram- morre ou se divide, essa toxina se solta | 55 |
+| CC-09a | Nanobô · Anotação 5 · Endotoxina · 1º contato do Nanobô com uma nuvem (14/11; no código desde a #237) · página 1 de 3 | Ai, esta nuvem me fere! Ela veio de uma <r:Gram-> eliminada. | 56 |
+| CC-09b |  | A membrana externa da <r:Gram-> guarda uma {toxina}. | 46 |
+| CC-09c | página 2 de 3 | Quando a <r:Gram-> morre ou se divide, essa toxina se solta | 55 |
 | CC-09d |  | e causa {inflamação} e febre no corpo. | 36 |
 | CC-09e | página 3 de 3 | Regra do jogo: a nuvem me fere enquanto dura. | 45 |
 | CC-09f |  | Anotado: {sair da nuvem} bem rápido! | 34 |

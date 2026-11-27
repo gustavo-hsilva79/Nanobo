@@ -1429,7 +1429,7 @@ void draw_scan_card(int target, bool from_cursor, float card_y)
 
     // camada 2: coloracao, estrutura e o que a celula e, sem indicar a arma (#214)
     draw_scan_swatch(agents[target].species, (float)text_x, (float)row_info);
-    al_draw_text(font, UI_WARM, (float)(text_x + 12), (float)row_info, 0,
+    draw_marked_text((float)(text_x + 12), (float)row_info, UI_WARM,
         layer_two_text(target));
     al_draw_text(font, UI_WARM, (float)text_x, (float)row_action, 0,
         layer_two_reason(target));
@@ -1982,13 +1982,13 @@ static const DialogEntry diary_entries[CARD_COUNT] =
         {
             {
                 "Li uma bactéria até o fim! A forma não basta:",
-                "existe coco Gram+ e coco Gram-. Quem mostra o grupo",
+                "existe coco <p:Gram+> e coco <r:Gram->. Quem mostra o grupo",
                 "é a {coloração de Gram}, um corante de laboratório."
             },
             {
                 "O corante roxo fica preso ou sai conforme a parede.",
-                "Gram+: parede grossa de {peptidoglicano}, o roxo fica.",
-                "Gram-: parede fina e membrana externa; perde o roxo, fica rosa."
+                "<p:Gram+>: parede grossa de {peptidoglicano}, o roxo fica.",
+                "<r:Gram->: parede fina e membrana externa; perde o roxo, fica rosa."
             },
             {
                 "Anotado: no jogo, todas aparecem juntas no sangue para",
@@ -2079,12 +2079,12 @@ static const DialogEntry diary_entries[CARD_COUNT] =
         "Endotoxina", 3,
         {
             {
-                "Ai, esta nuvem me fere! Ela veio de uma Gram- eliminada.",
-                "A membrana externa da Gram- guarda uma {toxina}.",
+                "Ai, esta nuvem me fere! Ela veio de uma <r:Gram-> eliminada.",
+                "A membrana externa da <r:Gram-> guarda uma {toxina}.",
                 NULL
             },
             {
-                "Quando a Gram- morre ou se divide, essa toxina se solta",
+                "Quando a <r:Gram-> morre ou se divide, essa toxina se solta",
                 "e causa {inflamação} e febre no corpo.",
                 NULL
             },
@@ -2116,7 +2116,7 @@ static const DialogEntry diary_entries[CARD_COUNT] =
                 NULL
             },
             {
-                "A Neutralização leva {anticorpos}: eles se prendem ao vírus",
+                "A <wN:Neutralização> leva {anticorpos}: eles se prendem ao vírus",
                 "livre e o impedem de entrar nas células.",
                 "No corpo, quem faz anticorpos são os linfócitos B."
             }
@@ -2205,7 +2205,72 @@ static const DialogEntry diary_entries[CARD_COUNT] =
 DialogState card_dialog;
 ConceptCard card_dialog_entry = CARD_NONE;
 
-// caracteres que aparecem na tela: conta por letra utf-8 e pula chaves e colchetes
+// marca de cor <c:texto> (27/11): devolve os bytes de "<c:" (codigo de 1 ou
+// 2 letras) ou 0 se ali nao comeca uma marca
+int color_mark_length(const char* c)
+{
+    int code = 0;
+
+    if (*c != '<')
+    {
+        return 0;
+    }
+
+    while (code < 2 && c[1 + code] != '\0' && c[1 + code] != ':')
+    {
+        code = code + 1;
+    }
+
+    if (code == 0 || c[1 + code] != ':')
+    {
+        return 0;
+    }
+
+    return code + 2;
+}
+
+// cor da marca: p Gram+, r Gram-, g ganho, x perda; wR wD wS wN wT wF a arma
+// na mesma cor da mira e do tiro
+ALLEGRO_COLOR laser_color(Laser laser);
+
+ALLEGRO_COLOR color_mark_color(const char* c)
+{
+    if (c[1] == 'p')
+    {
+        return UI_PURPLE;
+    }
+    if (c[1] == 'r')
+    {
+        return UI_PINK;
+    }
+    if (c[1] == 'g')
+    {
+        return UI_GREEN;
+    }
+    if (c[1] == 'x')
+    {
+        return UI_RED;
+    }
+
+    switch (c[2])
+    {
+    case 'R':
+        return laser_color(LASER_GRAM_POSITIVE);
+    case 'D':
+        return laser_color(LASER_GRAM_NEGATIVE);
+    case 'S':
+        return laser_color(LASER_RESERVE);
+    case 'N':
+        return laser_color(LASER_NEUTRALIZE);
+    case 'T':
+        return laser_color(LASER_LYSE);
+    default:
+        return laser_color(LASER_PERFORATE);
+    }
+}
+
+// caracteres que aparecem na tela: conta por letra utf-8 e pula chaves,
+// colchetes e as marcas de cor
 int dialog_visible_chars(const char* line)
 {
     int count = 0;
@@ -2218,7 +2283,15 @@ int dialog_visible_chars(const char* line)
 
     for (; *c != '\0'; c++)
     {
-        if (*c != '{' && *c != '}' && *c != '[' && *c != ']' && (*c & 0xC0) != 0x80)
+        int skip = color_mark_length((const char*)c);
+
+        if (skip > 0)
+        {
+            c = c + skip - 1;
+            continue;
+        }
+
+        if (*c != '{' && *c != '}' && *c != '[' && *c != ']' && *c != '>' && (*c & 0xC0) != 0x80)
         {
             count = count + 1;
         }
@@ -2320,24 +2393,29 @@ float draw_key_cap(float x, float y, const char* name, float alpha)
 
 // uma linha com no maximo budget letras; o termo entre chaves sai em ambar,
 // a tecla entre colchetes sai em tampa de tecla, os dois com o alfa da cor
-// base, e o resto na cor base
+// base, a marca <c:texto> na cor do codigo (color_mark_color) com o mesmo alfa,
+// e o resto na cor base
 int draw_dialog_line(const char* line, float x, float y, ALLEGRO_COLOR base, int budget)
 {
     char segment[192];
     int length = 0;
     bool term = false;
     bool key = false;
+    bool span = false;
     const char* c;
     float r, g, b, a;
     ALLEGRO_COLOR term_color;
+    ALLEGRO_COLOR span_color;
 
     al_unmap_rgba_f(base, &r, &g, &b, &a);
     term_color = faded_color(UI_AMBER, a);
+    span_color = base;
 
     for (c = line; *c != '\0'; c++)
     {
         bool lead = (*c & 0xC0) != 0x80;
-        bool mark = *c == '{' || *c == '}' || *c == '[' || *c == ']';
+        int color_mark = color_mark_length(c);
+        bool mark = *c == '{' || *c == '}' || *c == '[' || *c == ']' || *c == '>' || color_mark > 0;
 
         if (mark || (lead && budget == 0))
         {
@@ -2353,7 +2431,7 @@ int draw_dialog_line(const char* line, float x, float y, ALLEGRO_COLOR base, int
             }
             else
             {
-                al_draw_text(font, term ? term_color : base, x, y, 0, segment);
+                al_draw_text(font, term ? term_color : (span ? span_color : base), x, y, 0, segment);
                 x = x + (float)al_get_text_width(font, segment);
             }
             length = 0;
@@ -2363,7 +2441,18 @@ int draw_dialog_line(const char* line, float x, float y, ALLEGRO_COLOR base, int
                 return 0;
             }
 
-            if (*c == '{' || *c == '}')
+            if (color_mark > 0)
+            {
+                // a marca de cor comeca: pula "<c:" inteiro
+                span = true;
+                span_color = faded_color(color_mark_color(c), a);
+                c = c + color_mark - 1;
+            }
+            else if (*c == '>')
+            {
+                span = false;
+            }
+            else if (*c == '{' || *c == '}')
             {
                 term = *c == '{';
             }
@@ -2397,13 +2486,13 @@ int draw_dialog_line(const char* line, float x, float y, ALLEGRO_COLOR base, int
     }
     else
     {
-        al_draw_text(font, term ? term_color : base, x, y, 0, segment);
+        al_draw_text(font, term ? term_color : (span ? span_color : base), x, y, 0, segment);
     }
 
     return budget;
 }
 
-// linha inteira com {termo} em ambar e [tecla] em tampa fora da caixa
+// linha inteira com {termo} em ambar, [tecla] em tampa e <c:texto> na cor do codigo
 // (aviso de objetivo, como jogar, rodapes)
 void draw_marked_text(float x, float y, ALLEGRO_COLOR base, const char* text)
 {
@@ -2415,7 +2504,8 @@ void draw_marked_text(float x, float y, ALLEGRO_COLOR base, const char* text)
     draw_dialog_line(text, x, y, base, dialog_visible_chars(text));
 }
 
-// largura em px da linha sem chaves e colchetes, com a folga de cada tampa de tecla
+// largura em px da linha sem chaves, colchetes e marcas de cor, com a folga
+// de cada tampa de tecla
 int marked_text_width(const char* text)
 {
     char plain[192];
@@ -2430,12 +2520,20 @@ int marked_text_width(const char* text)
 
     for (c = text; *c != '\0' && length < (int)sizeof(plain) - 1; c++)
     {
+        int skip = color_mark_length(c);
+
+        if (skip > 0)
+        {
+            c = c + skip - 1;
+            continue;
+        }
+
         if (*c == '[')
         {
             caps = caps + 1;
         }
 
-        if (*c != '{' && *c != '}' && *c != '[' && *c != ']')
+        if (*c != '{' && *c != '}' && *c != '[' && *c != ']' && *c != '>')
         {
             plain[length] = *c;
             length = length + 1;
@@ -2780,26 +2878,26 @@ void draw_hud()
     laser_icon = player.laser == LASER_GRAM_POSITIVE ? ruptura_icon : dissolucao_icon;
 
     // o HUD diz a ferramenta pelo nome e o que ela atinge (#199, #243)
-    module_name = player.laser == LASER_GRAM_POSITIVE ? "Ruptura · parede" : "Dissolução · membrana";
+    module_name = player.laser == LASER_GRAM_POSITIVE ? "<wR:Ruptura> · parede" : "<wD:Dissolução> · membrana";
 
     // Fase 2: anticorpos e Lise (#88)
     if (player.laser == LASER_NEUTRALIZE)
     {
-        module_name = "Neutralização · vírus livre";
+        module_name = "<wN:Neutralização> · vírus livre";
     }
     else if (player.laser == LASER_LYSE)
     {
-        module_name = "Ataque T · célula infectada";
+        module_name = "<wT:Ataque T> · célula infectada";
     }
     else if (player.laser == LASER_PERFORATE)
     {
-        module_name = "Perfuração · antifúngico";
+        module_name = "<wF:Perfuração> · antifúngico";
     }
 
     // Reserva: nome com as cargas e a palavra de estado quando acabam (#216)
     if (player.laser == LASER_RESERVE)
     {
-        snprintf(reserve_text, sizeof(reserve_text), "Reserva %d/%d · resistente",
+        snprintf(reserve_text, sizeof(reserve_text), "<wS:Reserva> %d/%d · resistente",
             reserve_charges_left(), RESERVE_CHARGES);
         module_name = reserve_text;
 
@@ -2812,9 +2910,10 @@ void draw_hud()
     x_word = SCREEN_W - HUD_MARGIN - al_get_text_width(font, state_text);
     x_bar = x_word - 6 - UI_BAR_W;
     x_icon = x_bar - 4 - al_get_bitmap_width(laser_icon);
-    x_weapon = x_icon - 4 - al_get_text_width(font, module_name);
+    x_weapon = x_icon - 4 - marked_text_width(module_name);
 
-    al_draw_text(font, UI_TEXT, (float)x_weapon, (float)hud_y(0), 0, module_name);
+    // o nome da arma sai na cor dela (<wX:...>)
+    draw_marked_text((float)x_weapon, (float)hud_y(0), UI_TEXT, module_name);
 
     // a Reserva ainda nao tem icone proprio (Etapa 3): uma capsula provisoria
     if (player.laser == LASER_RESERVE)
@@ -3389,7 +3488,7 @@ void draw_game()
 
     if (message != NULL)
     {
-        int text_w = al_get_text_width(font, message);
+        int text_w = marked_text_width(message);
         float box_x = floorf(((float)SCREEN_W - (float)text_w) / 2.0f);
         float box_y = (float)(PLAY_H - 30);
 
@@ -3404,7 +3503,7 @@ void draw_game()
         al_draw_rectangle(box_x - UI_PAD + 0.5f, box_y - 4.0f + 0.5f,
             box_x + (float)text_w + UI_PAD - 0.5f, box_y + 12.0f - 0.5f,
             UI_FRAME, 1.0f);
-        al_draw_text(font, UI_WARM, box_x, box_y, 0, message);
+        draw_marked_text(box_x, box_y, UI_WARM, message);
     }
 
     // o aviso de objetivo fica no topo; o feedback continua embaixo (#246)
@@ -3490,17 +3589,17 @@ void draw_pause()
     static const char* goals[][3] = {
         {
             "Elimine as bactérias do sangue do Léo e vá ao destino.",
-            "Gram+: Ruptura. Gram-: Dissolução. Resistente: Reserva.",
-            "Leia antes de disparar. Ler todos vale +15 pontos."
+            "<p:Gram+>: <wR:Ruptura>. <r:Gram->: <wD:Dissolução>. Resistente: <wS:Reserva>.",
+            "Leia antes de disparar. Ler todos vale <g:+15 pontos>."
         },
         {
             "Elimine os vírus nas vias aéreas do Léo e vá ao destino.",
-            "Vírus livre: Neutralização. Célula infectada: Ataque T.",
-            "Leia a célula antes: o Ataque T custa vitais do Léo."
+            "Vírus livre: <wN:Neutralização>. Célula infectada: <wT:Ataque T>.",
+            "Leia a célula antes: o <wT:Ataque T> custa vitais do Léo."
         },
         {
             "Elimine os fungos no pulmão do Léo e vá ao destino.",
-            "Antibiótico não tem alvo no fungo: use a Perfuração.",
+            "Antibiótico não tem alvo no fungo: use a <wF:Perfuração>.",
             "No bolor, mire na base da colônia, não na hifa."
         }
     };
@@ -3525,7 +3624,7 @@ void draw_pause()
     // texto de x 96 a 544: a maior linha tem 56 caracteres (448 px)
     for (i = 0; i < 3; i++)
     {
-        al_draw_text(font, UI_TEXT, 96.0f, 124.0f + 16.0f * (float)i, 0, goals[phase][i]);
+        draw_marked_text(96.0f, 124.0f + 16.0f * (float)i, UI_TEXT, goals[phase][i]);
     }
 
     draw_marked_text(96.0f, 180.0f, UI_DIM, "[WASD] mover · [clique] dispara · [botão direito] lê");
@@ -3624,23 +3723,23 @@ void draw_howto()
             "[Botão direito] num agente: eu leio uma camada por vez.",
             "Camada 1: a {forma}. Coco, bacilo, levedura, bolor...",
             "Camada 2: a {coloração de Gram} e o nome da espécie.",
-            "A forma não basta: existe coco Gram+ e coco Gram-.",
+            "A forma não basta: existe coco <p:Gram+> e coco <r:Gram->.",
             "Com as duas camadas lidas, o agente está identificado.",
-            "Identificar todos os agentes da fase vale +15 pontos."
+            "Identificar todos os agentes da fase vale <g:+15 pontos>."
         },
         {
             "[1], [2], [3] ou [roda do mouse]: trocar de arma.",
-            "Fase 1: [1] Ruptura · [2] Dissolução · [3] Reserva (2 cargas)",
+            "Fase 1: [1] <wR:Ruptura> · [2] <wD:Dissolução> · [3] <wS:Reserva> (2 cargas)",
             "Cada bactéria pede 2 doses, a segunda em até 6 segundos.",
-            "Fase 2: [1] Neutralização (vírus livre) · [2] Ataque T",
-            "Fase 3: [1] Perfuração · [2] Ruptura (não age em fungo)",
+            "Fase 2: [1] <wN:Neutralização> (vírus livre) · [2] <wT:Ataque T>",
+            "Fase 3: [1] <wF:Perfuração> · [2] <wR:Ruptura> (não age em fungo)",
             "Regra do jogo: as armas se inspiram em remédios reais."
         },
         {
             "Cabeça de robô: a minha {Integridade}. Ela cai quando",
             "um invasor, uma toxina, a hifa ou a nuvem me acertam.",
             "Coração: os {Vitais} do Léo. Caem quando uma célula dele",
-            "é destruída ou atingida por engano, e no Ataque T.",
+            "é destruída ou atingida por engano, e no <wT:Ataque T>.",
             "Se uma das barras zera, a equipe me retira do corpo.",
             "Nova fase: Integridade cheia e Vitais de no mínimo 60."
         }
@@ -3733,7 +3832,7 @@ void results_report_line(int row, char* line, size_t size)
         }
         else if (row == 1)
         {
-            snprintf(line, size, "Ataque T: contive %d células a tempo", progress.cells_lysed);
+            snprintf(line, size, "<wT:Ataque T>: contive %d células a tempo", progress.cells_lysed);
         }
         else if (row == 2)
         {
@@ -3753,12 +3852,15 @@ void results_report_line(int row, char* line, size_t size)
 
     if (row == 0)
     {
-        snprintf(line, size, "li %d Gram+ e %d Gram- até a coloração",
+        snprintf(line, size, "li %d <p:Gram+> e %d <r:Gram-> até a coloração",
             progress.scans_gram_positive, progress.scans_gram_negative);
     }
     else if (row == 1)
     {
-        snprintf(line, size, "tratei %d até o fim; %d resistiram",
+        // nenhuma resistencia nao e perda: o zero fica sem o coral
+        snprintf(line, size, progress.resistances > 0
+                ? "tratei %d até o fim; <x:%d resistiram>"
+                : "tratei %d até o fim; %d resistiram",
             progress.treatments_completed, progress.resistances);
     }
     else if (row == 2)
@@ -3769,7 +3871,7 @@ void results_report_line(int row, char* line, size_t size)
         }
         else
         {
-            snprintf(line, size, "errei %d antibióticos (%d pela forma)",
+            snprintf(line, size, "<x:errei %d antibióticos> (%d pela forma)",
                 progress.wrong_decisions, progress.shape_guesses);
         }
     }
@@ -3777,11 +3879,11 @@ void results_report_line(int row, char* line, size_t size)
     {
         if (reserve_spent == 0)
         {
-            snprintf(line, size, "guardei a Reserva: nenhuma carga gasta");
+            snprintf(line, size, "guardei a <wS:Reserva>: nenhuma carga gasta");
         }
         else
         {
-            snprintf(line, size, "Reserva: %d na resistente, %d na comum",
+            snprintf(line, size, "<wS:Reserva>: %d na resistente, %d na comum",
                 progress.reserve_on_resistant, progress.reserve_on_common);
         }
     }
@@ -3887,7 +3989,7 @@ void draw_results()
     for (report_row = 0; report_row < 5; report_row++)
     {
         results_report_line(report_row, line, sizeof(line));
-        al_draw_text(font, UI_TEXT, left, row, 0, line);
+        draw_marked_text(left, row, UI_TEXT, line);
         row = row + 14.0f;
     }
 
