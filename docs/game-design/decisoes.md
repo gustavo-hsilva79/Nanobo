@@ -335,6 +335,8 @@ O jogo terá pontuação, bônus por identificação e progressão. O hi-score d
 
 ### Resolução, escala inteira e câmera (22/10/2026)
 
+> **Superada em 27/11/2026** pela seção "Resolução 1280×720 e módulos": a tela lógica passou a 1280×720. A faixa do mundo, a câmera e o mundo de 1920×512 descritos abaixo continuam valendo.
+
 - A tela lógica é **640×360** (16:9), desenhada num bitmap e ampliada na janela por **escala inteira**, com barras pretas quando a janela não for múltipla. 640×360 é a maior resolução 16:9 que cai exata em 720p (2×), 1080p (3×), 1440p (4×) e 4K (6×).
 - A janela é **redimensionável** e abre **maximizada** (`ALLEGRO_MAXIMIZED`); o canvas continua centralizado em escala inteira, então sobra barra preta nos lados quando a janela não for múltipla de 640×360. **F11** alterna fullscreen — em 1440p isso dá 4× exato, sem barras — e, ao sair, a janela volta **maximizada** (não para o tamanho pedido na criação). Escala inteira quando o encaixe der 1× ou mais; janela menor que 640×360 encolhe proporcionalmente.
 - A **faixa visível do mundo** é 640×320 desde 15/11 (era 640×256) e o **HUD** ocupa os 40 px do rodapé, em duas linhas (#243). A **ficha do scanner** só aparece com alvo e flutua dentro da faixa do mundo:
@@ -540,7 +542,28 @@ Decisões do dono em 26/11/2026 para o redesenho das telas fora do Diário (#245
 
 - *Por quê:* a auditoria apontou telas que não explicam o jogo; o HUD estava no limite de largura (20 px livres) e o objetivo ali competia com as barras; fundos desenhados dão ao menu e ao hospital o mesmo cuidado visual das fases sem custo relevante de memória (~0,9 MB por fundo, com pico atual de 79 MB e limite de 100 MB).
 
+### Resolução 1280×720 e módulos (27/11/2026)
+
+Decisão do dono, depois de uma sessão de perguntas sobre refatorar, otimizar e subir a resolução. Substitui a tela lógica de 22/10 e a estrutura da Wave 2 de 06/11.
+
+- **Tela lógica de 1280×720, mesma faixa do mundo.** O canvas passa a 1280×720. A faixa do mundo continua com 640×320 unidades do mundo, e mapa e sprites são desenhados em 2× (`WORLD_SCALE`). Nenhuma regra, alcance ou velocidade muda. Ver mais do mundo foi descartado, porque mudaria a dificuldade e exigiria mapas novos (o mundo tem 512 de altura).
+- **Meio pixel.** Agentes, Nanobô e mapa são posicionados em meio pixel do mundo (um pixel do canvas). O movimento e a rolagem ficam mais suaves sem mudar as regras.
+- **Interface em coordenadas nativas.** Toda coordenada da interface é escrita no espaço 1280×720. A fonte continua a embutida 8×8, desenhada em 2× (16 px por caractere). Os orçamentos de largura do `textos-do-jogo.md` continuam valendo, contados em caracteres. A troca por uma fonte TTF fica para uma decisão separada.
+- **Linhas.** Linhas e bordas que precisam de peso uniforme usam 2 px de canvas. 1 px só onde o traço fino é intencional.
+- **Janela.** Ampliação sem filtro do canvas para a janela. O mínimo continua 640×360, com redução proporcional, porque os notebooks de 1366×768 não comportam 1280×720 com a barra de título. Em 1080p a escala é 1,5×, e a pixel art em 2× vira 3 px de tela, uniforme.
+- **Assets.** Nada é gerado de novo. Fundos de 640×360, mapas de 1920×512 e sprites em 1× são desenhados ampliados.
+- **Módulos.** As necessidades mudaram desde 06/11: a troca de resolução toca toda função de desenho, então separar o desenho do loop é o que a barateia. Entram:
+  - `src/render/` com `world.c` (mapa, correntes, perigos, agentes, projéteis, destino, mira) e `feel.c` (tremor, flash, partículas, hit-stop);
+  - `src/ui/` com `layout.h`, `ui_kit.c` (painéis, botões, texto com marcas, caixinha de tecla, diálogo), `hud.c` (HUD e ficha do scanner) e `screens.c` (menu, briefing, como jogar, pausa, resultados, ranking, vitória, game over);
+  - o ranking (arquivo) sai de `gameplay.c` para `src/gameplay/ranking.c`, porque muda por outro motivo.
+  O resto de `gameplay.c` continua num arquivo só. `gameplay.h` guarda só o tamanho da faixa do mundo (`VIEW_W`/`VIEW_H`) e não sabe mais o tamanho da tela. Continua sem `GameState`, e as teclas de QA passam por funções estreitas (`debug_*`).
+- **Otimização por medição.** O F1 passa a mostrar FPS e tempo de quadro em todos os builds, e a leitura interna dos agentes continua só no Debug. O catch-up do loop é limitado a 4 ticks por desenho. Saem as cargas sem uso. O resto só entra se a medição mostrar custo.
+- **Correções antes da refatoração.** Os bugs achados na revisão de 27/11 são corrigidos primeiro, para que cada passo de refatoração tenha o gate "nada muda". Entre eles, uma célula perdida sem leitura nas Fases 1 e 3 sai da meta de identificação, como já acontecia na Fase 2.
+- *Por quê:* nitidez de linhas, ícones e movimento sem tocar nas regras nem nos mapas. A fonte em 2× mantém todo o registro de textos válido.
+
 ### Refatoração pós-entrega (06/11/2026)
+
+> **Superada em 27/11/2026** pela seção "Resolução 1280×720 e módulos": a estrutura de módulos e o calendário abaixo foram revistos.
 
 - **Estrutura-alvo enxuta.** As cinco casas continuam: `main.c` (loop, recursos, entrada e composição das telas), `entities/`, `gameplay/`, `core/` e `scenes/`. A Wave 2 acrescenta só `src/ui/` (menus, HUD, painel do scanner, resultados, botões e textos) e `src/render/` (mapa, agentes, projéteis, destino e mira). `app/`, `input/`, `resources/` e `persistence/` não entram.
 - **`gameplay.c` não é dividido.** Scanner, combate, movimento e progressão continuam no mesmo arquivo; a divisão em quatro módulos foi descartada por não resolver defeito nenhum antes da entrega.

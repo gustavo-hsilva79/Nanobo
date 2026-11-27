@@ -130,6 +130,10 @@ _Evitar_: vida do jogador, HP, energia
 O estado do Paciente durante a missão. Caem quando uma célula dele é perdida ou atingida por engano; se acabam, a equipe retira o Nanobô e o Paciente segue o tratamento convencional.
 _Evitar_: vida do paciente, saúde
 
+**Faixa do mundo**:
+A parte do mundo visível em volta do Nanobô, acima do HUD. Tem sempre o mesmo tamanho, em qualquer resolução ou janela.
+_Evitar_: câmera, viewport, tela
+
 **Mira**:
 O ponto para onde o Nanobô dispara a arma escolhida; mostra se a arma está pronta, recarregando ou travada.
 _Evitar_: cursor, retícula
