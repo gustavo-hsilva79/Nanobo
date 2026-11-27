@@ -1086,8 +1086,9 @@ static void hit_projectiles()
                     {
                         set_feedback("colônia germinada destruída: sem pontos");
                     }
-                    // sem identificacao a ameaca sai da cena e o bonus de 9/9 fica impossivel
-                    else if (agents[j].identified)
+                    // sem identificacao a ameaca inicial sai da cena e o bonus de 9/9 fica
+                    // impossivel; filhas e brotos nao contam para o bonus
+                    else if (agents[j].identified || j >= agents_initial())
                     {
                         set_feedback("ameaça <g:eliminada>: <g:+10 pontos>");
                     }
