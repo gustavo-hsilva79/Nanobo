@@ -274,7 +274,7 @@ bool ranking_save_failed = false;
 bool ranking_panel_open = false;
 
 // o painel do Top 10 aparece no menu e na vitoria (#197)
-void draw_ranking_panel(float x, float y, float w, int highlight);
+void draw_ranking_panel(float x, float y, float w, int highlight, bool in_menu);
 
 // overlay de depuracao da interface: F1 liga e desliga, so existe no Debug
 bool show_debug = false;
@@ -1467,7 +1467,7 @@ void draw_menu()
         {
             float title_right = floorf(((float)SCREEN_W + (float)(tw * TITLE_SCALE)) / 2.0f);
             int frame = (int)(now / 0.22) % 4;
-            float float_y = 2.0f * (float)sin(2.0 * 3.14159265358979 * now / 2.0);
+            float float_y = 2.0f * (float)sin(2.0 * ALLEGRO_PI * now / 2.0);
 
             al_draw_bitmap_region(nanobo, (float)(frame * PLAYER_FRAME),
                 (float)(PLAYER_FACING_DOWN * PLAYER_FRAME),
@@ -1526,7 +1526,7 @@ void draw_menu()
         al_draw_filled_rectangle(0.0f, 0.0f, (float)SCREEN_W, (float)SCREEN_H,
             al_map_rgba_f(0.0f, 0.0f, 0.0f, 0.85f));
         // painel de 184 px: termina em 244 e o rodape fica acima dos botoes (y 261)
-        draw_ranking_panel(177.0f, 60.0f, 286.0f, -1);
+        draw_ranking_panel(177.0f, 60.0f, 286.0f, -1, true);
         al_draw_text(font, UI_DIM, SCREEN_W / 2, 250, ALLEGRO_ALIGN_CENTRE, "enter ou esc fecha");
     }
 }
@@ -3749,7 +3749,7 @@ void draw_results()
 }
 
 // painel do Top 10 (#197): posicao, nome e pontos; o registro novo em ambar
-void draw_ranking_panel(float x, float y, float w, int highlight)
+void draw_ranking_panel(float x, float y, float w, int highlight, bool in_menu)
 {
     char line[32];
     int i;
@@ -3761,8 +3761,12 @@ void draw_ranking_panel(float x, float y, float w, int highlight)
     {
         al_draw_text(font, UI_DIM, x + w / 2.0f, y + 86.0f, ALLEGRO_ALIGN_CENTRE,
             "nenhum recorde ainda");
-        al_draw_text(font, UI_DIM, x + w / 2.0f, y + 102.0f, ALLEGRO_ALIGN_CENTRE,
-            "dê alta ao Léo para entrar aqui");
+        // a dica so no menu: na vitoria o Leo ja deu alta
+        if (in_menu)
+        {
+            al_draw_text(font, UI_DIM, x + w / 2.0f, y + 102.0f, ALLEGRO_ALIGN_CENTRE,
+                "dê alta ao Léo para entrar aqui");
+        }
         return;
     }
 
@@ -3892,7 +3896,7 @@ void draw_victory()
     draw_stat(left, 122.0f, right, "tempo total", timer_text, UI_TEXT);
 
     // o Top 10, a direita, com o registro novo em destaque (#197)
-    draw_ranking_panel(330.0f, 58.0f, 286.0f, ranking_highlight);
+    draw_ranking_panel(330.0f, 58.0f, 286.0f, ranking_highlight, false);
 
     // entrada do nome quando a pontuacao entra no Top 10 (#81)
     draw_panel(24.0f, 158.0f, 290.0f, 84.0f, UI_INK, name_entry_active ? UI_AMBER : UI_FRAME);

@@ -162,7 +162,7 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 | MN-01 | menu, botão do meio (entre INICIAR e RECORDES) / pausa, segundo botão | `COMO JOGAR` | 10 | redesenho de 28/11 (linhas do menu: CT-48, CT-55, MN-01, CT-64, MN-04, CT-47, CT-13); abre a cena como jogar. Substitui o antigo MN-03 |
 | CT-65 | painel do Top 10, título | `Top 10` | 6 | #197 |
 | CT-66 | painel do Top 10, vazio | `nenhum recorde ainda` / `vença uma partida` | 20 / 17 | #197; a segunda linha saiu em 28/11: substituída pela MN-07 |
-| MN-07 | painel do Top 10, vazio (segunda linha) | `dê alta ao Léo para entrar aqui` | 31 | redesenho de 28/11 (MN-06); substitui a CT-66b; liga o recorde à alta do Léo |
+| MN-07 | painel do Top 10 aberto pelo RECORDES no menu, vazio (segunda linha; na Vitória o painel vazio mostra só a primeira linha) | `dê alta ao Léo para entrar aqui` | 31 | redesenho de 28/11 (MN-06); substitui a CT-66b; liga o recorde à alta do Léo |
 | CT-67 | painel do Top 10 no menu, rodapé | `enter ou esc fecha` | 18 | #197 |
 | CT-68 | vitória, entrada de nome | `novo recorde no Top 10!` | 23 | #81 |
 | CT-69 | vitória, entrada de nome | `digite seu nome e tecle enter` | 29 | #81 |
