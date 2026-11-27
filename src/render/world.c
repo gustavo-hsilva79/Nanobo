@@ -54,15 +54,23 @@ ALLEGRO_BITMAP* bacteria_sprite(Shape shape, int variant)
     return coccus_grey[v];
 }
 
-// coordenada do mundo para o pixel do canvas, arredondada para nao tremer
+// coordenada do mundo na faixa visivel, em pixels do mundo, arredondada ao
+// pixel da tela (meio pixel do mundo com WORLD_SCALE 2): o movimento e a
+// rolagem ficam mais suaves sem mexer nas regras (27/11)
 float view_x(float x)
 {
-    return floorf(x - camera.x);
+    return floorf((x - camera.x) * (float)WORLD_SCALE) / (float)WORLD_SCALE;
 }
 
 float view_y(float y)
 {
-    return floorf(y - camera.y);
+    return floorf((y - camera.y) * (float)WORLD_SCALE) / (float)WORLD_SCALE;
+}
+
+// deslocamento do mapa pela camera, no mesmo arredondamento dos agentes
+float view_offset(float camera_coord)
+{
+    return -floorf(camera_coord * (float)WORLD_SCALE) / (float)WORLD_SCALE;
 }
 
 // quando o destino esta fora da faixa visivel, uma marca na borda mostra o caminho (#19);
@@ -320,7 +328,7 @@ void draw_game()
     // mapa do mundo deslocado pela camera, atras de destino, agentes e nanobo
     // recuado: escurecido e com um veu azulado, sem mudar o PNG (#220); a fase
     // nova troca o mapa no primeiro quadro dela (#89)
-    draw_phase_map(-floorf(camera.x), -floorf(camera.y), (float)PLAY_H);
+    draw_phase_map(view_offset(camera.x), view_offset(camera.y), (float)PLAY_H);
 
     // daqui ate o fim do mundo tudo e desenhado em pixels do mundo, ampliado
     al_identity_transform(&world);

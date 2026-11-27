@@ -114,6 +114,7 @@ ALLEGRO_BITMAP* species_sprite(Species species, int variant);
 ALLEGRO_BITMAP* bacteria_sprite(Shape shape, int variant);
 float view_x(float x);
 float view_y(float y);
+float view_offset(float camera_coord);
 ALLEGRO_COLOR laser_color(Laser laser);
 void draw_phase_map(float x, float y, float h);
 void draw_game();

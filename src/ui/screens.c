@@ -543,7 +543,7 @@ void draw_results()
         map_y = fmaxf(0.0f, (float)(al_get_bitmap_height(world_map) - SCREEN_H / WORLD_SCALE));
     }
 
-    draw_phase_map(-floorf(camera.x), -floorf(map_y), (float)SCREEN_H);
+    draw_phase_map(view_offset(camera.x), view_offset(map_y), (float)SCREEN_H);
     al_draw_filled_rectangle(0.0f, 0.0f, (float)SCREEN_W, (float)SCREEN_H,
         UI_VEIL(160.0f / 255.0f));
 
