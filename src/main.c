@@ -116,6 +116,20 @@ ALLEGRO_BITMAP* lyse_icon = NULL;
 // icone da Perfuracao: o anel do antifungico na membrana (Fase 3)
 ALLEGRO_BITMAP* perforate_icon = NULL;
 
+// arte nova da interface (redesenho): hud, mira, menu, como jogar e telas do hospital
+ALLEGRO_BITMAP* nanobo_icon = NULL;
+ALLEGRO_BITMAP* heart_pulse = NULL;
+ALLEGRO_BITMAP* battery_bar = NULL;
+ALLEGRO_BITMAP* ecg_bar = NULL;
+ALLEGRO_BITMAP* bar_segment = NULL;
+ALLEGRO_BITMAP* aim_sprite = NULL;
+ALLEGRO_BITMAP* menu_background = NULL;
+ALLEGRO_BITMAP* menu_cells = NULL;
+ALLEGRO_BITMAP* howto_background = NULL;
+ALLEGRO_BITMAP* hospital_opening = NULL;
+ALLEGRO_BITMAP* hospital_victory = NULL;
+ALLEGRO_BITMAP* hospital_game_over = NULL;
+
 // tiros: uma linha por ferramenta, na ordem do Laser, x 2 quadros de 12x12;
 // impactos: 3 linhas (dose certa, sem efeito, eliminado) x 4 quadros de 24x24 (#242)
 ALLEGRO_BITMAP* shots_sheet = NULL;
@@ -518,6 +532,24 @@ bool load_resources()
         return false;
     }
 
+    nanobo_icon = al_load_bitmap("assets/sprites/icone_nanobo.png");
+    heart_pulse = al_load_bitmap("assets/sprites/coracao_pulso.png");
+    battery_bar = al_load_bitmap("assets/sprites/barra_bateria.png");
+    ecg_bar = al_load_bitmap("assets/sprites/barra_ecg.png");
+    bar_segment = al_load_bitmap("assets/sprites/segmento.png");
+    aim_sprite = al_load_bitmap("assets/sprites/mira.png");
+    menu_background = al_load_bitmap("assets/backgrounds/fundo_menu.png");
+    menu_cells = al_load_bitmap("assets/backgrounds/hemacias_deriva.png");
+    howto_background = al_load_bitmap("assets/backgrounds/fundo_como_jogar.png");
+    hospital_opening = al_load_bitmap("assets/backgrounds/hospital_abertura.png");
+    hospital_victory = al_load_bitmap("assets/backgrounds/hospital_vitoria.png");
+    hospital_game_over = al_load_bitmap("assets/backgrounds/hospital_gameover.png");
+    if (!nanobo_icon || !heart_pulse || !battery_bar || !ecg_bar || !bar_segment || !aim_sprite || !menu_background || !menu_cells || !howto_background || !hospital_opening || !hospital_victory || !hospital_game_over)
+    {
+        printf("couldn't load interface art\n");
+        return false;
+    }
+
     title_bitmap = make_text_bitmap("NANOBÔ", al_map_rgb(255, 255, 255));
     if (!title_bitmap)
     {
@@ -694,6 +726,78 @@ void free_resources()
     {
         al_destroy_bitmap(shots_sheet);
         shots_sheet = NULL;
+    }
+
+    if (hospital_game_over)
+    {
+        al_destroy_bitmap(hospital_game_over);
+        hospital_game_over = NULL;
+    }
+
+    if (hospital_victory)
+    {
+        al_destroy_bitmap(hospital_victory);
+        hospital_victory = NULL;
+    }
+
+    if (hospital_opening)
+    {
+        al_destroy_bitmap(hospital_opening);
+        hospital_opening = NULL;
+    }
+
+    if (howto_background)
+    {
+        al_destroy_bitmap(howto_background);
+        howto_background = NULL;
+    }
+
+    if (menu_cells)
+    {
+        al_destroy_bitmap(menu_cells);
+        menu_cells = NULL;
+    }
+
+    if (menu_background)
+    {
+        al_destroy_bitmap(menu_background);
+        menu_background = NULL;
+    }
+
+    if (aim_sprite)
+    {
+        al_destroy_bitmap(aim_sprite);
+        aim_sprite = NULL;
+    }
+
+    if (bar_segment)
+    {
+        al_destroy_bitmap(bar_segment);
+        bar_segment = NULL;
+    }
+
+    if (ecg_bar)
+    {
+        al_destroy_bitmap(ecg_bar);
+        ecg_bar = NULL;
+    }
+
+    if (battery_bar)
+    {
+        al_destroy_bitmap(battery_bar);
+        battery_bar = NULL;
+    }
+
+    if (heart_pulse)
+    {
+        al_destroy_bitmap(heart_pulse);
+        heart_pulse = NULL;
+    }
+
+    if (nanobo_icon)
+    {
+        al_destroy_bitmap(nanobo_icon);
+        nanobo_icon = NULL;
     }
 
     if (impacts_sheet)
