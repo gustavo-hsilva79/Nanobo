@@ -3293,9 +3293,16 @@ bool ranking_save(void)
         return false;
     }
 
-    // o antigo vira .bak antes da troca: nenhum passo deixa o ranking sem copia
-    remove(backup);
-    had_old = rename(ranking_path, backup) == 0;
+    // o antigo vira .bak antes da troca: nenhum passo deixa o ranking sem copia;
+    // sem o arquivo principal o .bak pode ser a unica copia e so sai no fim
+    had_old = false;
+
+    if (fopen_s(&file, ranking_path, "r") == 0 && file != NULL)
+    {
+        fclose(file);
+        remove(backup);
+        had_old = rename(ranking_path, backup) == 0;
+    }
 
     if (rename(temp, ranking_path) != 0)
     {

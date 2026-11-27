@@ -541,8 +541,8 @@ bool ranking_qualifies(int score);
 int ranking_insert(int score, const char* name);
 
 // grava o ranking num arquivo temporario e troca pelo antigo, que passa por
-// uma copia .bak durante a troca (#80); false quando nao deu para gravar, e o
-// arquivo antigo e o ranking em memoria ficam como estao
+// uma copia .bak durante a troca (#80); false quando nao deu para gravar: o
+// arquivo antigo (ou o .bak) fica no disco, e a entrada nova continua so na memoria
 bool ranking_save(void);
 
 // maior pontuacao do ranking; 0 sem registro
