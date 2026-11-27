@@ -17,6 +17,7 @@ As telas fora do Diário ainda são painéis sobre fundo preto que pouco explica
 | Objetivo da fase | aviso de 4 s + texto na Pausa | faixa fixa no mundo (ocupa a tela o tempo todo); só na Pausa (some do jogo) |
 | Arte | script Lua no Aseprite, aprovação no chat | desenho à mão (sem tempo até 29/11) |
 | Fundos | 4 temas (menu, como jogar, hospital × 3 luzes) | um por tela (~9 imagens); só o menu |
+| Ordem de construção | **duas ondas** (escolha do dono em 26/11): 1ª o que aparece durante a fase, 2ª as telas fora dela | uma tela por tarefa em sequência (sem ponto natural de parada); por camada (estrutura → textos → visuais: só mostra resultado no fim e um corte deixa tudo pela metade) |
 
 ## Telas
 
@@ -29,6 +30,7 @@ Tela lógica 640×360, fonte de 8 px por caractere, sem maiúscula acentuada, bo
 
 ### Como jogar (`GAME_SCENE_HOWTO`)
 - Fundo `fundo_como_jogar.png`; um painel central com uma coluna de ícone à esquerda (sprites do jogo ampliados ×2: Nanobô, scanner, ícones das armas, ícones de vida) e até 6 linhas de texto.
+- Coluna de ícone de 48×48 (decisão do construtor): p. 1 o Nanobô do spritesheet em ×1 (48×48, frente); p. 2 o ícone do scanner ×2 com os 2 marcadores desenhados em código embaixo; p. 3 os 6 ícones de arma em ×1 (16×16) numa grade 2×3; p. 4 `icone_nanobo` e `coracao_pulso` ×2, um sobre o outro.
 - 4 páginas: mover e mirar; ler com o scanner; armas; Integridade e Vitais. Rodapé `n/4` e a dica de teclas.
 - Enter, Espaço ou clique avançam; na última página voltam; Esc volta a qualquer momento. Setas ←/→ andam entre páginas.
 - **Transições novas:** `MENU→HOWTO`, `HOWTO→MENU`, `PAUSE→HOWTO`, `HOWTO→PAUSE`. A cena lembra a origem (`game.c`), e ao voltar entra nela; vinda da Pausa, a partida continua parada (só `GAME` avança a lógica). A página volta à 1 a cada entrada.
@@ -48,14 +50,19 @@ Tela lógica 640×360, fonte de 8 px por caractere, sem maiúscula acentuada, bo
 ### Aviso de objetivo
 - Caixa centrada no topo do mundo (y 8), no estilo do aviso de feedback (placa `UI_INK`, borda âmbar, texto `UI_AMBER`), visível 4 s com esmaecer no último 0,5 s.
 - Dispara: (1) no primeiro quadro da fase; (2) quando `threats_left()` chega a 0 (meta vira "vá ao destino"). Um aviso novo substitui o anterior. Não aparece com caixa do Diário aberta: espera ela fechar e então conta os 4 s.
+- A meta é recalculada a cada quadro por `threats_left()`: a cada virada (>0 → 0 mostra o OB-04; 0 → >0, quando um esporo germina ou uma rajada de vírions está no ar, volta a meta da fase) sai um aviso novo. Viradas em menos de 1 s uma da outra não repetem o aviso (decisão do construtor).
 - Com a ficha do scanner no topo, o aviso desce para baixo dela (mesma regra do feedback).
+
+### Termo destacado fora da caixa (decisão do construtor, revisão de 26/11)
+- O `{termo}` do inventário vale também fora do Diário: um desenho comum de linha com termo, reaproveitando a lógica da caixa. Aviso de objetivo: texto `UI_WARM`, termo `UI_AMBER`, borda âmbar. Páginas do "como jogar": texto `UI_TEXT`, termo `UI_AMBER`, como no Diário.
 
 ### Pausa
 - Fundo: o mapa da fase atual (quadro congelado como hoje) com véu mais escuro; painel maior com título, o objetivo completo da fase, um lembrete curto das teclas e os botões **CONTINUAR** e **COMO JOGAR**. Esc continua voltando ao jogo.
 
 ### Ficha do scanner (624×50, posição atual)
-- Coluna da esquerda (x 12 a 40): retrato 24×24 do agente (o próprio bitmap escalado; `silhueta` antes da camada 1; para fungos sem leitura, a silhueta como no mundo) em y+5, e 2 marcadores 6×6 com 2 px de vão em y+34, um por camada de leitura (a regra continua com 2 camadas, decisão do dono em 26/11): 1º = forma, 2º = Gram e espécie (em vírus, célula e fungo, "estrutura"). Apagado `UI_SLOT`, aceso `UI_AMBER`; o 2º acende verde na identificação.
-- O texto passa de x 36 para x 44: **72 caracteres** por linha (era 74). O ícone do scanner sai da ficha.
+- Segue o layout do **SC-01 aprovado no inventário** (que prevalece sobre o rascunho anterior desta seção): retrato 24×24 em x 14 (o próprio bitmap do agente escalado; `silhueta` antes da camada 1; fungo sem leitura com a silhueta como no mundo) e texto a partir de x 46.
+- Os 2 marcadores ficam à direita da linha de estado, cada um com o rótulo aprovado: `forma` (SC-11) e `Gram e espécie` (SC-12), ou `estrutura` (SC-13) em vírus, célula e fungo. Apagado `UI_SLOT`, aceso `UI_AMBER`; o 2º acende verde na identificação. A regra continua com 2 camadas (decisão do dono em 26/11).
+- Com os marcadores, estado + origem cabem em 50 caracteres na linha 0; as linhas 1 e 2 vão até a borda. O ícone do scanner sai da ficha.
 
 ### Resultados
 - Fundo: o mapa da fase recém-concluída escurecido (`MAP_VEIL` mais forte), painéis como hoje; o painel "O que anotei nesta fase" já aprovado em 26/11.
@@ -68,7 +75,7 @@ Tela lógica 640×360, fonte de 8 px por caractere, sem maiúscula acentuada, bo
 
 ### Mira
 - `mira.png` 48×16 (3 quadros 16×16, brancos), desenhada centrada no mouse, só em `GAME` e dentro da área de jogo, tingida com a cor da arma atual.
-- Quadro: 2 (travado) se `fire_locked()`; 1 (recarga) se `attack_cooldown_left() > 0`; senão 0 (pronto). Cor por arma: a mesma usada no HUD/tiros para cada `Laser` (definida na implementação, uma tabela de 6 cores).
+- Quadro (decisão do construtor): o quadro diz se um tiro sairia agora. 1 (recarga) com a recarga do ataque correndo; 2 (travado) em todo estado do HUD em que o tiro não sai: `travado` (trava de 2 s), `defesa` ativa e Reserva `esgotada`; senão 0 (pronto). Cor por arma: a mesma usada no HUD/tiros para cada `Laser` (definida na implementação, uma tabela de 6 cores).
 
 ## Arte (#246)
 
@@ -88,9 +95,17 @@ Gerada por `../Nanobo-testes/gerar_interface.lua` (Aseprite 1.3.18, modo batch),
 
 **Memória:** 6 fundos × ~0,9 MB carregados de uma vez (~5,5 MB) + sprites pequenos. Pico atual 79 MB; limite 100 MB. Se a medição passar de 90 MB, os três do hospital passam a ser carregados sob demanda, como o mapa da fase.
 
+## Ordem de construção (duas ondas)
+
+**Onda 1, durante a fase:** HUD com a coluna de vida (ícones, barras, coração pulsando, pontos e tempo na linha 1), mira em sprite, aviso de objetivo e ficha do scanner com retrato e 2 marcadores; com os textos aprovados dessas áreas (HD, OB, SC, FB). Termina com capturas para o dono.
+
+**Onda 2, fora da fase:** cena `GAME_SCENE_HOWTO` e suas transições, menu com fundo e hemácias, Pausa nova, Resultados sobre o mapa, abertura, Vitória e Game Over sobre o hospital; com os textos aprovados (MN, HW, PA, CT, VI, GO). Termina com capturas e a medição de memória.
+
+Por quê: o 29/11 é o dia mais apertado do calendário; se ele estourar, a onda 1 já é uma entrega completa e coerente e a onda 2 usa a folga de 30/11.
+
 ## Textos
 
-Inventário "atual × proposto" por tela (menu, como jogar, HUD, aviso de objetivo, Pausa, ficha do scanner, feedback, Resultados, Vitória, Game Over), publicado numa página de aprovação com ok/comentário por linha. Regras: voz do Diário, frases curtas, um termo por linha onde ensina, fonte em `conteudo-biologico.md` para toda afirmação biológica, larguras medidas por área. Texto aprovado é registrado em `textos-do-jogo.md` com ID e contagem.
+Inventário "atual × proposto" por tela, **aprovado pelo dono em 26/11** (`.hermes/inventario-interface.json`, local; página de aprovação com 19 entradas, HW-01 e HW-03 ajustados para o formato "tecla: ação" e "arma"). Abrange (menu, como jogar, HUD, aviso de objetivo, Pausa, ficha do scanner, feedback, Resultados, Vitória, Game Over), publicado numa página de aprovação com ok/comentário por linha. Regras: voz do Diário, frases curtas, um termo por linha onde ensina, fonte em `conteudo-biologico.md` para toda afirmação biológica, larguras medidas por área. Texto aprovado é registrado em `textos-do-jogo.md` com ID e contagem.
 
 ## O que fica para quem implementa
 
