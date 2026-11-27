@@ -31,6 +31,9 @@
     <Filter Include="UI">
       <UniqueIdentifier>{a6666666-6666-4666-8666-666666666666}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Render">
+      <UniqueIdentifier>{a7777777-7777-4777-8777-777777777777}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.c">
@@ -48,6 +51,21 @@
     <ClCompile Include="src\gameplay\ranking.c">
       <Filter>Gameplay</Filter>
     </ClCompile>
+    <ClCompile Include="src\render\world.c">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\feel.c">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ui\ui_kit.c">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ui\hud.c">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ui\screens.c">
+      <Filter>UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core\game.h">
@@ -63,6 +81,12 @@
       <Filter>Scenes</Filter>
     </ClInclude>
     <ClInclude Include="src\ui\layout.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\render.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\ui.h">
       <Filter>UI</Filter>
     </ClInclude>
   </ItemGroup>

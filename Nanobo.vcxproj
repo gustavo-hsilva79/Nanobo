@@ -129,10 +129,17 @@
     <ClCompile Include="src\entities\entities.c" />
     <ClCompile Include="src\gameplay\gameplay.c" />
     <ClCompile Include="src\gameplay\ranking.c" />
+    <ClCompile Include="src\render\world.c" />
+    <ClCompile Include="src\render\feel.c" />
+    <ClCompile Include="src\ui\ui_kit.c" />
+    <ClCompile Include="src\ui\hud.c" />
+    <ClCompile Include="src\ui\screens.c" />
     <ClInclude Include="src\core\game.h" />
     <ClInclude Include="src\entities\entities.h" />
     <ClInclude Include="src\gameplay\gameplay.h" />
     <ClInclude Include="src\scenes\scenes.h" />
+    <ClInclude Include="src\ui\ui.h" />
+    <ClInclude Include="src\render\render.h" />
     <ClInclude Include="src\ui\layout.h" />
   </ItemGroup>
   <ItemGroup>
