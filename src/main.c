@@ -320,7 +320,11 @@ bool create_window()
         return false;
     }
 
+    // o canvas e redesenhado inteiro a cada quadro: sem a copia de seguranca
+    // que o Direct3D guarda dos alvos de desenho, o pico de memoria cai (27/11)
+    al_set_new_bitmap_flags(al_get_new_bitmap_flags() | ALLEGRO_NO_PRESERVE_TEXTURE);
     canvas = al_create_bitmap(SCREEN_W, SCREEN_H);
+    al_set_new_bitmap_flags(al_get_new_bitmap_flags() & ~ALLEGRO_NO_PRESERVE_TEXTURE);
 
     if (!canvas)
     {
