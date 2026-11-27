@@ -1328,13 +1328,21 @@ void draw_scan_card(int target, bool from_cursor, float card_y)
     al_draw_text(font, UI_AMBER, (float)text_x, (float)row_state, 0, state);
     al_draw_text(font, source_color, (float)(text_x + al_get_text_width(font, state)),
         (float)row_state, 0, source);
-    al_draw_text(font, UI_TEXT, (float)(SCREEN_W - 16), (float)row_state,
-        ALLEGRO_ALIGN_RIGHT, category);
+    // a categoria so aparece sem leitura: depois, as linhas 1 e 2 ja dizem o
+    // tipo e a linha de estado precisa do espaco para os marcadores
+    marks_x = (float)(SCREEN_W - 16);
 
-    // marcadores das 2 camadas, encostados na categoria: forma acende na 1a;
+    if (agents[target].layers == 0)
+    {
+        al_draw_text(font, UI_TEXT, (float)(SCREEN_W - 16), (float)row_state,
+            ALLEGRO_ALIGN_RIGHT, category);
+        marks_x = marks_x - (float)(al_get_text_width(font, category) + 8);
+    }
+
+    // marcadores das 2 camadas, encostados a direita: forma acende na 1a;
     // o 2o acende na 2a e fica verde com a identificacao (SC-11 a SC-13)
     second_label = is_bacteria ? "Gram e espécie" : "estrutura";
-    marks_x = (float)(SCREEN_W - 16 - al_get_text_width(font, category) - 8)
+    marks_x = marks_x
         - (float)(2 * (CARD_MARK + 4) + 8)
         - (float)al_get_text_width(font, "forma") - (float)al_get_text_width(font, second_label);
     second_color = UI_SLOT;
