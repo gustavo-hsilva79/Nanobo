@@ -226,6 +226,9 @@ typedef struct
     int molds_eliminated;     // colonias eliminadas, germinadas incluidas (#232)
     int antibiotic_on_fungus; // tiros de antibiotico que acertaram fungo (#232)
     int resistants_isolated;  // resistentes isoladas pela equipe sem Reserva (D1)
+    int cells_lost;           // celulas perdidas, rompimentos incluidos (selos)
+    int antibody_on_cell;     // neutralizacoes que acertaram uma celula (selos)
+    int spore_bursts;         // leques de esporos soltos pelas colonias (selos)
 } MatchProgress;
 
 extern MatchProgress progress;
@@ -320,6 +323,11 @@ bool phase_has_viruses(void);
 
 // fase com fungos: levedura e bolor (Fase 3)
 bool phase_has_fungi(void);
+
+// selos do protocolo: tres metas secundarias por fase, so exibidas, sem pontos
+#define SEAL_COUNT 3
+#define SEAL_VITALS_MIN 70.0f
+bool seal_achieved(int k);
 
 // Reserva: so existe em fase com bacteria; cargas que restam nesta fase (#216)
 bool reserve_available(void);

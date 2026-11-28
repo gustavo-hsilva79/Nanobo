@@ -876,11 +876,13 @@ static void virus_tool_hit(Laser laser, int j)
         else if (v != -1)
         {
             progress.wrong_decisions = progress.wrong_decisions + 1;
+            progress.antibody_on_cell = progress.antibody_on_cell + 1;
             emit_sfx_at(SFX_EVENT_WRONG, agents[j].x, agents[j].y);
             set_feedback("o vírus está dentro da célula: use o <wT:Ataque T>");
         }
         else
         {
+            progress.antibody_on_cell = progress.antibody_on_cell + 1;
             emit_sfx_at(SFX_EVENT_WRONG, agents[j].x, agents[j].y);
             set_feedback("anticorpos não se prendem à célula do paciente");
         }
@@ -1712,6 +1714,33 @@ bool reserve_available(void)
 int reserve_charges_left(void)
 {
     return reserve_left;
+}
+
+// selos do protocolo: so leem contadores que ja alimentam o relatorio
+bool seal_achieved(int k)
+{
+    if (k < 0 || k >= SEAL_COUNT)
+    {
+        return false;
+    }
+
+    if (phase_has_fungi())
+    {
+        return k == 0 ? progress.antibiotic_on_fungus == 0
+            : k == 1 ? progress.spore_bursts == 0
+            : progress.cell_attacks == 0;
+    }
+
+    if (phase_has_viruses())
+    {
+        return k == 0 ? progress.cells_burst == 0
+            : k == 1 ? progress.antibody_on_cell == 0
+            : patient_vitals >= SEAL_VITALS_MIN;
+    }
+
+    return k == 0 ? progress.resistances == 0
+        : k == 1 ? progress.cells_lost == 0
+        : reserve_charges_left() == RESERVE_CHARGES;
 }
 
 // pontos validos do cenario, a regra de cada um esta em docs/game-design/gdd.md
@@ -2959,6 +2988,9 @@ static void start_phase(int index)
     progress.molds_eliminated = 0;
     progress.antibiotic_on_fungus = 0;
     progress.resistants_isolated = 0;
+    progress.cells_lost = 0;
+    progress.antibody_on_cell = 0;
+    progress.spore_bursts = 0;
 
     phase_finished = false;
     bonus_awarded = false;
@@ -3400,6 +3432,9 @@ void lose_patient_cell(int index)
     }
 
     agents[index].active = false;
+
+    // conta tambem o rompimento, que passa por aqui (burst_cell)
+    progress.cells_lost = progress.cells_lost + 1;
     patient_vitals = fmaxf(patient_vitals - CELL_LOSS_VITALS, 0.0f);
     emit_sfx_at(SFX_EVENT_DAMAGE, agents[index].x, agents[index].y);
     set_feedback("uma célula do Léo foi <x:destruída>: <x:-20 vitais>");
@@ -4261,6 +4296,9 @@ static float mold_ai(int index, float dt)
     {
         aim = atan2f(agents[index].hypha_dy, agents[index].hypha_dx);
     }
+
+    // um leque conta uma vez, nao um por esporo
+    progress.spore_bursts = progress.spore_bursts + 1;
 
     for (k = 0; k < SPORE_COUNT; k++)
     {
