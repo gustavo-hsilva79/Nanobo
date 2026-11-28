@@ -193,6 +193,24 @@ Três mudanças de regra entraram nesta rodada: as filhas e os brotos não pontu
 - **Fase 2:** não mudou (o isolamento e a pontuação só mexem nas bactérias).
 - **Nenhuma constante foi ajustada:** `DIVISION_TIME`, o orçamento de 15 divisões e a IA ficam como estavam.
 
+#### Toxina com antecipação e Fase 2 (28/11, D4 e D5 da auditoria)
+
+Bots com 1000 partidas por linha, sobre o código de 28/11.
+
+| Configuração | Leitor | Chute |
+|---|---:|---:|
+| Fase 1, toxina sem antecipação (`TOXIN_LEAD` 0) | 66% | 5% |
+| Fase 1, `TOXIN_LEAD` 0,5 (adotado) | 67% | 4% |
+| Fase 1, `TOXIN_LEAD` 1,0 | 69% | 4% |
+| Fase 2, lisogênico 10 s e escalonamento 4 s (atual), 77 / 60 vitais | 100% / 98% | 7% / 0% |
+| Fase 2, lisogênico 8 s, 77 / 60 vitais | 100% / 97% | 8% / — |
+| Fase 2, lisogênico 6 s, 77 / 60 vitais | 100% / 94% | 10% / — |
+| Fase 2, escalonamento 1 s, 77 / 60 vitais | 100% / 97% | 8% / 0% |
+| Fase 2, escalonamento 0 s, 77 / 60 vitais | 100% / 96% | 8% / 0% |
+
+- **Toxina:** a antecipação não muda os bots (a diferença está no ruído), porque o bot já usa o escudo contra a toxina. O efeito esperado é com pessoas, que fogem em linha reta; ele não foi medido com elas.
+- **Fase 2:** encurtar o lisogênico ou o escalonamento não leva o leitor para 80–90% e só ajuda o chute, então nada mudou (`decisoes.md`, §"Contenção e selos", item 5).
+
 ## Correções desta revisão (03/11/2026)
 
 | # | Correção | O que substitui |

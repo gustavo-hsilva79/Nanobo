@@ -100,7 +100,7 @@ O agente volta a vagar se o Nanobô ficar a mais de 320 px por 3 s. Todo ataque 
 | Invasor | Biologia que o comportamento mostra | Comportamento |
 |---|---|---|
 | Bacilo (*E. coli*, *P. aeruginosa*, *C. tetani*) | tem flagelo e nada | persegue a 70 px/s; investida de 0,4 s a 150 px/s a cada 2,5 s |
-| Coco (*S. aureus*, *S. pyogenes*, *M. catarrhalis*) | sem flagelo; coloniza tecido e produz toxina | deriva a 20 px/s até a célula do paciente mais próxima e coloniza (5/s numa célula de 100); a menos de 180 px do Nanobô, solta toxina a cada 3 s (90 px/s) |
+| Coco (*S. aureus*, *S. pyogenes*, *M. catarrhalis*) | sem flagelo; coloniza tecido e produz toxina | deriva a 20 px/s até a célula do paciente mais próxima e coloniza (5/s numa célula de 100); a menos de 180 px do Nanobô, solta toxina a cada 3 s (90 px/s), mirando à frente de quem foge em linha reta (metade do deslocamento, `TOXIN_LEAD`, 28/11) |
 | Biofilme | matriz que protege as bactérias | coco colonizando por mais de 6 s cria uma mancha de raio 40: o Nanobô anda a 50% e a bactéria dentro pede 3 doses |
 | Endotoxina | LPS da membrana externa da Gram-, liberado quando ela se rompe | a Gram- eliminada deixa uma nuvem de raio 36 por 2,5 s (10/s) |
 | Correnteza | fluxo do sangue; muco empurrado pelos cílios | faixas que empurram o Nanobô, os cocos e as toxinas (40 px/s) |
