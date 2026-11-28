@@ -188,8 +188,9 @@ Três mudanças de regra entraram nesta rodada: as filhas e os brotos não pontu
 | Fase 2, chute, 77 vitais | 7% | **7%** (69/1000) | até 10% |
 | Fase 2, chute, 60 vitais | 0% | **0%** | até 10% |
 
-- **O que mudou e por quê:** antes, a resistente que sobrava sem Reserva travava a fase e a partida acabava em tempo esgotado (25 em 1000 para o leitor). Com o isolamento, esses casos viram vitória (leitor 66%) ou derrota, e só 2 partidas seguem sem desfecho. O chute sobe de 2% para 5%, porque agora fecha algumas fases com resistentes isoladas, e continua abaixo de 10%.
-- **Fase 2:** não mudou (o isolamento e a pontuação só mexem nas bactérias), exceto o chute com 77 vitais, que fica em 7%.
+- **O que mudou e por quê (inferência, não medido):** antes, a resistente que sobrava sem Reserva travava a fase e a partida acabava em tempo esgotado (25 em 1000 para o leitor). A explicação provável é que o isolamento transformou esses casos em vitória (leitor 66%) ou derrota, restando 2 tempos esgotados. Nenhuma rodada separa esse efeito do outro: o bot da Fase 1 passou a andar até o destino quando o objetivo vira `GOAL_DESTINATION`, o que também afeta tempos esgotados e taxa de vitória (variável de confusão).
+- **Chute, 2% para 5% (inferência, não medido):** a hipótese é que o chute agora fecha algumas fases com resistentes isoladas; a mudança do bot também pode contribuir. Continua abaixo de 10%.
+- **Fase 2:** não mudou (o isolamento e a pontuação só mexem nas bactérias).
 - **Nenhuma constante foi ajustada:** `DIVISION_TIME`, o orçamento de 15 divisões e a IA ficam como estavam.
 
 ## Correções desta revisão (03/11/2026)

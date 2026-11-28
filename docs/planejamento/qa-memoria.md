@@ -253,6 +253,6 @@ A #118 continua **aberta** até esses dois cenários serem medidos. Se ficarem p
 |---|---:|---:|---:|---|
 | **Release, contenção e selos** | 146 | **90,07** | 119,26 | pico na carga (t ≈ 9 s); Fase 1 em 75,2 MB; última amostra 75,23 MB |
 
-- **Leitura:** o pico de 90,07 MB fica 9,9 MB abaixo de 100 MB. Está 3,3 MB acima dos 86,78 MB do redesenho da interface (os novos textos e selos são só desenho, sem bitmap novo; a diferença cai na variação da carga) e 0,12 MB acima da referência de 89,95 MB. A Fase 1 ficou em 75,2 MB, igual à medição anterior.
+- **Leitura:** o pico de 90,07 MB fica 9,9 MB abaixo de 100 MB. Está 3,3 MB acima dos 86,78 MB do redesenho da interface (hipótese, não medida: os novos textos e selos são só desenho, sem bitmap novo, e a diferença seria variação da carga) e 0,12 MB acima da referência de 89,95 MB. A Fase 1 ficou em 75,2 MB, igual à medição anterior.
 - **Desvio declarado:** o roteiro cobre menu, Fase 1 e pausa; as Fases 2 e 3, os RESULTS e a Vitória (onde aparecem os selos) não entraram na medição do Release. Os selos não carregam recurso novo.
 - **CSV:** `release.csv`, em `.superpowers/sdd/2026-11-27-contencao-e-selos/mem/` (fora do git).
