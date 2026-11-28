@@ -201,22 +201,25 @@ A tabela de marcos — data, tipo e objetivo de cada um — fica em **[milestone
 - #65 Identificação única na Fase 1 `[G]` *(fechada; está no M4)*
 - #77–#82 Formato, leitura, gravação e validação do hi-score `[E]`
 - #83–#91 Estados, multiplicação e integração da Fase 2 — `[G]` #83–#90 · `[E]` #91 *(#83 e #90 fechadas — 11/11 e 05/11)*
-- #114–#119 Medição de memória `[G]` *(#114–#116 fechadas em 11/11; #117–#119 abertas)*
-- #127–#143 QA, regressão, teste externo e correção de bugs — `[G]` #127 e #134–#138 · `[E]` #128–#133 e #139–#143
+- #114–#119 Medição de memória `[G]` *(#114–#116 fechadas em 11/11, #117 em 28/11; #118–#119 abertas)*
+- #127–#143 QA, regressão, teste externo e correção de bugs — `[G]` #127 e #134–#138 (#127 e #134 fechadas em 28/11) · `[E]` #128–#133 e #139–#143
 - #144–#158 Documentação final e build Release — `[G]` #144–#146 · `[E]` #147–#158
-- #159–#170 Instalador, teste em máquina limpa e ensaio da apresentação — `[E]` #159–#164 · `[G]` #165–#170
+- #159–#161 Instalador `[E]` (fechadas; #162–#170 foram para o M6 em 28/11)
 - #185 Sinalizar risco de contato `[G]`
 - #195 Voltar ao menu `[E]`
 - #197 Exibir Top 10 `[E]`
 - #206–#212 Dívidas decididas (D2.2, D2.1, bônus, pulso, RF-07, variantes, textos) — `[G]` #206–#209 e #211 · `[E]` #210 e #212
 
 ### M6 — Entrega Final e Apresentação
-- #43 Criar e testar instalador para Windows `[E]`
-- #44 Roteiro e materiais da apresentação `[G]`
-- #46 Validar produto final em máquina limpa `[E]`
-- #47 Ensaio completo da apresentação `[G]`
 
-> As Issues #43, #44, #46 e #47 continuam no M6 no GitHub mesmo com itens equivalentes no M5. A consolidação dessas duplicidades é decisão da dupla e não foi feita automaticamente. Se as quatro forem fechadas como duplicatas, o equilíbrio se mantém movendo a #165 (1 SP) do Gustavo para o Eric: 159 / 159 SP.
+> **Atualização de 28/11/2026:** as #43, #44, #46 e #47 foram fechadas em 16/11 como duplicatas das tarefas do M5. As filhas delas (#162–#164, máquina limpa, e #165–#170, apresentação) acontecem entre 29/11 e 01/12 e foram movidas para o M6. Entraram quatro issues de entrega, que faltavam.
+
+- #162–#164 Instalador em máquina limpa `[G]` (o instalador passou ao Gustavo no Nanobô 2.0)
+- #165–#170 Roteiro, demonstração, ensaios e contingência da apresentação `[G]`
+- #247 Congelar o build final e publicar a release 1.0.0 `[G]`
+- #248 Comprovar os requisitos obrigatórios no build final `[G]`
+- #249 Atualizar o README para a versão entregue `[G]`
+- #250 Enviar o pacote da entrega final `[G]`
 
 ## Regras de escopo
 
