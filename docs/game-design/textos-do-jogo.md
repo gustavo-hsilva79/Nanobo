@@ -55,6 +55,7 @@
 | FB-41 | Eliminar a filha de uma divisão: ameaça a menos, sem pontos | `filha eliminada: sem pontos` | 27 | decisão do dono de 27/11 (contenção) |
 | FB-42 | Eliminar um broto de levedura: ameaça a menos, sem pontos | `broto eliminado: sem pontos` | 27 | decisão do dono de 27/11 (contenção) |
 | FB-43 | chegar ao destino só com resistentes e sem Reserva: a equipe as isola | `a equipe isolou as resistentes: <x:-15 vitais cada>` | 47 | decisão de 27/11 (contenção), D1 |
+| FB-44 | Reserva elimina uma resistente nascida da divisão (filha): sem pontos | `a <wS:Reserva> eliminou a resistente: sem pontos` | 43 | revisão final de 27/11 (contenção); variante da FB-11 |
 
 **Hífen, não menos tipográfico.** "Gram-" usa hífen ASCII (U+002D). O "−" (U+2212) que a spec traz não existe na fonte embutida (Latin-1): na tela ele saía como `^`, visto no QA de 03/11 e corrigido no commit `5e7cc75`. Ao editar estes textos, não reintroduza U+2212.
 

@@ -1041,7 +1041,15 @@ static void hit_projectiles()
 
                 if (was_resistant)
                 {
-                    set_feedback("a <wS:Reserva> eliminou a resistente: <g:+10 pontos>");
+                    // filha da divisao nao pontua (27/11): o feedback nao promete pontos
+                    if (j >= agents_initial())
+                    {
+                        set_feedback("a <wS:Reserva> eliminou a resistente: sem pontos");
+                    }
+                    else
+                    {
+                        set_feedback("a <wS:Reserva> eliminou a resistente: <g:+10 pontos>");
+                    }
                 }
                 else
                 {
@@ -2668,6 +2676,7 @@ static void conclude_phase_if_ready()
     {
         int i;
 
+        // resistant_isolation_pending() garante: todo ativo que nao e celula e resistente
         for (i = 0; i < agents_count; i++)
         {
             if (agents[i].active && agents[i].species != SPECIES_CELL)
@@ -3096,12 +3105,13 @@ int agents_total()
     return agents_count;
 }
 
-// a composicao da fase, sem as filhas da divisao (#217)
+// pontos do ultimo abate (0 para filha, broto e esporo)
 int last_kill_points(void)
 {
     return last_kill_pts;
 }
 
+// a composicao da fase, sem as filhas da divisao (#217)
 int agents_initial(void)
 {
     return phases[phase_index].count;
