@@ -3994,7 +3994,21 @@ static void coccus_toxin(int index, float dx, float dy, float dist, float dt)
 
             if (dist > 0.001f)
             {
-                fire_enemy_shot(SHOT_TOXIN, a->x, a->y, dx / dist, dy / dist,
+                // antecipacao: mira onde o nanobo estara quando a toxina chegar,
+                // so uma fracao do caminho (TOXIN_LEAD), para ainda dar para desviar
+                float flight = dist / TOXIN_SPEED;
+                float tx = dx + player.vx * flight * TOXIN_LEAD;
+                float ty = dy + player.vy * flight * TOXIN_LEAD;
+                float td = sqrtf(tx * tx + ty * ty);
+
+                if (td < 0.001f)
+                {
+                    tx = dx;
+                    ty = dy;
+                    td = dist;
+                }
+
+                fire_enemy_shot(SHOT_TOXIN, a->x, a->y, tx / td, ty / td,
                     TOXIN_SPEED, TOXIN_DAMAGE);
             }
         }

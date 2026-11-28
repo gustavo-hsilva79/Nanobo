@@ -107,6 +107,10 @@ _Static_assert(WORLD_W % 32 == 0 && WORLD_H % 32 == 0, "mundo precisa fechar no 
 #define TOXIN_INTERVAL 3.0f
 #define TOXIN_SPEED 90.0f
 #define TOXIN_DAMAGE 8.0f
+
+// antecipacao da toxina: fracao do deslocamento do nanobo durante o voo que o
+// coco mira na frente; 0 mira onde ele esta, 1 onde ele estara (auditoria de 27/11)
+#define TOXIN_LEAD 0.5f
 #define ENEMY_SHOT_LIFE 4.0f
 #define SHIELD_RADIUS 22.0f
 
