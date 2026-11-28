@@ -284,7 +284,7 @@ Cena própria, aberta pelo botão COMO JOGAR (MN-01) do menu e da pausa; volta p
 
 ### Selos do protocolo (aviso de objetivo e Resultados, D3)
 
-Três selos por fase, na ordem `k = 0, 1, 2` do `seal_achieved(k)` (`src/gameplay/gameplay.c`). Os rótulos moram só no `seal_label(k)` de `src/ui/ui_kit.c`, lido pelo aviso de objetivo (`src/render/world.c`) e pelos Resultados (`src/ui/screens.c`). O aviso das OB-01 a OB-03 ganha a PR-10 como segunda linha em `UI_DIM`; a placa passa de 32 para 56 px e as duas linhas ficam centradas. A mais longa, a da Fase 3, tem 72 caracteres (1152 px), 1184 px com o `UI_PAD` dos dois lados, dentro dos 1280 px. Nos Resultados, o painel PR-11 fica em y 488 a 608, com uma linha por selo a cada 24 px a partir de y 532; a maior linha tem 36 caracteres (576 px) e cabe nos 672 px do painel.
+Três selos por fase, na ordem `k = 0, 1, 2` do `seal_achieved(k)` (`src/gameplay/gameplay.c`). Os rótulos moram só no `seal_label(k)` de `src/ui/ui_kit.c`, lido pelo aviso de objetivo (`src/render/world.c`) e pelos Resultados (`src/ui/screens.c`). O aviso das OB-01 a OB-03 ganha a PR-10 como segunda linha em `UI_DIM`; a placa passa de 32 para 56 px e as duas linhas ficam centradas. A mais longa, a da Fase 2, tem 77 caracteres (1232 px), 1264 px com o `UI_PAD` dos dois lados, dentro dos 1280 px. Nos Resultados, o painel PR-11 fica em y 488 a 608, com uma linha por selo a cada 24 px a partir de y 532; a maior linha tem 36 caracteres (576 px) e cabe nos 672 px do painel.
 
 | ID | Local | Texto | Caracteres | Origem |
 |---|---|---|---|---|
@@ -293,11 +293,11 @@ Três selos por fase, na ordem `k = 0, 1, 2` do `seal_achieved(k)` (`src/gamepla
 | PR-03 | selo 2, fase com bactéria | `<wS:Reserva> intacta` | 15 | decisão de 27/11 (contenção), D3; `Reserva` na cor da arma |
 | PR-04 | selo 0, fase de vírus | `nenhuma célula rompida` | 22 | decisão de 27/11 (contenção), D3 |
 | PR-05 | selo 1, fase de vírus | `anticorpo só em vírus` | 21 | decisão de 27/11 (contenção), D3 |
-| PR-06 | selo 2, fase de vírus | `vitais 70+` | 10 | decisão de 27/11 (contenção), D3; o 70 é o `SEAL_VITALS_MIN` |
+| PR-06 | selo 2, fase de vírus | `sem nova infecção` | 17 | decisão de 27/11 (contenção), D3; trocado em 28/11: era `vitais 70+`, que já nascia perdido para quem chegava à Fase 2 com menos de 70 |
 | PR-07 | selo 0, fase de fungos | `só <wF:Perfuração> no fungo` | 22 | decisão de 27/11 (contenção), D3; `Perfuração` na cor da arma |
 | PR-08 | selo 1, fase de fungos | `bolor sem esporos` | 17 | decisão de 27/11 (contenção), D3 |
 | PR-09 | selo 2, fase de fungos | `células intactas` | 16 | decisão de 27/11 (contenção), D3 |
-| PR-10 | aviso de objetivo, segunda linha das OB-01 a OB-03 (`UI_DIM`) | `Protocolo: %s · %s · %s`, com os três rótulos da fase (prefixo `Protocolo: `, 11) | 69 / 70 / 72 (Fases 1, 2 e 3) | decisão de 27/11 (contenção), D3 |
+| PR-10 | aviso de objetivo, segunda linha das OB-01 a OB-03 (`UI_DIM`) | `Protocolo: %s · %s · %s`, com os três rótulos da fase (prefixo `Protocolo: `, 11) | 69 / 77 / 72 (Fases 1, 2 e 3) | decisão de 27/11 (contenção), D3 |
 | PR-11 | Resultados, título do painel (`UI_AMBER`, y 504) | `Protocolo da fase` | 17 | decisão de 27/11 (contenção), D3 |
 | PR-12 | Resultados, selo cumprido | `%s: <g:cumprido>` (rótulo + sufixo `cumprido`, 8) | rótulo + 10 (até 32) | decisão de 27/11 (contenção), D3 |
 | PR-13 | Resultados, selo não cumprido | `%s: <x:não cumprido>` (rótulo + sufixo `não cumprido`, 12) | rótulo + 14 (até 36) | decisão de 27/11 (contenção), D3 |
