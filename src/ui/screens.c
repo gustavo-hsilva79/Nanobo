@@ -419,7 +419,7 @@ void draw_howto()
 // com os numeros da partida, sem os codigos internos dos objetivos (#223)
 static void results_report_line(int row, char* line, size_t size)
 {
-    int neutralized = threats_total() - threats_left();
+    int neutralized = threats_total() - threats_left() - progress.resistants_isolated;
     int reserve_spent = progress.reserve_on_resistant + progress.reserve_on_common;
 
     line[0] = '\0';
@@ -505,7 +505,13 @@ static void results_report_line(int row, char* line, size_t size)
     }
     else if (row == 3)
     {
-        if (reserve_spent == 0)
+        // sem Reserva a equipe isolou as resistentes: diz quantas e o custo (D1)
+        if (progress.resistants_isolated > 0)
+        {
+            snprintf(line, size, "<wS:Reserva> acabou: <x:isolei %d (-15 vitais cada)>",
+                progress.resistants_isolated);
+        }
+        else if (reserve_spent == 0)
         {
             snprintf(line, size, "guardei a <wS:Reserva>: nenhuma carga gasta");
         }
@@ -528,7 +534,7 @@ void draw_results()
     char value[32];
     int count;
     const UiButton* buttons = screen_buttons(&count);
-    int neutralized = threats_total() - threats_left();
+    int neutralized = threats_total() - threats_left() - progress.resistants_isolated;
     float left = 304.0f;
     float right = (float)SCREEN_W - 304.0f;
     float row;

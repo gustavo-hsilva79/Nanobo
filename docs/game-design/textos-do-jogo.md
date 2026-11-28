@@ -155,7 +155,7 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 | OB-02 | aviso de objetivo, topo do mundo (Fase 2) | `Objetivo: elimine os vírus e chegue ao {destino}` | 46 | redesenho de 28/11; substitui a CT-42; `destino` em âmbar |
 | OB-03 | aviso de objetivo, topo do mundo (Fase 3) | `Objetivo: elimine os fungos e chegue ao {destino}` | 47 | redesenho de 28/11; substitui a CT-42b; `destino` em âmbar |
 | OB-04 | aviso de objetivo, ameaças zeradas | `Ameaças eliminadas! Agora vá ao {destino}` | 39 | redesenho de 28/11; substitui a CT-51; `destino` em âmbar |
-| OB-05 | aviso de objetivo, só sobram resistentes e a Reserva acabou | `Sem {Reserva}: vá ao {destino} e a equipe isola as resistentes` | 58 | decisão de 27/11 (contenção), D1; `Reserva` e `destino` em âmbar; no lugar da OB-04 |
+| OB-05 | aviso de objetivo, só sobram resistentes e a Reserva acabou | `Sem {Reserva}: vá ao {destino}; a equipe isola as resistentes (-15 vitais cada)` | 75 | decisão de 27/11 (contenção), D1; `Reserva` e `destino` em âmbar; no lugar da OB-04 |
 | CT-53 | — | `PAUSE` | — | varredura de 05/11; saiu em 28/11: substituída pela PA-01 |
 | CT-54 | — | `esc para voltar` | — | varredura de 05/11; saiu em 28/11: substituída pela PA-06 |
 | PA-01 | pausa, título (y 82) | `PAUSA` | 5 | redesenho de 28/11; substitui a CT-53. Painel de 480 px (x 80 a 560, y 70 a 286), texto de x 96 a 544 (limite 56 caracteres) |
@@ -336,7 +336,7 @@ Desde 26/11 o painel se chama `O que anotei nesta fase` (23 caracteres) e as lin
 | RR-01 | 1, fase com bactéria | `li %d <p:Gram+> e %d <r:Gram-> até a coloração` | 37 | `scans_gram_positive`, `scans_gram_negative` |
 | RR-02 | 2, fase com bactéria | `tratei %d até o fim; <x:%d resistiram>` / sem resistência `tratei %d até o fim; %d resistiram` | 33 / 33 | `treatments_completed`, `resistances`; o zero fica sem o coral (não é perda) |
 | RR-03 | 3, fase com bactéria | `não errei nenhum antibiótico` / `<x:errei %d antibióticos> (%d pela forma)` | 28 / 37 | `wrong_decisions`, `shape_guesses` |
-| RR-04 | 4, fase com bactéria | `guardei a <wS:Reserva>: nenhuma carga gasta` / `<wS:Reserva>: %d na resistente, %d na comum` | 38 / 36 | `reserve_on_resistant`, `reserve_on_common` |
+| RR-04 | 4, fase com bactéria | `guardei a <wS:Reserva>: nenhuma carga gasta` / `<wS:Reserva>: %d na resistente, %d na comum` / com isolamento `<wS:Reserva> acabou: <x:isolei %d (-15 vitais cada)>` | 38 / 36 / 42 | `reserve_on_resistant`, `reserve_on_common`, `resistants_isolated`; a variante de isolamento (revisão final de 27/11) ocupa a linha 4 quando `resistants_isolated > 0` e cabe nos cerca de 43 caracteres do painel |
 | RR-05 | 5, fase com bactéria | `acertei %d células do Léo por engano` | 35 | `cell_attacks` |
 | RR-06 | 1, fase de vírus | `prendi %d vírus livres com anticorpos` | 36 | `viruses_neutralized` (#88) |
 | RR-07 | 2, fase de vírus | `<wT:Ataque T>: contive %d células a tempo` | 35 | `cells_lysed` (#88) |
