@@ -256,9 +256,9 @@ A pontuação atual da Fase 1:
 
 | Evento | Pontos | Regra |
 |---|---:|---|
-| Ameaça neutralizada | **+10** | uma vez por ameaça, só no acerto que zera a resistência (#66) |
+| Ameaça neutralizada | **+10** | uma vez por ameaça, só no acerto que zera a resistência (#66); filhas da divisão e brotos de levedura não pontuam, o vírus da rajada sim (27/11) |
 | Identificação completa | **+15** | uma vez, na conclusão, se `identificados = 9/9` (#67) |
-| Placar máximo da fase | **75** | 6 ameaças + bônus |
+| Placar máximo da fase | **75** | 6 ameaças iniciais + bônus (filhas e brotos não somam) |
 
 Em 03/11 (noite) a dupla decidiu que, quando a identificação virar obrigatória (M5, D2.1), o **+15 passa a exigir run perfeito**: nenhum erro de arma e nenhum tiro na célula (#208). A regra do build até lá continua 9/9.
 
