@@ -163,7 +163,7 @@ const UiButton* screen_buttons(int* count)
         { 656.0f, 444.0f, 320.0f, 56.0f, "COMO JOGAR" }
     };
     static const UiButton results_items[] = {
-        { 480.0f, 512.0f, 320.0f, 56.0f, "CONTINUAR" }
+        { 480.0f, 618.0f, 320.0f, 56.0f, "CONTINUAR" }
     };
     static const UiButton victory_items[] = {
         { 480.0f, 552.0f, 320.0f, 56.0f, "NOVA PARTIDA" }
@@ -945,6 +945,44 @@ void draw_marked_text_aligned(float x, float y, ALLEGRO_COLOR base, int flags, c
     }
 
     draw_marked_text(x, y, base, text);
+}
+
+// rotulo do selo k da fase atual (PR-01..PR-09), na ordem do seal_achieved:
+// fungos, depois virus, depois bacterias; o aviso e os resultados leem daqui
+const char* seal_label(int k)
+{
+    static const char* bacteria_seals[SEAL_COUNT] = {
+        "sem resistência",
+        "nenhuma célula perdida",
+        "<wS:Reserva> intacta"
+    };
+    static const char* virus_seals[SEAL_COUNT] = {
+        "nenhuma célula rompida",
+        "anticorpo só em vírus",
+        "vitais 70+"
+    };
+    static const char* fungus_seals[SEAL_COUNT] = {
+        "só <wF:Perfuração> no fungo",
+        "bolor sem esporos",
+        "células intactas"
+    };
+
+    if (k < 0 || k >= SEAL_COUNT)
+    {
+        return "";
+    }
+
+    if (phase_has_fungi())
+    {
+        return fungus_seals[k];
+    }
+
+    if (phase_has_viruses())
+    {
+        return virus_seals[k];
+    }
+
+    return bacteria_seals[k];
 }
 
 // idade da pagina desde que ficou completa (natural ou por toque): o triangulo pisca daqui

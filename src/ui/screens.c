@@ -533,6 +533,7 @@ void draw_results()
     float right = (float)SCREEN_W - 304.0f;
     float row;
     int report_row;
+    int seal;
     ALLEGRO_COLOR bonus_color;
     float map_y = camera.y;
 
@@ -548,8 +549,8 @@ void draw_results()
         UI_VEIL(160.0f / 255.0f));
 
     snprintf(line, sizeof(line), "Fase %d concluída", current_phase());
-    ui_text(UI_TEXT, SCREEN_W / 2, 48, ALLEGRO_ALIGN_CENTRE, line);
-    draw_rule((float)SCREEN_W / 2, 76.0f, 400.0f, UI_FRAME);
+    ui_text(UI_TEXT, SCREEN_W / 2, 36, ALLEGRO_ALIGN_CENTRE, line);
+    draw_rule((float)SCREEN_W / 2, 64.0f, 400.0f, UI_FRAME);
 
     // interludio (#244): entre as fases, o estado do paciente e o proximo
     // invasor; os vitais ja com o piso de 60 que a passagem aplica (#218)
@@ -560,7 +561,7 @@ void draw_results()
 
         snprintf(line, sizeof(line), "vitais do Léo: %s (%d) · a seguir: %s",
             state, vitals, current_phase() == 1 ? "vírus nas vias aéreas" : "fungos no pulmão");
-        ui_text(UI_DIM, SCREEN_W / 2, 92, ALLEGRO_ALIGN_CENTRE, line);
+        ui_text(UI_DIM, SCREEN_W / 2, 76, ALLEGRO_ALIGN_CENTRE, line);
     }
     else
     {
@@ -569,23 +570,23 @@ void draw_results()
         const char* state = vitals >= 70 ? "estável" : (vitals >= 40 ? "em observação" : "grave");
 
         snprintf(line, sizeof(line), "vitais do Léo: %s (%d)", state, vitals);
-        ui_text(UI_DIM, SCREEN_W / 2, 92, ALLEGRO_ALIGN_CENTRE, line);
+        ui_text(UI_DIM, SCREEN_W / 2, 76, ALLEGRO_ALIGN_CENTRE, line);
     }
 
     // resultado principal: pontos e ameacas, o que fecha a fase
-    draw_panel(280.0f, 116.0f, 720.0f, 88.0f, UI_INK, UI_FRAME);
+    draw_panel(280.0f, 104.0f, 720.0f, 88.0f, UI_INK, UI_FRAME);
 
     snprintf(value, sizeof(value), "%d", score);
-    draw_stat(left, 132.0f, right, "pontos", value, UI_AMBER);
+    draw_stat(left, 120.0f, right, "pontos", value, UI_AMBER);
 
     snprintf(value, sizeof(value), "%d/%d", neutralized, threats_total());
-    draw_stat(left, 164.0f, right, "ameaças eliminadas", value, UI_TEXT);
+    draw_stat(left, 152.0f, right, "ameaças eliminadas", value, UI_TEXT);
 
     // objetivos secundarios: identificacao e bonus
-    draw_panel(280.0f, 212.0f, 720.0f, 104.0f, UI_INK, UI_FRAME);
+    draw_panel(280.0f, 200.0f, 720.0f, 104.0f, UI_INK, UI_FRAME);
 
     snprintf(value, sizeof(value), "%d/%d", identified_count, identification_goal());
-    draw_stat(left, 228.0f, right, "agentes identificados", value, UI_TEXT);
+    draw_stat(left, 216.0f, right, "agentes identificados", value, UI_TEXT);
 
     if (identification_bonus_awarded())
     {
@@ -598,32 +599,48 @@ void draw_results()
         snprintf(value, sizeof(value), "não obtido");
     }
 
-    draw_stat(left, 260.0f, right, "bônus de identificação", value, bonus_color);
+    draw_stat(left, 248.0f, right, "bônus de identificação", value, bonus_color);
 
     // o bonus dos vitais fecha o painel dos objetivos secundarios (#218)
     snprintf(value, sizeof(value), "+%d", vitals_bonus_awarded());
-    draw_stat(left, 292.0f, right, "bônus pelos vitais do Léo", value,
+    draw_stat(left, 280.0f, right, "bônus pelos vitais do Léo", value,
         vitals_bonus_awarded() > 0 ? UI_GREEN : UI_DIM);
 
     // resumo educativo: so contadores da partida atual (#174, #202)
-    draw_panel(280.0f, 324.0f, 720.0f, 184.0f, UI_INK, UI_FRAME);
+    draw_panel(280.0f, 312.0f, 720.0f, 168.0f, UI_INK, UI_FRAME);
 
-    ui_text(UI_AMBER, left, 340.0f, 0, "O que anotei nesta fase");
+    ui_text(UI_AMBER, left, 328.0f, 0, "O que anotei nesta fase");
 
 
-    // relatorio da fase: cinco linhas com os numeros da partida (#223)
-    row = 368.0f;
+    // relatorio da fase: cinco linhas com os numeros da partida (#223), a cada
+    // 24 px para o protocolo caber embaixo
+    row = 356.0f;
 
     for (report_row = 0; report_row < 5; report_row++)
     {
         results_report_line(report_row, line, sizeof(line));
         draw_marked_text(left, row, UI_TEXT, line);
-        row = row + 28.0f;
+        row = row + 24.0f;
+    }
+
+    // protocolo da fase (D3): um selo por linha, cumprido em verde e o resto em vermelho
+    draw_panel(280.0f, 488.0f, 720.0f, 120.0f, UI_INK, UI_FRAME);
+
+    ui_text(UI_AMBER, left, 504.0f, 0, "Protocolo da fase");
+
+    row = 532.0f;
+
+    for (seal = 0; seal < SEAL_COUNT; seal++)
+    {
+        snprintf(line, sizeof(line), seal_achieved(seal) ? "%s: <g:cumprido>" : "%s: <x:não cumprido>",
+            seal_label(seal));
+        draw_marked_text(left, row, UI_TEXT, line);
+        row = row + 24.0f;
     }
 
     draw_buttons(buttons, count);
 
-    draw_marked_text_aligned(SCREEN_W / 2, 592, UI_DIM, ALLEGRO_ALIGN_CENTRE,
+    draw_marked_text_aligned(SCREEN_W / 2, 690, UI_DIM, ALLEGRO_ALIGN_CENTRE,
         "[enter] também continua");
 
 #ifdef _DEBUG
@@ -633,7 +650,8 @@ void draw_results()
         snprintf(line, sizeof(line), "QA scans %d/%d decisoes %d/%d celulas %d",
             progress.scans_gram_positive, progress.scans_gram_negative,
             progress.correct_decisions, progress.wrong_decisions, progress.cell_attacks);
-        ui_text(UI_DIM, SCREEN_W / 2, 680, ALLEGRO_ALIGN_CENTRE, line);
+        // no canto de cima a esquerda: o F1 desenha fps e quadro no canto direito
+        ui_text(UI_DIM, (float)UI_PAD, 8, 0, line);
     }
 #endif
 }

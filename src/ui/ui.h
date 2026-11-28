@@ -63,6 +63,7 @@ ALLEGRO_COLOR faded_color(ALLEGRO_COLOR color, float alpha);
 void draw_marked_text(float x, float y, ALLEGRO_COLOR base, const char* text);
 int marked_text_width(const char* text);
 void draw_marked_text_aligned(float x, float y, ALLEGRO_COLOR base, int flags, const char* text);
+const char* seal_label(int k);
 void draw_dialog(const DialogEntry* e, const DialogState* d);
 void draw_concept_card();
 

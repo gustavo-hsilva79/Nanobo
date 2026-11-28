@@ -273,6 +273,31 @@ static void draw_objective_notice(int card_target, float card_y)
     }
 
     text_w = marked_text_width(text);
+
+    // meta da fase: segunda linha com os selos do protocolo (PR-10), e a placa
+    // cresce uma linha; as duas ficam centradas
+    if (objective_notice_goal() == GOAL_PHASE)
+    {
+        char seals[192];
+        float line_step = (float)ui_line_height() + 8.0f;
+        int seals_w;
+        int box_w;
+
+        snprintf(seals, sizeof(seals), "Protocolo: %s · %s · %s",
+            seal_label(0), seal_label(1), seal_label(2));
+        seals_w = marked_text_width(seals);
+        box_w = text_w > seals_w ? text_w : seals_w;
+        box_x = floorf(((float)SCREEN_W - (float)box_w) / 2.0f);
+
+        draw_panel(box_x - UI_PAD, box_y, (float)box_w + 2.0f * UI_PAD, (float)NOTICE_H + line_step,
+            faded_color(UI_INK, alpha), faded_color(UI_AMBER, alpha));
+        draw_marked_text(floorf(((float)SCREEN_W - (float)text_w) / 2.0f),
+            box_y + (float)(NOTICE_H - HUD_FONT_H) / 2.0f, faded_color(UI_WARM, alpha), text);
+        draw_marked_text(floorf(((float)SCREEN_W - (float)seals_w) / 2.0f),
+            box_y + (float)(NOTICE_H - HUD_FONT_H) / 2.0f + line_step, faded_color(UI_DIM, alpha), seals);
+        return;
+    }
+
     box_x = floorf(((float)SCREEN_W - (float)text_w) / 2.0f);
 
     draw_panel(box_x - UI_PAD, box_y, (float)text_w + 2.0f * UI_PAD, (float)NOTICE_H,
