@@ -545,6 +545,7 @@ Decisões do dono em 26/11/2026 para o redesenho das telas fora do Diário (#245
 ### Contenção e selos (27/11/2026)
 
 1. **Filhas e brotos não pontuam** (decisão do dono, 27/11). A filha da divisão (Gram+ e Gram-) e o broto de levedura valem 0 pontos, como o esporo e a colônia germinada; o vírus da rajada continua valendo +10. Continuam ameaças para a conclusão e para `neutralized`. *Por quê:* a pontuação premiava deixar a infecção crescer para matar mais; o critério é o mesmo da colônia germinada de 25/11. Os recordes antigos do Top 10 ficam acima do alcançável com a regra nova.
+2. **Resistentes isoladas** (27/11). Se só sobram bactérias resistentes e a Reserva acabou (sem ameaça em voo), a meta vira o destino, e ao chegar lá a equipe as isola: cada uma sai de cena e custa 15 vitais, sem pontos e sem contar como neutralizada. Se os vitais zeram, a fase não conclui e o Game Over pelos vitais assume. *Por quê:* a fase podia ficar sem fim e sem derrota quando só sobravam resistentes e a Reserva acabava (2,5% das partidas do bot leitor). A filha continua herdando a resistência, porque é a seleção que o OA4 ensina.
 
 ### Resolução 1280×720 e módulos (27/11/2026)
 

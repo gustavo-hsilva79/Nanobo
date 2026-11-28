@@ -63,7 +63,8 @@ Cada fase tem mapa próprio; no build, as Fases 2 e 3 usam a partida e o destino
 - **Tratamento:**
   - cada bactéria precisa de **2 doses** do antibiótico certo;
   - uma dose e mais de 6 s sem a segunda deixam a bactéria **resistente àquele antibiótico**, e daí só a **Reserva** a elimina;
-  - o antibiótico errado não faz efeito, e não cria resistência; ele trava o disparo por 2 s, o custo do chute (#215).
+  - o antibiótico errado não faz efeito, e não cria resistência; ele trava o disparo por 2 s, o custo do chute (#215);
+  - saída sem Reserva: se só sobram resistentes e as cargas acabaram, chegar ao destino faz a equipe isolá-las (-15 vitais cada, sem pontos) e a fase conclui, a menos que os vitais zerem.
 - **Divisão e crescimento:**
   - as bactérias se dividem a cada cerca de 12 s (12 ± 3 s, calibrado na #238), com teto de 16 vivas e no máximo 15 divisões por fase;
   - as leveduras brotam a cada cerca de 20 s, com teto de 12;

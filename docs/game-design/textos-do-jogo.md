@@ -54,6 +54,7 @@
 | FB-40 | Perfuração elimina uma colônia que germinou de esporo: ameaça a menos, sem pontos (decisão do dono, 25/11) | `colônia germinada destruída: sem pontos` | 39 | revisão final de 25/11 |
 | FB-41 | Eliminar a filha de uma divisão: ameaça a menos, sem pontos | `filha eliminada: sem pontos` | 27 | decisão do dono de 27/11 (contenção) |
 | FB-42 | Eliminar um broto de levedura: ameaça a menos, sem pontos | `broto eliminado: sem pontos` | 27 | decisão do dono de 27/11 (contenção) |
+| FB-43 | chegar ao destino só com resistentes e sem Reserva: a equipe as isola | `a equipe isolou as resistentes: <x:-15 vitais cada>` | 47 | decisão de 27/11 (contenção), D1 |
 
 **Hífen, não menos tipográfico.** "Gram-" usa hífen ASCII (U+002D). O "−" (U+2212) que a spec traz não existe na fonte embutida (Latin-1): na tela ele saía como `^`, visto no QA de 03/11 e corrigido no commit `5e7cc75`. Ao editar estes textos, não reintroduza U+2212.
 
@@ -154,6 +155,7 @@ Os textos do briefing de 04/11 (BR-07 a BR-19, sobre a coloração de Gram e as 
 | OB-02 | aviso de objetivo, topo do mundo (Fase 2) | `Objetivo: elimine os vírus e chegue ao {destino}` | 46 | redesenho de 28/11; substitui a CT-42; `destino` em âmbar |
 | OB-03 | aviso de objetivo, topo do mundo (Fase 3) | `Objetivo: elimine os fungos e chegue ao {destino}` | 47 | redesenho de 28/11; substitui a CT-42b; `destino` em âmbar |
 | OB-04 | aviso de objetivo, ameaças zeradas | `Ameaças eliminadas! Agora vá ao {destino}` | 39 | redesenho de 28/11; substitui a CT-51; `destino` em âmbar |
+| OB-05 | aviso de objetivo, só sobram resistentes e a Reserva acabou | `Sem {Reserva}: vá ao {destino} e a equipe isola as resistentes` | 58 | decisão de 27/11 (contenção), D1; `Reserva` e `destino` em âmbar; no lugar da OB-04 |
 | CT-53 | — | `PAUSE` | — | varredura de 05/11; saiu em 28/11: substituída pela PA-01 |
 | CT-54 | — | `esc para voltar` | — | varredura de 05/11; saiu em 28/11: substituída pela PA-06 |
 | PA-01 | pausa, título (y 82) | `PAUSA` | 5 | redesenho de 28/11; substitui a CT-53. Painel de 480 px (x 80 a 560, y 70 a 286), texto de x 96 a 544 (limite 56 caracteres) |
