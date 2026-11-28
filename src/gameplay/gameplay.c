@@ -23,6 +23,9 @@ double run_time = 0;
 // pontos da partida atual: so a neutralizacao de uma ameaca soma (#66)
 int score = 0;
 
+// pontos que o ultimo abate rendeu: 10 ou 0 (filha, broto, esporo, colonia germinada)
+static int last_kill_pts = 0;
+
 // vitais do paciente: so a run nova enche; entre as fases ha o piso de 60 (#234)
 float patient_vitals = PATIENT_VITALS_MAX;
 
@@ -629,11 +632,14 @@ bool hit_agent(int index)
 
         // o acerto que neutralizou e o unico evento que pontua (#66); o esporo
         // conta como ameaca eliminada, mas nao da pontos (decisao do dono, 25/11);
-        // a colonia que germinou de esporo tambem nao (decisao do dono, 25/11)
+        // a colonia germinada, a filha da divisao e o broto de levedura tambem nao
+        // (27/11); so o virus da rajada, nascido depois dos iniciais, continua valendo
+        last_kill_pts = 0;
         if (agents[index].species != SPECIES_SPORE
-            && !(agents[index].species == SPECIES_MOLD && index >= agents_initial()))
+            && (index < agents_initial() || agents[index].species == SPECIES_VIRUS))
         {
             score = score + SCORE_PER_THREAT;
+            last_kill_pts = SCORE_PER_THREAT;
         }
 
         run_progress.neutralized = run_progress.neutralized + 1;
@@ -1088,6 +1094,15 @@ static void hit_projectiles()
                     else if (agents[j].species == SPECIES_MOLD && j >= agents_initial())
                     {
                         set_feedback("colônia germinada destruída: sem pontos");
+                    }
+                    // filha da divisao e broto de levedura nao pontuam (27/11)
+                    else if (species_is_bacterium(agents[j].species) && j >= agents_initial())
+                    {
+                        set_feedback("filha eliminada: sem pontos");
+                    }
+                    else if (agents[j].species == SPECIES_YEAST && j >= agents_initial())
+                    {
+                        set_feedback("broto eliminado: sem pontos");
                     }
                     // sem identificacao a ameaca inicial sai da cena e o bonus de 9/9 fica
                     // impossivel; filhas e brotos nao contam para o bonus
@@ -2951,6 +2966,7 @@ static void start_phase(int index)
 void reset_match()
 {
     score = 0;
+    last_kill_pts = 0;
     run_time = 0;
 
     run_progress.threats = 0;
@@ -2995,6 +3011,11 @@ int agents_total()
 }
 
 // a composicao da fase, sem as filhas da divisao (#217)
+int last_kill_points(void)
+{
+    return last_kill_pts;
+}
+
 int agents_initial(void)
 {
     return phases[phase_index].count;

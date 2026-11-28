@@ -486,6 +486,9 @@ int phase_count(void);
 int current_phase(void);
 int agents_total(void);
 
+// pontos do ultimo abate: 10, ou 0 para filha, broto, esporo e colonia germinada
+int last_kill_points(void);
+
 // agentes com que a fase nasceu: as filhas da divisao ficam de fora (#217)
 int agents_initial(void);
 

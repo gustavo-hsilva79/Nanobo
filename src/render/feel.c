@@ -25,6 +25,7 @@ bool feel_impact_dull = false;
 // linha da folha de impactos: 0 dose certa, 1 sem efeito, 2 eliminado (#242)
 int feel_impact_kind = 0;
 float feel_pop_time = 0.0f;
+int feel_pop_points = 0;
 float feel_pop_x = 0.0f;
 float feel_pop_y = 0.0f;
 double feel_hit_stop = 0.0;
@@ -100,6 +101,7 @@ void feel_trigger()
         feel_impact_dull = false;
         feel_impact_kind = 2;
         feel_pop_time = FEEL_POP_TIME;
+        feel_pop_points = last_kill_points();
         feel_pop_x = x;
         feel_pop_y = y;
         feel_hit_stop = FEEL_HIT_STOP;
@@ -212,12 +214,12 @@ void draw_feel_world()
             al_map_rgba_f(1.0f * a, 0.906f * a, 0.659f * a, a));
     }
 
-    if (feel_pop_time > 0.0f)
+    if (feel_pop_time > 0.0f && feel_pop_points > 0)
     {
         float a = feel_pop_time / FEEL_POP_TIME;
         float rise = (1.0f - a) * 24.0f;
 
-        snprintf(pop, sizeof(pop), "+%d", SCORE_PER_THREAT);
+        snprintf(pop, sizeof(pop), "+%d", feel_pop_points);
         al_draw_text(font, al_map_rgba_f(0.373f * a, 0.839f * a, 0.627f * a, a),
             view_x(feel_pop_x), view_y(feel_pop_y) - (float)AGENT_RADIUS - 12.0f - rise,
             ALLEGRO_ALIGN_CENTRE, pop);
