@@ -2528,9 +2528,39 @@ static float objective_since = 0.0f;
 static ObjectiveGoal objective_last = GOAL_PHASE;
 static ObjectiveGoal objective_shown = GOAL_PHASE;
 
+// so sobram bacterias resistentes, sem Reserva e sem ameaca no ar: o destino
+// as isola, senao a fase ficaria sem fim (D1)
+bool resistant_isolation_pending(void)
+{
+    int i;
+    int found = 0;
+
+    if (!phase_has_bacteria() || reserve_charges_left() != 0 || threats_in_flight() != 0)
+    {
+        return false;
+    }
+
+    for (i = 0; i < agents_count; i++)
+    {
+        if (!agents[i].active || agents[i].species == SPECIES_CELL)
+        {
+            continue;
+        }
+
+        if (!species_is_bacterium(agents[i].species) || !agents[i].resistant)
+        {
+            return false;
+        }
+
+        found = found + 1;
+    }
+
+    return found > 0;
+}
+
 ObjectiveGoal objective_goal(void)
 {
-    return threats_left() == 0 ? GOAL_DESTINATION : GOAL_PHASE;
+    return (threats_left() == 0 || resistant_isolation_pending()) ? GOAL_DESTINATION : GOAL_PHASE;
 }
 
 float objective_notice_left(void)
@@ -2594,7 +2624,7 @@ static void conclude_phase_if_ready()
         return;
     }
 
-    if (threats_left() > 0)
+    if (threats_left() > 0 && !resistant_isolation_pending())
     {
         return;
     }
@@ -2602,6 +2632,29 @@ static void conclude_phase_if_ready()
     if (squared_distance(player.x, player.y, DESTINATION_X, DESTINATION_Y) > reach * reach)
     {
         return;
+    }
+
+    // a equipe isola as resistentes antes do bonus; sem vitais a fase nao conclui (D1)
+    if (threats_left() > 0)
+    {
+        int i;
+
+        for (i = 0; i < agents_count; i++)
+        {
+            if (agents[i].active && agents[i].species != SPECIES_CELL)
+            {
+                agents[i].active = false;
+                progress.resistants_isolated = progress.resistants_isolated + 1;
+                patient_vitals = fmaxf(patient_vitals - RESISTANT_ISOLATION_VITALS, 0.0f);
+            }
+        }
+
+        if (patient_vitals <= 0.0f)
+        {
+            return;
+        }
+
+        set_feedback("a equipe isolou as resistentes: <x:-15 vitais cada>");
     }
 
     phase_finished = true;
@@ -2905,6 +2958,7 @@ static void start_phase(int index)
     progress.yeasts_eliminated = 0;
     progress.molds_eliminated = 0;
     progress.antibiotic_on_fungus = 0;
+    progress.resistants_isolated = 0;
 
     phase_finished = false;
     bonus_awarded = false;

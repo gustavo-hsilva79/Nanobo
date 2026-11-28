@@ -245,7 +245,11 @@ static void draw_objective_notice(int card_target, float card_y)
         return;
     }
 
-    if (objective_notice_goal() == GOAL_DESTINATION)
+    if (objective_notice_goal() == GOAL_DESTINATION && resistant_isolation_pending())
+    {
+        text = "Sem {Reserva}: vá ao {destino} e a equipe isola as resistentes";
+    }
+    else if (objective_notice_goal() == GOAL_DESTINATION)
     {
         text = "Ameaças eliminadas! Agora vá ao {destino}";
     }

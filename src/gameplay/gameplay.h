@@ -194,6 +194,8 @@ _Static_assert(WORLD_W % 32 == 0 && WORLD_H % 32 == 0, "mundo precisa fechar no 
 #define PATIENT_VITALS_MAX 100.0f
 #define CELL_SHOT_VITALS 15.0f
 #define CELL_LOSS_VITALS 20.0f
+// resistente isolada pela equipe ao chegar no destino sem Reserva: vitais por bacteria
+#define RESISTANT_ISOLATION_VITALS 15.0f
 #define CELL_HEALTH 100.0f
 #define VITALS_MIN_BETWEEN 60.0f
 #define VITALS_BONUS_RATE 0.5f
@@ -223,6 +225,7 @@ typedef struct
     int yeasts_eliminated;    // leveduras eliminadas na Fase 3 (#232)
     int molds_eliminated;     // colonias eliminadas, germinadas incluidas (#232)
     int antibiotic_on_fungus; // tiros de antibiotico que acertaram fungo (#232)
+    int resistants_isolated;  // resistentes isoladas pela equipe sem Reserva (D1)
 } MatchProgress;
 
 extern MatchProgress progress;
@@ -401,6 +404,9 @@ typedef enum
 
 // meta de agora: sem ameacas, ir ao destino
 ObjectiveGoal objective_goal(void);
+
+// so sobram bacterias resistentes e a Reserva acabou: a equipe as isola no destino
+bool resistant_isolation_pending(void);
 
 // segundos que faltam do aviso na tela, 0 sem aviso; e a meta que ele mostra
 float objective_notice_left(void);
