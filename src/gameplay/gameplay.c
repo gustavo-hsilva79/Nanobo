@@ -1743,7 +1743,7 @@ bool seal_achieved(int k)
     {
         return k == 0 ? progress.cells_burst == 0
             : k == 1 ? progress.antibody_on_cell == 0
-            : patient_vitals >= SEAL_VITALS_MIN;
+            : progress.new_infections == 0;
     }
 
     return k == 0 ? progress.resistances == 0
@@ -2246,6 +2246,8 @@ static void infect_on_touch(int index)
             scan_target = -1;
         }
 
+        // a infeccao nova quebra o selo da fase de virus
+        progress.new_infections = progress.new_infections + 1;
         emit_sfx_at(SFX_EVENT_WRONG, agents[c].x, agents[c].y);
         set_feedback("um vírus entrou numa célula: ela está infectada");
         return;
@@ -3000,6 +3002,7 @@ static void start_phase(int index)
     progress.cells_lost = 0;
     progress.antibody_on_cell = 0;
     progress.spore_bursts = 0;
+    progress.new_infections = 0;
 
     phase_finished = false;
     bonus_awarded = false;

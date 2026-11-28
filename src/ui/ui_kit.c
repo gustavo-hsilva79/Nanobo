@@ -959,7 +959,7 @@ const char* seal_label(int k)
     static const char* virus_seals[SEAL_COUNT] = {
         "nenhuma célula rompida",
         "anticorpo só em vírus",
-        "vitais 70+"
+        "sem nova infecção"
     };
     static const char* fungus_seals[SEAL_COUNT] = {
         "só <wF:Perfuração> no fungo",
