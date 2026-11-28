@@ -542,6 +542,10 @@ Decisões do dono em 26/11/2026 para o redesenho das telas fora do Diário (#245
 
 - *Por quê:* a auditoria apontou telas que não explicam o jogo; o HUD estava no limite de largura (20 px livres) e o objetivo ali competia com as barras; fundos desenhados dão ao menu e ao hospital o mesmo cuidado visual das fases sem custo relevante de memória (~0,9 MB por fundo, com pico atual de 79 MB e limite de 100 MB).
 
+### Contenção e selos (27/11/2026)
+
+1. **Filhas e brotos não pontuam** (decisão do dono, 27/11). A filha da divisão (Gram+ e Gram-) e o broto de levedura valem 0 pontos, como o esporo e a colônia germinada; o vírus da rajada continua valendo +10. Continuam ameaças para a conclusão e para `neutralized`. *Por quê:* a pontuação premiava deixar a infecção crescer para matar mais; o critério é o mesmo da colônia germinada de 25/11. Os recordes antigos do Top 10 ficam acima do alcançável com a regra nova.
+
 ### Resolução 1280×720 e módulos (27/11/2026)
 
 Decisão do dono, depois de uma sessão de perguntas sobre refatorar, otimizar e subir a resolução. Substitui a tela lógica de 22/10 e a estrutura da Wave 2 de 06/11.

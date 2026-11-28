@@ -81,7 +81,7 @@ Cada fase tem mapa próprio; no build, as Fases 2 e 3 usam a partida e o destino
   - Derrota quando qualquer uma zera; a tela de Game Over diz qual.
   - Não há drenagem por tempo: a pressão vem dos invasores (§"Dificuldade").
 - **Pontuação:**
-  - +10 por invasor eliminado;
+  - +10 por invasor eliminado (filhas da divisão, brotos, esporos e colônias germinadas não pontuam; vírus da rajada sim);
   - −5 por resistência criada;
   - +15 de bônus de identificação completa (agentes iniciais);
   - bônus de vitais no fim de cada fase (vitais × 0,5).

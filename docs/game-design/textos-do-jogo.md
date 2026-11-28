@@ -52,6 +52,8 @@
 | FB-38 | a defesa destrói um esporo em voo | `a defesa destruiu o esporo` | 26 | #229 |
 | FB-39 | Perfuração elimina um esporo pousado: ameaça a menos, sem pontos (decisão do dono, 25/11) | `esporo destruído` | 16 | #229 |
 | FB-40 | Perfuração elimina uma colônia que germinou de esporo: ameaça a menos, sem pontos (decisão do dono, 25/11) | `colônia germinada destruída: sem pontos` | 39 | revisão final de 25/11 |
+| FB-41 | Eliminar a filha de uma divisão: ameaça a menos, sem pontos | `filha eliminada: sem pontos` | 27 | decisão do dono de 27/11 (contenção) |
+| FB-42 | Eliminar um broto de levedura: ameaça a menos, sem pontos | `broto eliminado: sem pontos` | 27 | decisão do dono de 27/11 (contenção) |
 
 **Hífen, não menos tipográfico.** "Gram-" usa hífen ASCII (U+002D). O "−" (U+2212) que a spec traz não existe na fonte embutida (Latin-1): na tela ele saía como `^`, visto no QA de 03/11 e corrigido no commit `5e7cc75`. Ao editar estes textos, não reintroduza U+2212.
 
