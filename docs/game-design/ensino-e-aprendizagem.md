@@ -175,6 +175,23 @@ O bot contorna a célula que bloqueia o caminho, como quem joga. Sem isso, ele f
   - pôr mais células vizinhas;
   - aumentar a deriva do vírus livre.
 
+#### Linha de base depois da contenção e dos selos (27/11)
+
+Três mudanças de regra entraram nesta rodada: as filhas e os brotos não pontuam (só os agentes iniciais, fora o vírus da rajada), a Reserva esgotada isola a resistente que sobra (a fase fecha sem ela, com o aviso na tela) e os selos do protocolo são só exibição, sem efeito na pontuação. Os bots rodaram sobre o código final, 1000 partidas por linha, e o bot da Fase 1 passou a andar até o destino quando o objetivo vira `GOAL_DESTINATION`.
+
+| Bot | Antes (21h40) | Depois | Meta |
+|---|---:|---:|---|
+| Fase 1, leitor | 60% (25 tempos esgotados, 1,1 resistente sobrando) | **66%** (2 tempos esgotados) | 55-75% |
+| Fase 1, chute | 2% | **5%** | até 10% |
+| Fase 2, leitor, 77 vitais | 100% | **100%** (998/1000) | - |
+| Fase 2, leitor, 60 vitais | 98% | **98%** (985/1000) | - |
+| Fase 2, chute, 77 vitais | 7% | **7%** (69/1000) | até 10% |
+| Fase 2, chute, 60 vitais | 0% | **0%** | até 10% |
+
+- **O que mudou e por quê:** antes, a resistente que sobrava sem Reserva travava a fase e a partida acabava em tempo esgotado (25 em 1000 para o leitor). Com o isolamento, esses casos viram vitória (leitor 66%) ou derrota, e só 2 partidas seguem sem desfecho. O chute sobe de 2% para 5%, porque agora fecha algumas fases com resistentes isoladas, e continua abaixo de 10%.
+- **Fase 2:** não mudou (o isolamento e a pontuação só mexem nas bactérias), exceto o chute com 77 vitais, que fica em 7%.
+- **Nenhuma constante foi ajustada:** `DIVISION_TIME`, o orçamento de 15 divisões e a IA ficam como estavam.
+
 ## Correções desta revisão (03/11/2026)
 
 | # | Correção | O que substitui |

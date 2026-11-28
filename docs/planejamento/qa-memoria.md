@@ -243,3 +243,16 @@ A #118 continua **aberta** até esses dois cenários serem medidos. Se ficarem p
 - **Leitura:** o canvas de 1280×720 custa 3,7 MB de textura, e o Direct3D guardava uma cópia de segurança dele por ser alvo de desenho. Como o canvas é redesenhado inteiro a cada quadro, a cópia saiu. O pico fica 10 MB abaixo do limite de 100 MB, 2,5 MB acima do master no mesmo roteiro; na fase não muda.
 - **Tempo de quadro (F1):** 60 fps e 0,1–0,2 ms de atualização + desenho (sem o flip) em todas as cenas no Release, e o mesmo no Debug com 16 bactérias, perigos ativos, Fase 2 e game over na Fase 3. Por isso as otimizações condicionais (cache do texto com marcas, `al_hold_bitmap_drawing`, menos traços nas correntes) não entraram.
 - **Desvio declarado:** no Release não há a tecla F, então as Fases 2 e 3 foram medidas no tempo de quadro do Debug, não na memória do Release.
+
+## 27/11/2026 — contenção das resistentes e selos do protocolo
+
+- **Build:** branch `feat/contencao-selos`, `Release|x64` com 0 avisos de compilador (`Debug|x64` também; só o MSB8028 por cópias de conflito do OneDrive em `x64/Debug/`).
+- **Método:** `medir_memoria.ps1 -Seconds 75 -EveryMs 250`, iniciado **antes** do jogo, gravando em `%TEMP%` (a gravação direto na pasta do OneDrive perdeu amostras); o jogo dirigido por `../Nanobo-testes/qa_jogo.ps1` (menu, INICIAR, abertura pulada, Fase 1 andando nas quatro direções, pausa). 146 amostras.
+
+| Build e situação | Amostras | Pico (MB) | Privada no pico (MB) | Observação |
+|---|---:|---:|---:|---|
+| **Release, contenção e selos** | 146 | **90,07** | 119,26 | pico na carga (t ≈ 9 s); Fase 1 em 75,2 MB; última amostra 75,23 MB |
+
+- **Leitura:** o pico de 90,07 MB fica 9,9 MB abaixo de 100 MB. Está 3,3 MB acima dos 86,78 MB do redesenho da interface (os novos textos e selos são só desenho, sem bitmap novo; a diferença cai na variação da carga) e 0,12 MB acima da referência de 89,95 MB. A Fase 1 ficou em 75,2 MB, igual à medição anterior.
+- **Desvio declarado:** o roteiro cobre menu, Fase 1 e pausa; as Fases 2 e 3, os RESULTS e a Vitória (onde aparecem os selos) não entraram na medição do Release. Os selos não carregam recurso novo.
+- **CSV:** `release.csv`, em `.superpowers/sdd/2026-11-27-contencao-e-selos/mem/` (fora do git).
