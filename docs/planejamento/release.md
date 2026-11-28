@@ -129,6 +129,16 @@ Sem administrador, num prompt comum:
 
 Logs e capturas (menu, briefing, fase 1 e o assistente) ficam em `.hermes/instalador-evidencia/` (ignorada pelo git).
 
+## Atualização de 28/11/2026 — instalador regerado sobre o build final
+
+Build: `master` em `6787f3f` (interface redesenhada, contenção das resistentes, selos do protocolo e toxina com antecipação).
+
+- **O `.vdproj` estava desatualizado.** O `gerar_instalador.ps1` recusou o build porque a lista de arquivos não batia com `dist\Nanobo`. Saíram 3 arquivos que o jogo não usa mais: `allegro_ttf-5.2.dll` (o `Nanobo.exe` deixou de importá-la), `icone_coracao.png` e `icone_defesa.png`. Entraram os 12 PNG do redesenho da interface: `fundo_como_jogar`, `fundo_menu`, `hemacias_deriva`, `hospital_abertura`, `hospital_gameover` e `hospital_vitoria` em `assets\backgrounds`; `barra_bateria`, `barra_ecg`, `coracao_pulso`, `icone_nanobo`, `mira` e `segmento` em `assets\sprites`. O projeto foi editado direto no texto, com as mesmas propriedades dos outros assets.
+- **Distribuição:** `dist\Nanobo` com **55 arquivos, 16,57 MB** (17.379.083 bytes): `Nanobo.exe` (147.456 bytes), **6 DLLs do Allegro** (sem a `allegro_ttf`), `VCRUNTIME140.dll` e os assets.
+- **Instalador:** `dist\Nanobo-1.0.0.msi` com **8.647.680 bytes** (8,25 MB), SHA-256 `537aa78454213c4d415f0862e9db07c4e3c0a6687dd8e142e8d250b8fc9f9060`. A versão continua 1.0.0.
+- **Verificação nesta máquina:** `msiexec /i ... /qn` terminou com código 0, sem elevação; os 55 arquivos instalados têm o mesmo SHA-256 do `manifesto.txt`; os atalhos foram criados na Área de Trabalho e no menu Iniciar; o jogo instalado abriu o menu ("nenhum recorde ainda"), o briefing e a Fase 1 com o aviso de objetivo e o protocolo; `msiexec /x ... /qn` terminou com código 0 e removeu a pasta, os atalhos e a entrada de desinstalação.
+- **Regressão sobre este build:** `docs/planejamento/qa-regressao-final.md`.
+
 ## Pendências
 
 - Teste em máquina limpa (#162 a #164), adiado pelo dono. Instalar o `dist\Nanobo-1.0.0.msi` e conferir: se o Allegro abre o display sem `d3dx9_43.dll` (nesta máquina ela veio do `System32`, do DirectX End-User Runtime, que pode faltar num Windows limpo; se não abrir, avaliar forçar OpenGL com um `allegro5.cfg` ao lado do exe, `[graphics] driver=opengl`, ou distribuir a DLL); se o `VCRUNTIME140.dll` app-local basta; se o ranking é gravado na pasta de instalação; se o assistente abre sem pedir administrador.
